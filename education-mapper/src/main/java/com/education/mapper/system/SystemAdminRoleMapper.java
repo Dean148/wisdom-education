@@ -12,7 +12,17 @@ import java.util.List;
  */
 public interface SystemAdminRoleMapper extends BaseMapper {
 
+    /**
+     * 获取管理员角色列表
+     * @param adminId
+     * @return
+     */
     List<ModelBeanMap> findRoleListByAdminId(Integer adminId);
 
+    /**
+     * 根据管理员删除关联信息
+     * @param adminId
+     * @return
+     */
     int deleteByAdminId(Integer adminId);
 }

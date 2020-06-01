@@ -9,6 +9,8 @@ import com.education.service.course.ExamInfoService;
 import com.education.service.school.SchoolService;
 import com.education.service.school.StudentInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import java.util.*;
 @Slf4j
 public class HomeService {
 
+    private static final Logger logger = LoggerFactory.getLogger(HomeService.class);
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
@@ -59,7 +62,7 @@ public class HomeService {
         } catch (Exception e) {
             result.setCode(ResultCode.FAIL);
             result.setMessage("获取数据异常");
-            log.error("获取数据异常", e);
+            logger.error("获取数据异常", e);
         }
         return result;
     }

@@ -25,9 +25,13 @@
                 and (course.name like #{searchName} or subject.name like #{searchName})
             </if>
 
-            <if test="parentId != null and parentId != ''">
-                and course.parent_id = #{parentId}
+            <if test="recommendIndexFlag != null and recommendIndexFlag != ''">
+                and course.recommend_index_flag = #{recommendIndexFlag}
             </if>
+
+           <!-- <if test="parentId != null and parentId != ''">
+                and course.parent_id = #{parentId}
+            </if>-->
         </where>
         order by course.sort asc
     </select>

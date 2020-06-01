@@ -13,6 +13,11 @@ import java.util.Map;
  */
 public interface SystemAdminMapper extends BaseMapper {
 
+    /**
+     * 根据账号名获取管理员信息
+     * @param loginName
+     * @return
+     */
     ModelBeanMap findByLoginName(String loginName);
 
     int updateByUserId(Map params);
