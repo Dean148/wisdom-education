@@ -60,7 +60,7 @@ public class PaperController extends BaseController {
      */
     @GetMapping("getQuestionByPaperId")
     public Result getQuestionByPaperId(@RequestParam Map params) {
-        Result result = testPaperInfoService.pagination(params, TestPaperQuestionMapper.class, "getPaperQuestionList");
+        Result result = testPaperInfoService.pagination(params, TestPaperQuestionMapper.class, TestPaperQuestionMapper.GET_PAPER_QUESTION_LIST);
         Integer paperInfoId = Integer.parseInt((String)params.get("testPaperInfoId")) ;
         testPaperInfoService.parseQuestion(paperInfoId, (Map) result.getData());
         return result;

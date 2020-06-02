@@ -10,7 +10,7 @@
         values
         <foreach collection="params.values"  item="value" open="(" close=")" separator=",">
             #{value}
-        </foreach>getStudentPaperList
+        </foreach>
     </insert>
 
     <update id="update" parameterType="map">
