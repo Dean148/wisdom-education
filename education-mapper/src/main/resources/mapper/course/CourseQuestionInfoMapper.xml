@@ -9,13 +9,6 @@
         </foreach>
     </insert>
 
-    <update id="updateStudentQuestionMark" parameterType="map">
-        update srudent_question_answer set mark = #{mark}, correct_status = #{correct_status}, comment = #{comment}
-        where student_id = #{studentId} and question_info_id = #{questionInfoId}
-        <if test="test_paper_info_id != null and test_paper_info_id != ''">
-            and test_paper_info_id = #{test_paper_info_id}
-        </if>
-    </update>
 
     <select id="getCourseQuestionList" resultType="modelBeanMap">
         select question.*,
