@@ -3,6 +3,7 @@ package com.education.admin.api.controller.system;
 import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
+import com.education.common.annotation.SystemLog;
 import com.education.common.base.BaseController;
 import com.education.common.model.ModelBeanMap;
 import com.education.common.utils.Result;
@@ -40,6 +41,7 @@ public class SystemAdminController extends BaseController {
         @Param(name = "offset", message = "请传递当前页参数"),
         @Param(name = "limit", message = "请输入每页显示条数")
     })
+    @SystemLog(describe = "获取管理员列表")
     public Result list(@RequestParam Map params) {
         return systemAdminService.pagination(params);
     }
@@ -54,6 +56,7 @@ public class SystemAdminController extends BaseController {
        @Param(name = "confirmPassword", message = "请输入确认密码")
     }, paramsType = ParamsType.JSON_DATA)
     @RequiresPermissions("system:admin:updatePassword")
+    @SystemLog(describe = "重置密码管理员密码")
     public ResultCode updatePassword(@RequestBody ModelBeanMap systemAdmin) {
         String password = (String)systemAdmin.get("password");
         String confirmPassword = (String)systemAdmin.get("confirmPassword");
@@ -70,6 +73,7 @@ public class SystemAdminController extends BaseController {
      * @return
      */
     @PostMapping("resettingPassword")
+    @SystemLog(describe = "修改密码")
     public ResultCode resettingPassword (@RequestBody ModelBeanMap systemAdmin) {
         String newPassword = systemAdmin.getStr("newPassword");
         String confirmPassword = systemAdmin.getStr("confirmPassword");
@@ -82,6 +86,7 @@ public class SystemAdminController extends BaseController {
 
     @DeleteMapping
     @RequiresPermissions({"system:admin:deleteById"})
+    @SystemLog(describe = "删除管理员")
     public ResultCode deleteById(@RequestBody ModelBeanMap systemAdmin) {
         Integer createType = (Integer)systemAdmin.get("create_type");
         if (createType == ResultCode.SUCCESS) {
@@ -92,6 +97,7 @@ public class SystemAdminController extends BaseController {
     }
 
     @GetMapping("findById")
+    @SystemLog(describe = "获取管理员详情")
     public Result findById(Integer id) {
         return systemAdminService.findById(id);
     }
@@ -103,6 +109,7 @@ public class SystemAdminController extends BaseController {
      */
     @PostMapping
     @RequiresPermissions(value = {"system:admin:save", "system:admin:update"}, logical = Logical.OR)
+    @SystemLog(describe = "添加或修改管理员")
     public ResultCode saveOrUpdate(@RequestBody Map params) {
         Integer createType = (Integer)params.get("create_type");
         if (createType != null && createType == ResultCode.SUCCESS) {

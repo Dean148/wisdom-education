@@ -30,6 +30,14 @@ public class SystemRoleService extends BaseService<SystemRoleMapper> {
     @Autowired
     private SystemRoleMenuMapper systemRoleMenuMapper;
 
+
+    @Override
+    @Transactional
+    public ResultCode deleteById(Integer id) {
+        systemRoleMenuMapper.deleteByRoleId(id); // 删除角色菜单
+        return super.deleteById(id);
+    }
+
     /**
      * 保存角色权限
      * @param roleMenuMap
