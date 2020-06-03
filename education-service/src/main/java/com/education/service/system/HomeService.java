@@ -91,7 +91,7 @@ public class HomeService {
         List<String> weekDateList = DateUtils.getSectionByOneDay(8);
         // 近七天日期集合
         weekDateList.remove(weekDateList.size() - 1); // 移除最后一天，也就是当天的日期
-        List<ModelBeanMap> resultDataList = examInfoService.countByDateTime(params);
+        List<ModelBeanMap> resultDataList = new ArrayList<>();
         weekDateList.forEach(day -> {
             ModelBeanMap item = new ModelBeanMap();
             item.put("day_group", day);

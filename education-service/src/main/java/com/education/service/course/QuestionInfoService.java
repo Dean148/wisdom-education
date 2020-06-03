@@ -238,7 +238,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
         Map<Integer, Object> userQuestionAnswerMap = new HashMap<>();
         if (ObjectUtils.isNotEmpty(userQuestionAnswerList)) {
             userQuestionAnswerList.forEach(item -> {
-                String userInfoAnswer = (String) item.get("answer");
+                String userInfoAnswer = (String) item.get("userInfoAnswer");
                 Integer questionInfoId = (Integer) item.get("question_info_id");
                 if (ObjectUtils.isEmpty(questionInfoId)) {
                     questionInfoId = (Integer) item.get("id");
@@ -348,6 +348,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
         List<ModelBeanMap> languagePointsList = (List<ModelBeanMap>) result.getData().get("dataList");
         questionInfo.put("languagePointsList", MapTreeUtils.buildTreeData(languagePointsList));
         List<Integer> parentIds = MapTreeUtils.getParentIds(languagePointsList, questionInfo.getInt("language_points_id"));
+        Collections.reverse(parentIds); // 从小到大来排序，与前端组件id顺序保持一致
         questionInfo.put("languagePointsIds", parentIds);
         return questionInfo;
     }
