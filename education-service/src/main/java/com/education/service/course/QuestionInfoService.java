@@ -309,12 +309,6 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
             params.put("school_type", gradeTypeInfo.get("parent_id"));
             Integer subjectId = getSubjectId(questionInfo.getSubjectName(), gradeType);
             params.put("subject_id", subjectId);
-            String category = questionInfo.getCategory();
-            if (EnumConstants.QuestionCategory.COURSE.getName().equals(category)) {
-                params.put("category", EnumConstants.QuestionCategory.COURSE.getValue());
-            } else if (EnumConstants.QuestionCategory.TEST_PAPER.getName().equals(category)) {
-                params.put("category", EnumConstants.QuestionCategory.TEST_PAPER.getValue());
-            }
             Date now = new Date();
             params.put("create_date", now);
             data.add(params);
