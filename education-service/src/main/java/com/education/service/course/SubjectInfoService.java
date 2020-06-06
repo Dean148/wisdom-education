@@ -35,7 +35,7 @@ public class SubjectInfoService extends BaseService<SubjectInfoMapper> {
             return new ResultCode(ResultCode.FAIL, "该科目已开启,无法删除");
         }
         Integer id = subjectMap.getInt("id");
-        Map questionInfo = questionInfoMapper.findBySubjectId(id); //sqlSessionTemplate.selectOne("questions.info.findBySubjectId", id);
+        Map questionInfo = questionInfoMapper.findBySubjectId(id);
         if (ObjectUtils.isNotEmpty(questionInfo)) {
             return new ResultCode(ResultCode.FAIL, "该科目已有试题在使用, 无法删除");
         }
