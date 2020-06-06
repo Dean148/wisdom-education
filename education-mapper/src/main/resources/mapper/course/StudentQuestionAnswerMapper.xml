@@ -17,6 +17,15 @@
         </if>
     </select>
 
+    <update id="updateStudentQuestionMark" parameterType="map">
+        update student_question_answer set mark = #{mark}, correct_status = #{correct_status}, comment = #{comment}
+        where student_id = #{studentId} and question_info_id = #{questionInfoId}
+        <if test="test_paper_info_id != null and test_paper_info_id != ''">
+            and test_paper_info_id = #{test_paper_info_id}
+        </if>
+    </update>
+
+
     <select id="getStudentCourseQuestionByCourseId" resultType="modelBeanMap">
         select question_answer.*,question.question_type from student_question_answer question_answer left join question_info question on
         question_answer.question_info_id = question.id where question_answer.question_info_id in
@@ -28,7 +37,7 @@
 
     <!-- 试卷试题答案信息列表 -->
     <select id="getStudentCourseQuestionByPaperId" parameterType="Integer" resultType="modelBeanMap">
-        select question.*, question_answer.answer as userInfoAnswer, question_answer.enclosure, question_answer.correct_status,
+        select question.*, question_answer.comment, question_answer.answer as userInfoAnswer, question_answer.enclosure, question_answer.correct_status,
         question_answer.mark from question_info question, student_question_answer question_answer
         where question.id = question_answer.question_info_id
         and question.id in (

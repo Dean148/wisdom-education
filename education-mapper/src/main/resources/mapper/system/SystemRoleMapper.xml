@@ -25,6 +25,10 @@
         select * from system_role where name = #{name}
     </select>
 
+    <delete id="deleteById" parameterType="Integer">
+        delete from system_role where id = #{id}
+    </delete>
+
 
     <select id="queryList" resultType="modelBeanMap">
         select * from system_role

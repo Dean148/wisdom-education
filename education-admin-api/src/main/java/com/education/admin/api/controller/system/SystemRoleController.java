@@ -91,8 +91,6 @@ public class SystemRoleController extends ApiController {
     @DeleteMapping("batchDelete")
     @RequiresPermissions("system:role:batchDelete")
     public ResultCode batchDelete(@RequestBody Map params) {
-        params.put("operation", "角色");
         return null;
-      //  return apiService.deleteById(params);
     }
 }

@@ -199,6 +199,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper> {
                     data.put("mark", question.get("answer_mark"));
                     data.put("question_points", question.get("mark"));
                     data.put("is_right", question.get("is_right"));
+                    data.put("correct_status", EnumConstants.CorrectStatus.RIGHT.getValue()); // 批改状态
                     mark += question.getInt("answer_mark");
                     data.put("comment", question.get("comment"));
                     data.put("test_paper_info_id", question.get("testPaperId"));

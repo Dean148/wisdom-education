@@ -1,9 +1,6 @@
 package com.education.admin.api.controller.system;
 
-
-
 import com.education.common.model.ModelBeanMap;
-import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.service.core.ApiController;
@@ -60,17 +57,16 @@ public class SystemMenuController extends ApiController {
     @DeleteMapping
     @RequiresPermissions("system:menu:deleteById")
     public ResultCode deleteById(@RequestBody ModelBeanMap menuMap) {
+        Integer createType = menuMap.getInt("create_type");
+        if (createType == ResultCode.SUCCESS) {
+            return new ResultCode(ResultCode.FAIL, "您不能删除系统内置菜单");
+        }
         return systemMenuService.deleteById(menuMap);
     }
 
     @PostMapping("saveOrUpdate")
     @RequiresPermissions(value = {"system:menu:save", "system:menu:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody ModelBeanMap menuMap) {
-        Integer id = menuMap.getInt("id");
-        boolean updateFlag = false;
-        if (ObjectUtils.isNotEmpty(id)) {
-            updateFlag = true;
-        }
-        return systemMenuService.saveOrUpdate(updateFlag, menuMap);
+        return systemMenuService.saveOrUpdate(menuMap);
     }
 }

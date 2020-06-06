@@ -25,6 +25,7 @@
                and points.parent_id = #{parentId}
            </if>
        </where>
+       ORDER BY points.sort desc
     </select>
 
     <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="map">
