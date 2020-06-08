@@ -94,4 +94,9 @@
         select * from question_info where id = #{id}
     </select>
 
+
+    <select id="findBySubjectId" resultType="modelBeanMap">
+        select * from question_info where subject_id = #{subjectId} limit 1
+    </select>
+
 </mapper>
