@@ -1,15 +1,19 @@
 server:
-  port: 8001
+  port: 8004
   servlet:
     context-path: /
 ## spring jdbc配置
-shiro:
-  cookie:
-    name: user_session_key
-    time-out: 7200
-    domain: localhost
-    rememberMe: true
 spring:
+  redis:
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: 30
+        max-idle: 8
+        min-idle: 0
+    host: 127.0.0.1
+    password: 123456
+    port: 6379
   datasource:
     url: jdbc:mysql://111.229.169.170:3306/education?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
     username: root
@@ -21,10 +25,10 @@ spring:
       minimum-idle: 10
       max-lifetime: 6000
     ## 文件上传大小限制
-    servlet:
-      multipart:
-        max-file-size: 200MB
-        max-request-size: 200MB
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
 # 微信公众号配置
 weChat:
   appId: wx7874d0c23d07e2aa
@@ -43,4 +47,5 @@ mybatis:
 lbs:
   key: MYOBZ-OOEW3-KYC3G-YWDXA-DMQJ6-SPBMH
 
-
+logging:
+  file:  /root/jar/education-student.log
