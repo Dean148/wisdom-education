@@ -5,13 +5,12 @@ import com.education.common.disabled.RateLimitLock;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Semaphore 限流
  */
 public class SemaphoreApiLock extends ApiLock {
-
-    private static final Map<String, Semaphore> semaphoreCache = new ConcurrentHashMap<>();
 
     public SemaphoreApiLock(RateLimitLock rateLimitLock) {
         super(rateLimitLock);

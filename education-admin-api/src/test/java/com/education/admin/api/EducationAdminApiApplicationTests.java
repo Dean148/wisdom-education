@@ -9,8 +9,11 @@ import com.education.common.utils.IpUtils;
 import com.education.common.utils.MapTreeUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.mapper.system.SystemMenuMapper;
+import com.jfinal.kit.HttpKit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,12 +37,33 @@ public class EducationAdminApiApplicationTests {
     @Autowired
     private SystemMenuMapper systemMenuMapper;
 
+  //  @Autowired
+   // private RedissonClient redissonClient;
+
     @Test
     public void remove() {
-        List<ModelBeanMap> dataList = systemMenuMapper.treeList();
-       // List<ModelBeanMap> parentList = MapTreeUtils.getParentList(dataList, 2);
-       // System.out.println(parentList);
+        Map params = new HashMap();
+        params.put("name", "java");
+        params.put("principal_flag", false);
+        params.put("super_flag", false);
+        AdminUserSession adminUserSession = new AdminUserSession(params);
+        redisTemplate.opsForValue().set("test", adminUserSession);
+        adminUserSession = (AdminUserSession) redisTemplate.opsForValue().get("test");
+        System.out.println(adminUserSession);
       //  redisTemplate.delete(redisTemplate.keys("*"));
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        for (int i = 0; i < 50; i++) {
+         //   Thread.sleep(1000);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String content = HttpKit.get("http://127.0.0.1/limit");
+                    System.out.println(content);
+                }
+            }).start();
+        }
     }
 
 

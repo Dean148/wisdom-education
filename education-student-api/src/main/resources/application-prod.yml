@@ -11,7 +11,7 @@ spring:
         max-wait: 30
         max-idle: 8
         min-idle: 0
-    host: 127.0.0.1
+    host: 111.229.169.170
     password: 123456
     port: 6379
   datasource:

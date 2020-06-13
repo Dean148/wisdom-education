@@ -14,8 +14,9 @@ spring:
         max-wait: 30
         max-idle: 8
         min-idle: 0
-    host: 127.0.0.1
+    host: 111.229.169.170
     password: 123456
+    port: 6379
   freemarker:
     template-loader-path: classpath:/template/
     suffix: .ftl
@@ -51,4 +52,4 @@ mybatis:
   mapper-locations: mapper/**/*.xml
   type-aliases-package: com.education.common.model
 logging:
-    file:  /root/jar/education.log
+    file:  /root/jar/education-admin.log

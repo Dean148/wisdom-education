@@ -1,5 +1,6 @@
 package com.education.common.cache;
 
+import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
@@ -16,6 +17,8 @@ import java.io.IOException;
 public class FstRedisSerializer implements RedisSerializer<Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(FstRedisSerializer.class);
+    // 使用FastJsonRedisSerializer 代理
+    private final FastJsonRedisSerializer fastJsonRedisSerializer = new FastJsonRedisSerializer(Object.class);
 
     @Override
     public byte[] serialize(Object value) throws SerializationException {
@@ -39,13 +42,19 @@ public class FstRedisSerializer implements RedisSerializer<Object> {
 
     @Override
     public Object deserialize(byte[] bytes) throws SerializationException {
-        if(bytes == null || bytes.length == 0)
+        if (bytes == null || bytes.length == 0)
             return null;
 
         FSTObjectInput fstInput = null;
         try {
             fstInput = new FSTObjectInput(new ByteArrayInputStream(bytes));
-            return fstInput.readObject();
+            try {
+                return fstInput.readObject();
+            } catch (Exception e) {
+                logger.warn(e.getMessage(), e);
+                // 解决使用RedisTemplate 获取计数器的值抛出空指针异常问题
+                return fastJsonRedisSerializer.deserialize(bytes);
+            }
         }
         catch (Exception e) {
             throw new RuntimeException(e);

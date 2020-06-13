@@ -1,15 +1,17 @@
 package com.education.common.config;
 
-import com.education.common.cache.CacheBean;
-import com.education.common.cache.EhcacheBean;
-import com.education.common.cache.FstRedisSerializer;
-import com.education.common.cache.RedisCacheBean;
+import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
+import com.education.common.cache.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 @Configuration
@@ -21,6 +23,8 @@ public class CacheBeanConfiguration {
         RedisTemplate redisTemplate = new RedisTemplate();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         //设置序列化
+     //   FastjsonSerializer redisSerializer = new FastjsonSerializer();
+        // 使用Jackson2JsonRedisSerialize 替换默认序列化
         RedisSerializer redisSerializer = new FstRedisSerializer();
         redisTemplate.setKeySerializer(redisSerializer);//key序列化
         redisTemplate.setValueSerializer(redisSerializer);//value序列化

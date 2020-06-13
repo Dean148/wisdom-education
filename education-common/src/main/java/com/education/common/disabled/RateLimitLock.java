@@ -21,7 +21,7 @@ public @interface RateLimitLock {
     int limit() default 1;
 
     /**
-     * 标识 时间段
+     * 获取令牌的等待时间  默认1
      * @return
      */
     int sec() default 1;
