@@ -32,8 +32,8 @@ Element-UI | 2.13.0
 
 ### 视频教程地址
 
-- 学生端管理后台  https://www.ixigua.com/i6840442526332092932/
-- 学生端项目教程  https://www.ixigua.com/i6840623562030580228/
+- 学生端管理后台  https://haokan.baidu.com/v?pd=bjh&vid=16055556239765271034&fr=bjhauthor&type=video
+- 学生端项目教程  https://haokan.baidu.com/v?pd=bjh&vid=13279860213867889185&fr=bjhauthor&type=video
 - 完整项目实战教程 （教程录制中，敬请期待，如何需要的朋友可直接加我qq）
 ### 项目演示地址
 
