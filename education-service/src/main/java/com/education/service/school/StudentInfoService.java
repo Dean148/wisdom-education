@@ -49,9 +49,28 @@ public class StudentInfoService extends BaseService<StudentInfoMapper> {
     private SystemDictValueService systemDictValueService;
 
 
-    private static final String STUDENT_EXCEL_TITLE[] = new String[]{
+    private static final String STUDENT_EXCEL_TITLE[] = new String[] {
             "学生姓名", "登录账号", "头像", "就读学校", "性别", "年龄", "年级", "家庭住址", "联系电话", "父亲姓名", "母亲姓名"
     };
+
+    public Result updatePassword(ModelBeanMap studentInfo) {
+        try {
+            String password = studentInfo.getStr("newPassword");
+            String encrypt = studentInfo.getStr("encrypt");
+            password = Md5Utils.getMd5(password,  encrypt);
+            studentInfo.remove("newPassword");
+            studentInfo.remove("confirmPassword");
+            studentInfo.put("password", password);
+            int result = super.update(studentInfo);
+            if (result > 0) {
+                return Result.success(ResultCode.SUCCESS, "密码重置成功");
+            }
+        } catch (Exception e) {
+            logger.error("密码修改失败", e);
+        }
+        return Result.fail(ResultCode.FAIL, "密码重置失败");
+    }
+
 
     @Override
     public ResultCode deleteById(ModelBeanMap studentInfoMap) {
