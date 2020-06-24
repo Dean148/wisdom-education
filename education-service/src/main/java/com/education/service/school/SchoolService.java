@@ -106,6 +106,7 @@ public class SchoolService extends BaseService<SchoolInfoMapper> {
         Date now = new Date();
         String principalName = (String)params.get("principal_name");
         // 创建三个校长账号
+        Map roleMap = systemRoleMapper.findByRoleName(PRINCIPAL);
         for (int i = 1; i <= 3; i++) {
             params.clear();
             params.put("login_name", simplicity + i);
@@ -119,7 +120,6 @@ public class SchoolService extends BaseService<SchoolInfoMapper> {
             params.put("create_date", now);
             params.put("update_date", now);
             Integer adminId = systemAdminMapper.save(params);
-            Map roleMap = systemRoleMapper.findByRoleName(PRINCIPAL);
             params.clear();
             params.put("admin_id", adminId);
             params.put("role_id", roleMap.get("id"));

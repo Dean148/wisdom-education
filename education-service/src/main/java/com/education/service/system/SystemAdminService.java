@@ -57,6 +57,7 @@ public class SystemAdminService extends BaseService<SystemAdminMapper> {
             }
             admin.put("roleIds", roleIds);
         }
+        ((ModelBeanMap) result.getData()).put("dataList", dataList);
         return result;
     }
 
