@@ -57,6 +57,16 @@ public class LanguagePointsController extends BaseController {
     }
 
     /**
+     * 删除知识点
+     * @param modelBeanMap
+     * @return
+     */
+    @DeleteMapping
+    public Result deleteById(@RequestBody ModelBeanMap modelBeanMap) {
+        return Result.success(languagePointsService.deleteById(modelBeanMap));
+    }
+
+    /**
      * 获取知识点详情
      * @param id
      * @return

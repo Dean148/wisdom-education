@@ -50,4 +50,8 @@
     <select id="findById" resultType="modelBeanMap">
         select * from language_points_info where id = #{id}
     </select>
+
+    <delete id="deleteById" parameterType="Integer">
+        delete from language_points_info where id = #{id}
+    </delete>
 </mapper>

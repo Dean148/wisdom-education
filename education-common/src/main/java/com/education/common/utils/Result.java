@@ -67,6 +67,10 @@ public final class Result<T> {
         return new Result(ResultCode.SUCCESS, DEFAULT_SUCCESS_MESSAGE, data);
     }
 
+    public static <T> Result success(ResultCode resultCode) {
+        return new Result(resultCode.getCode(), resultCode.getMessage());
+    }
+
     public static Result fail(int code) {
         return new Result(code, DEFAULT_FAIL_MESSAGE);
     }
