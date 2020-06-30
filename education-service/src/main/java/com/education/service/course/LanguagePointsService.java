@@ -6,6 +6,7 @@ import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.mapper.course.LanguagePointsMapper;
+import com.education.mapper.course.QuestionInfoMapper;
 import com.education.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class LanguagePointsService extends BaseService<LanguagePointsMapper> {
 
     @Autowired
     private SubjectInfoService subjectInfoService;
+    @Autowired
+    private QuestionInfoMapper questionInfoMapper;
+
 
     @Override
     @Transactional
@@ -34,6 +38,23 @@ public class LanguagePointsService extends BaseService<LanguagePointsMapper> {
             super.update(params);
         }
         return super.saveOrUpdate(modelBeanMap);
+    }
+
+
+    /**
+     * 知识点删除
+     * @param id
+     * @return
+     */
+    @Override
+    public ResultCode deleteById(Integer id) {
+        synchronized (this) {
+            ModelBeanMap modelBeanMap = questionInfoMapper.findByLanguagePointsId(id);
+            if (ObjectUtils.isNotEmpty(modelBeanMap)) {
+                return new ResultCode(ResultCode.FAIL, "试题已被使用，无法删除");
+            }
+        }
+        return super.deleteById(id);
     }
 
     public Map findById(Integer id) {

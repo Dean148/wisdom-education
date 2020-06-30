@@ -63,7 +63,7 @@ public class LanguagePointsController extends BaseController {
      */
     @DeleteMapping
     public Result deleteById(@RequestBody ModelBeanMap modelBeanMap) {
-        return Result.success(languagePointsService.deleteById(modelBeanMap));
+        return Result.success(languagePointsService.deleteById(modelBeanMap.getInt("value")));
     }
 
     /**

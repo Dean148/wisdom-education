@@ -163,7 +163,7 @@ public abstract class BaseService<M extends BaseMapper> {
         if (result > 0) {
             return new ResultCode(ResultCode.SUCCESS, "删除成功");
         }
-        return new ResultCode(ResultCode.SUCCESS, "删除数据异常");
+        return new ResultCode(ResultCode.FAIL, "删除数据异常");
     }
 
     /**
