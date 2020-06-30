@@ -92,7 +92,6 @@ public class SystemAdminController extends BaseController {
         if (createType == ResultCode.SUCCESS) {
             return new ResultCode(ResultCode.FAIL, "您不能删除系统内置管理员");
         }
-        systemAdmin.put("operation", "管理员" + systemAdmin.get("login_name"));
         return systemAdminService.deleteById(systemAdmin);
     }
 

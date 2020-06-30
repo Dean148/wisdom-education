@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 /**
+ * 字典管理接口
  * @author zengjintao
  * @version 1.0
  * @create_at 2020/3/9 21:15
@@ -25,11 +26,21 @@ public class SystemDictController extends BaseController {
     @Autowired
     private SystemDictService systemDictService;
 
+    /**
+     * 字典类型列表
+     * @param params
+     * @return
+     */
     @GetMapping
     public Result list(@RequestParam Map params) {
         return systemDictService.pagination(params);
     }
 
+    /**
+     * 添加或修改字典类型
+     * @param params
+     * @return
+     */
     @PostMapping("saveOrUpdate")
     public Result saveOrUpdate(@RequestBody ModelBeanMap params) {
         return systemDictService.saveOrUpdate(params);

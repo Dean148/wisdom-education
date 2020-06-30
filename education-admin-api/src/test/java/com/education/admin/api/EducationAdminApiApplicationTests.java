@@ -18,14 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.management.modelmbean.ModelMBean;
 import java.util.*;
 
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
+//@SpringBootTest
+//@RunWith(SpringRunner.class)
 public class EducationAdminApiApplicationTests {
 
     @Autowired
@@ -42,6 +43,8 @@ public class EducationAdminApiApplicationTests {
 
     @Test
     public void remove() {
+
+
         Map params = new HashMap();
         params.put("name", "java");
         params.put("principal_flag", false);
@@ -66,9 +69,17 @@ public class EducationAdminApiApplicationTests {
         }
     }
 
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     public void testRedisStringCache() {
+        Map<String, Object> data = jdbcTemplate.queryForMap("select * from user where name = ?", "java");
+        String name = data.get("name").toString();
+
+
+
+
+
         cacheBean.put("1", "java");
         cacheBean.put("2", "php");
         cacheBean.put("3", "python");
@@ -122,7 +133,10 @@ public class EducationAdminApiApplicationTests {
     }
 
     @Test
-    public void testIp() {
-        System.out.println(IpUtils.getIpAddress("182.101.63.196"));
+    public void testStr() {
+       // System.out.println(IpUtils.getIpAddress("182.101.63.196"));
+
+        String name = null;
+        System.out.println(name.toString());
     }
 }

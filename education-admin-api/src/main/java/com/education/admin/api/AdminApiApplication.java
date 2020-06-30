@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 
 
 /**
+ * 管理后台启动类
  * @author zengjintao
  * @version 1.0
  * @create_at 2020/3/8 11:11
