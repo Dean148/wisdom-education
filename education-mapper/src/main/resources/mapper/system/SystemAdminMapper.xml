@@ -3,10 +3,17 @@
 <mapper namespace="com.education.mapper.system.SystemAdminMapper">
 
     <select id="queryList" parameterType="map" resultType="modelBeanMap">
-        select  * from system_admin
+        select admin.*, school.name school_name from system_admin admin left join school_info school
+        on admin.school_id = school.id
+        <where>
+            <if test="name != null and name != ''">
+                <bind name="searchName" value="'%' + name + '%'"/>
+                and name like #{searchName} or login_name like #{searchName}
+            </if>
+        </where>
     </select>
 
-    <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="params.id">
         insert into system_admin
         <foreach collection="params.keys" item="key" open="(" close=")" separator="," >
             ${key}

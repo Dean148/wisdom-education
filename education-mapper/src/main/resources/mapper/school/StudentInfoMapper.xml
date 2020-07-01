@@ -59,13 +59,15 @@
 
     <delete id="deleteByIdOrSchoolId" parameterType="map">
         delete from student_info
-        <if test="studentId != null and studentId != ''">
-            and id = #{studentId}
-        </if>
+        <where>
+            <if test="studentId != null and studentId != ''">
+                and id = #{studentId}
+            </if>
 
-        <if test="schoolId != null and schoolId != ''">
-            and school_id = #{schoolId}
-        </if>
+            <if test="schoolId != null and schoolId != ''">
+                and school_id = #{schoolId}
+            </if>
+        </where>
     </delete>
 
     <select id="findByLoginName" resultType="modelBeanMap">

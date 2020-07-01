@@ -1,5 +1,6 @@
 package com.education.service;
 
+import com.alibaba.fastjson.util.TypeUtils;
 import com.education.common.utils.*;
 import com.education.common.base.BaseMapper;
 import com.education.common.cache.CacheBean;
@@ -172,7 +173,11 @@ public abstract class BaseService<M extends BaseMapper> {
      * @return
      */
     public int save(Map modelMap) {
-        return mapper.save(modelMap);
+        int result = mapper.save(modelMap);
+        if (modelMap.containsKey("id")) {
+            return TypeUtils.castToInt(modelMap.get("id"));
+        }
+        return result;
     }
 
     /**

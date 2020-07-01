@@ -39,7 +39,7 @@
     </update>
 
     <delete id="deleteById" parameterType="map">
-
+        delete from school_info where id = #{id}
     </delete>
 
     <select id="getSchoolRegionInfo" resultType="modelBeanMap">

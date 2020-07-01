@@ -86,8 +86,10 @@ public class SchoolService extends BaseService<SchoolInfoMapper> {
     public ResultCode deleteById(ModelBeanMap schoolInfoMap) {
         try {
             super.deleteById(schoolInfoMap); // 删除学校
+            // 删除学校管理员账号
             systemAdminMapper.deleteBySchoolId(schoolInfoMap.getInt("id"));
             schoolInfoMap.put("schoolId", schoolInfoMap.getInt("id"));
+            // 删除该学校下的所有学员
             studentInfoMapper.deleteByIdOrSchoolId(schoolInfoMap);
             return new ResultCode(ResultCode.SUCCESS, "删除成功");
         } catch (Exception e) {
@@ -119,9 +121,10 @@ public class SchoolService extends BaseService<SchoolInfoMapper> {
             params.put("principal_flag", EnumConstants.Flag.YES.getValue());
             params.put("create_date", now);
             params.put("update_date", now);
-            Integer adminId = systemAdminMapper.save(params);
+            params.put("account_type", EnumConstants.AccountType.SCHOOL_TYPE.getValue());
+            systemAdminMapper.save(params);
             params.clear();
-            params.put("admin_id", adminId);
+            params.put("admin_id", params.get("id")); // 获取插入的主键id
             params.put("role_id", roleMap.get("id"));
             systemAdminRoleMapper.save(params);// 关联校长账号角色权限
         }
