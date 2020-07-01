@@ -83,6 +83,6 @@
          student.name as student_name,
          school.name as school_name, case student.sex
         when 1 then '男' when 2 then '女' else '未知' end sex from student_info student
-        left join school_info school on student.school_id = school.id where student.login_name = #{loginName}
+        left join school_info school on student.school_id = school.id where student.login_name = #{loginName} limit 1
     </select>
 </mapper>

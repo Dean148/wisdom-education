@@ -144,14 +144,20 @@ public class StudentInfoService extends BaseService<StudentInfoMapper> {
 
     @Transactional
     public Result saveOrUpdate(boolean updateFlag, ModelBeanMap studentInfoMap) {
+        String message = "操作异常";
         try {
             int result = 0;
-            String message = "";
             if (updateFlag) {
                 message = "修改学员成功";
                 result = super.update(studentInfoMap);
             } else {
                 message = "添加学员成功";
+                synchronized (this) {
+                    Map studentInfo = mapper.findByLoginName(studentInfoMap.getStr("login_name"));
+                    if (ObjectUtils.isNotEmpty(studentInfo)) {
+                        return Result.fail(ResultCode.FAIL, "账号已存在, 请勿重复添加");
+                    }
+                }
                 result = super.save(studentInfoMap);
             }
             if (result > 0) {
@@ -161,7 +167,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper> {
             logger.error("操作异常", e);
             throw new BusinessException(new ResultCode(ResultCode.FAIL, "操作异常"));
         }
-        return new Result(ResultCode.FAIL, "修改学员失败");
+        return new Result(ResultCode.FAIL, message);
     }
 
     public List<ModelBeanMap> getStudentCourseOrPaperQuestionInfoList(Map params) {
