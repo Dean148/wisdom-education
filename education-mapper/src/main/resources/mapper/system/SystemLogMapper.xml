@@ -6,7 +6,7 @@
         select * from system_log
     </select>
 
-    <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="id">
+    <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="params.id">
         insert into system_log
         <foreach collection="params.keys" item="key" open="(" close=")" separator="," >
             ${key}

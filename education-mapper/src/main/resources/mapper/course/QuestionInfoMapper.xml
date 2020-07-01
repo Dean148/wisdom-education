@@ -58,7 +58,7 @@
         order by question.id desc
     </select>
 
-    <insert id="save" useGeneratedKeys="true"  keyProperty="id" parameterType="map">
+    <insert id="save" useGeneratedKeys="true"  keyProperty="params.id" parameterType="map">
         insert into question_info
         <foreach collection="params.keys" item="key" open="(" close=")" separator="," >
                 ${key}

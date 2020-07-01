@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.education.mapper.course.ExamInfoMapper">
 
-    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="map">
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="params.id" parameterType="map">
         insert into exam_info
         <foreach collection="params.keys" item="key" open="(" close=")" separator="," >
             ${key}

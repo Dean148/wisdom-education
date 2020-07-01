@@ -28,7 +28,7 @@
        ORDER BY points.sort desc
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="map">
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="params.id" parameterType="map">
         insert into language_points_info
         <foreach collection="params.keys" item="key" open="(" close=")" separator="," >
             ${key}

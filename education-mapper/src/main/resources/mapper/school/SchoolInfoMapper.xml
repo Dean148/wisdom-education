@@ -19,7 +19,7 @@
         order by id desc
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="map">
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" keyProperty="params.id" parameterType="map">
         insert into school_info
         <foreach collection="params.keys" item="key" open="(" close=")" separator="," >
             ${key}
