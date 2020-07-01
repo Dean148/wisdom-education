@@ -61,7 +61,7 @@ public class SystemMenuController extends ApiController {
         if (createType == ResultCode.SUCCESS) {
             return new ResultCode(ResultCode.FAIL, "您不能删除系统内置菜单");
         }
-        return systemMenuService.deleteById(menuMap);
+        return systemMenuService.deleteById(menuMap.getInt("value"));
     }
 
     @PostMapping("saveOrUpdate")
