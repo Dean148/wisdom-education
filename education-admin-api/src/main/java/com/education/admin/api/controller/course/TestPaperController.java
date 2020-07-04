@@ -68,7 +68,7 @@ public class TestPaperController extends BaseController {
     @DeleteMapping
     @RequiresPermissions("system:testPaper:deleteById")
     public ResultCode deleteById(@RequestBody ModelBeanMap testPaperInfoMap) {
-        return testPaperInfoService.deleteById(testPaperInfoMap);
+        return testPaperInfoService.deleteById(testPaperInfoMap.getInt("id"));
     }
 
     /**

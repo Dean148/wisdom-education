@@ -6,6 +6,7 @@ import com.education.common.model.ModelBeanMap;
 import com.education.common.template.BaseTemplate;
 import com.education.common.template.FreeMarkerTemplate;
 import com.education.common.utils.*;
+import com.education.mapper.course.ExamInfoMapper;
 import com.education.mapper.course.StudentQuestionAnswerMapper;
 import com.education.mapper.course.TestPaperInfoMapper;
 import com.education.mapper.course.TestPaperQuestionMapper;
@@ -40,6 +41,8 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper> {
     private StudentQuestionAnswerService studentQuestionAnswerService;
     @Autowired
     private StudentQuestionAnswerMapper studentQuestionAnswerMapper;
+    @Autowired
+    private ExamInfoMapper examInfoMapper;
     /**
      * 关联试题
      * @param params
@@ -81,6 +84,25 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper> {
         return new ResultCode(ResultCode.FAIL, "排序修改失败");
     }
 
+    @Override
+    @Transactional
+    public ResultCode deleteById(Integer id) {
+        try {
+            synchronized (this) {
+                Map examInfo = examInfoMapper.findByTestPaperId(id);
+                if (ObjectUtils.isNotEmpty(examInfo)) {
+                    return new ResultCode(ResultCode.FAIL, "试卷已使用，无法删除");
+                }
+            }
+            Map params = new HashMap<>();
+            params.put("testPaperInfoId", id);
+            this.deletePaperQuestion(params); // 删除试卷试题
+            return super.deleteById(id); // 删除试卷
+        } catch (Exception e) {
+            logger.error("删除试卷异常", e);
+            throw new BusinessException(new ResultCode(ResultCode.FAIL, "删除试卷异常"));
+        }
+    }
 
     @Transactional
     public ResultCode updateQuestionMarkForPaper(Map params) {

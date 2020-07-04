@@ -36,10 +36,12 @@
 
     <delete id="deletePaperQuestion" parameterType="map">
         delete from test_paper_question_info where test_paper_info_id = #{testPaperInfoId}
-        and question_info_id in
-        <foreach collection="questionIds" item="id"  open="(" close=")" separator=",">
-            ${id}
-        </foreach>
+        <if test="questionIds != null and questionIds.size() > 0">
+            and question_info_id in
+            <foreach collection="questionIds" item="id"  open="(" close=")" separator=",">
+                ${id}
+            </foreach>
+        </if>
     </delete>
 
     <select id="getPaperQuestionList" resultType="modelBeanMap">
