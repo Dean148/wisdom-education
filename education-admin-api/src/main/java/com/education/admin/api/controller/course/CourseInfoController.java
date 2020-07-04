@@ -107,6 +107,7 @@ public class CourseInfoController extends BaseController {
     }
 
     @GetMapping("getCourseQuestionList")
+    @SystemLog(describe = "获取课程训练试题列表")
     public Result<ModelBeanMap> getCourseQuestionList(@RequestParam Map params) {
         return courseQuestionService.pagination(params, CourseQuestionInfoMapper.class, CourseQuestionInfoMapper.GET_COURSE_QUESTION_LIST);
     }
@@ -122,5 +123,16 @@ public class CourseInfoController extends BaseController {
     @SystemLog(describe = "关联试题")
     public ResultCode relevanceQuestion(@RequestBody ModelBeanMap modelBeanMap) {
         return courseQuestionService.relevanceQuestion(modelBeanMap);
+    }
+
+    /**
+     * 移除课程训练试题
+     * @param params
+     * @return
+     */
+    @DeleteMapping("deleteCourseQuestion")
+    @SystemLog(describe = "移除课程训练试题")
+    public Result deleteCourseQuestion(@RequestBody ModelBeanMap params) {
+        return courseQuestionService.deleteCourseQuestion(params);
     }
 }

@@ -2,6 +2,7 @@ package com.education.service.course;
 
 import com.education.common.exception.BusinessException;
 import com.education.common.model.ModelBeanMap;
+import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.mapper.course.CourseQuestionInfoMapper;
 import com.education.service.BaseService;
@@ -51,5 +52,18 @@ public class CourseQuestionService extends BaseService<CourseQuestionInfoMapper>
         params.put("list", paramList);
         mapper.batchSave(params);
         return paramList;
+    }
+
+    /**
+     * 移除课程试题
+     * @param params
+     * @return
+     */
+    public Result deleteCourseQuestion(ModelBeanMap params) {
+        int result = mapper.deleteByCourseId(params);
+        return result > 0 ?
+                Result.success(ResultCode.SUCCESS, "移除试题成功")
+                : Result.success(ResultCode.FAIL, "移除试题失败");
+
     }
 }
