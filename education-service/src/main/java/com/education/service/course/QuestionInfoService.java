@@ -77,9 +77,9 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
                         options += option.get("option_name") + ",";
                     }
                     questionInfoMap.put("options", options);
+                } else {
+                    questionInfoMap.put("options", null);
                 }
-            } else {
-                questionInfoMap.put("options", null);
             }
             Integer id = questionInfoMap.getInt("id");
             Object answer = questionInfoMap.get("answer");
