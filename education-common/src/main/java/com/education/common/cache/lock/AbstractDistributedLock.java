@@ -5,14 +5,16 @@ package com.education.common.cache.lock;
  * @version 1.0
  * @create_at 2019/12/26 19:53
  */
-public abstract class AbstractDistributedLock implements DistributedLock {
+public abstract class AbstractDistributedLock {
 
-    protected long expireMsecs = 1000 * 60;//60秒expireMsecs 锁持有超时，防止线程在入锁以后，无限的执行下去，让锁无法释放
-    protected long timeoutMsecs = 0;// 锁等待超时
+    protected String lockName;
+    protected long timeOut = 0; // 获取锁的延迟时间
 
-    private String lockName;
-    private boolean locked = false;
 
+    public AbstractDistributedLock(String lockName, long timeOut) {
+        this.lockName = lockName;
+        this.timeOut = timeOut;
+    }
 
     public AbstractDistributedLock(String lockName) {
         this.lockName = lockName;
@@ -22,22 +24,18 @@ public abstract class AbstractDistributedLock implements DistributedLock {
         return lockName;
     }
 
-    @Override
-    public boolean getLock() {
-        return this.doGetLock();
+    public long getTimeOut() {
+        return timeOut;
     }
 
-    abstract boolean doGetLock();
+    /**
+     * 释放锁
+     */
+    abstract void release ();
 
-    abstract boolean doRelease();
-
-    @Override
-    public void release() {
-        this.doRelease();
-    }
-
-    @Override
-    public boolean isLocked() {
-        return this.locked;
-    }
+    /**
+     * 是否获得锁
+     * @return
+     */
+    abstract boolean getLock();
 }

@@ -9,17 +9,17 @@ package com.education.common.cache.lock;
  */
 public class ZookeeperDistributedLock extends AbstractDistributedLock {
 
-    public ZookeeperDistributedLock(String lockName) {
-        super(lockName);
+    public ZookeeperDistributedLock(String lockName, long timeOut) {
+        super(lockName, timeOut);
     }
 
     @Override
-    boolean doGetLock() {
-        return false;
+    public void release() {
+
     }
 
     @Override
-    boolean doRelease() {
+    public boolean getLock() {
         return false;
     }
 }

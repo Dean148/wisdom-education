@@ -1,27 +1,27 @@
 package com.education.common.cache.lock;
 
+import java.lang.annotation.*;
+
 /**
- * 分布式锁接口
+ * 分布式锁注解
  * @author zengjintao
  * @version 1.0
  * @create_at 2019/12/26 19:49
  */
-public interface DistributedLock {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Documented
+public @interface DistributedLock {
 
     /**
-     * 是否获得锁
+     * 获取锁的key
      * @return
      */
-    boolean isLocked();
+    String lockKey() default "";
 
     /**
-     * 释放锁
-     */
-    void release();
-
-    /**
-     * 是否获得锁
+     * 获取锁等待时间, 默认最多等待5秒
      * @return
      */
-    boolean getLock();
+    long timeOut() default 5;
 }
