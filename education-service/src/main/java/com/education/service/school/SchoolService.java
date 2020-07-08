@@ -1,5 +1,6 @@
 package com.education.service.school;
 
+import com.alibaba.fastjson.util.TypeUtils;
 import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.ModelBeanMap;
@@ -19,10 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 /**
  * 学校管理业务层
@@ -123,8 +122,9 @@ public class SchoolService extends BaseService<SchoolInfoMapper> {
             params.put("update_date", now);
             params.put("account_type", EnumConstants.AccountType.SCHOOL_TYPE.getValue());
             systemAdminMapper.save(params);
+            Integer adminId = TypeUtils.castToInt(params.get("id")); // 获取插入的主键id
             params.clear();
-            params.put("admin_id", params.get("id")); // 获取插入的主键id
+            params.put("admin_id", adminId);
             params.put("role_id", roleMap.get("id"));
             systemAdminRoleMapper.save(params);// 关联校长账号角色权限
         }
