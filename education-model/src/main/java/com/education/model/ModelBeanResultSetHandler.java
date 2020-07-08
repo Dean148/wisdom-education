@@ -1,6 +1,5 @@
-package com.education.common.interceptor;
+package com.education.model;
 
-import com.education.common.model.ModelBean;
 import com.education.common.utils.ObjectUtils;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
