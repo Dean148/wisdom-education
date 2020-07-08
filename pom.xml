@@ -36,6 +36,7 @@
     <module>education-common</module>
     <module>education-student-api</module>
     <module>education-mapper</module>
+      <module>education-model</module>
   </modules>
 
   <dependencies>

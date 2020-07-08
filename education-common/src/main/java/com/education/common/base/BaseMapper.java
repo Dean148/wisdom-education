@@ -23,6 +23,8 @@ public interface BaseMapper<T> {
 
     int save(@Param("params") Map params);
 
+  //  int save(SystemRole systemRole);
+
     int batchSave(Map params);
 
     int batchUpdate(Map params);

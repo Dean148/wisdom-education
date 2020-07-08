@@ -24,6 +24,7 @@
         </foreach>
     </insert>
 
+
     <update id="update" parameterType="map">
         update system_admin
         <foreach collection="params.keys" item="key" open="set" separator="," >

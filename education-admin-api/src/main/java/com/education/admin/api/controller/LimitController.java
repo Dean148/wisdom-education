@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * 限流测试接口
  * @author zengjintao
  * @version 1.0
  * @create_date 2020/6/12 10:41

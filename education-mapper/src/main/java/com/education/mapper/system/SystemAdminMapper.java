@@ -3,6 +3,7 @@ package com.education.mapper.system;
 import com.education.common.base.BaseMapper;
 import com.education.common.model.ModelBeanMap;
 
+
 import java.util.Map;
 
 
@@ -23,4 +24,6 @@ public interface SystemAdminMapper extends BaseMapper {
     int updateByUserId(Map params);
 
     int deleteBySchoolId(Integer schoolId);
+
+    // SystemAdmin selectAdmin(Integer adminId);
 }

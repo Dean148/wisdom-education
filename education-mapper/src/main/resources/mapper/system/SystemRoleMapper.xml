@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.education.mapper.system.SystemRoleMapper">
 
-    <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="params.id">
+   <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="params.id">
         insert into system_role
         <foreach collection="params.keys" item="key" open="(" close=")" separator="," >
             ${key}
@@ -12,6 +12,17 @@
             #{value}
         </foreach>
     </insert>
+
+    <!--<insert id="save" parameterType="systemRole" useGeneratedKeys="true" keyProperty="attrs.id">
+        insert into system_role
+        <foreach collection="attrs.keys" item="key" open="(" close=")" separator="," >
+            ${key}
+        </foreach>
+        values
+        <foreach collection="attrs.values"  item="value" open="(" close=")" separator=",">
+            #{value}
+        </foreach>
+    </insert>-->
 
     <update id="update" parameterType="map">
         update system_role
