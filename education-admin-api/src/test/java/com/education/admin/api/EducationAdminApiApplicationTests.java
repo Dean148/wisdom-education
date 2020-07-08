@@ -3,30 +3,25 @@ package com.education.admin.api;
 
 import com.education.common.cache.EhcacheBean;
 import com.education.common.cache.CacheBean;
-import com.education.common.model.AdminUserSession;
-import com.education.common.model.ModelBeanMap;
-import com.education.common.utils.IpUtils;
-import com.education.common.utils.MapTreeUtils;
+import com.education.common.model.*;
 import com.education.common.utils.ObjectUtils;
+import com.education.mapper.system.SystemAdminMapper;
 import com.education.mapper.system.SystemMenuMapper;
+import com.education.mapper.system.SystemRoleMapper;
 import com.jfinal.kit.HttpKit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.management.modelmbean.ModelMBean;
 import java.util.*;
 
 
-//@SpringBootTest
-//@RunWith(SpringRunner.class)
+@SpringBootTest
+@RunWith(SpringRunner.class)
 public class EducationAdminApiApplicationTests {
 
     @Autowired
@@ -37,6 +32,24 @@ public class EducationAdminApiApplicationTests {
     private RedisTemplate redisTemplate;
     @Autowired
     private SystemMenuMapper systemMenuMapper;
+    @Autowired
+    private SystemAdminMapper systemAdminMapper;
+    @Autowired
+    private SystemRoleMapper systemRoleMapper;
+    @Autowired
+    private TestService testService;
+
+    @Test
+    public void testAdmin() {
+      //  System.err.println(testService);
+      //  SystemAdmin testModel = systemAdminMapper.selectAdmin(1);
+      //  System.out.println(testModel);
+
+    //    SystemRole systemRole = new SystemRole();
+     //   systemRole.setAttr("name", "test");
+     //   systemRole.setAttr("remark", "test");
+      //  systemRoleMapper.save(systemRole);
+    }
 
   //  @Autowired
    // private RedissonClient redissonClient;
@@ -75,11 +88,6 @@ public class EducationAdminApiApplicationTests {
     public void testRedisStringCache() {
         Map<String, Object> data = jdbcTemplate.queryForMap("select * from user where name = ?", "java");
         String name = data.get("name").toString();
-
-
-
-
-
         cacheBean.put("1", "java");
         cacheBean.put("2", "php");
         cacheBean.put("3", "python");
@@ -98,7 +106,6 @@ public class EducationAdminApiApplicationTests {
         set.add("test:12:12");
         adminUserSession.setPermissionList(set);
         System.err.println(adminUserSession);
-
         adminUserSession = (AdminUserSession) redisTemplate.opsForValue().get("user");
         System.out.println(adminUserSession);
     }
@@ -107,7 +114,6 @@ public class EducationAdminApiApplicationTests {
     public void testEhcacheObjectCache() {
         EhcacheBean ehcacheBean = new EhcacheBean();
         AdminUserSession adminUserSession = new AdminUserSession(new HashMap());
-
         System.err.println(adminUserSession);
         ehcacheBean.put("user", adminUserSession);
         Set<String> set = new HashSet<>();
@@ -130,13 +136,5 @@ public class EducationAdminApiApplicationTests {
                 System.out.println(ehcacheBean.get(key) + "");
             });
         }
-    }
-
-    @Test
-    public void testStr() {
-       // System.out.println(IpUtils.getIpAddress("182.101.63.196"));
-
-        String name = null;
-        System.out.println(name.toString());
     }
 }
