@@ -24,10 +24,10 @@ public class SystemDictValueService extends BaseService<SystemDictValueMapper> {
 
     public List<ModelBeanMap> getDictValueByType(Map params) {
         String key = (String) params.get("type");
-        List<ModelBeanMap> dictValueList = cacheBean.get(Constants.ONE_MINUTE_CACHE, DICT_VALUE_CACHE_NAME + key);
+        List<ModelBeanMap> dictValueList = ehcacheBean.get(Constants.ONE_MINUTE_CACHE, DICT_VALUE_CACHE_NAME + key);
         if (ObjectUtils.isEmpty(dictValueList)) {
             dictValueList = mapper.getDictValueByType(params);
-           cacheBean.put(Constants.ONE_MINUTE_CACHE, DICT_VALUE_CACHE_NAME + key, dictValueList);
+            ehcacheBean.put(Constants.ONE_MINUTE_CACHE, DICT_VALUE_CACHE_NAME + key, dictValueList);
         }
         return dictValueList;
     }

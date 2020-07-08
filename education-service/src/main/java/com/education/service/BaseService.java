@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +43,8 @@ public abstract class BaseService<M extends BaseMapper> {
     @Autowired
     @Qualifier("redisCacheBean")
     protected CacheBean cacheBean;
+    @Resource
+    protected CacheBean ehcacheBean;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String DEFAULT_MAPPER_PAGE_METHOD_NAME = "queryList";
