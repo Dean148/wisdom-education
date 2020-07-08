@@ -38,9 +38,8 @@ public class DistributedLockAspect {
                 boolean locked = abstractDistributedLock.getLock();
                 if (locked) {
                     return pjp.proceed();
-                } else {
-                    throw new LockPermissionException("lock acquisition timeout");
                 }
+                throw new LockPermissionException("lock acquisition timeout");
             } finally {
                 abstractDistributedLock.release();
             }
