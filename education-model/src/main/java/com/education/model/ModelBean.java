@@ -17,4 +17,9 @@ public abstract class ModelBean<T extends ModelBean> {
     public void setAttr(String key, Object value) {
         attrs.put(key, value);
     }
+
+    public T putAll(Map params) {
+        attrs.putAll(params);
+        return (T) this;
+    }
 }

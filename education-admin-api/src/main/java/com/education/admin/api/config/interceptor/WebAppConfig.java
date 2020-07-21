@@ -4,11 +4,17 @@
 package com.education.admin.api.config.interceptor;
 
 
+import com.education.common.interceptor.FormLimitInterceptor;
 import com.education.common.interceptor.LogInterceptor;
 import com.education.common.interceptor.ParamsValidateInterceptor;
+import com.education.model.ModelBeanConfig;
+import com.education.model.RequestModelBeanBodyMethodArgumentResolver;
+import com.education.model.RequestModelBeanMethodArgumentResolver;
+import com.education.model.annotation.RequestModelBeanParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -33,6 +39,10 @@ public class WebAppConfig implements WebMvcConfigurer {
 	private AuthInterceptor authInterceptor;
 	@Autowired
 	private ParamsValidateInterceptor paramsValidateInterceptor;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private FormLimitInterceptor formLimitInterceptor;
 
 	@Value("${file.uploadPath}")
 	private String uploadPath;
@@ -48,14 +58,16 @@ public class WebAppConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(logInterceptor).addPathPatterns("/**");
+		registry.addInterceptor(formLimitInterceptor).addPathPatterns("/**");
 		registry.addInterceptor(authInterceptor).excludePathPatterns(noInterceptorUrl).addPathPatterns("/system/**");
 		registry.addInterceptor(paramsValidateInterceptor).addPathPatterns("/**");
 	}
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		//ModelBeanConfig modelBeanConfig = new ModelBeanConfig(jdbcTemplate);
-		//resolvers.add(new RequestModelMapMethodArgumentResolver(modelBeanConfig, new JdkClassFactory()));
+		ModelBeanConfig modelBeanConfig = new ModelBeanConfig(jdbcTemplate);
+		resolvers.add(new RequestModelBeanBodyMethodArgumentResolver());
+		resolvers.add(new RequestModelBeanMethodArgumentResolver());
 	}
 
 	@Override
