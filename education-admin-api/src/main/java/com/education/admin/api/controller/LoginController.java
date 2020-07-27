@@ -132,6 +132,7 @@ public class LoginController extends BaseController {
     @PostMapping("logout")
     @ApiOperation(value="系统退出接口", notes="用户退出接口")
     @SystemLog(describe = "退出管理系统")
+    @FormLimit
     public ResultCode logout() {
         onlineUserManager.removeOnlineUser(systemAdminService.getUserId());
         Subject subject = SecurityUtils.getSubject();

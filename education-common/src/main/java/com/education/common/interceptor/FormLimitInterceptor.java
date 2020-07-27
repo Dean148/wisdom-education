@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 表单重复提交校验拦截器
+ * 基于redis表单重复提交校验拦截器
  * @author zengjintao
  * @version 1.0
  * @create_date 2020/7/21 15:43

@@ -55,7 +55,7 @@ public class IpUtils {
 					address = (String) result.get("country") + result.get("region") + result.get("city");
 				}
 			}
-			return address;
+			return address == null ? "" : address;
 		} catch (Exception e) {
 			logger.error("获取ip地址异常", e);
 		}
