@@ -54,6 +54,14 @@
             <if test="questionType != null and questionType != ''">
                     and question.question_type = #{questionType}
             </if>
+
+            <!-- 课程试题或者试卷试题所拥有的试题id列表 -->
+            <if test="questionIds != null and questionIds.size() > 0">
+                and question.id not in
+                <foreach collection="questionIds" item="id" separator="," open="(" close=")">
+                    #{questionIds}
+                </foreach>
+            </if>
         </where>
         order by question.id desc
     </select>

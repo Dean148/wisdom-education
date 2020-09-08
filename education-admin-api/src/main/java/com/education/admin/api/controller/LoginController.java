@@ -4,6 +4,7 @@ import com.education.common.annotation.*;
 import com.education.common.base.BaseController;
 import com.education.common.constants.Constants;
 import com.education.common.constants.EnumConstants;
+import com.education.common.disabled.LimitLock;
 import com.education.common.model.AdminUserSession;
 import com.education.common.model.JwtToken;
 import com.education.common.model.ModelBeanMap;
@@ -23,6 +24,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +69,6 @@ public class LoginController extends BaseController {
     }, paramsType = ParamsType.JSON_DATA)
     @FormLimit
     public Result login(@RequestBody ModelBeanMap requestBody, HttpServletResponse response, HttpServletRequest request) {
-        System.err.println("调用登录接口");
         String loginName = requestBody.getStr("userName");
         String password = requestBody.getStr("password");
         String codeKey = requestBody.getStr("key");

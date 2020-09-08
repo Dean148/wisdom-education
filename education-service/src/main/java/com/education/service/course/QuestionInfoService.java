@@ -1,6 +1,7 @@
 package com.education.service.course;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.ModelBeanMap;
@@ -65,41 +66,26 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
     public Result saveOrUpdate(ModelBeanMap questionInfoMap) {
         String message = "";
         try {
-            List<Map> optionList = null;
+          //  questionInfoMap.put("options", null);
             // 试题选项
-            if (ObjectUtils.isNotEmpty(questionInfoMap.get("options"))) {
+           /* if (ObjectUtils.isNotEmpty(questionInfoMap.get("options"))) {
                 Integer questionType = questionInfoMap.getInt("question_type");
                 if (questionType == EnumConstants.QuestionType.SINGLE_QUESTION.getValue()
                         || questionType == EnumConstants.QuestionType.MULTIPLE_QUESTION.getValue()) {
-                    optionList = questionInfoMap.getList("options");
-                    String options = "";
-                    for (Map option : optionList) {
-                        options += option.get("option_name") + ",";
-                    }
-                    questionInfoMap.put("options", options);
-                } else {
-                    questionInfoMap.put("options", null);
+                    List<Map> optionList = questionInfoMap.getList("options");
+                    questionInfoMap.put("options", JSONObject.toJSONString(optionList));
                 }
-            }
-            Integer id = questionInfoMap.getInt("id");
-            Object answer = questionInfoMap.get("answer");
-            if (ObjectUtils.isNotEmpty(answer)) {
-                if (answer instanceof String) {
-                    String answerStr = (String) answer;
-                    if (answerStr.endsWith(",") && answerStr.length() > 1) {
-                        questionInfoMap.put("answer", answerStr.substring(0, answerStr.length() - 1));
-                    }
-                    // 判断题类型 答案为整形,所以此处必须判断数据类型
-                } else if (answer instanceof Integer) {
-                    questionInfoMap.put("answer", (Integer) answer);
-                }
-            }
+            }*/
+            List<Map> optionList = questionInfoMap.getList("options");
+            questionInfoMap.put("options", JSONObject.toJSONString(optionList));
+
             Date now = new Date();
-            if (ObjectUtils.isEmpty(questionInfoMap.get("id"))) {
+            Integer id = questionInfoMap.getInt("id");
+            if (ObjectUtils.isEmpty(id)) {
                 message = "添加";
                 questionInfoMap.put("create_date", now);
                 questionInfoMap.put("update_date", now);
-                id = mapper.save(questionInfoMap);
+                mapper.save(questionInfoMap);
             } else {
                 message = "修改";
                 questionInfoMap.put("update_date", now);

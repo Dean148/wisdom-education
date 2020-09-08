@@ -8,7 +8,6 @@ import com.education.common.utils.ResultCode;
 import com.education.mapper.course.CourseInfoMapper;
 import com.education.mapper.course.CourseQuestionInfoMapper;
 import com.education.mapper.course.StudentQuestionAnswerMapper;
-import com.education.mapper.course.SubjectInfoMapper;
 import com.education.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,13 +31,11 @@ public class CourseInfoService extends BaseService<CourseInfoMapper> {
     @Autowired
     private CourseQuestionInfoMapper courseQuestionInfoMapper;
     @Autowired
-    private SubjectInfoMapper subjectInfoMapper;
-    @Autowired
-    private CourseInfoMapper courseInfoMapper;
-    @Autowired
     private StudentQuestionAnswerMapper studentQuestionAnswerMapper;
     @Autowired
     private StudentQuestionAnswerService studentQuestionAnswerService;
+    @Autowired
+    private CourseQuestionService courseQuestionService;
 
     @Override
     @Transactional
@@ -113,6 +110,16 @@ public class CourseInfoService extends BaseService<CourseInfoMapper> {
             });
         }
         dataMap.put("dataList", dataList);
+        return result;
+    }
+
+    public Result<ModelBeanMap> getCourseQuestionList(Map params) {
+        Integer courseId = (Integer) params.get("courseId");
+        List<Integer> courseQuestionIds = courseQuestionInfoMapper.getCourseQuestionIds(courseId);
+        Result result = courseQuestionService.pagination(params, CourseQuestionInfoMapper.class,
+                CourseQuestionInfoMapper.GET_COURSE_QUESTION_LIST);
+        Map resultMap = (Map) result.getData();
+        resultMap.put("courseQuestionIds", courseQuestionIds); // 课程试题id集合
         return result;
     }
 }

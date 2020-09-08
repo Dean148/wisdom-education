@@ -1,6 +1,7 @@
 package com.education.service.system;
 
 import com.education.common.model.ModelBeanMap;
+import com.education.common.utils.MapTreeUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
 import com.education.mapper.system.SystemMenuMapper;
@@ -33,8 +34,8 @@ public class SystemRoleMenuService extends BaseService<SystemRoleMenuMapper> {
         for (ModelBeanMap menu : menuList) {
             Integer menuId = (Integer)menu.get("id");
             if (!((Integer)menu.get("parent_id") == ResultCode.FAIL)) {//是否父级菜单
-                List<ModelBeanMap> list = systemMenuMapper.findByParentId(menuId);
-                if (ObjectUtils.isEmpty(list)) {
+                List<ModelBeanMap> parentList = MapTreeUtils.getChildrenTree(menuList, menuId);
+                if (ObjectUtils.isEmpty(parentList)) {
                     ids.add(menuId);
                 }
             }

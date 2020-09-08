@@ -30,11 +30,11 @@
             <artifactId>education-service</artifactId>
             <version>${service.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>com.education</groupId>
+            <groupId>com.education.model</groupId>
             <artifactId>education-model</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${service.version}</version>
         </dependency>
     </dependencies>
 
