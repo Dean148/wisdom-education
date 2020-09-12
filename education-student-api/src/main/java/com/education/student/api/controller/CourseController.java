@@ -4,6 +4,7 @@ import com.education.common.base.BaseController;
 import com.education.common.model.ModelBeanMap;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
+import com.education.mapper.course.CourseInfoMapper;
 import com.education.service.course.CourseInfoService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,9 @@ public class CourseController extends BaseController {
      */
     @GetMapping("getCourseList")
     public Result getCourseList(@RequestParam Map params) {
-        return courseInfoService.getCourse(params);
+        params.put("studentId", courseInfoService.getFrontUserInfo().get("student_id"));
+        return courseInfoService.pagination(params, CourseInfoMapper.class,
+                CourseInfoMapper.GET_RECOMMEND_COURSE_LIST);
     }
 
     /**
@@ -56,5 +59,16 @@ public class CourseController extends BaseController {
         List<ModelBeanMap> userInfoAnswerList = modelBeanMap.getModelBeanMapList("userInfoAnswerList");
         Integer courseId = modelBeanMap.getInt("courseId");
         return courseInfoService.commitQuestion(courseId, userInfoAnswerList);
+    }
+
+
+    /**
+     * 课程收藏
+     * @param courseBeanMap
+     * @return
+     */
+    @PostMapping("collectCourse")
+    public Result collectCourse(@RequestBody ModelBeanMap courseBeanMap) {
+        return courseInfoService.collectCourse(courseBeanMap);
     }
 }

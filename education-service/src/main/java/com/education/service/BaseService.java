@@ -277,6 +277,6 @@ public abstract class BaseService<M extends BaseMapper> {
         if (ObjectUtils.isEmpty(userInfoMap)) {
             return null;
         }
-        return (Integer) userInfoMap.get("id");
+        return (Integer) userInfoMap.get("student_id");
     }
 }

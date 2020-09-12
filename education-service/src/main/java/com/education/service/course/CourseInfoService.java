@@ -1,5 +1,6 @@
 package com.education.service.course;
 
+import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.ModelBeanMap;
 import com.education.common.utils.ObjectUtils;
@@ -7,12 +8,14 @@ import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.mapper.course.CourseInfoMapper;
 import com.education.mapper.course.CourseQuestionInfoMapper;
+import com.education.mapper.course.StudentCourseCollectMapper;
 import com.education.mapper.course.StudentQuestionAnswerMapper;
 import com.education.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +39,8 @@ public class CourseInfoService extends BaseService<CourseInfoMapper> {
     private StudentQuestionAnswerService studentQuestionAnswerService;
     @Autowired
     private CourseQuestionService courseQuestionService;
+    @Autowired
+    private StudentCourseCollectMapper studentCourseCollectMapper;
 
     @Override
     @Transactional
@@ -99,27 +104,30 @@ public class CourseInfoService extends BaseService<CourseInfoMapper> {
         }
     }
 
-    public Result getCourse(Map params) {
-        Result result = super.pagination(params);
-        ModelBeanMap dataMap = (ModelBeanMap) result.getData();
-        List<ModelBeanMap> dataList = dataMap.getModelBeanMapList("dataList");
-        if (ObjectUtils.isNotEmpty(dataList)) {
-            dataList.forEach(item -> {
-                long studyNumber = courseQuestionInfoMapper.getStudyNumberByCourse(item.getInt("id"));
-                item.put("study_number", studyNumber);
-            });
-        }
-        dataMap.put("dataList", dataList);
-        return result;
-    }
 
     public Result<ModelBeanMap> getCourseQuestionList(Map params) {
-        Integer courseId = (Integer) params.get("courseId");
+        Integer courseId = Integer.parseInt(String.valueOf(params.get("courseId")));
         List<Integer> courseQuestionIds = courseQuestionInfoMapper.getCourseQuestionIds(courseId);
         Result result = courseQuestionService.pagination(params, CourseQuestionInfoMapper.class,
                 CourseQuestionInfoMapper.GET_COURSE_QUESTION_LIST);
         Map resultMap = (Map) result.getData();
         resultMap.put("courseQuestionIds", courseQuestionIds); // 课程试题id集合
         return result;
+    }
+
+    public Result collectCourse(ModelBeanMap courseBeanMap) {
+        Integer collectFlag = courseBeanMap.getInt("collect_flag");
+        Integer studentId = getFrontUserInfoId();
+        courseBeanMap.put("student_id", studentId);
+        courseBeanMap.remove("collect_flag");
+        // 收藏
+        if (collectFlag == EnumConstants.Flag.YES.getValue()) {
+            courseBeanMap.put("create_date", new Date());
+            studentCourseCollectMapper.save(courseBeanMap);
+        } else {
+            // 删除课程收藏
+            studentCourseCollectMapper.deleteCollectCourse(studentId, courseBeanMap.getInt("course_id"));
+        }
+        return Result.success(ResultCode.SUCCESS);
     }
 }

@@ -151,7 +151,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
         String options = questionMap.getStr("options");
         // 拼接 'A','B','C','D'选项
         if (ObjectUtils.isNotEmpty(options)) {
-            List<Map> optionList = new ArrayList<>();
+           /* List<Map> optionList = new ArrayList<>();
             String optionsArray[] = ObjectUtils.spilt(options);
             for (int j = 0; j < optionsArray.length; j++) {
                 Map optionMap = new HashMap<>();
@@ -160,8 +160,8 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
                 optionsArray[j] = letter + ". " + optionsArray[j] + "  ";
                 optionMap.put("option", optionsArray[j]);
                 optionList.add(optionMap);
-            }
-            questionMap.put("options", optionList);
+            }*/
+            questionMap.put("options", JSONObject.parse(options));
         }
         List<String> enclosureList = null;
         Object enclosure = questionMap.get("enclosure");

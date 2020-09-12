@@ -62,4 +62,10 @@
     <delete id="deleteById" parameterType="Integer">
         delete from course_info where id  = #{id}
     </delete>
+
+    <select id="getRecommendCourseList"  resultType="modelBeanMap">
+        select course.*, (case when collect.course_id is null then 0 else 1 end) collect_flag from course_info course
+        left join student_course_collect collect
+        on course.id = collect.id and collect.student_id = #{studentId} where course.recommend_index_flag = 1
+    </select>
 </mapper>
