@@ -1,5 +1,5 @@
 server:
-  port: 8003
+  port: 8004
   servlet:
     context-path: /
 ## spring jdbc配置
@@ -15,7 +15,7 @@ spring:
     password: 123456
     port: 6379
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/education_new?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://111.229.169.170:3306/education?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -36,7 +36,7 @@ weChat:
   appSecret: e03f5ab03906d4d943675c233d4c3cb3
 ## 文件上传根路径
 file:
-  uploadPath: F:\\uploads\\
+  uploadPath: E:\\uploads\\
 
 mybatis:
   mapper-locations: mapper/**/*.xml

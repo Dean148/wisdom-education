@@ -1,6 +1,4 @@
-package com.education.model.system;
-
-import com.education.model.ModelBean;
+package com.test.annotation;
 
 /**
  * 菜单实体类

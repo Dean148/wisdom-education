@@ -15,7 +15,7 @@ spring:
     password: 123456
     port: 6379
   datasource:
-    url: jdbc:mysql://111.229.169.170:3306/education?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3306/education_final?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -48,7 +48,7 @@ lbs:
 
 pagehelper:
   helper-dialect: mysql
-  reasonable: true
+  reasonable: true   #分页合理化，true开启，如果分页参数不合理会自动修正。默认false不启用
   support-methods-arguments: true
   params: count=countSql
 
@@ -58,4 +58,5 @@ mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-
+mybatis-plus:
+  type-aliases-package: com.education.common.model

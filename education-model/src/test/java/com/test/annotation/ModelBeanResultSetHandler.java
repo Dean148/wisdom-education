@@ -1,4 +1,4 @@
-package com.education.model;
+package com.test.annotation;
 
 import com.education.common.utils.ObjectUtils;
 import org.apache.ibatis.executor.Executor;

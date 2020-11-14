@@ -7,10 +7,7 @@ package com.education.admin.api.config.interceptor;
 import com.education.common.interceptor.FormLimitInterceptor;
 import com.education.common.interceptor.LogInterceptor;
 import com.education.common.interceptor.ParamsValidateInterceptor;
-import com.education.model.ModelBeanConfig;
-import com.education.model.RequestModelBeanBodyMethodArgumentResolver;
-import com.education.model.RequestModelBeanMethodArgumentResolver;
-import com.education.model.annotation.RequestModelBeanParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -65,9 +62,9 @@ public class WebAppConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		ModelBeanConfig modelBeanConfig = new ModelBeanConfig(jdbcTemplate);
+		/*ModelBeanConfig modelBeanConfig = new ModelBeanConfig(jdbcTemplate);
 		resolvers.add(new RequestModelBeanBodyMethodArgumentResolver());
-		resolvers.add(new RequestModelBeanMethodArgumentResolver());
+		resolvers.add(new RequestModelBeanMethodArgumentResolver());*/
 	}
 
 	@Override

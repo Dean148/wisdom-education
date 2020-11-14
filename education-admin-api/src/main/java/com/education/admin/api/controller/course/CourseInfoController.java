@@ -30,7 +30,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/system/course")
-@Api(tags = "课程管理接口")
 public class CourseInfoController extends BaseController {
 
     @Autowired
@@ -45,7 +44,6 @@ public class CourseInfoController extends BaseController {
      */
     @GetMapping("list")
     @RequiresPermissions("system:course:list")
-    @ApiOperation(value = "课程管理列表接口")
     @SystemLog(describe = "获取课程列表")
     public Result courseTreeList(@RequestParam Map params) {
         return courseService.pagination(params);
@@ -65,7 +63,6 @@ public class CourseInfoController extends BaseController {
         @Param(name = "grade_type", message = "请选择年级"),
         @Param(name = "subject_id", message = "请选择科目")
     }, paramsType= ParamsType.JSON_DATA)
-    @ApiOperation("课程添加修改接口")
     @SystemLog(describe = "添加或修改课程")
     public Result saveOrUpdate(@RequestBody ModelBeanMap courseInfoMap) {
         Integer id = courseInfoMap.getInt("id");
@@ -89,7 +86,6 @@ public class CourseInfoController extends BaseController {
      */
     @DeleteMapping
     @RequiresPermissions("system:course:deleteById")
-    @ApiOperation("删除课程接口")
     @SystemLog(describe = "删除课程")
     public ResultCode deleteById(@RequestBody ModelBeanMap modelBeanMap) {
         return courseService.deleteById(modelBeanMap);
@@ -119,7 +115,6 @@ public class CourseInfoController extends BaseController {
      */
     @PostMapping("relevanceQuestion")
     @RequiresPermissions(value = "system:mode:relevanceQuestion")
-    @ApiOperation("关联试题")
     @SystemLog(describe = "关联试题")
     public ResultCode relevanceQuestion(@RequestBody ModelBeanMap modelBeanMap) {
         return courseQuestionService.relevanceQuestion(modelBeanMap);

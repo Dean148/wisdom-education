@@ -1,6 +1,5 @@
-package com.education.model.system;
+package com.test.annotation;
 
-import com.education.model.ModelBean;
 
 /**
  * 角色实体类

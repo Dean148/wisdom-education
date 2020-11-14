@@ -1,4 +1,4 @@
-package com.education.model;
+package com.test.annotation;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 

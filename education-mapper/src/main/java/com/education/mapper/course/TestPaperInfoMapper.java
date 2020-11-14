@@ -18,4 +18,6 @@ public interface TestPaperInfoMapper extends BaseMapper {
 
     List<ModelBeanMap> findListBySubjectIds(Map params);
 
+    List<Map> getStudentPaperList(Map params);
+
 }

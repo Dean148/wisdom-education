@@ -86,7 +86,7 @@ public class SchoolService extends BaseService<SchoolInfoMapper> {
         try {
             super.deleteById(schoolInfoMap); // 删除学校
             // 删除学校管理员账号
-            systemAdminMapper.deleteBySchoolId(schoolInfoMap.getInt("id"));
+    //        systemAdminMapper.deleteBySchoolId(schoolInfoMap.getInt("id"));
             schoolInfoMap.put("schoolId", schoolInfoMap.getInt("id"));
             // 删除该学校下的所有学员
             studentInfoMapper.deleteByIdOrSchoolId(schoolInfoMap);

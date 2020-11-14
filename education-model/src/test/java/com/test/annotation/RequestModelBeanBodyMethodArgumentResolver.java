@@ -1,15 +1,15 @@
-package com.education.model;
+package com.test.annotation;
 
 import com.alibaba.fastjson.JSONObject;
 import com.education.common.bean.ClassFactory;
 import com.education.common.bean.JdkClassFactory;
 import com.education.common.utils.RequestUtils;
-import com.education.model.annotation.RequestModelBeanBody;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
@@ -30,7 +30,8 @@ public class RequestModelBeanBodyMethodArgumentResolver implements HandlerMethod
 
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer,
-                                  NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
+                                  NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory)
+            throws Exception {
         if (!methodParameter.getParameterType().isAssignableFrom(ModelBean.class)) {
             throw new RuntimeException("ParameterType 类型需要继承父类" + ModelBean.class);
         }

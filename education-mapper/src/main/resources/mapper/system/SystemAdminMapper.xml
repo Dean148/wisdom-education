@@ -53,4 +53,8 @@
     <delete id="deleteBySchoolId" parameterType="Integer">
         delete from system_admin where school_id = #{schoolId}
     </delete>
+
+    <select id="pageList" resultType="com.education.model.entity.SystemAdmin">
+        select * from system_admin
+    </select>
 </mapper>

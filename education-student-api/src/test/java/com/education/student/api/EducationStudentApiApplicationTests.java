@@ -17,7 +17,9 @@ public class EducationStudentApiApplicationTests {
 
     @Test
     public void testRedis() {
-        redisTemplate.opsForValue().set("test", "test");
+       // redisTemplate.opsForValue().set("test", "test");
+        redisTemplate.boundHashOps("book_id_test").increment("number", 1);
+        System.out.println(redisTemplate.boundHashOps("book_id_test").get("number"));
      //   System.out.printf(redisTemplate.toString());
     }
 

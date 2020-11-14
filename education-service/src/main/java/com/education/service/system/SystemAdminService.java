@@ -96,7 +96,7 @@ public class SystemAdminService extends BaseService<SystemAdminMapper> {
     }
 
     public int updateByUserId(Map params) {
-        return mapper.updateByUserId(params);
+        return 0; //mapper.updateByUserId(params);
     }
 
     /**
@@ -113,7 +113,6 @@ public class SystemAdminService extends BaseService<SystemAdminMapper> {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(loginName, password);
         try {
-         //   token.setRememberMe(false);
             subject.login(token);
             result.setCode(ResultCode.SUCCESS);
             result.setMessage("登录成功");

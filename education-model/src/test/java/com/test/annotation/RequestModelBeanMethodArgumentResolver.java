@@ -1,9 +1,8 @@
-package com.education.model;
+package com.test.annotation;
 
 import com.education.common.bean.ClassFactory;
 import com.education.common.bean.JdkClassFactory;
 import com.education.common.utils.ObjectUtils;
-import com.education.model.annotation.RequestModelBeanParam;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ResolvableType;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,6 +14,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.multipart.support.MultipartResolutionDelegate;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.util.*;

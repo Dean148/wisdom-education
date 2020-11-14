@@ -1,4 +1,4 @@
-package com.education.model;
+package com.test.annotation;
 
 import com.education.common.utils.ObjectUtils;
 import org.apache.ibatis.executor.Executor;
@@ -14,7 +14,9 @@ import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import java.sql.Statement;
+import java.util.Properties;
 
 
 /**
@@ -62,6 +64,11 @@ public class ResultInterceptor implements Interceptor {
             logger.error(e.getMessage(), e);
         }
         return Plugin.wrap(target, this);
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+
     }
 
 }

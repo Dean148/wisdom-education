@@ -38,7 +38,8 @@ public class WebAppConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(logInterceptor).addPathPatterns("/**");
 		registry.addInterceptor(paramsValidateInterceptor).addPathPatterns("/**");
-		registry.addInterceptor(authInterceptor).addPathPatterns("/student/**").excludePathPatterns("/student/login");
+		registry.addInterceptor(authInterceptor).addPathPatterns("/student/**")
+				.excludePathPatterns("/student/login").excludePathPatterns("/static/**");
 	}
 
 	@Override
