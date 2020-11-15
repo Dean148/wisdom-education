@@ -29,7 +29,7 @@ import java.util.Map;
 @Aspect
 public final class LogAspect {
 
-    private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
+    /*private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
     @Autowired
     private TaskManager taskManager;
@@ -37,7 +37,7 @@ public final class LogAspect {
     private SystemLogService systemLogService;
 
 
-    /**
+    *//**
      * execution表达式示例
      * execution(* com.education.api.controller..*.*(..))
      * 详述：
@@ -50,7 +50,7 @@ public final class LogAspect {
      * 使用异步任务记录 http 请求接口日志
      * @param pjp
      * @return
-     */
+     *//*
     @Around("execution(public * com.education.*.*.controller..*.*(..))")
     public Object invoke(ProceedingJoinPoint pjp) throws Throwable {
         long startTime = System.currentTimeMillis();
@@ -119,5 +119,5 @@ public final class LogAspect {
             logger.error(error.toString(), throwable);
             throw throwable;
         }
-    }
+    }*/
 }

@@ -11,5 +11,5 @@ import org.springframework.stereotype.Service;
  * @create_at 2020/3/15 14:01
  */
 @Service
-public class SystemMessageService extends BaseService<SystemMessageInfoMapper> {
+public class SystemMessageService  {
 }

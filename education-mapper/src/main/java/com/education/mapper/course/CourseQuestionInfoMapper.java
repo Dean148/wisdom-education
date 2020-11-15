@@ -1,6 +1,6 @@
 package com.education.mapper.course;
 
-import com.education.common.base.BaseMapper;
+import com.education.common.base.BaseCommonMapper;
 import com.education.common.model.ModelBeanMap;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
@@ -14,7 +14,7 @@ import java.util.Map;
  * @version 1.0
  * @create_at 2020/3/9 15:57
  */
-public interface CourseQuestionInfoMapper extends BaseMapper {
+public interface CourseQuestionInfoMapper extends BaseCommonMapper {
 
     String GET_COURSE_QUESTION_LIST = "getCourseQuestionList";
     /**

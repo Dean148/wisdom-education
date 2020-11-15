@@ -1,6 +1,6 @@
 package com.education.mapper.school;
 
-import com.education.common.base.BaseMapper;
+import com.education.common.base.BaseCommonMapper;
 import com.education.common.model.ModelBeanMap;
 import com.education.common.model.StudentInfo;
 
@@ -12,7 +12,7 @@ import java.util.Map;
  * @version 1.0
  * @create_at 2020/3/9 15:37
  */
-public interface StudentInfoMapper extends BaseMapper {
+public interface StudentInfoMapper extends BaseCommonMapper {
 
 
     int deleteByIdOrSchoolId(Map params);

@@ -1,6 +1,8 @@
 package com.education.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 
+@TableName("system_menu")
 public class SystemMenu extends BaseEntity<SystemMenu> {
 
 	private String name;

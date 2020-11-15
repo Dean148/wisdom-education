@@ -4,27 +4,25 @@ import com.education.common.annotation.*;
 import com.education.common.base.BaseController;
 import com.education.common.constants.Constants;
 import com.education.common.constants.EnumConstants;
-import com.education.common.disabled.LimitLock;
-import com.education.common.model.AdminUserSession;
 import com.education.common.model.JwtToken;
-import com.education.common.model.ModelBeanMap;
-import com.education.common.model.online.OnlineUserManager;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
+import com.education.model.dto.AdminUserSession;
+import com.education.model.request.UserLoginRequest;
 import com.education.service.WebSocketMessageService;
 import com.education.service.system.SystemAdminService;
 import com.education.service.task.TaskManager;
 import com.education.service.task.TaskParam;
 import com.education.service.task.UserLoginSuccessListener;
+import com.jfinal.kit.Kv;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,15 +46,13 @@ public class LoginController extends BaseController {
     @Autowired
     private JwtToken adminJwtToken;
     @Autowired
-    private WebSocketMessageService webSocketMessageService;
-    @Autowired
     private TaskManager taskManager;
     @Autowired
-    private OnlineUserManager onlineUserManager;
+    private WebSocketMessageService webSocketMessageService;
 
     /**
      * 管理员登录接口
-     * @param requestBody
+     * @param userLoginRequest
      * @return
      */
     @PostMapping("/login")
@@ -68,24 +64,25 @@ public class LoginController extends BaseController {
         @Param(name = "password", message = "请输入密码"),
     }, paramsType = ParamsType.JSON_DATA)
     @FormLimit
-    public Result login(@RequestBody ModelBeanMap requestBody, HttpServletResponse response, HttpServletRequest request) {
-        String loginName = requestBody.getStr("userName");
-        String password = requestBody.getStr("password");
-        String codeKey = requestBody.getStr("key");
-        String imageCode = requestBody.getStr("code");
+    public Result<Map> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response,
+                        HttpServletRequest request) {
+        String codeKey = userLoginRequest.getKey();
+        String imageCode = userLoginRequest.getCode();
         String cacheCode = cacheBean.get(codeKey);
         if (!imageCode.equalsIgnoreCase(cacheCode)) {
-            return Result.fail(ResultCode.FAIL, "验证码输入错误");
+            return Result.fail(ResultCode.CODE_ERROR, "验证码输入错误");
         }
-        Result result = systemAdminService.login(loginName, password);
+        Result result = systemAdminService.login(userLoginRequest.getUserName(), userLoginRequest.getPassword());
+
         if (result.isSuccess()) {
-            String token = adminJwtToken.createToken(systemAdminService.getUserId(), 24 * 60 * 60 * 1000 * 5); // 默认缓存5天
+            Integer adminUserId = systemAdminService.getAdminUserId();
+            String token = adminJwtToken.createToken(adminUserId, 24 * 60 * 60 * 1000 * 5); // 默认缓存5天
             AdminUserSession userSession = systemAdminService.getAdminUserSession();
-            webSocketMessageService.checkOnlineUser(userSession.getUserId(), EnumConstants.PlatformType.WEB_ADMIN);
+            webSocketMessageService.checkOnlineUser(adminUserId, EnumConstants.PlatformType.WEB_ADMIN);
             userSession.setSessionId(request.getSession().getId());
             systemAdminService.loadUserMenuAndPermission(userSession);
 
-            boolean rememberMe = requestBody.getBoolean("checked");
+            boolean rememberMe = userLoginRequest.isChecked();
             if (rememberMe) {
                 // 先删除JSESSIONID
                 Cookie cookie = RequestUtils.getCookie(Constants.DEFAULT_SESSION_ID);
@@ -96,32 +93,24 @@ public class LoginController extends BaseController {
                 // 重新创建JSESSIONID 并设置过期时间, 默认过期时间为5天
                 RequestUtils.createCookie(Constants.DEFAULT_SESSION_ID, request.getSession().getId(), Constants.SESSION_TIME_OUT);
             }
-            requestBody.clear();
-            // 将用户信息返回前端
-            requestBody.put("token", token);
-            Map userInfo = new HashMap<>();
-            Integer userId = userSession.getUserId();
-            userInfo.put("id", userId);
-            if (userSession.isPrincipalAccount()) {
-                userInfo.put("school_id", userSession.getUserMap().get("school_id"));
-            }
-            userInfo.put("login_name", userSession.getUserMap().get("login_name"));
-            userInfo.put("permissionList", userSession.getPermissionList()); // 用户权限标识
-            userInfo.put("menuList", userSession.getMenuList()); // 用户菜单集合
-            userInfo.put("name", userSession.getUserMap().get("name"));
-            requestBody.put("userInfo", userInfo);
 
+            Kv userInfo = Kv.create().set("token", token).set("id", userSession.getAdminId())
+                    .set("permissionList", userSession.getPermissionList())
+                    .set("menuList", userSession.getMenuTreeList())
+                    .set("school_id", userSession.getSystemAdmin().getSchoolId())
+                    .set("login_name", userSession.getSystemAdmin().getLoginName());
+            Map resultMap = new HashMap<>();
+            resultMap.put("userInfo", userInfo);
             // 异步更新用户相关信息
             TaskParam taskParam = new TaskParam(UserLoginSuccessListener.class);
             taskParam.put("userSession", userSession);
             taskParam.put("request", RequestUtils.getRequest());
             taskManager.pushTask(taskParam);
-
-            systemAdminService.updateShiroCacheUserInfo(userSession); // 更新shiro 用户信息，避免与redis 缓存中用户信息不一致问题
-
-       }
-       result.setData(requestBody);
-       return result;
+            // 更新shiro 用户信息，避免与redis 缓存中用户信息不一致问题
+            systemAdminService.updateShiroCacheUserInfo(userSession);
+            result.setData(resultMap);
+        }
+        return result;
     }
 
 
@@ -134,15 +123,15 @@ public class LoginController extends BaseController {
     @ApiOperation(value="系统退出接口", notes="用户退出接口")
     @SystemLog(describe = "退出管理系统")
     @FormLimit
-    public ResultCode logout() {
-        onlineUserManager.removeOnlineUser(systemAdminService.getUserId());
+    public Result logout() {
+       // onlineUserManager.removeOnlineUser(systemAdminService.getUserId());
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
-        return new ResultCode(ResultCode.SUCCESS, "退出成功");
+        return Result.success(ResultCode.UN_AUTH_ERROR_CODE, "退出成功");
     }
 
     @GetMapping("unAuth")
-    public ResultCode unAuth() {
-        return new ResultCode(ResultCode.UN_AUTH_ERROR_CODE, "用户未认证");
+    public Result unAuth() {
+        return Result.success(ResultCode.UN_AUTH_ERROR_CODE, "用户未认证");
     }
 }

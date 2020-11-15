@@ -24,14 +24,14 @@ import java.util.Map;
 @RequestMapping("/system/testPaper")
 public class TestPaperController extends BaseController {
 
-    @Autowired
+   /* @Autowired
     private TestPaperInfoService testPaperInfoService;
 
-    /**
+    *//**
      * 试卷列表
      * @param params
      * @return
-     */
+     *//*
     @GetMapping
     @RequiresPermissions("system:testPaper:list")
     public Result<ModelBeanMap> list(@RequestParam Map params) {
@@ -49,71 +49,71 @@ public class TestPaperController extends BaseController {
         return testPaperInfoService.saveOrUpdate(updateFlag, testPaper);
     }
 
-    /**
+    *//**
      * 关联试题
      * @param params
      * @return
-     */
+     *//*
     @PostMapping("relevanceQuestion")
     @RequiresPermissions("system:testPaper:relevanceQuestion")
     public ResultCode relevanceQuestion(@RequestBody Map params) {
         return testPaperInfoService.relevanceQuestion(params);
     }
 
-    /**
+    *//**
      * 删除试卷
      * @param testPaperInfoMap
      * @return
-     */
+     *//*
     @DeleteMapping
     @RequiresPermissions("system:testPaper:deleteById")
     public ResultCode deleteById(@RequestBody ModelBeanMap testPaperInfoMap) {
         return testPaperInfoService.deleteById(testPaperInfoMap.getInt("id"));
     }
 
-    /**
+    *//**
      * 删除关联试题
      * @param testPaperQuestionInfoMap
      * @return
-     */
+     *//*
     @DeleteMapping("deleteQuestionForPaper")
     public ResultCode deletePaperQuestion(@RequestBody ModelBeanMap testPaperQuestionInfoMap) {
         return testPaperInfoService.deletePaperQuestion(testPaperQuestionInfoMap);
     }
 
-    /**
+    *//**
      * 提交试卷接口
      * @param testPaperInfoMap
      * @return
-     */
+     *//*
     @PostMapping("commitPaperQuestion")
     public ResultCode commitPaperQuestion (@RequestBody ModelBeanMap testPaperInfoMap) {
         return testPaperInfoService.commitPaperQuestion(testPaperInfoMap);
     }
 
-    /**
+    *//**
      * 修改试卷试题分数
      * @param testPaperQuestionInfoMap
      * @return
-     */
+     *//*
     @PostMapping("updateQuestionMark")
     public ResultCode updateQuestionMark(@RequestBody ModelBeanMap testPaperQuestionInfoMap) {
         return testPaperInfoService.updateQuestionMarkForPaper(testPaperQuestionInfoMap);
     }
 
-    /**
+    *//**
      * 修改试卷试题排序
      * @param testPaperQuestionInfoMap
      * @return
-     */
+     *//*
     @PostMapping("updateQuestionSort")
     public ResultCode updateQuestionSort(@RequestBody ModelBeanMap testPaperQuestionInfoMap) {
         return testPaperInfoService.updateQuestionSort(testPaperQuestionInfoMap);
     }
 
-    /**
+    *//**
      * 试卷导出
-     */
+     *//*
     @PostMapping("export")
     @RequiresPermissions("system:testPaper:export")
     public ResultCode export(@RequestBody ModelBeanMap testPaperInfoMap) {
@@ -123,5 +123,5 @@ public class TestPaperController extends BaseController {
     @GetMapping("getPaperQuestionList")
     public Result getPaperQuestionList(@RequestParam Map params) {
         return testPaperInfoService.getPaperQuestionList(params);
-    }
+    }*/
 }

@@ -11,7 +11,7 @@ import java.util.Map;
  * @version 1.0
  * @create_at 2020/3/8 10:40
  */
-public interface BaseMapper<T> {
+public interface BaseCommonMapper<T> {
 
     ModelBeanMap queryOne(Map params);
 

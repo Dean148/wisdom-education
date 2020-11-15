@@ -31,9 +31,9 @@ import java.util.*;
  */
 @Service
 @Slf4j
-public class SchoolService extends BaseService<SchoolInfoMapper> {
+public class SchoolService {
 
-    private static final String PRINCIPAL = "校长";
+ /*   private static final String PRINCIPAL = "校长";
     @Autowired
     private SystemAdminMapper systemAdminMapper;
     @Autowired
@@ -97,10 +97,10 @@ public class SchoolService extends BaseService<SchoolInfoMapper> {
         }
     }
 
-    /**
+    *//**
      * 创建校长后台账号
      * @param params
-     */
+     *//*
     private void createPrincipalAccount(Map params) {
         String simplicity = (String)params.get("simplicity");
         Integer schoolId = (Integer)params.get("schoolId");
@@ -132,5 +132,5 @@ public class SchoolService extends BaseService<SchoolInfoMapper> {
 
     public List<ModelBeanMap> getSchoolRegionInfo() {
         return mapper.getSchoolRegionInfo();
-    }
+    }*/
 }

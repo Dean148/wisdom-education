@@ -1,6 +1,6 @@
 package com.education.mapper.course;
 
-import com.education.common.base.BaseMapper;
+import com.education.common.base.BaseCommonMapper;
 import com.education.common.model.ModelBeanMap;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Map;
  * @version 1.0
  * @create_at 2020/3/9 15:59
  */
-public interface TestPaperQuestionMapper extends BaseMapper {
+public interface TestPaperQuestionMapper extends BaseCommonMapper {
 
     String GET_PAPER_QUESTION_LIST = "getPaperQuestionList";
 

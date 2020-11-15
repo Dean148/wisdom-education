@@ -31,17 +31,17 @@ import java.util.Map;
 @RestController
 @RequestMapping("/system/course")
 public class CourseInfoController extends BaseController {
-
+/*
     @Autowired
     private CourseInfoService courseService;
     @Autowired
     private CourseQuestionService courseQuestionService;
 
-    /**
+    *//**
      * 课程管理接口
      * @param params
      * @return
-     */
+     *//*
     @GetMapping("list")
     @RequiresPermissions("system:course:list")
     @SystemLog(describe = "获取课程列表")
@@ -50,11 +50,11 @@ public class CourseInfoController extends BaseController {
     }
 
 
-    /**
+    *//**
      * 添加或修改课程
      * @param courseInfoMap
      * @return
-     */
+     *//*
     @PostMapping
     @RequiresPermissions(value = {"system:course:save", "system:course:update"}, logical = Logical.OR)
     @ParamsValidate(params = {
@@ -79,11 +79,11 @@ public class CourseInfoController extends BaseController {
     }
 
 
-    /**
+    *//**
      * 删除课程
      * @param modelBeanMap
      * @return
-     */
+     *//*
     @DeleteMapping
     @RequiresPermissions("system:course:deleteById")
     @SystemLog(describe = "删除课程")
@@ -91,11 +91,11 @@ public class CourseInfoController extends BaseController {
         return courseService.deleteById(modelBeanMap);
     }
 
-    /**
+    *//**
      * 修改模式试题分数或排序
      * @param courseQuestionMap
      * @return
-     */
+     *//*
     @PostMapping("updateCourseQuestionSortOrMark")
     @ApiOperation("修改模式试题分数或排序")
     public ResultCode updateCourseQuestionSortOrMark(@RequestBody ModelBeanMap courseQuestionMap) {
@@ -108,11 +108,11 @@ public class CourseInfoController extends BaseController {
         return courseService.getCourseQuestionList(params);
     }
 
-    /**
+    *//**
      * 关联试题
      * @param modelBeanMap
      * @return
-     */
+     *//*
     @PostMapping("relevanceQuestion")
     @RequiresPermissions(value = "system:mode:relevanceQuestion")
     @SystemLog(describe = "关联试题")
@@ -120,14 +120,14 @@ public class CourseInfoController extends BaseController {
         return courseQuestionService.relevanceQuestion(modelBeanMap);
     }
 
-    /**
+    *//**
      * 移除课程训练试题
      * @param params
      * @return
-     */
+     *//*
     @DeleteMapping("deleteCourseQuestion")
     @SystemLog(describe = "移除课程训练试题")
     public Result deleteCourseQuestion(@RequestBody ModelBeanMap params) {
         return courseQuestionService.deleteCourseQuestion(params);
-    }
+    }*/
 }

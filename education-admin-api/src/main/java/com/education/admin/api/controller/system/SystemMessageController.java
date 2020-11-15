@@ -20,12 +20,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/system/message")
 public class SystemMessageController extends BaseController {
-
+/*
     @Autowired
     private SystemMessageInfoMessageService systemMessageInfoMessageService;
 
     @GetMapping
     public Result list(@RequestParam Map params) {
         return systemMessageInfoMessageService.pagination(params);
-    }
+    }*/
 }

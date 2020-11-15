@@ -14,11 +14,7 @@ import java.util.Map;
  * @create_at 2020/3/12 14:06
  */
 @Service
-public class SystemMessageInfoMessageService extends BaseService<SystemMessageInfoMapper> {
+public class SystemMessageInfoMessageService  {
 
-    @Override
-    public Result pagination(Map params) {
-        params.put("admin_id", getAdminUser().get("id"));
-        return super.pagination(params);
-    }
+
 }

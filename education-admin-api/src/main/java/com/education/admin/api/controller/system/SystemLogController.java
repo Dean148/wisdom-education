@@ -1,9 +1,13 @@
 package com.education.admin.api.controller.system;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.common.base.BaseController;
 import com.education.common.model.ModelBeanMap;
+import com.education.common.model.PageInfo;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
+import com.education.model.entity.SystemLog;
+import com.education.model.request.PageParam;
 import com.education.service.system.SystemLogService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +29,14 @@ public class SystemLogController extends BaseController {
 
     @GetMapping("list")
     @RequiresPermissions("system:log:list")
-    public Result<ModelBeanMap> list(@RequestParam Map params) {
-        return systemLogService.pagination(params);
+    public Result<PageInfo<SystemLog>> list(PageParam pageParam, SystemLog systemLog) {
+        return Result.success(systemLogService.selectPage(pageParam, Wrappers.query(systemLog)));
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @RequiresPermissions("system:log:delete")
-    public ResultCode deleteById(@RequestBody ModelBeanMap logMap) {
-        return systemLogService.deleteById(logMap);
+    public Result deleteById(@PathVariable Integer id) {
+        systemLogService.removeById(id);
+        return Result.success();
     }
 }

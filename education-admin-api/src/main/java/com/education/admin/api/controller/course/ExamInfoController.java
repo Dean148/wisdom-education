@@ -27,7 +27,7 @@ import java.util.Map;
 @Api(tags = "考试管理接口")
 public class ExamInfoController extends BaseController {
 
-    @Autowired
+   /* @Autowired
     private ExamInfoService examInfoService;
 
     @GetMapping
@@ -44,5 +44,5 @@ public class ExamInfoController extends BaseController {
     @GetMapping("getStudentExamQuestionList")
     public Result getStudentExamQuestionList(@RequestParam Map params) {
         return null;
-    }
+    }*/
 }

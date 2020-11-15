@@ -1,19 +1,23 @@
 package com.education.service;
 
-import com.alibaba.fastjson.util.TypeUtils;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.education.common.model.PageInfo;
+import com.education.common.model.Tree;
+import com.education.common.model.TreeData;
 import com.education.common.utils.*;
-import com.education.common.base.BaseMapper;
 import com.education.common.cache.CacheBean;
-import com.education.common.component.SpringBeanManager;
-import com.education.common.constants.Constants;
-import com.education.common.exception.BusinessException;
-import com.education.common.model.AdminUserSession;
-import com.education.common.model.FrontUserInfoSession;
-import com.education.common.model.ModelBeanMap;
+import com.education.model.dto.AdminUserSession;
+import com.education.model.entity.BaseEntity;
+import com.education.model.entity.SystemAdmin;
+import com.education.model.request.PageParam;
 import com.education.service.task.TaskManager;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import org.apache.ibatis.session.RowBounds;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
@@ -22,22 +26,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
 import javax.annotation.Resource;
-import java.lang.reflect.Method;
-import java.util.Date;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
+
 
 /**
+ * service 基类
  * @author zengjintao
  * @version 1.0
  * @create_at 2020/3/8 10:40
  */
-public abstract class BaseService<M extends BaseMapper> {
+public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImpl<M, T> {
 
-    @Autowired
-    protected M mapper;
     @Autowired
     protected TaskManager taskManager;
     @Autowired
@@ -47,11 +48,34 @@ public abstract class BaseService<M extends BaseMapper> {
     protected CacheBean ehcacheBean;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final String DEFAULT_MAPPER_PAGE_METHOD_NAME = "queryList";
+    /**
+     * 条件列表分页查询
+     * @param queryWrapper
+     * @param <T>
+     * @return
+     */
+    public PageInfo<T> selectPage(PageParam pageParam, Wrapper<T> queryWrapper) {
+        PageInfo<T> pageInfo = new PageInfo();
+        Integer pageNumber = pageParam.getPageNumber();
+        Integer pageSize = pageParam.getPageSize();
+        if (ObjectUtils.isEmpty(pageNumber) && ObjectUtils.isEmpty(pageSize)) {
+            List<T> list = baseMapper.selectList(queryWrapper);
+            pageInfo.setDataList(list);
+            pageInfo.setTotal(ObjectUtils.isEmpty(list) ? 0 : list.size());
+        } else {
+            Page<T> page = new Page<>(pageNumber, pageSize);
+            Page<T> listPage = super.page(page, queryWrapper);
+            pageInfo.setTotal(listPage.getTotal());
+            pageInfo.setDataList(page.getRecords());
+        }
+        return pageInfo;
+    }
 
-    public List<ModelBeanMap> treeMenu() {
-        List<ModelBeanMap> menuList = mapper.treeList();
-        return MapTreeUtils.buildTreeData(menuList);
+    public <V> PageInfo<V> selectPage(Page<V> page) {
+        PageInfo<V> pageInfo = new PageInfo();
+        pageInfo.setTotal(page.getTotal());
+        pageInfo.setDataList(page.getRecords());
+        return pageInfo;
     }
 
     /**
@@ -69,167 +93,17 @@ public abstract class BaseService<M extends BaseMapper> {
         subject.runAs(newPrincipalCollection);
     }
 
-    /**
-     * 分页查询
-     * @param params
-     * @return
-     */
-    public Result pagination(Map params) {
-       return pagination(params, null, DEFAULT_MAPPER_PAGE_METHOD_NAME);
-    }
-
-    public Result paginationByCache(String cacheName, String key, Map params) {
-        Result result = cacheBean.get(cacheName, key);
-        if (ObjectUtils.isEmpty(result)) {
-            result = pagination(params);
-            cacheBean.put(cacheName, key, result);
-        }
-        return result;
-    }
-
-    public Result pagination(Map params, Class<? extends BaseMapper> mapperClass, String mapperMethod) {
-        Result result = null;
-        try {
-            Integer offset = RowBounds.NO_ROW_OFFSET;
-            Integer limit = RowBounds.NO_ROW_LIMIT;
-            if (ObjectUtils.isNotEmpty(params.get("offset"))) {
-                offset = Integer.valueOf((String) params.get("offset"));
-            }
-
-            if (ObjectUtils.isNotEmpty(params.get("limit"))) {
-                limit = Integer.valueOf((String) params.get("limit"));
-            }
-            Page<ModelBeanMap> page = PageHelper.offsetPage(offset, limit);
-            Object pageResult = null;
-            if (ObjectUtils.isEmpty(mapperClass)) {
-                pageResult = mapper.queryList(params);
-            } else {
-                Method method = mapperClass.getMethod(mapperMethod, Map.class);
-                BaseMapper mapperBean = SpringBeanManager.getBean(mapperClass);
-                pageResult = method.invoke(mapperBean, params);
-            }
-            ModelBeanMap dataMap = new ModelBeanMap();
-            dataMap.put("dataList", pageResult);
-            dataMap.put("total", page.getTotal());
-            result = new Result(ResultCode.SUCCESS, dataMap);
-        } catch (Exception e) {
-            result = new Result(ResultCode.FAIL, "获取数据异常");
-            logger.error("获取数据异常", e);
-        }
-        return result;
-    }
-
-    /**
-     * 移除时间字段
-     * @param params
-     */
-    protected void checkParams(Map params) {
-        if (params != null) {
-            params.remove("create_date");
-            params.remove("last_login_time");
-        }
-    }
-
-    public Result saveOrUpdate(boolean updateFlag, ModelBeanMap modelBeanMap) {
-        try {
-            String message = "";
-            if (updateFlag) {
-                checkParams(modelBeanMap);
-                this.update(modelBeanMap);
-                message = "修改";
-            } else {
-                modelBeanMap.put("create_date", new Date());
-                this.save(modelBeanMap);
-                message = "添加";
-            }
-            return new Result(ResultCode.SUCCESS, message + "成功");
-        } catch (Exception e) {
-            logger.error("操作异常", e);
-            throw new BusinessException(new ResultCode(ResultCode.FAIL, "操作异常"));
-        }
-    }
-
-    public Result saveOrUpdate(ModelBeanMap modelBeanMap) {
-        boolean updateFlag = false;
-        if (ObjectUtils.isNotEmpty(modelBeanMap.getInt("id"))) {
-            updateFlag = true;
-        }
-        return this.saveOrUpdate(updateFlag, modelBeanMap);
-    }
-
-
-    public ResultCode deleteById(ModelBeanMap modelBeanMap) {
-        return deleteById(modelBeanMap.getInt("id"));
-    }
-
-    public ResultCode deleteById(Integer id) {
-        int result = mapper.deleteById(id);
-        if (result > 0) {
-            return new ResultCode(ResultCode.SUCCESS, "删除成功");
-        }
-        return new ResultCode(ResultCode.FAIL, "删除数据失败");
-    }
-
-    /**
-     * 添加数据
-     * @param modelMap
-     * @return
-     */
-    public int save(Map modelMap) {
-        int result = mapper.save(modelMap);
-        if (modelMap.containsKey("id")) {
-            return TypeUtils.castToInt(modelMap.get("id"));
-        }
-        return result;
-    }
-
-    /**
-     * 更新数据
-     * @param modelMap
-     * @return
-     */
-    public int update(Map modelMap) {
-        return mapper.update(modelMap);
-    }
-
-    public List<Map> queryList(Map params) {
-        return mapper.queryList(params);
-    }
-
-
-    public Map getAdminUser() {
+    public SystemAdmin getSystemAdmin() {
         AdminUserSession adminSession = getAdminUserSession();
         if (ObjectUtils.isNotEmpty(adminSession)) {
-            return adminSession.getUserMap();
+            return adminSession.getSystemAdmin();
         }
         return null;
-    }
-
-    /**
-     * 是否体验账号
-     * @return
-     */
-    public boolean isExperienceAccount() {
-        Map userInfo = getFrontUserInfo();
-        if (ObjectUtils.isNotEmpty(userInfo)) {
-            return (boolean) userInfo.get("is_experience");
-        }
-        return false;
     }
 
     public Integer getAdminUserId() {
-        if (ObjectUtils.isNotEmpty(getAdminUser())) {
-            return (Integer) getAdminUser().get("id");
-        }
-        return null;
-    }
-
-
-
-    public Integer getUserId() {
-        Map admin = getAdminUser();
-        if (ObjectUtils.isNotEmpty(admin)) {
-            return (Integer)admin.get("id");
+        if (ObjectUtils.isNotEmpty(getSystemAdmin())) {
+            return getSystemAdmin().getId();
         }
         return null;
     }
@@ -245,38 +119,5 @@ public abstract class BaseService<M extends BaseMapper> {
             return userSession;
         }
         return null;
-    }
-
-
-    /**
-     * 获取前台用户信息
-     * @return
-     */
-    public FrontUserInfoSession getFrontUserInfoSession() {
-        String sessionId = RequestUtils.getCookieValue(Constants.SESSION_NAME);
-        if (ObjectUtils.isEmpty(sessionId)) {
-            return null;
-        }
-        return cacheBean.get(Constants.USER_INFO_CACHE, sessionId);
-    }
-
-    public Map getFrontUserInfo() {
-        FrontUserInfoSession userInfoSession = getFrontUserInfoSession();
-        if (ObjectUtils.isEmpty(userInfoSession)) {
-            return null;
-        }
-        return userInfoSession.getUserInfoMap();
-    }
-
-    public FrontUserInfoSession getFrontUserInfoSession(String sessionId) {
-        return cacheBean.get(Constants.USER_INFO_CACHE, sessionId);
-    }
-
-    public Integer getFrontUserInfoId() {
-        Map userInfoMap = getFrontUserInfo();
-        if (ObjectUtils.isEmpty(userInfoMap)) {
-            return null;
-        }
-        return (Integer) userInfoMap.get("student_id");
     }
 }

@@ -53,6 +53,10 @@ public final class Result<T> {
         return new Result(code, DEFAULT_SUCCESS_MESSAGE, data);
     }
 
+    public static <T> Result success() {
+        return new Result(ResultCode.SUCCESS, DEFAULT_SUCCESS_MESSAGE);
+    }
+
     public static <T> Result success(int code, String message) {
         return new Result(code, message);
     }

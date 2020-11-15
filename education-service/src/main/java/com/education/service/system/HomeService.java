@@ -26,7 +26,7 @@ import java.util.*;
 @Service
 @Slf4j
 public class HomeService {
-
+/*
     private static final Logger logger = LoggerFactory.getLogger(HomeService.class);
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -67,10 +67,10 @@ public class HomeService {
         return result;
     }
 
-    /**
+    *//**
      * 获取考试记录统计
      * @param resultMap
-     */
+     *//*
     public void setExamInfoData(Map resultMap) {
         Date now = new Date();
         String startTime = DateUtils.getDayBefore(DateUtils.getSecondDate(now), 7);
@@ -105,5 +105,5 @@ public class HomeService {
     public Result getRegionInfoData() {
         List<ModelBeanMap> data = schoolService.getSchoolRegionInfo();
         return Result.success(data);
-    }
+    }*/
 }

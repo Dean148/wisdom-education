@@ -30,8 +30,8 @@ import java.util.*;
  */
 @Service
 @Slf4j
-public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
-
+public class QuestionInfoService  {
+/*
     @Autowired
     private StudentQuestionAnswerMapper studentQuestionAnswerMapper;
     @Autowired
@@ -45,7 +45,6 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
     @Autowired
     private LanguagePointsService languagePointsService;
 
-    @Override
     @Transactional
     public ResultCode deleteById(ModelBeanMap modelBeanMap) {
         try {
@@ -68,14 +67,14 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
         try {
           //  questionInfoMap.put("options", null);
             // 试题选项
-           /* if (ObjectUtils.isNotEmpty(questionInfoMap.get("options"))) {
+           *//* if (ObjectUtils.isNotEmpty(questionInfoMap.get("options"))) {
                 Integer questionType = questionInfoMap.getInt("question_type");
                 if (questionType == EnumConstants.QuestionType.SINGLE_QUESTION.getValue()
                         || questionType == EnumConstants.QuestionType.MULTIPLE_QUESTION.getValue()) {
                     List<Map> optionList = questionInfoMap.getList("options");
                     questionInfoMap.put("options", JSONObject.toJSONString(optionList));
                 }
-            }*/
+            }*//*
             List<Map> optionList = questionInfoMap.getList("options");
             questionInfoMap.put("options", JSONObject.toJSONString(optionList));
 
@@ -151,7 +150,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
         String options = questionMap.getStr("options");
         // 拼接 'A','B','C','D'选项
         if (ObjectUtils.isNotEmpty(options)) {
-           /* List<Map> optionList = new ArrayList<>();
+           *//* List<Map> optionList = new ArrayList<>();
             String optionsArray[] = ObjectUtils.spilt(options);
             for (int j = 0; j < optionsArray.length; j++) {
                 Map optionMap = new HashMap<>();
@@ -160,7 +159,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
                 optionsArray[j] = letter + ". " + optionsArray[j] + "  ";
                 optionMap.put("option", optionsArray[j]);
                 optionList.add(optionMap);
-            }*/
+            }*//*
             questionMap.put("options", JSONObject.parse(options));
         }
         List<String> enclosureList = null;
@@ -175,13 +174,13 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
         questionMap.put("enclosureList", enclosureList);
     }
 
-    /**
+    *//**
      * 解析试题
      * @param questionList 试题列表
      * @param userQuestionAnswerMap
      * @param modeType
      * @param resultMap
-     */
+     *//*
     public void parserQuestion(List<ModelBeanMap> questionList, Map userQuestionAnswerMap, int modeType, Map resultMap) {
         int i = 1;
         for (ModelBeanMap questionMap : questionList) {
@@ -265,11 +264,11 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
         });
     }
 
-    /**
+    *//**
      * 试题信息导入
      * @param questionInfoList
      * @return
-     */
+     *//*
     public void importQuestionFromExcel(List<QuestionInfo> questionInfoList) {
         List<Map> data = new ArrayList<>();
         for (QuestionInfo questionInfo : questionInfoList) {
@@ -316,7 +315,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
     }
 
     public Map findById(Integer questionInfoId) {
-        ModelBeanMap questionInfo = mapper.findById(questionInfoId);
+       *//* ModelBeanMap questionInfo = mapper.findById(questionInfoId);
         // 获取科目列表
         Map params = new HashMap<>();
         params.put("grade_type", questionInfo.get("grade_type"));
@@ -330,7 +329,8 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper> {
         List<Integer> parentIds = MapTreeUtils.getParentIds(languagePointsList, questionInfo.getInt("language_points_id"));
         Collections.reverse(parentIds); // 从小到大来排序，与前端组件id顺序保持一致
         questionInfo.put("languagePointsIds", parentIds);
-        return questionInfo;
-    }
+        return questionInfo;*//*
+       return null;
+    }*/
 
 }

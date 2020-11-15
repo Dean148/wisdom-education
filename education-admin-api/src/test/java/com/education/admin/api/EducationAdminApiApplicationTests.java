@@ -1,31 +1,30 @@
 package com.education.admin.api;
 
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.education.common.cache.EhcacheBean;
 import com.education.common.cache.CacheBean;
 import com.education.common.model.AdminUserSession;
-import com.education.common.model.ModelBeanMap;
 import com.education.common.utils.IpUtils;
-import com.education.common.utils.MapTreeUtils;
 import com.education.common.utils.ObjectUtils;
+import com.education.common.utils.TreeUtils;
 import com.education.mapper.system.SystemAdminMapper;
 import com.education.mapper.system.SystemMenuMapper;
+import com.education.model.dto.AdminRoleDto;
+import com.education.model.dto.MenuTree;
 import com.education.model.entity.SystemAdmin;
 import com.jfinal.kit.HttpKit;
+import org.apache.shiro.session.mgt.SimpleSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.management.modelmbean.ModelMBean;
 import java.util.*;
 
 
@@ -140,17 +139,35 @@ public class EducationAdminApiApplicationTests {
     }*/
 
 
-/*   @Test
+
+   @Test
    public void mybatisPlus() {
-       QueryWrapper<SystemAdmin> queryWrapper = new QueryWrapper<SystemAdmin>();
+
+   //    SystemAdmin systemAdmin = systemAdminMapper.selectOne(new QueryWrapper<SystemAdmin>().eq("id", 1));
+   //    System.out.println(systemAdmin);
+       AdminRoleDto adminRoleDto = systemAdminMapper.selectById(4);
+       System.out.println(adminRoleDto.getRoleIds());
+
+       adminRoleDto.setId(null);
+       int s = systemAdminMapper.insert(adminRoleDto);
+       System.out.println(s);
+      /* QueryWrapper<SystemAdmin> queryWrapper = new QueryWrapper<SystemAdmin>();
        String admin = "admin";
        queryWrapper.select("id", "name").eq(ObjectUtils.isNotEmpty(admin), "login_name", admin);
        SystemAdmin systemAdmin = systemAdminMapper.selectOne(queryWrapper);
-       System.out.println(systemAdmin);
+       System.out.println(systemAdmin);*/
+
+       SimpleSession simpleSession = new SimpleSession();
+
+       cacheBean.put("test0", simpleSession);
+
+       System.out.println(cacheBean.get("test0").getClass());
+      List<MenuTree> menuTreeList = TreeUtils.buildTreeData(systemMenuMapper.getTreeMenuList()) ;
+       System.out.println(menuTreeList);
       // systemAdminMapper.selectOne(queryWrapper.)
       // List<SystemAdmin> list = systemAdminMapper.pageList();
       // System.out.println(list);
-   }*/
+   }
 
     @Test
     public void testIp() {

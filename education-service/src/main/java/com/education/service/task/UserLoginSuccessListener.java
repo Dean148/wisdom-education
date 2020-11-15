@@ -18,8 +18,12 @@ import java.util.Map;
  */
 @Component
 public class UserLoginSuccessListener implements TaskListener {
+    @Override
+    public void onMessage(TaskParam taskParam) {
 
-    @Autowired
+    }
+
+/*    @Autowired
     private SystemAdminService systemAdminService;
     @Autowired
     private OnlineUserManager onlineUserManager;
@@ -53,6 +57,6 @@ public class UserLoginSuccessListener implements TaskListener {
                 EnumConstants.PlatformType.WEB_ADMIN);
         nowOnlineUser.setAdminUserSession(userSession);
         onlineUserManager.addOnlineUser(userSession.getUserId(), nowOnlineUser);
-    }
+    }*/
 
 }

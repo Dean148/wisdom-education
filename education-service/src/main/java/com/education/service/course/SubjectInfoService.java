@@ -21,17 +21,17 @@ import java.util.Map;
  * @create_at 2020/3/9 19:51
  */
 @Service
-public class SubjectInfoService extends BaseService<SubjectInfoMapper> {
+public class SubjectInfoService  {
 
     @Autowired
     private QuestionInfoMapper questionInfoMapper;
 
-    public ModelBeanMap findByNameAndGradeType(Map params) {
+  /*  public ModelBeanMap findByNameAndGradeType(Map params) {
         return mapper.findByNameAndGradeType(params);
     }
 
     public ResultCode deleteById(ModelBeanMap subjectMap) {
-        if (subjectMap.getBoolean("use_flag")) {
+       *//* if (subjectMap.getBoolean("use_flag")) {
             return new ResultCode(ResultCode.FAIL, "该科目已开启,无法删除");
         }
         Integer id = subjectMap.getInt("id");
@@ -39,20 +39,21 @@ public class SubjectInfoService extends BaseService<SubjectInfoMapper> {
         if (ObjectUtils.isNotEmpty(questionInfo)) {
             return new ResultCode(ResultCode.FAIL, "该科目已有试题在使用, 无法删除");
         }
-        return super.deleteById(subjectMap);
+        return super.deleteById(subjectMap);*//*
+       return null;
     }
 
     public List<ModelBeanMap> findListByGradeType() {
-        Map userInfo = getFrontUserInfo();
+      *//*  Map userInfo = getFrontUserInfo();
         Integer gradeType = (Integer) userInfo.get("grade_type");
         Map params = new HashMap<>();
         params.put("gradeType", gradeType);
-        return mapper.queryList(params); //sqlSessionTemplate.selectList("system.subject.list", params);
+        return mapper.queryList(params); //sqlSessionTemplate.selectList("system.subject.list", params);*//*
+        return null;
     }
 
-    @Override
     public Result saveOrUpdate(boolean updateFlag, ModelBeanMap subjectMap) {
-        if (ObjectUtils.isEmpty(subjectMap.get("id"))) {
+        *//*if (ObjectUtils.isEmpty(subjectMap.get("id"))) {
             subjectMap.put("gradeType", subjectMap.get("grade_type"));
             Map gradeMap = mapper.findByNameAndGradeType(subjectMap);
             if (ObjectUtils.isNotEmpty(gradeMap)) {
@@ -60,6 +61,7 @@ public class SubjectInfoService extends BaseService<SubjectInfoMapper> {
             }
         }
         subjectMap.remove("gradeType");
-        return super.saveOrUpdate(updateFlag, subjectMap);
-    }
+        return super.saveOrUpdate(updateFlag, subjectMap);*//*
+        return null;
+    }*/
 }

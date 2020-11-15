@@ -16,8 +16,12 @@ import java.util.Date;
  */
 @Component
 public class SystemLogListener implements TaskListener {
+    @Override
+    public void onMessage(TaskParam taskParam) {
 
-    @Autowired
+    }
+
+ /*   @Autowired
     private SystemLogService systemLogService;
 
     @Override
@@ -40,5 +44,5 @@ public class SystemLogListener implements TaskListener {
         taskParam.remove("adminUserSession");
         taskParam.remove("frontUserInfoSession");
         systemLogService.save(taskParam);
-    }
+    }*/
 }

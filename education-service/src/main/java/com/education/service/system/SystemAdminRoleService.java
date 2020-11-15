@@ -1,12 +1,12 @@
 package com.education.service.system;
 
-import com.education.common.model.ModelBeanMap;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.education.mapper.system.SystemAdminRoleMapper;
+import com.education.model.entity.SystemAdminRole;
 import com.education.service.BaseService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 /**
  * @author zengjintao
@@ -14,9 +14,9 @@ import java.util.List;
  * @create_at 2020/3/8 14:44
  */
 @Service
-public class SystemAdminRoleService extends BaseService<SystemAdminRoleMapper> {
+public class SystemAdminRoleService extends BaseService<SystemAdminRoleMapper, SystemAdminRole> {
 
-    public List<ModelBeanMap> findRoleListByAdminId(Integer adminId) {
-        return mapper.findRoleListByAdminId(adminId);
+    public int deleteByAdminId(Integer adminId) {
+        return baseMapper.delete(new QueryWrapper<SystemAdminRole>().eq("admin_id", adminId));
     }
 }

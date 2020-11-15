@@ -2,53 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.education.mapper.system.SystemRoleMapper">
 
-   <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="params.id">
-        insert into system_role
-        <foreach collection="params.keys" item="key" open="(" close=")" separator="," >
-            ${key}
-        </foreach>
-        values
-        <foreach collection="params.values"  item="value" open="(" close=")" separator=",">
-            #{value}
-        </foreach>
-    </insert>
-
-    <!--<insert id="save" parameterType="systemRole" useGeneratedKeys="true" keyProperty="attrs.id">
-        insert into system_role
-        <foreach collection="attrs.keys" item="key" open="(" close=")" separator="," >
-            ${key}
-        </foreach>
-        values
-        <foreach collection="attrs.values"  item="value" open="(" close=")" separator=",">
-            #{value}
-        </foreach>
-    </insert>-->
-
-    <update id="update" parameterType="map">
-        update system_role
-        <foreach collection="params.keys" item="key" open="set" separator="," >
-            ${key} = #{params[${key}]}
-        </foreach>
-        where id = #{params.id}
-    </update>
-
-    <select id="findByRoleName" resultType="modelBeanMap">
-        select * from system_role where name = #{name}
-    </select>
-
-    <delete id="deleteById" parameterType="Integer">
-        delete from system_role where id = #{id}
-    </delete>
-
-
-    <select id="queryList" resultType="modelBeanMap">
-        select * from system_role
-        <where>
-            <if test="name != null and name != ''">
-                <bind name="searchName" value="'%' + name + '%'"/>
-                and name like #{searchName}
-            </if>
-        </where>
-        order by id desc
+    <select id="findRoleListByAdminId" resultType="com.education.model.entity.SystemRole">
+        select * from system_role where id in (
+           select role_id from system_admin_role where admin_id = #{adminId}
+        )
     </select>
 </mapper>

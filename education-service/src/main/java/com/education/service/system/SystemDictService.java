@@ -19,9 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
  * @create_at 2020/3/9 21:16
  */
 @Service
-public class SystemDictService extends BaseService<SystemDictMapper> {
+public class SystemDictService  {
 
-    public static final String GRADE_TYPE = "grade_type";
+    /*public static final String GRADE_TYPE = "grade_type";
     public static final String QUESTION_TYPE = "question_type";
     @Autowired
     private SystemDictValueService systemDictValueService;
@@ -45,5 +45,5 @@ public class SystemDictService extends BaseService<SystemDictMapper> {
             logger.error("删除字典数据失败", e);
             throw new BusinessException(new ResultCode(ResultCode.FAIL, "删除字典数据失败"));
         }
-    }
+    }*/
 }

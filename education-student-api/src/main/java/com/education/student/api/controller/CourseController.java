@@ -22,14 +22,14 @@ import java.util.Map;
 @RestController
 public class CourseController extends BaseController {
 
-    @Autowired
+  /*  @Autowired
     private CourseInfoService courseInfoService;
 
-    /**
+    *//**
      * 获取科目课程列表
      * @param params
      * @return
-     */
+     *//*
     @GetMapping("getCourseList")
     public Result getCourseList(@RequestParam Map params) {
         params.put("studentId", courseInfoService.getFrontUserInfo().get("student_id"));
@@ -37,22 +37,22 @@ public class CourseController extends BaseController {
                 CourseInfoMapper.GET_RECOMMEND_COURSE_LIST);
     }
 
-    /**
+    *//**
      * 获取课程试题
      * @param courseId
      * @return
-     */
+     *//*
     @GetMapping("getCourseQuestion")
     public Result getCourseQuestion(Integer courseId) {
         return Result.success(courseInfoService.getCourseQuestion(courseId));
     }
 
 
-    /**
+    *//**
      * 提交试题
      * @param modelBeanMap
      * @return
-     */
+     *//*
     @PostMapping("commitQuestion")
     @ApiOperation("提交试题接口")
     public ResultCode commitQuestion(@RequestBody ModelBeanMap modelBeanMap) {
@@ -62,13 +62,13 @@ public class CourseController extends BaseController {
     }
 
 
-    /**
+    *//**
      * 课程收藏
      * @param courseBeanMap
      * @return
-     */
+     *//*
     @PostMapping("collectCourse")
     public Result collectCourse(@RequestBody ModelBeanMap courseBeanMap) {
         return courseInfoService.collectCourse(courseBeanMap);
-    }
+    }*/
 }

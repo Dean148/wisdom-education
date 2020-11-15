@@ -28,11 +28,12 @@ public class AuthInterceptor extends BaseInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        FrontUserInfoSession userInfoSession = studentInfoService.getFrontUserInfoSession();
+      /*  FrontUserInfoSession userInfoSession = studentInfoService.getFrontUserInfoSession();
         if (ObjectUtils.isEmpty(userInfoSession)) {
             renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE, "用户身份已过期，请重新登录"));
             return false;
         }
-        return checkToken(frontJwtToken, request, response);
+        return checkToken(frontJwtToken, request, response);*/
+      return false;
     }
 }

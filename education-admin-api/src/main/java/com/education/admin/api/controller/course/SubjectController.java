@@ -25,7 +25,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/system/subject")
 public class SubjectController extends BaseController {
-
+/*
     @Autowired
     private SubjectInfoService subjectInfoService;
 
@@ -36,11 +36,11 @@ public class SubjectController extends BaseController {
         return subjectInfoService.pagination(params);
     }
 
-    /**
+    *//**
      * 添加更新科目
      * @param subjectMap
      * @return
-     */
+     *//*
     @PostMapping("saveOrUpdate")
     @RequiresPermissions(value = {"system:subject:save", "system:subject:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody ModelBeanMap subjectMap) {
@@ -53,25 +53,25 @@ public class SubjectController extends BaseController {
         return subjectInfoService.saveOrUpdate(updateFlag, subjectMap);
     }
 
-    /**
+    *//**
      * 单条删除
      * @param subjectMap
      * @return
-     */
+     *//*
     @DeleteMapping
     @RequiresPermissions("system:subject:deleteById")
     public ResultCode deleteById(@RequestBody ModelBeanMap subjectMap) {
         return subjectInfoService.deleteById(subjectMap);
     }
 
-    /**
+    *//**
      * 批量删除
      * @param subjectMap
      * @return
-     */
+     *//*
     @DeleteMapping("batchDelete")
     @RequiresPermissions("system:subject:batchDelete")
     public ResultCode batchDeleteByIds(@RequestBody ModelBeanMap subjectMap) {
         return subjectInfoService.deleteById(subjectMap);
-    }
+    }*/
 }

@@ -1,16 +1,11 @@
 package com.education.admin.api.controller.system;
 
-import com.education.common.model.ModelBeanMap;
 import com.education.common.utils.Result;
-import com.education.common.utils.ResultCode;
+import com.education.model.entity.SystemMenu;
 import com.education.service.core.ApiController;
 import com.education.service.system.SystemMenuService;
-import com.education.service.system.SystemRoleMenuService;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
 
 
 /**
@@ -25,14 +20,55 @@ public class SystemMenuController extends ApiController {
 
     @Autowired
     private SystemMenuService systemMenuService;
-    @Autowired
-    private SystemRoleMenuService systemRoleMenuService;
 
     /**
+     * 菜单列表
+     * @return
+     */
+    @GetMapping("menuTreeList")
+   // @RequiresPermissions("system:menu:list")
+    public Result menuTreeList() {
+        return Result.success(systemMenuService.selectMenuTreeList());
+    }
+
+    /**
+     * 菜单详情
+     * @param id
+     * @return
+     */
+    @GetMapping("selectById")
+    public Result selectById(Integer id) {
+        return Result.success(systemMenuService.selectById(id));
+    }
+
+    /**
+     * 保存或修改菜单
+     * @param systemMenu
+     * @return
+     */
+    @PostMapping
+    public Result saveOrUpdate(@RequestBody SystemMenu systemMenu) {
+        systemMenuService.saveOrUpdate(systemMenu);
+        return Result.success();
+    }
+
+    /**
+     * 根据id 删除菜单
+     * @param id
+     * @return
+     */
+    @DeleteMapping("{id}")
+    public Result deleteById(@PathVariable Integer id) {
+        systemMenuService.removeById(id);
+        return Result.success();
+    }
+
+
+  /*  *//**
      * 获取角色拥有菜单id 集合
      * @param roleId
      * @return
-     */
+     *//*
     @GetMapping("getMenuByRole")
     public Result getMenuByRole(Integer roleId) {
         return Result.success(systemRoleMenuService.getMenuListByRoleId(roleId));
@@ -68,5 +104,5 @@ public class SystemMenuController extends ApiController {
     @RequiresPermissions(value = {"system:menu:save", "system:menu:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody ModelBeanMap menuMap) {
         return systemMenuService.saveOrUpdate(menuMap);
-    }
+    }*/
 }

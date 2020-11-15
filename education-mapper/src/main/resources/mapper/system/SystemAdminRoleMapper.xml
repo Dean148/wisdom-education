@@ -2,30 +2,4 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.education.mapper.system.SystemAdminRoleMapper">
 
-    <select id="findRoleListByAdminId" parameterType="Integer" resultType="modelBeanMap">
-       select * from system_admin_role where admin_id = #{adminId}
-    </select>
-
-    <delete id="deleteByAdminId" parameterType="Integer">
-       delete from system_admin_role where admin_id = #{adminId}
-    </delete>
-
-    <insert id="batchSave" parameterType="map">
-        insert into system_admin_role(admin_id, role_id)
-        values
-        <foreach collection="list" separator="," item="item">
-            (#{item.adminId}, #{item.roleId})
-        </foreach>
-    </insert>
-
-    <insert id="save" parameterType="map" useGeneratedKeys="true" keyProperty="params.id">
-        insert into system_admin_role
-        <foreach collection="params.keys" item="key" open="(" close=")" separator="," >
-            ${key}
-        </foreach>
-        values
-        <foreach collection="params.values"  item="value" open="(" close=")" separator=",">
-            #{value}
-        </foreach>
-    </insert>
 </mapper>

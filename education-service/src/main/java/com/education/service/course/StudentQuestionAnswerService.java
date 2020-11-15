@@ -22,9 +22,9 @@ import java.util.*;
  * @create_at 2020/3/9 20:17
  */
 @Service
-public class StudentQuestionAnswerService extends BaseService<StudentQuestionAnswerMapper> {
+public class StudentQuestionAnswerService  {
 
-    @Autowired
+   /* @Autowired
     private ExamInfoMapper examInfoMapper;
     @Autowired
     private StudentQuestionAnswerMapper studentQuestionAnswerMapper;
@@ -119,5 +119,5 @@ public class StudentQuestionAnswerService extends BaseService<StudentQuestionAns
             return result;
         }
         return null;
-    }
+    }*/
 }

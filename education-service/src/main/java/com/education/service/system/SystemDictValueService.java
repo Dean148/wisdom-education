@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class SystemDictValueService extends BaseService<SystemDictValueMapper> {
+public class SystemDictValueService  {
 
-    private static final String DICT_VALUE_CACHE_NAME = "system:dict:value:";
+  /*  private static final String DICT_VALUE_CACHE_NAME = "system:dict:value:";
 
     public List<ModelBeanMap> getDictValueTreeList() {
         return MapTreeUtils.buildTreeData(mapper.treeList());
@@ -84,5 +84,5 @@ public class SystemDictValueService extends BaseService<SystemDictValueMapper> {
 
     public int deleteDictValueById(ModelBeanMap dictValueBeanMap) {
         return mapper.deleteById(dictValueBeanMap.getInt("id"));
-    }
+    }*/
 }

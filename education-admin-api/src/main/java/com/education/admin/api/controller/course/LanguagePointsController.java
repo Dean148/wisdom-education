@@ -21,15 +21,15 @@ import java.util.Map;
 @RestController
 @RequestMapping("/system/languagePoints")
 public class LanguagePointsController extends BaseController {
-
+/*
     @Autowired
     private LanguagePointsService languagePointsService;
 
-    /**
+    *//**
      * 知识点列表
      * @param params
      * @return
-     */
+     *//*
     @GetMapping
     public Result list(@RequestParam Map params) {
         Result result = languagePointsService.pagination(params);
@@ -41,11 +41,11 @@ public class LanguagePointsController extends BaseController {
         return result;
     }
 
-    /**
+    *//**
      * 添加或修改知识点
      * @param modelBeanMap
      * @return
-     */
+     *//*
     @ParamsValidate(params = {
        @Param(name = "name", message = "请输入知识点名称"),
        @Param(name = "grade_type", message = "请选择所属年级"),
@@ -56,36 +56,36 @@ public class LanguagePointsController extends BaseController {
         return languagePointsService.saveOrUpdate(modelBeanMap);
     }
 
-    /**
+    *//**
      * 删除知识点
      * @param modelBeanMap
      * @return
-     */
+     *//*
     @DeleteMapping
     public Result deleteById(@RequestBody ModelBeanMap modelBeanMap) {
         return Result.success(languagePointsService.deleteById(modelBeanMap.getInt("value")));
     }
 
-    /**
+    *//**
      * 获取知识点详情
      * @param id
      * @return
-     */
+     *//*
     @GetMapping("findById")
     public Result findById(Integer id) {
         return Result.success(languagePointsService.findById(id));
     }
 
-    /**
+    *//**
      * 获取知识点父类id集合
      * @param languagePointsId
      * @return
-     */
+     *//*
     @GetMapping("getParentId")
     public Result getParentId(Integer languagePointsId) {
         List<Integer> parentIds = languagePointsService.getParentId(languagePointsId);
         parentIds.add(languagePointsId);
         return null;
       //  return parentIds;
-    }
+    }*/
 }

@@ -27,7 +27,7 @@ import java.util.Map;
 @RequestMapping("/student")
 public class StudentController extends BaseController {
 
-    @Autowired
+    /*@Autowired
     private StudentInfoService studentInfoService;
     @Autowired
     private SubjectInfoService subjectInfoService;
@@ -38,11 +38,11 @@ public class StudentController extends BaseController {
         return subjectInfoService.pagination(params);
     }
 
-    /**
+    *//**
      * 学员登录接口
      * @param params
      * @return
-     */
+     *//*
     @PostMapping("login")
     @ParamsValidate(params = {
         @Param(name = "userName", message = "用户名不能为空"),
@@ -80,5 +80,5 @@ public class StudentController extends BaseController {
     @GetMapping("getStudentErrorQuestionList")
     public Result getStudentErrorQuestionList(@RequestParam Map params) {
         return studentInfoService.getStudentErrorQuestionList(params);
-    }
+    }*/
 }

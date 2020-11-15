@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
  * @create_at 2020/3/9 20:00
  */
 @Service
-public class TestPaperInfoService extends BaseService<TestPaperInfoMapper> {
+public class TestPaperInfoService  {
 
-    private static final String TEST_PAPER_TEMPLATE = "paper.ftl";
+   /* private static final String TEST_PAPER_TEMPLATE = "paper.ftl";
 
     @Autowired
     private DocumentService documentService;
@@ -43,11 +43,11 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper> {
     private StudentQuestionAnswerMapper studentQuestionAnswerMapper;
     @Autowired
     private ExamInfoMapper examInfoMapper;
-    /**
+    *//**
      * 关联试题
      * @param params
      * @return
-     */
+     *//*
     @Transactional
     public ResultCode relevanceQuestion(Map params) {
         try {
@@ -227,5 +227,5 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper> {
 
     public Result getPaperQuestionList(Map params) {
         return pagination(params, TestPaperQuestionMapper.class, TestPaperQuestionMapper.GET_PAPER_QUESTION_LIST);
-    }
+    }*/
 }

@@ -1,26 +1,60 @@
 package com.education.service.system;
 
-import com.education.common.model.AdminUserSession;
-import com.education.common.model.ModelBeanMap;
-import com.education.common.utils.MapTreeUtils;
-import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.Result;
-import com.education.common.utils.ResultCode;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.education.common.utils.TreeUtils;
 import com.education.mapper.system.SystemMenuMapper;
+import com.education.model.dto.MenuTree;
+import com.education.model.entity.SystemAdmin;
+import com.education.model.entity.SystemMenu;
 import com.education.service.BaseService;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * 菜单管理service
  * @author zengjintao
  * @version 1.0
  * @create_at 2020/3/8 15:38
  */
 @Service
-public class SystemMenuService extends BaseService<SystemMenuMapper> {
+public class SystemMenuService extends BaseService<SystemMenuMapper, SystemMenu> {
 
+    /**
+     * 获取角色菜单列表
+     * @param roleIds
+     * @return
+     */
+    public List<SystemMenu> getMenuListByRoles(List<Integer> roleIds) {
+        return baseMapper.getMenuListByRoles(roleIds);
+    }
+
+    /**
+     * 树菜单列表
+     * @return
+     */
+    public List<MenuTree> selectMenuTreeList() {
+        return TreeUtils.buildTreeData(baseMapper.getTreeMenuList());
+    }
+
+    /**
+     * 树菜单详情
+     * @param id
+     * @return
+     */
+    public MenuTree selectById(Integer id) {
+        MenuTree menuTree = baseMapper.selectMenuTreeById(id);
+        List<MenuTree> menuTreeList = baseMapper.getTreeMenuList();
+        Integer parentId = menuTree.getParentId();
+        List<MenuTree> parentMenuList = TreeUtils.getParentList(menuTreeList, parentId);
+        List<Integer> parentIds = parentMenuList.stream()
+                .map(MenuTree::getId)
+                .collect(Collectors.toList());
+        menuTree.setParentIds(parentIds);
+        return menuTree;
+    }
+/*
 
     public List<ModelBeanMap> treeMenu() {
         List<ModelBeanMap> menuList = mapper.treeList();
@@ -38,6 +72,7 @@ public class SystemMenuService extends BaseService<SystemMenuMapper> {
         menuMap.put("parentArrayId", parentIds);
         return Result.success(menuMap);
     }
+*/
 
    /* private List<Integer> getParentIds(int parentId, List<Integer> parentIds) {
         if (parentId != ResultCode.FAIL) {
@@ -51,7 +86,7 @@ public class SystemMenuService extends BaseService<SystemMenuMapper> {
         return parentIds;
     }
 */
-    public List<ModelBeanMap> getMenuByUser() {
+  /*  public List<ModelBeanMap> getMenuByUser() {
         AdminUserSession userSession = getAdminUserSession();
         List<ModelBeanMap> menuList = userSession.getMenuList();
         if (ObjectUtils.isEmpty(menuList)) {
@@ -70,5 +105,5 @@ public class SystemMenuService extends BaseService<SystemMenuMapper> {
             userSession.setMenuList(menuList);
         }
         return menuList;
-    }
+    }*/
 }

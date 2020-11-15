@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "首页数据接口")
 public class HomeController extends BaseController {
 
-    @Autowired
+    /*@Autowired
     private HomeService homeService;
 
     @GetMapping("headDataCount")
@@ -31,5 +31,5 @@ public class HomeController extends BaseController {
     @GetMapping("getRegionInfoData")
     public Result getRegionInfoData() {
         return homeService.getRegionInfoData();
-    }
+    }*/
 }

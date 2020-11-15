@@ -1,5 +1,12 @@
 package com.education.model.entity;
 
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.models.auth.In;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,16 +18,24 @@ import java.util.Date;
  */
 public abstract class BaseEntity<T extends BaseEntity<T>> implements Serializable {
 
-    private int id;
+    @TableId(type = IdType.AUTO)
+    private Integer id;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField("create_date")
     Date createDate;
+
+    @TableField("update_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date updateDate;
 
-    public int getId() {
-        return id;
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Integer getId() {
+        return id;
     }
 
     public Date getCreateDate() {

@@ -1,6 +1,6 @@
 package com.education.mapper.course;
 
-import com.education.common.base.BaseMapper;
+import com.education.common.base.BaseCommonMapper;
 
-public interface LanguagePointsMapper extends BaseMapper {
+public interface LanguagePointsMapper extends BaseCommonMapper {
 }

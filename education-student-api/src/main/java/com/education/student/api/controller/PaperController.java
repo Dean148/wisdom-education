@@ -25,17 +25,20 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/student/paper")
 public class PaperController extends BaseController {
+/*
 
     @Autowired
     private TestPaperInfoService testPaperInfoService;
     @Autowired
     private SubjectInfoService subjectInfoService;
 
-    /**
+    */
+/**
      * 获取题库模式试卷列表
      * @param params
      * @return
-     */
+     *//*
+
     @GetMapping("getPaperList")
     public Result getPaperList(@RequestParam Map params) {
         Map userInfo = testPaperInfoService.getFrontUserInfo();
@@ -53,11 +56,13 @@ public class PaperController extends BaseController {
     }
 
 
-    /**
+    */
+/**
      * 获取试卷试题
      * @param params
      * @return
-     */
+     *//*
+
     @GetMapping("getQuestionByPaperId")
     public Result getQuestionByPaperId(@RequestParam Map params) {
         Result result = testPaperInfoService.pagination(params, TestPaperQuestionMapper.class, TestPaperQuestionMapper.GET_PAPER_QUESTION_LIST);
@@ -66,14 +71,17 @@ public class PaperController extends BaseController {
         return result;
     }
 
-    /**
+    */
+/**
      * 提交试卷接口
      * @param params
      * @return
-     */
+     *//*
+
     @PostMapping("commitPaperQuestion")
     public ResultCode commitPaperQuestion (@RequestBody ModelBeanMap params) {
         return testPaperInfoService.commitPaperQuestion(params);
     }
+*/
 
 }

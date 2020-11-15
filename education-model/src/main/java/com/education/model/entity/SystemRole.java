@@ -1,12 +1,16 @@
 package com.education.model.entity;
 
-import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+@TableName("system_role")
 public class SystemRole extends BaseEntity<SystemRole> {
 
 	private String name;
 	private String remark;
-	private int createType;
+	@TableField("create_type")
+	private Integer createType;
 
 	public String getName() {
 		return name;
@@ -24,11 +28,11 @@ public class SystemRole extends BaseEntity<SystemRole> {
 		this.remark = remark;
 	}
 
-	public int getCreateType() {
+	public Integer getCreateType() {
 		return createType;
 	}
 
-	public void setCreateType(int createType) {
+	public void setCreateType(Integer createType) {
 		this.createType = createType;
 	}
 }

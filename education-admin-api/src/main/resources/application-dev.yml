@@ -52,11 +52,9 @@ pagehelper:
   support-methods-arguments: true
   params: count=countSql
 
-mybatis:
-  mapper-locations: mapper/**/*.xml
-  type-aliases-package: com.education.common.model
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 mybatis-plus:
   type-aliases-package: com.education.common.model
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: mapper/**/*.xml

@@ -1,6 +1,6 @@
 package com.education.mapper.course;
 
-import com.education.common.base.BaseMapper;
+import com.education.common.base.BaseCommonMapper;
 import com.education.common.model.ModelBeanMap;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -13,7 +13,7 @@ import java.util.Map;
  * @version 1.0
  * @create_at 2020/3/9 15:55
  */
-public interface ExamInfoMapper extends BaseMapper {
+public interface ExamInfoMapper extends BaseCommonMapper {
 
     String GET_STUDENT_LIST_BY_EXAM_ID = "getStudentListByExamId";
 

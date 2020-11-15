@@ -29,9 +29,9 @@ import java.util.*;
  * @create_at 2020/3/9 15:36
  */
 @Service
-public class StudentInfoService extends BaseService<StudentInfoMapper> {
+public class StudentInfoService {
 
-    @Autowired
+  /*  @Autowired
     private QuestionInfoService questionService;
     @Autowired
     private StudentQuestionAnswerMapper studentQuestionAnswerMapper;
@@ -265,11 +265,11 @@ public class StudentInfoService extends BaseService<StudentInfoMapper> {
         }
     }
 
-    /**
+    *//**
      * 修改学员密码
      * @param params
      * @return
-     */
+     *//*
     public ResultCode resettingFrontUserPassword(Map params) {
         try {
             String newPassword = (String)params.get("newPassword");
@@ -427,5 +427,5 @@ public class StudentInfoService extends BaseService<StudentInfoMapper> {
         loginLog.put("update_date", now);
         loginLog.put("id", userInfoMap.get("student_id"));
         mapper.update(loginLog);
-    }
+    }*/
 }

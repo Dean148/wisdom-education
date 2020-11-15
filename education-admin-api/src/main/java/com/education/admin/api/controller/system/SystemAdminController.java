@@ -1,20 +1,18 @@
 package com.education.admin.api.controller.system;
 
-import com.education.common.annotation.Param;
-import com.education.common.annotation.ParamsType;
-import com.education.common.annotation.ParamsValidate;
 import com.education.common.annotation.SystemLog;
 import com.education.common.base.BaseController;
-import com.education.common.model.ModelBeanMap;
+import com.education.common.model.PageInfo;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
+import com.education.model.dto.AdminRoleDto;
+import com.education.model.entity.SystemAdmin;
+import com.education.model.request.PageParam;
 import com.education.service.system.SystemAdminService;
 import io.swagger.annotations.Api;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
+
 
 /**
  * 管理员管理
@@ -32,88 +30,64 @@ public class SystemAdminController extends BaseController {
 
     /**
      * 管理员列表
-     * @param params
+     * @param pageParam
+     * @param systemAdmin
      * @return
      */
-    @GetMapping({"", "list"})
-    @RequiresPermissions("system:admin:list")
-    @ParamsValidate(params = {
-        @Param(name = "offset", message = "请传递当前页参数"),
-        @Param(name = "limit", message = "请输入每页显示条数")
-    })
+    @GetMapping
     @SystemLog(describe = "获取管理员列表")
-    public Result list(@RequestParam Map params) {
-        return systemAdminService.pagination(params);
-    }
-    /**
-     * 重置密码
-     * @param systemAdmin
-     * @return
-     */
-    @PostMapping("updatePassword")
-    @ParamsValidate(params = {
-       @Param(name = "password", message = "请输入密码"),
-       @Param(name = "confirmPassword", message = "请输入确认密码")
-    }, paramsType = ParamsType.JSON_DATA)
-    @RequiresPermissions("system:admin:updatePassword")
-    @SystemLog(describe = "重置密码管理员密码")
-    public ResultCode updatePassword(@RequestBody ModelBeanMap systemAdmin) {
-        String password = (String)systemAdmin.get("password");
-        String confirmPassword = (String)systemAdmin.get("confirmPassword");
-        if (!password.equals(confirmPassword)) {
-            return new ResultCode(ResultCode.FAIL, "密码与确认密码不一致");
-        }
-        systemAdmin.remove("confirmPassword");
-        return systemAdminService.updatePassword(systemAdmin);
+    public Result<PageInfo<SystemAdmin>> list(PageParam pageParam, SystemAdmin systemAdmin) {
+        return Result.success(systemAdminService.listPage(pageParam, systemAdmin));
     }
 
     /**
-     * 修改密码
-     * @param systemAdmin
+     * 管理员详情
+     * @param id
      * @return
      */
-    @PostMapping("resettingPassword")
-    @SystemLog(describe = "修改密码")
-    public ResultCode resettingPassword (@RequestBody ModelBeanMap systemAdmin) {
-        String newPassword = systemAdmin.getStr("newPassword");
-        String confirmPassword = systemAdmin.getStr("confirmPassword");
-        if (!newPassword.equals(confirmPassword)) {
-            return new ResultCode(ResultCode.FAIL, "密码与确认密码不一致");
-        }
-        systemAdmin.remove("confirmPassword");
-        return systemAdminService.resettingPassword(systemAdmin);
-    }
-
-    @DeleteMapping
-    @RequiresPermissions({"system:admin:deleteById"})
-    @SystemLog(describe = "删除管理员")
-    public ResultCode deleteById(@RequestBody ModelBeanMap systemAdmin) {
-        Integer createType = (Integer)systemAdmin.get("create_type");
-        if (createType == ResultCode.SUCCESS) {
-            return new ResultCode(ResultCode.FAIL, "您不能删除系统内置管理员");
-        }
-        return systemAdminService.deleteById(systemAdmin);
-    }
-
-    @GetMapping("findById")
-    @SystemLog(describe = "获取管理员详情")
-    public Result findById(Integer id) {
-        return systemAdminService.findById(id);
+    @GetMapping("selectById")
+    @SystemLog(describe = "查看管理员详情")
+    public Result selectById(Integer id) {
+        return Result.success(systemAdminService.selectById(id));
     }
 
     /**
      * 添加或修改管理员
-     * @param params
+     * @param adminRoleDto
      * @return
      */
     @PostMapping
-    @RequiresPermissions(value = {"system:admin:save", "system:admin:update"}, logical = Logical.OR)
     @SystemLog(describe = "添加或修改管理员")
-    public ResultCode saveOrUpdate(@RequestBody Map params) {
-        Integer createType = (Integer)params.get("create_type");
-        if (createType != null && createType == ResultCode.SUCCESS) {
-            return new ResultCode(ResultCode.FAIL, "您不能编辑系统内置管理员");
+    public Result saveOrUpdate(@RequestBody AdminRoleDto adminRoleDto) {
+        systemAdminService.saveOrUpdate(adminRoleDto);
+        return Result.success();
+    }
+
+    /**
+     * 删除管理员
+     * @param id
+     * @return
+     */
+    @DeleteMapping("{id}")
+    @SystemLog(describe = "删除管理员")
+    public Result deleteById(@PathVariable Integer id) {
+        return systemAdminService.deleteById(id);
+    }
+
+
+    /**
+     * 修改密码
+     * @param adminRoleDto
+     * @return
+     */
+    @PostMapping("updatePassword")
+    public Result updatePassword(AdminRoleDto adminRoleDto) {
+        String password = adminRoleDto.getPassword();
+        String confirmPassword = adminRoleDto.getConfirmPassword();
+        if (!password.equals(confirmPassword)) {
+            return Result.fail(ResultCode.FAIL, "密码与确认密码不一致");
         }
-        return systemAdminService.saveOrUpdate(params);
+        systemAdminService.updatePassword(adminRoleDto);
+        return Result.success("密码重置成功");
     }
 }

@@ -5,7 +5,6 @@ package com.education.model.entity;
  */
 public class CourseInfo extends BaseEntity<CourseInfo> {
 
-	private int id;
 	private String name;
 	private int gradeType;
 	private int schoolType;
@@ -18,16 +17,6 @@ public class CourseInfo extends BaseEntity<CourseInfo> {
 	private long recommendIndexFlag;
 	private int studyNumber;
 	private int status;
-
-	@Override
-	public int getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;

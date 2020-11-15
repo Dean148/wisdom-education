@@ -27,7 +27,7 @@ import java.util.Map;
 @Slf4j
 public class DocumentService {
 
-    @Autowired
+   /* @Autowired
     private QuestionInfoService questionInfoService;
     @Autowired
     private CourseQuestionInfoMapper courseQuestionInfoMapper;
@@ -35,11 +35,11 @@ public class DocumentService {
     private CourseInfoMapper courseInfoMapper;
     private static final String COURSE_QUESTION_TEMPLATE = "modeQuestion.ftl";
 
-    /**
+    *//**
      * 模式试题导出
      * @param courseIds
      * @return
-     */
+     *//*
     public ResultCode exportCourseQuestion(List<Integer> courseIds) {
         if (ObjectUtils.isEmpty(courseIds)) {
             return new ResultCode(ResultCode.FAIL, "请选择课程");
@@ -105,5 +105,5 @@ public class DocumentService {
         }
         params.put("dataList", dataList);
     }
-
+*/
 }

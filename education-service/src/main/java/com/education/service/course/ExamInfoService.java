@@ -15,9 +15,10 @@ import java.util.Map;
  * @create_at 2020/3/9 19:44
  */
 @Service
-public class ExamInfoService extends BaseService<ExamInfoMapper> {
+public class ExamInfoService  {
 
-    public List<ModelBeanMap> countByDateTime(Map params) {
+   /* public List<ModelBeanMap> countByDateTime(Map params) {
         return mapper.countByDateTime(params);
     }
+}*/
 }

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/student/subject")
 @RestController
 public class SubjectController extends BaseController {
-
+/*
     @Autowired
     private SubjectInfoService subjectInfoService;
 
@@ -27,5 +27,5 @@ public class SubjectController extends BaseController {
     @ApiOperation(value = "根据学员年级会员科目列表")
     public Result findListByGradeType() {
         return Result.success(subjectInfoService.findListByGradeType());
-    }
+    }*/
 }

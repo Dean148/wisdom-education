@@ -1,30 +1,36 @@
 package com.education.service.system;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.common.constants.EnumConstants;
-import com.education.common.model.AdminUserSession;
+import com.education.common.exception.BusinessException;
 import com.education.common.model.ModelBeanMap;
+import com.education.common.model.PageInfo;
 import com.education.common.utils.*;
-
 import com.education.mapper.system.SystemAdminMapper;
-import com.education.mapper.system.SystemAdminRoleMapper;
-import com.education.mapper.system.SystemMenuMapper;
-import com.education.mapper.system.SystemRoleMenuMapper;
+import com.education.model.dto.AdminRoleDto;
+import com.education.model.dto.AdminUserSession;
+import com.education.model.dto.MenuTree;
+import com.education.model.entity.SystemAdmin;
+import com.education.model.entity.SystemAdminRole;
+import com.education.model.entity.SystemMenu;
+import com.education.model.entity.SystemRole;
+import com.education.model.request.PageParam;
 import com.education.service.BaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.subject.support.DefaultWebSubjectContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author zengjintao
@@ -33,79 +39,56 @@ import java.util.*;
  */
 @Service
 @Slf4j
-public class SystemAdminService extends BaseService<SystemAdminMapper> {
+public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdmin> {
 
+    @Autowired
+    private SystemMenuService systemMenuService;
+    @Autowired
+    private SystemRoleService systemRoleService;
     @Autowired
     private SystemAdminRoleService systemAdminRoleService;
-    @Autowired
-    private SystemMenuMapper systemMenuMapper;
-    @Autowired
-    private SystemAdminRoleMapper systemAdminRoleMapper;
-    @Autowired
-    private SystemRoleMenuMapper systemRoleMenuMapper;
 
-
-    @Override
-    public Result pagination(Map params) {
-        Result result = super.pagination(params);
-        List<ModelBeanMap> dataList = ((ModelBeanMap)result.getData()).getModelBeanMapList("dataList");
-        for (ModelBeanMap admin : dataList) {
-            List<ModelBeanMap> roleList = systemAdminRoleService.findRoleListByAdminId(admin.getInt("id"));
-            List<Integer> roleIds = new ArrayList<>();
-            for (Map role : roleList) {
-                roleIds.add((Integer)role.get("role_id"));
-            }
-            admin.put("roleIds", roleIds);
-        }
-        ((ModelBeanMap) result.getData()).put("dataList", dataList);
-        return result;
+    public PageInfo<AdminRoleDto> listPage(PageParam pageParam, SystemAdmin systemAdmin) {
+        Page<AdminRoleDto> page = new Page<>(pageParam.getPageNumber(), pageParam.getPageSize());
+        return selectPage(baseMapper.selectPageList(page, systemAdmin));
     }
 
+    public AdminRoleDto selectById(Integer id) {
+        return baseMapper.selectById(id);
+    }
 
     /**
      * 加载用户菜单及权限标识
+     *
      * @param userSession
      */
     public void loadUserMenuAndPermission(AdminUserSession userSession) {
-        List<ModelBeanMap> menuList = null;
+        List<SystemMenu> menuList = null;
         if (userSession.isSuperAdmin()) {
-            menuList = systemMenuMapper.queryList(null);
+            menuList = systemMenuService.list();
         } else {
-            int adminId = userSession.getUserId();
-            List<ModelBeanMap> roleList = getRolesByAUserId(adminId);
-            userSession.setRoleList(roleList);
-            List<Integer> roleIds = new ArrayList<>();//用户角色id集合
-            if (ObjectUtils.isNotEmpty(roleList)) {
-                for (Map roleMap : roleList) {
-                    roleIds.add((Integer)roleMap.get("role_id"));
-                }
-                userSession.setRoleList(roleList);
-            }
-            menuList = systemRoleMenuMapper.getMenuByRoleIds(roleIds);  //用户菜单集合
+            Integer adminId = userSession.getAdminId();
+            List<SystemRole> systemRoleList = systemRoleService.findRoleListByAdminId(adminId);
+            userSession.setRoleList(systemRoleList);
+            List<Integer> roleIds = systemRoleList.stream()
+                    .map(SystemRole::getId)
+                    .collect(Collectors.toList());
+            menuList = systemMenuService.getMenuListByRoles(roleIds);
         }
         if (ObjectUtils.isNotEmpty(menuList)) {
-            for (Map menuMap : menuList) {
-                String permissions = (String)menuMap.get("permissions");
-                if (ObjectUtils.isNotEmpty(permissions)) {
-                    userSession.addPermission(permissions);
-                }
-            }
-            List<ModelBeanMap> menuTreeList = MapTreeUtils.buildTreeData(menuList);
-            userSession.setMenuList(menuTreeList);
+            List<MenuTree> menuTreeList = new ArrayList<>();
+            Set<String> permissionList = new HashSet<>();
+            menuList.forEach(menu -> {
+                permissionList.add(menu.getPermissions());
+                MenuTree menuTree = new MenuTree();
+                menuTree.setId(menu.getId());
+                menuTree.setParentId(menu.getParentId());
+                menuTree.setLabel(menu.getName());
+                menuTreeList.add(menuTree);
+            });
+            userSession.setPermissionList(permissionList);
+            userSession.setMenuTreeList(TreeUtils.buildTreeData(menuTreeList));
         }
-    }
-
-    public int updateByUserId(Map params) {
-        return 0; //mapper.updateByUserId(params);
-    }
-
-    /**
-     * 获取用户角色
-     * @param adminId
-     * @return
-     */
-    public List<ModelBeanMap> getRolesByAUserId(int adminId) {
-        return systemAdminRoleMapper.findRoleListByAdminId(adminId);
     }
 
     public Result login(String loginName, String password) {
@@ -128,9 +111,67 @@ public class SystemAdminService extends BaseService<SystemAdminMapper> {
         return result;
     }
 
-    public ResultCode updatePassword(ModelBeanMap systemAdmin) {
+    @Transactional
+    public void saveOrUpdate(AdminRoleDto adminRoleDto) {
+        if (ObjectUtils.isEmpty(adminRoleDto.getId())) {
+            String password = adminRoleDto.getPassword();
+            String confirmPassword = adminRoleDto.getConfirmPassword();
+            if (!password.equals(confirmPassword)) {
+                throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码与确认密码不一致"));
+            }
+            String encrypt = Md5Utils.encodeSalt(Md5Utils.generatorKey());
+            adminRoleDto.setEncrypt(encrypt);
+            password = Md5Utils.getMd5(password, encrypt);
+            adminRoleDto.setPassword(password);
+        }
+
+        super.saveOrUpdate(adminRoleDto);
+
+        // 保存管理员角色信息
+        if (ObjectUtils.isNotEmpty(adminRoleDto.getRoleIds())) {
+            List<SystemAdminRole> adminRoleList = new ArrayList<>();
+            adminRoleDto.getRoleIds().forEach(roleId -> {
+                SystemAdminRole systemAdminRole = new SystemAdminRole();
+                systemAdminRole.setAdminId(adminRoleDto.getId());
+                systemAdminRole.setRoleId(roleId);
+            });
+
+            systemAdminRoleService.deleteByAdminId(adminRoleDto.getId());
+            systemAdminRoleService.saveBatch(adminRoleList);
+        }
+    }
+
+    @Transactional
+    public Result deleteById(Integer id) {
+        SystemAdmin systemAdmin = super.getById(id);
+        if (systemAdmin.isSuperFlag()) {
+            return Result.fail(ResultCode.FAIL, "不允许删除超级管理员");
+        }
+        super.removeById(id);
+        systemAdminRoleService.deleteByAdminId(id);
+        return Result.success("删除管理员" + systemAdmin.getLoginName() + "成功");
+    }
+
+    /**
+     * 重置密码
+     * @param adminRoleDto
+     */
+    public void updatePassword(AdminRoleDto adminRoleDto) {
+        String password = adminRoleDto.getPassword();
+        SystemAdmin systemAdmin = super.getById(adminRoleDto.getId());
+        String encrypt = systemAdmin.getEncrypt();
+        password = Md5Utils.getMd5(password,  encrypt);
+        adminRoleDto.setPassword(password);
+        UpdateWrapper updateWrapper = new UpdateWrapper();
+        updateWrapper.set("password", password);
+        updateWrapper.eq("id", adminRoleDto.getId());
+        super.update(updateWrapper);
+    }
+}
+
+  /*  public ResultCode updatePassword(ModelBeanMap systemAdmin) {
         try {
-            String password = systemAdmin.getStr("password");
+           *//* String password = systemAdmin.getStr("password");
             Map userMap = mapper.findById(systemAdmin.getInt("id"));
             String encrypt = (String)userMap.get("encrypt");
             password = Md5Utils.getMd5(password,  encrypt);
@@ -138,7 +179,7 @@ public class SystemAdminService extends BaseService<SystemAdminMapper> {
             int result = super.update(systemAdmin);
             if (result > 0) {
                 return new ResultCode(ResultCode.SUCCESS, "密码重置成功");
-            }
+            }*//*
         } catch (Exception e) {
             log.error("密码修改失败", e);
         }
@@ -169,93 +210,4 @@ public class SystemAdminService extends BaseService<SystemAdminMapper> {
         }
         return new ResultCode(ResultCode.FAIL, "密码修改失败");
     }
-
-    /**
-     * 删除单条数据
-     * @param systemAdmin
-     * @return
-     */
-    public ResultCode deleteById(ModelBeanMap systemAdmin) {
-        //批量删除
-        String message = "删除";
-        int result = mapper.deleteById(systemAdmin.getInt("id"));
-        if (result > 0) {
-            return new ResultCode(ResultCode.SUCCESS, "删除成功");
-        }
-        return new ResultCode(ResultCode.FAIL, "删除失败");
-    }
-
-    /**
-     * 添加管理员
-     * @param params
-     * @return
-     */
-    @Transactional
-    public ResultCode saveOrUpdate(Map params) {
-        String message = "";
-        try {
-            checkParams(params);
-            Integer id = (Integer)params.get("id");
-            List<Integer> roleIds = (List<Integer>)params.get("roleIds");
-            params.remove("roleIds");
-            if (ObjectUtils.isEmpty(params.get("school_id"))) {
-                params.put("school_id", null);
-            }
-            if (ObjectUtils.isEmpty(id)) {
-                String password = (String)params.get("password");
-                String confirmPassword = (String)params.get("confirmPassword");
-                params.remove("confirmPassword");
-                if (!password.equals(confirmPassword)) {
-                    return new ResultCode(ResultCode.FAIL, "密码与确认密码不一致");
-                }
-                String encrypt = Md5Utils.encodeSalt(Md5Utils.generatorKey());
-                params.put("encrypt", encrypt);
-                password = Md5Utils.getMd5(password,  encrypt);
-                params.put("password", password);
-                params.put("create_date", new Date());
-                params.put("create_type", EnumConstants.CreateType.ADMIN_CREATE.getValue()); //管理员创建
-                message = "添加";
-                id = this.save(params);
-            } else {
-                message = "修改";
-                params.put("update_date", new Date());
-                this.update(params);
-            }
-            systemAdminRoleMapper.deleteByAdminId(id);
-            if (ObjectUtils.isNotEmpty(roleIds)) {
-                List<Map> adminRoleList = new ArrayList<>();
-                for (Integer roleId : roleIds) {
-                    Map adminRoleMap = new HashMap<>();
-                    adminRoleMap.put("roleId", roleId);
-                    adminRoleMap.put("adminId", id);
-                    adminRoleList.add(adminRoleMap);
-                }
-                Map dataMap = new HashMap<>();
-                dataMap.put("list", adminRoleList);
-                systemAdminRoleMapper.batchSave(dataMap);
-            }
-            return new ResultCode(ResultCode.SUCCESS, message + "管理员成功");
-        } catch (Exception e) {
-            log.error(message + "管理员异常", e);
-        }
-        return new ResultCode(ResultCode.FAIL, "添加管理员失败");
-    }
-
-    public Result findById(Integer id) {
-        try {
-            Map result = new HashMap<>();
-            List<ModelBeanMap> list = systemAdminRoleService.findRoleListByAdminId(id);
-            List<Integer> roleIds = new ArrayList<>();
-            if (ObjectUtils.isNotEmpty(list)) {
-                for (Map map : list) {
-                    roleIds.add((Integer)map.get("role_id"));
-                }
-            }
-            result.put("roleIds", roleIds);
-            return Result.success(result);
-        } catch (Exception e) {
-            log.error("操作异常", e);
-        }
-        return Result.fail();
-    }
-}
+}*/

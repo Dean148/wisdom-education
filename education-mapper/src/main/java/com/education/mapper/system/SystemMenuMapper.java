@@ -1,21 +1,35 @@
 package com.education.mapper.system;
 
-import com.education.common.base.BaseMapper;
-import com.education.common.model.ModelBeanMap;
-
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.education.model.dto.MenuTree;
+import com.education.model.entity.SystemMenu;
+import org.apache.ibatis.annotations.Param;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author zengjintao
  * @version 1.0
  * @create_at 2020/3/8 15:38
  */
-public interface SystemMenuMapper extends BaseMapper {
+public interface SystemMenuMapper extends BaseMapper<SystemMenu> {
 
-    List<ModelBeanMap> findMenuByUser(Map params);
+    /**
+     * 获取角色菜单列表
+     * @param roleIds
+     * @return
+     */
+    List<SystemMenu> getMenuListByRoles(@Param("roleIds") List<Integer> roleIds);
 
-    List<ModelBeanMap> findByParentId(Integer parentId);
+    /**
+     * 获取系统树形菜单
+     * @return
+     */
+    List<MenuTree> getTreeMenuList();
 
-    List<ModelBeanMap> findByParentIdAndRoleId(Map params);
+    /**
+     * 根据id 获取MenuTree
+     * @param id
+     * @return
+     */
+    MenuTree selectMenuTreeById(Integer id);
 }

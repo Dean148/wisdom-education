@@ -18,9 +18,9 @@ import java.util.*;
  * 知识点管理service
  */
 @Service
-public class LanguagePointsService extends BaseService<LanguagePointsMapper> {
+public class LanguagePointsService  {
 
-    @Autowired
+  /*  @Autowired
     private SubjectInfoService subjectInfoService;
     @Autowired
     private QuestionInfoMapper questionInfoMapper;
@@ -41,11 +41,11 @@ public class LanguagePointsService extends BaseService<LanguagePointsMapper> {
     }
 
 
-    /**
+    *//**
      * 知识点删除
      * @param id
      * @return
-     */
+     *//*
     @Override
     public ResultCode deleteById(Integer id) {
         synchronized (this) {
@@ -98,5 +98,5 @@ public class LanguagePointsService extends BaseService<LanguagePointsMapper> {
             }
         }
         return parentIds;
-    }
+    }*/
 }

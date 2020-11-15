@@ -35,14 +35,14 @@ import java.util.Map;
 @RequestMapping("/system/question")
 public class QuestionController extends BaseController {
 
-    @Autowired
+   /* @Autowired
     private QuestionInfoService questionInfoService;
 
-    /**
+    *//**
      * 实体列表
      * @param params
      * @return
-     */
+     *//*
     @GetMapping({"", "list"})
     @RequiresPermissions("system:question:list")
     public Result list(@RequestParam Map params) {
@@ -50,21 +50,21 @@ public class QuestionController extends BaseController {
     }
 
 
-    /**
+    *//**
      * 试题详情
      * @param id
      * @return
-     */
+     *//*
     @GetMapping("findById")
     public Result findById(Integer id) {
         return Result.success(questionInfoService.findById(id));
     }
 
-    /**
+    *//**
      * 添加修改试题
      * @param questionInfoMap
      * @return
-     */
+     *//*
     @PostMapping
     @ParamsValidate(params = {
         @Param(name = "school_type", message = "请选择阶段"),
@@ -77,21 +77,21 @@ public class QuestionController extends BaseController {
         return questionInfoService.saveOrUpdate(questionInfoMap);
     }
 
-    /**
+    *//**
      * 删除试题
      * @param questionInfoMap
      * @return
-     */
+     *//*
     @DeleteMapping
     @RequiresPermissions("system:question:deleteById")
     public ResultCode deleteById(@RequestBody ModelBeanMap questionInfoMap) {
         return questionInfoService.deleteById(questionInfoMap);
     }
 
-    /**
+    *//**
      * excel导入
      * @param file
-     */
+     *//*
     @RequestMapping(value = "uploadExcel", method = {RequestMethod.GET, RequestMethod.POST})
     public Result uploadExcel(@RequestParam MultipartFile file) {
         try {
@@ -123,5 +123,5 @@ public class QuestionController extends BaseController {
             log.error("数据导入失败", e);
         }
         return Result.fail(ResultCode.FAIL, "导入失败, 请检查科目是否已存在或文件格式是否正确");
-    }
+    }*/
 }

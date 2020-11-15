@@ -34,35 +34,35 @@ import java.util.Set;
 @Slf4j
 public class ApiController extends BaseController {
 
-    @Autowired
+   /* @Autowired
     private SystemDictService systemDictService;
     @Autowired
     private SystemDictValueService systemDictValueService;
 
-    /**
+    *//**
      * 字典管理列表
      * @param params
      * @return
-     */
+     *//*
     @GetMapping("/dict/list")
     public Result getDictList(@RequestParam Map params) {
         return systemDictService.pagination(params);
     }
 
-    /**
+    *//**
      * 获取字典值tree 列表
      * @return
-     */
+     *//*
     @GetMapping("/dict/getDictValueTreeList")
     public Result getDictValueTreeList() {
         return Result.success(systemDictValueService.getDictValueTreeList());
     }
 
-    /**
+    *//**
      * 添加或修改字典类型
      * @param params
      * @return
-     */
+     *//*
     @PostMapping("/dict/saveOrUpdate")
     public Result saveOrUpdate(@RequestBody ModelBeanMap params) {
         boolean updateFlag = false;
@@ -83,11 +83,11 @@ public class ApiController extends BaseController {
         return Result.success(systemDictValueService.getDictValueByParentId(params));
     }
 
-    /**
+    *//**
      * 添加或修改字典值
      * @param params
      * @return
-     */
+     *//*
     @PostMapping("/dict/saveOrUpdateDictValue")
     public Result saveOrUpdateDictValue(@RequestBody ModelBeanMap params) {
         boolean updateFlag = false;
@@ -97,21 +97,21 @@ public class ApiController extends BaseController {
         return systemDictValueService.saveOrUpdate(updateFlag, params);
     }
 
-    /**
+    *//**
      * 根据id 删除字典
      * @param dictBeanMap
      * @return
-     */
+     *//*
     @DeleteMapping("/dict/deleteDictById")
     public Result deleteDictById(@RequestBody ModelBeanMap dictBeanMap) {
         return systemDictService.deleteDictById(dictBeanMap);
     }
 
-    /**
+    *//**
      * 根据id 删除字典
      * @param dictBeanMap
      * @return
-     */
+     *//*
     @DeleteMapping("/dict/deleteDictValueById")
     public Result deleteDictValueById(@RequestBody ModelBeanMap dictBeanMap) {
         int result = systemDictValueService.deleteDictValueById(dictBeanMap);
@@ -119,11 +119,11 @@ public class ApiController extends BaseController {
                 : Result.fail(ResultCode.FAIL, "删除失败");
     }
 
-    /**
+    *//**
      * 获取字典值列表
      * @param params
      * @return
-     */
+     *//*
     @GetMapping("/dict/getDictValueList")
     public Result getDictValueByDictId(@RequestParam Map params) {
         return systemDictValueService.pagination(params);
@@ -163,13 +163,13 @@ public class ApiController extends BaseController {
         }
     };
 
-    /**
+    *//**
      * 文件上传api 接口
      * @param file
      * @param uploadFileType
      * @return
      * @throws IOException
-     */
+     *//*
     @RequestMapping(value = "upload/{uploadFileType}", method = {RequestMethod.GET, RequestMethod.POST})
     public Map uploadFile(@RequestParam MultipartFile file, @PathVariable int uploadFileType) throws IOException {
         String result = null;
@@ -236,11 +236,11 @@ public class ApiController extends BaseController {
         return "/others/" + ObjectUtils.generateFileByTime() + ObjectUtils.generateUuId() + "/" + fileName;
     }
 
-    /**
+    *//**
      * 获取汉字拼音
      * @param keyWord
      * @return
-     */
+     *//*
     @GetMapping("getSpell")
     @ApiOperation(value = "公共api 获取汉字拼音接口")
     @ApiImplicitParam(name = "keyWord", value = "关键词", required = true, dataType = "string")
@@ -249,16 +249,16 @@ public class ApiController extends BaseController {
     }
 
 
-    /**
+    *//**
      * 生成验证码
      * @param request
      * @param response
-     */
+     *//*
     @GetMapping("/image")
     @ApiOperation("生成验证码接口")
     public void image(HttpServletRequest request, HttpServletResponse response) {
         String key = request.getParameter("key");
         Captcha captcha = new Captcha(cacheBean, key);
         captcha.render(response);
-    }
+    }*/
 }

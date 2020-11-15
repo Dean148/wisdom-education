@@ -27,9 +27,9 @@ import java.util.Map;
  * @create_at 2019/3/31 10:06
  */
 @Service
-public class CourseInfoService extends BaseService<CourseInfoMapper> {
+public class CourseInfoService  {
 
-    @Autowired
+   /* @Autowired
     private QuestionInfoService questionInfoService;
     @Autowired
     private CourseQuestionInfoMapper courseQuestionInfoMapper;
@@ -129,5 +129,5 @@ public class CourseInfoService extends BaseService<CourseInfoMapper> {
             studentCourseCollectMapper.deleteCollectCourse(studentId, courseBeanMap.getInt("course_id"));
         }
         return Result.success(ResultCode.SUCCESS);
-    }
+    }*/
 }

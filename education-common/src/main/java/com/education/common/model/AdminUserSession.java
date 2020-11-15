@@ -18,6 +18,7 @@ public class AdminUserSession implements Serializable {
 
     private String sessionId;
     private Map userMap; // 存储管理员信息
+    //private Sy
     private List<ModelBeanMap> roleList;
     private List<ModelBeanMap> menuList;
     private Set<String> permissionList = new HashSet<>();

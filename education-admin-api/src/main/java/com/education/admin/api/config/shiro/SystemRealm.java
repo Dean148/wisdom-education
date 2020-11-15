@@ -1,17 +1,18 @@
 package com.education.admin.api.config.shiro;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.common.component.SpringBeanManager;
 import com.education.common.exception.BusinessException;
-import com.education.common.model.AdminUserSession;
-import com.education.common.model.ModelBeanMap;
 import com.education.common.utils.Md5Utils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
 import com.education.mapper.system.SystemAdminMapper;
+import com.education.model.dto.AdminUserSession;
+import com.education.model.entity.SystemAdmin;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.stereotype.Component;
@@ -28,10 +29,10 @@ public class SystemRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		AdminUserSession adminSession = (AdminUserSession)principals.getPrimaryPrincipal();
-		if (ObjectUtils.isNotEmpty(adminSession)) {
+		//AdminUserSession adminSession = (AdminUserSession)principals.getPrimaryPrincipal();
+		/*if (ObjectUtils.isNotEmpty(adminSession)) {
 			return this.loadPermission(adminSession);
-		}
+		}*/
 		return null;
 	}
 
@@ -40,14 +41,14 @@ public class SystemRealm extends AuthorizingRealm {
 	 * @param adminSession
 	 * @return
 	 */
-	private AuthorizationInfo loadPermission(AdminUserSession adminSession) {
+	/*private AuthorizationInfo loadPermission(AdminUserSession adminSession) {
 		if (ObjectUtils.isNotEmpty(adminSession)) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 			info.addStringPermissions(adminSession.getPermissionList());
 			return info;
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * 用户登录认证
@@ -57,16 +58,18 @@ public class SystemRealm extends AuthorizingRealm {
 			throws AuthenticationException {
 		UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
 		String userName = usernamePasswordToken.getUsername();
-		ModelBeanMap systemAdmin = getSystemAdminMapper().findByLoginName(userName);
+		QueryWrapper queryWrapper = Wrappers.query().eq("login_name", userName);
+		SystemAdmin systemAdmin = getSystemAdminMapper().selectOne(queryWrapper);
+
 		if (ObjectUtils.isEmpty(systemAdmin)) {
 			throw new UnknownAccountException("用户不存在");
-		} else if ((boolean)systemAdmin.get("disabled_flag")) {
+		} else if (systemAdmin.isDisabledFlag()) {
 			throw new BusinessException(new ResultCode(ResultCode.FAIL, "此账号已被禁用"));
 		}
-		String password = Md5Utils.getMd5(new String(usernamePasswordToken.getPassword()), systemAdmin.getStr("encrypt"));
+		String password = Md5Utils.getMd5(new String(usernamePasswordToken.getPassword()), systemAdmin.getEncrypt());
 		usernamePasswordToken.setPassword(password.toCharArray());
 		//以下数据属于数据库中的用户名密
-		return new SimpleAuthenticationInfo(new AdminUserSession(systemAdmin), systemAdmin.getStr("password"), getName());
+		return new SimpleAuthenticationInfo(new AdminUserSession(systemAdmin), systemAdmin.getPassword(), getName());
 	}
 
 	private SystemAdminMapper getSystemAdminMapper() {

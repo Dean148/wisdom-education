@@ -19,14 +19,14 @@ import java.util.Map;
  * @create_at 2020/3/10 22:09
  */
 @Service
-public class CourseQuestionService extends BaseService<CourseQuestionInfoMapper> {
+public class CourseQuestionService  {
 
-
-    /**
+/*
+    *//**
      * 关联试题
      * @param modelBeanMap
      * @return
-     */
+     *//*
     public ResultCode relevanceQuestion(ModelBeanMap modelBeanMap) {
         try {
             Integer courseId = (Integer)modelBeanMap.get("courseId");
@@ -54,16 +54,16 @@ public class CourseQuestionService extends BaseService<CourseQuestionInfoMapper>
         return paramList;
     }
 
-    /**
+    *//**
      * 移除课程试题
      * @param params
      * @return
-     */
+     *//*
     public Result deleteCourseQuestion(ModelBeanMap params) {
         int result = mapper.deleteByCourseId(params);
         return result > 0 ?
                 Result.success(ResultCode.SUCCESS, "移除试题成功")
                 : Result.success(ResultCode.FAIL, "移除试题失败");
 
-    }
+    }*/
 }
