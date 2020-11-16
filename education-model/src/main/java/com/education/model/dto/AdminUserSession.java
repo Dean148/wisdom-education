@@ -4,8 +4,6 @@ import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.entity.SystemMenu;
 import com.education.model.entity.SystemRole;
-
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,14 +85,6 @@ public class AdminUserSession extends BaseDto {
 
     public void setPermissionList(Set<String> permissionList) {
         this.permissionList = permissionList;
-    }
-
-    /**
-     * 是否校长账号
-     * @return
-     */
-    public boolean isPrincipalAccount() {
-        return systemAdmin.isPrincipalFlag();
     }
 
     /**

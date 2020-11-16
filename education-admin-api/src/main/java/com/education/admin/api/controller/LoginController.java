@@ -97,7 +97,6 @@ public class LoginController extends BaseController {
             Kv userInfo = Kv.create().set("token", token).set("id", userSession.getAdminId())
                     .set("permissionList", userSession.getPermissionList())
                     .set("menuList", userSession.getMenuTreeList())
-                    .set("school_id", userSession.getSystemAdmin().getSchoolId())
                     .set("login_name", userSession.getSystemAdmin().getLoginName());
             Map resultMap = new HashMap<>();
             resultMap.put("userInfo", userInfo);

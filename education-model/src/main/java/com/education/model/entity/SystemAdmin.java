@@ -17,8 +17,6 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 	private String loginIp;
 	@TableField("login_count")
 	private int loginCount;
-	@TableField("school_id")
-	private int schoolId;
 	private String name;
 	@TableField("last_login_time")
 	private Date lastLoginTime;
@@ -27,8 +25,6 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 	private String mobile;
 	@TableField("super_flag")
 	private boolean superFlag;
-	@TableField("principal_flag")
-	private boolean principalFlag;
 	@TableField("account_type")
 	private int accountType;
 
@@ -80,14 +76,6 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 		this.loginCount = loginCount;
 	}
 
-	public int getSchoolId() {
-		return schoolId;
-	}
-
-	public void setSchoolId(int schoolId) {
-		this.schoolId = schoolId;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -126,14 +114,6 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 
 	public void setSuperFlag(boolean superFlag) {
 		this.superFlag = superFlag;
-	}
-
-	public boolean isPrincipalFlag() {
-		return principalFlag;
-	}
-
-	public void setPrincipalFlag(boolean principalFlag) {
-		this.principalFlag = principalFlag;
 	}
 
 	public int getAccountType() {

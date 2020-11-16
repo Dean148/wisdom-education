@@ -1,21 +1,9 @@
 package com.education.service.system;
 
-import com.education.common.model.ModelBeanMap;
-import com.education.common.utils.DateUtils;
-import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.Result;
-import com.education.common.utils.ResultCode;
-import com.education.service.course.ExamInfoService;
-import com.education.service.school.SchoolService;
-import com.education.service.school.StudentInfoService;
+
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
 
 /**
  * 首页数据统计

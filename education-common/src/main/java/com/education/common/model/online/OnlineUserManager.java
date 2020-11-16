@@ -2,9 +2,7 @@ package com.education.common.model.online;
 
 import com.education.common.cache.CacheBean;
 import com.education.common.utils.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
 import java.util.Set;
 

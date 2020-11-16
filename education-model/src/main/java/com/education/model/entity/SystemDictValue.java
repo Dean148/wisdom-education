@@ -1,12 +1,16 @@
 package com.education.model.entity;
 
-import java.util.Date;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 
+@TableName("system_dict_value")
 public class SystemDictValue extends BaseEntity<SystemDictValue> {
 
+	@TableField("system_dict_id")
 	private int systemDictId;
 	private String value;
 	private int code;
+	@TableField("parent_id")
 	private int parentId;
 	private int sort;
 

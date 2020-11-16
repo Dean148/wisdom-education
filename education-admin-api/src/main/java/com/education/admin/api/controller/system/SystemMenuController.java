@@ -1,19 +1,15 @@
 package com.education.admin.api.controller.system;
 
-import com.education.common.utils.ObjectUtils;
+import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.MenuTree;
 import com.education.model.entity.SystemMenu;
-import com.education.service.core.ApiController;
 import com.education.service.system.SystemMenuService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -25,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/system/menu")
-public class SystemMenuController extends ApiController {
+public class SystemMenuController extends BaseController {
 
     @Autowired
     private SystemMenuService systemMenuService;
