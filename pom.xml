@@ -34,7 +34,6 @@
     <module>education-admin-api</module>
     <module>education-service</module>
     <module>education-common</module>
-    <module>education-student-api</module>
     <module>education-mapper</module>
     <module>education-model</module>
     <module>education-common-api</module>
