@@ -15,6 +15,9 @@ public abstract class TreeData<T extends TreeData<T>> implements Serializable {
     private Integer parentId;
     private String label;
     private List<T> children;
+    //private boolean hasChildren = false;
+
+
 
     public Integer getParentId() {
         return parentId;

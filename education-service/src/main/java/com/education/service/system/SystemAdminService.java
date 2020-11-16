@@ -76,18 +76,13 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
             menuList = systemMenuService.getMenuListByRoles(roleIds);
         }
         if (ObjectUtils.isNotEmpty(menuList)) {
-            List<MenuTree> menuTreeList = new ArrayList<>();
-            Set<String> permissionList = new HashSet<>();
-            menuList.forEach(menu -> {
-                permissionList.add(menu.getPermissions());
-                MenuTree menuTree = new MenuTree();
-                menuTree.setId(menu.getId());
-                menuTree.setParentId(menu.getParentId());
-                menuTree.setLabel(menu.getName());
-                menuTreeList.add(menuTree);
-            });
+            Set<String> permissionList = menuList.stream()
+                    .filter(systemMenu -> ObjectUtils.isNotEmpty(systemMenu.getPermission()))
+                    .map(SystemMenu::getPermission)
+                    .collect(Collectors.toSet());
+            List<MenuTree> menuTreeList = systemMenuService.getTreeMenuList(menuList);
             userSession.setPermissionList(permissionList);
-            userSession.setMenuTreeList(TreeUtils.buildTreeData(menuTreeList));
+            userSession.setMenuTreeList(menuTreeList);
         }
     }
 
@@ -157,57 +152,31 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
      * @param adminRoleDto
      */
     public void updatePassword(AdminRoleDto adminRoleDto) {
-        String password = adminRoleDto.getPassword();
+        String passWord = adminRoleDto.getPassword();
+        String newPassword = adminRoleDto.getNewPassword();
+        String confirmPassword = adminRoleDto.getConfirmPassword();
         SystemAdmin systemAdmin = super.getById(adminRoleDto.getId());
         String encrypt = systemAdmin.getEncrypt();
-        password = Md5Utils.getMd5(password,  encrypt);
-        adminRoleDto.setPassword(password);
+
+        if (!newPassword.equals(confirmPassword)) { // 管理员列表重置密码
+            throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码与确认密码不一致"));
+        }
+
+        // 原始密码不为空校验密码是否正确
+        if (ObjectUtils.isNotEmpty(passWord)) {
+            // 密码输入正确才能修改新密码
+            passWord = Md5Utils.getMd5(passWord, encrypt);
+            String userPassword = systemAdmin.getPassword();
+            if (!passWord.equals(userPassword)) {
+                throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码输入错误"));
+            }
+        }
+
+        passWord = Md5Utils.getMd5(newPassword, encrypt); // 对新密码进行加密
         UpdateWrapper updateWrapper = new UpdateWrapper();
-        updateWrapper.set("password", password);
+        updateWrapper.set("password", passWord);
         updateWrapper.eq("id", adminRoleDto.getId());
         super.update(updateWrapper);
     }
 }
 
-  /*  public ResultCode updatePassword(ModelBeanMap systemAdmin) {
-        try {
-           *//* String password = systemAdmin.getStr("password");
-            Map userMap = mapper.findById(systemAdmin.getInt("id"));
-            String encrypt = (String)userMap.get("encrypt");
-            password = Md5Utils.getMd5(password,  encrypt);
-            systemAdmin.put("password", password);
-            int result = super.update(systemAdmin);
-            if (result > 0) {
-                return new ResultCode(ResultCode.SUCCESS, "密码重置成功");
-            }*//*
-        } catch (Exception e) {
-            log.error("密码修改失败", e);
-        }
-        return new ResultCode(ResultCode.FAIL, "密码重置失败");
-    }
-
-    public ResultCode resettingPassword(ModelBeanMap systemAdmin) {
-        try {
-            String password = systemAdmin.getStr("password");
-            String newPassword = systemAdmin.getStr("newPassword");
-            Map userMap = getAdminUser();
-            String encrypt = (String)userMap.get("encrypt");
-            password = Md5Utils.getMd5(password, encrypt);
-            String userPassword = (String)userMap.get("password");
-            if (!password.equals(userPassword)) {
-                return new ResultCode(ResultCode.FAIL, "密码输入错误");
-            }
-            password = Md5Utils.getMd5(newPassword, (String)userMap.get("encrypt"));
-            systemAdmin.put("password", password);
-            systemAdmin.remove("newPassword");
-            systemAdmin.put("id", userMap.get("id"));
-            int result = this.update(systemAdmin);
-            if (result > 0) {
-                return new ResultCode(ResultCode.SUCCESS, "密码修改成功, 退出后请使用新密码登录");
-            }
-        } catch (Exception e) {
-            log.error("密码修改失败", e);
-        }
-        return new ResultCode(ResultCode.FAIL, "密码修改失败");
-    }
-}*/

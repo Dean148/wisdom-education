@@ -32,4 +32,11 @@ public interface SystemMenuMapper extends BaseMapper<SystemMenu> {
      * @return
      */
     MenuTree selectMenuTreeById(Integer id);
+
+    /**
+     * 获取角色tree 菜单
+     * @param roleId
+     * @return
+     */
+    List<MenuTree> selectTreeMenuListByRoleId(Integer roleId);
 }

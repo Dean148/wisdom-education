@@ -9,7 +9,7 @@ public class SchoolInfo extends BaseEntity<SchoolInfo> {
 	private String simplicity;
 	private String mobile;
 	private String principalName;
-	private int schoolType;
+	private Integer schoolType;
 	private String address;
 	private String lng;
 	private String lat;
@@ -17,7 +17,7 @@ public class SchoolInfo extends BaseEntity<SchoolInfo> {
 	private String cityCode;
 	private String countyCode;
 	private String townCode;
-	private int accountNumber;
+	private Integer accountNumber;
 
 	public String getName() {
 		return name;
@@ -51,13 +51,6 @@ public class SchoolInfo extends BaseEntity<SchoolInfo> {
 		this.principalName = principalName;
 	}
 
-	public int getSchoolType() {
-		return schoolType;
-	}
-
-	public void setSchoolType(int schoolType) {
-		this.schoolType = schoolType;
-	}
 
 	public String getAddress() {
 		return address;
@@ -115,11 +108,19 @@ public class SchoolInfo extends BaseEntity<SchoolInfo> {
 		this.townCode = townCode;
 	}
 
-	public int getAccountNumber() {
+	public Integer getSchoolType() {
+		return schoolType;
+	}
+
+	public void setSchoolType(Integer schoolType) {
+		this.schoolType = schoolType;
+	}
+
+	public Integer getAccountNumber() {
 		return accountNumber;
 	}
 
-	public void setAccountNumber(int accountNumber) {
+	public void setAccountNumber(Integer accountNumber) {
 		this.accountNumber = accountNumber;
 	}
 }

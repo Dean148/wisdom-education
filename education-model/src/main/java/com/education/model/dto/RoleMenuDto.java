@@ -16,10 +16,12 @@ public class RoleMenuDto {
      */
     private Integer roleId;
 
+    private List<Integer> menuIds;
+
     /**
      * 角色权限列表
      */
-    private List<SystemMenu> menuList;
+    private List<MenuTree> menuList;
 
     public Integer getRoleId() {
         return roleId;
@@ -29,11 +31,19 @@ public class RoleMenuDto {
         this.roleId = roleId;
     }
 
-    public List<SystemMenu> getMenuList() {
-        return menuList;
+    public List<Integer> getMenuIds() {
+        return menuIds;
     }
 
-    public void setMenuList(List<SystemMenu> menuList) {
+    public void setMenuIds(List<Integer> menuIds) {
+        this.menuIds = menuIds;
+    }
+
+    public void setMenuList(List<MenuTree> menuList) {
         this.menuList = menuList;
+    }
+
+    public List<MenuTree> getMenuList() {
+        return menuList;
     }
 }

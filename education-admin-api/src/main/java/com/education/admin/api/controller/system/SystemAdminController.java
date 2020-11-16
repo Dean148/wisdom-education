@@ -3,6 +3,7 @@ package com.education.admin.api.controller.system;
 import com.education.common.annotation.SystemLog;
 import com.education.common.base.BaseController;
 import com.education.common.model.PageInfo;
+import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.AdminRoleDto;
@@ -10,6 +11,8 @@ import com.education.model.entity.SystemAdmin;
 import com.education.model.request.PageParam;
 import com.education.service.system.SystemAdminService;
 import io.swagger.annotations.Api;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +39,7 @@ public class SystemAdminController extends BaseController {
      */
     @GetMapping
     @SystemLog(describe = "获取管理员列表")
+    @RequiresPermissions("system:admin:list")
     public Result<PageInfo<SystemAdmin>> list(PageParam pageParam, SystemAdmin systemAdmin) {
         return Result.success(systemAdminService.listPage(pageParam, systemAdmin));
     }
@@ -58,6 +62,7 @@ public class SystemAdminController extends BaseController {
      */
     @PostMapping
     @SystemLog(describe = "添加或修改管理员")
+    @RequiresPermissions(value = {"system:admin:save", "system:admin:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody AdminRoleDto adminRoleDto) {
         systemAdminService.saveOrUpdate(adminRoleDto);
         return Result.success();
@@ -70,6 +75,7 @@ public class SystemAdminController extends BaseController {
      */
     @DeleteMapping("{id}")
     @SystemLog(describe = "删除管理员")
+    @RequiresPermissions("system:admin:deleteById")
     public Result deleteById(@PathVariable Integer id) {
         return systemAdminService.deleteById(id);
     }
@@ -81,13 +87,9 @@ public class SystemAdminController extends BaseController {
      * @return
      */
     @PostMapping("updatePassword")
-    public Result updatePassword(AdminRoleDto adminRoleDto) {
-        String password = adminRoleDto.getPassword();
-        String confirmPassword = adminRoleDto.getConfirmPassword();
-        if (!password.equals(confirmPassword)) {
-            return Result.fail(ResultCode.FAIL, "密码与确认密码不一致");
-        }
+    @RequiresPermissions("system:admin:updatePassword")
+    public Result updatePassword(@RequestBody AdminRoleDto adminRoleDto) {
         systemAdminService.updatePassword(adminRoleDto);
-        return Result.success("密码重置成功");
+        return Result.success("修改密码成功");
     }
 }

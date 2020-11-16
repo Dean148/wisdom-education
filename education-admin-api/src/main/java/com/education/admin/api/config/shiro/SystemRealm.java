@@ -13,6 +13,7 @@ import com.education.model.dto.AdminUserSession;
 import com.education.model.entity.SystemAdmin;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.stereotype.Component;
@@ -29,10 +30,10 @@ public class SystemRealm extends AuthorizingRealm {
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		//AdminUserSession adminSession = (AdminUserSession)principals.getPrimaryPrincipal();
-		/*if (ObjectUtils.isNotEmpty(adminSession)) {
+		AdminUserSession adminSession = (AdminUserSession)principals.getPrimaryPrincipal();
+		if (ObjectUtils.isNotEmpty(adminSession)) {
 			return this.loadPermission(adminSession);
-		}*/
+		}
 		return null;
 	}
 
@@ -41,14 +42,14 @@ public class SystemRealm extends AuthorizingRealm {
 	 * @param adminSession
 	 * @return
 	 */
-	/*private AuthorizationInfo loadPermission(AdminUserSession adminSession) {
+	private AuthorizationInfo loadPermission(AdminUserSession adminSession) {
 		if (ObjectUtils.isNotEmpty(adminSession)) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 			info.addStringPermissions(adminSession.getPermissionList());
 			return info;
 		}
 		return null;
-	}*/
+	}
 
 	/**
 	 * 用户登录认证

@@ -21,11 +21,12 @@ public class CacheBeanConfiguration {
         RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
-        ObjectSerializer objectSerializer = new ObjectSerializer();
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(objectSerializer);
-        redisTemplate.setHashValueSerializer(objectSerializer);
-        redisTemplate.setHashKeySerializer(objectSerializer);
+        RedisSerializer redisSerializer = new FstRedisSerializer();
+       // ObjectSerializer objectSerializer = new ObjectSerializer();
+        redisTemplate.setKeySerializer(redisSerializer);
+        redisTemplate.setValueSerializer(redisSerializer);
+     /*   redisTemplate.setHashValueSerializer(objectSerializer);
+        redisTemplate.setHashKeySerializer(objectSerializer);*/
         redisTemplate.afterPropertiesSet();
 
         // 使用Jackson2JsonRedisSerialize 替换默认序列化

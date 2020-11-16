@@ -1,17 +1,27 @@
 package com.education.model.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+@TableName("system_log")
 public class SystemLog extends BaseEntity<SystemLog> {
 
+	@TableField("request_url")
 	private String requestUrl;
 	private String method;
+	@TableField("request_time")
 	private String requestTime;
-	private int userId;
+	@TableField("user_id")
+	private Integer userId;
 	private String params;
 	private String ip;
 	private String exception;
-	private int platformType;
+	@TableField("platform_type")
+	private Integer platformType;
+	@TableField("operation_desc")
 	private String operationDesc;
+	@TableField("operation_name")
 	private String operationName;
 
 	public String getRequestUrl() {
@@ -38,11 +48,11 @@ public class SystemLog extends BaseEntity<SystemLog> {
 		this.requestTime = requestTime;
 	}
 
-	public int getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 
@@ -70,11 +80,11 @@ public class SystemLog extends BaseEntity<SystemLog> {
 		this.exception = exception;
 	}
 
-	public int getPlatformType() {
+	public Integer getPlatformType() {
 		return platformType;
 	}
 
-	public void setPlatformType(int platformType) {
+	public void setPlatformType(Integer platformType) {
 		this.platformType = platformType;
 	}
 

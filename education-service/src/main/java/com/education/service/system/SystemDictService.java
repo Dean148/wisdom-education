@@ -1,12 +1,8 @@
 package com.education.service.system;
 
 
-import com.education.common.exception.BusinessException;
-import com.education.common.model.ModelBeanMap;
-import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.Result;
-import com.education.common.utils.ResultCode;
 import com.education.mapper.system.SystemDictMapper;
+import com.education.model.entity.SystemDict;
 import com.education.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
  * @create_at 2020/3/9 21:16
  */
 @Service
-public class SystemDictService  {
+public class SystemDictService extends BaseService<SystemDictMapper, SystemDict>  {
+
+    @Autowired
+    private SystemDictValueService systemDictValueService;
+
+    @Transactional
+    public void deleteById(Integer id) {
+        super.removeById(id);
+        // 删除字典类型值
+        systemDictValueService.deleteByDictId(id);
+    }
 
     /*public static final String GRADE_TYPE = "grade_type";
     public static final String QUESTION_TYPE = "question_type";

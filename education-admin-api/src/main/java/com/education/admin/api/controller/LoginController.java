@@ -127,7 +127,7 @@ public class LoginController extends BaseController {
        // onlineUserManager.removeOnlineUser(systemAdminService.getUserId());
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
-        return Result.success(ResultCode.UN_AUTH_ERROR_CODE, "退出成功");
+        return Result.success(ResultCode.SUCCESS, "退出成功");
     }
 
     @GetMapping("unAuth")

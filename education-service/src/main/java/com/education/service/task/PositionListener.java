@@ -24,8 +24,12 @@ import java.util.Set;
  */
 @Component
 public class PositionListener implements TaskListener {
+    @Override
+    public void onMessage(TaskParam taskParam) {
 
-    @Autowired
+    }
+
+   /* @Autowired
     private SchoolInfoMapper schoolInfoMapper;
     @Value("${lbs.key}")
     private String lbsKey;
@@ -92,5 +96,5 @@ public class PositionListener implements TaskListener {
         } catch (Exception e) {
             logger.error("获取定位异常", e);
         }
-    }
+    }*/
 }

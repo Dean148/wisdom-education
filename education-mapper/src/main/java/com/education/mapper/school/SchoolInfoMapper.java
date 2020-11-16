@@ -1,7 +1,8 @@
 package com.education.mapper.school;
 
-import com.education.common.base.BaseCommonMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.education.common.model.ModelBeanMap;
+import com.education.model.entity.SchoolInfo;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * @version 1.0
  * @create_at 2020/3/9 14:36
  */
-public interface SchoolInfoMapper extends BaseCommonMapper {
+public interface SchoolInfoMapper extends BaseMapper<SchoolInfo> {
 
     List<ModelBeanMap> getSchoolRegionInfo();
 }

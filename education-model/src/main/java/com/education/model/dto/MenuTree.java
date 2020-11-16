@@ -12,10 +12,37 @@ import java.util.List;
  */
 public class MenuTree extends TreeData<MenuTree> {
 
+    private String parentName;
+    private String name;
     private String url;
-    private String permissions;
+    private String permission;
     private String icon;
+    private Integer type;
     private List<Integer> parentIds; // 父级菜单集合
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
+    public String getParentName() {
+        return parentName;
+    }
 
     public List<Integer> getParentIds() {
         return parentIds;
@@ -33,12 +60,12 @@ public class MenuTree extends TreeData<MenuTree> {
         this.url = url;
     }
 
-    public String getPermissions() {
-        return permissions;
+    public String getPermission() {
+        return permission;
     }
 
-    public void setPermissions(String permissions) {
-        this.permissions = permissions;
+    public void setPermission(String permission) {
+        this.permission = permission;
     }
 
     public String getIcon() {

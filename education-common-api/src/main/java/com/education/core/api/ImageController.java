@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class ImageController extends BaseController {
 
-    @GetMapping("/image")
+    @GetMapping("/api/image")
     @ApiOperation("生成验证码接口")
     public void image(HttpServletRequest request, HttpServletResponse response) {
         String key = request.getParameter("key");

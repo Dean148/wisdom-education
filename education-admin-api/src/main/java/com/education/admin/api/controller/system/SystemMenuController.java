@@ -1,11 +1,20 @@
 package com.education.admin.api.controller.system;
 
+import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
+import com.education.common.utils.ResultCode;
+import com.education.model.dto.MenuTree;
 import com.education.model.entity.SystemMenu;
 import com.education.service.core.ApiController;
 import com.education.service.system.SystemMenuService;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -26,8 +35,8 @@ public class SystemMenuController extends ApiController {
      * @return
      */
     @GetMapping("menuTreeList")
-   // @RequiresPermissions("system:menu:list")
-    public Result menuTreeList() {
+    @RequiresPermissions("system:menu:list")
+    public Result<List<MenuTree>> menuTreeList() {
         return Result.success(systemMenuService.selectMenuTreeList());
     }
 
@@ -37,7 +46,7 @@ public class SystemMenuController extends ApiController {
      * @return
      */
     @GetMapping("selectById")
-    public Result selectById(Integer id) {
+    public Result<MenuTree> selectById(Integer id) {
         return Result.success(systemMenuService.selectById(id));
     }
 
@@ -47,6 +56,7 @@ public class SystemMenuController extends ApiController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions(value = {"system:menu:save", "system:menu:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody SystemMenu systemMenu) {
         systemMenuService.saveOrUpdate(systemMenu);
         return Result.success();
@@ -58,51 +68,23 @@ public class SystemMenuController extends ApiController {
      * @return
      */
     @DeleteMapping("{id}")
+    @RequiresPermissions("system:menu:deleteById")
     public Result deleteById(@PathVariable Integer id) {
+        SystemMenu systemMenu = systemMenuService.getById(id);
+        if (systemMenu.getCreateType() == ResultCode.SUCCESS) {
+            return Result.success(ResultCode.FAIL, "您不能删除系统内置菜单");
+        }
         systemMenuService.removeById(id);
-        return Result.success();
+        return Result.success("删除成功");
     }
 
-
-  /*  *//**
-     * 获取角色拥有菜单id 集合
+    /**
+     * 获取角色 选中的 tree 菜单
      * @param roleId
      * @return
-     *//*
-    @GetMapping("getMenuByRole")
-    public Result getMenuByRole(Integer roleId) {
-        return Result.success(systemRoleMenuService.getMenuListByRoleId(roleId));
+     */
+    @GetMapping("selectMenuListByRoleId")
+    public Result<List<Integer>> selectMenuListByRoleId(Integer roleId) {
+        return Result.success(systemMenuService.selectTreeCheckedMenuId(roleId));
     }
-
-    @GetMapping(value = "getMenuByParent")
-    public Result getMenuByParent() {
-        return Result.success(systemMenuService.treeMenu());
-    }
-
-    @GetMapping({"", "list"})
-    @RequiresPermissions("system:menu:list")
-    public Result list(@RequestParam Map params) {
-        return systemMenuService.pagination(params);
-    }
-
-    @GetMapping("findById")
-    public Result findById(Integer id) {
-        return systemMenuService.findById(id);
-    }
-
-    @DeleteMapping
-    @RequiresPermissions("system:menu:deleteById")
-    public ResultCode deleteById(@RequestBody ModelBeanMap menuMap) {
-        Integer createType = menuMap.getInt("create_type");
-        if (createType == ResultCode.SUCCESS) {
-            return new ResultCode(ResultCode.FAIL, "您不能删除系统内置菜单");
-        }
-        return systemMenuService.deleteById(menuMap.getInt("value"));
-    }
-
-    @PostMapping("saveOrUpdate")
-    @RequiresPermissions(value = {"system:menu:save", "system:menu:update"}, logical = Logical.OR)
-    public Result saveOrUpdate(@RequestBody ModelBeanMap menuMap) {
-        return systemMenuService.saveOrUpdate(menuMap);
-    }*/
 }

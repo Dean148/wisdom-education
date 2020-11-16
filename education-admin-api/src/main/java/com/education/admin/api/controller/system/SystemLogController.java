@@ -34,7 +34,7 @@ public class SystemLogController extends BaseController {
     }
 
     @DeleteMapping("{id}")
-    @RequiresPermissions("system:log:delete")
+    @RequiresPermissions("system:log:deleteById")
     public Result deleteById(@PathVariable Integer id) {
         systemLogService.removeById(id);
         return Result.success();

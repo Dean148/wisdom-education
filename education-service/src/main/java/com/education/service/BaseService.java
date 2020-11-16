@@ -49,6 +49,16 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImp
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
+     * 单表分页查询
+     * @param pageParam
+     * @param entity
+     * @return
+     */
+    public PageInfo<T> selectPage(PageParam pageParam, T entity) {
+        return this.selectPage(pageParam, Wrappers.query(entity));
+    }
+
+    /**
      * 条件列表分页查询
      * @param queryWrapper
      * @param <T>

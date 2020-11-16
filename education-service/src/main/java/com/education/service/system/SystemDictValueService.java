@@ -1,20 +1,23 @@
 package com.education.service.system;
 
-import com.education.common.constants.Constants;
-import com.education.common.model.ModelBeanMap;
-import com.education.common.model.online.OnlineUser;
-import com.education.common.utils.MapTreeUtils;
-import com.education.common.utils.ObjectUtils;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.mapper.system.SystemDictValueMapper;
+import com.education.model.entity.SystemDictValue;
 import com.education.service.BaseService;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 @Service
-public class SystemDictValueService  {
+public class SystemDictValueService extends BaseService<SystemDictValueMapper, SystemDictValue> {
+
+    public void deleteByDictId(Integer dictId) {
+        // 获取删除字典值id
+        QueryWrapper queryWrapper = Wrappers.query().eq("system_dict_id", dictId);
+        baseMapper.delete(queryWrapper);
+    }
 
   /*  private static final String DICT_VALUE_CACHE_NAME = "system:dict:value:";
 

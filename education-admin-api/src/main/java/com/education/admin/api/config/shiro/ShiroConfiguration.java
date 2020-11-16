@@ -38,7 +38,7 @@ public class ShiroConfiguration {
 	public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
-	/*	shiroFilterFactoryBean.setUnauthorizedUrl("/system/unAuth");
+		shiroFilterFactoryBean.setUnauthorizedUrl("/system/unAuth");
 		shiroFilterFactoryBean.setLoginUrl("/system/unAuth");
 		Map<String, String> filterChainDefinitionMap = new HashMap<>();
 		// swagger-ui 配置
@@ -56,12 +56,12 @@ public class ShiroConfiguration {
 		// 需要认证才能访问的url
 		filterChainDefinitionMap.put("/ueditor/exec", "authc");
 		filterChainDefinitionMap.put("/upload/**", "authc");
-		filterChainDefinitionMap.put("/dict/**", "anon");
+		filterChainDefinitionMap.put("/api/**", "anon");
         filterChainDefinitionMap.put("/system/**", "authc");
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 		//自定义过滤器
 		Map<String, Filter> filterMap = shiroFilterFactoryBean.getFilters();
-		shiroFilterFactoryBean.setFilters(filterMap);*/
+		shiroFilterFactoryBean.setFilters(filterMap);
 		return shiroFilterFactoryBean;
 	}
 

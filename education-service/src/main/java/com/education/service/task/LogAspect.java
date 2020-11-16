@@ -1,11 +1,10 @@
 package com.education.service.task;
 
 import com.education.common.annotation.SystemLog;
-import com.education.common.model.AdminUserSession;
-import com.education.common.model.FrontUserInfoSession;
 import com.education.common.utils.IpUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
+import com.education.model.dto.AdminUserSession;
 import com.education.service.system.SystemLogService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -29,7 +28,7 @@ import java.util.Map;
 @Aspect
 public final class LogAspect {
 
-    /*private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
+    private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
     @Autowired
     private TaskManager taskManager;
@@ -37,7 +36,7 @@ public final class LogAspect {
     private SystemLogService systemLogService;
 
 
-    *//**
+    /**
      * execution表达式示例
      * execution(* com.education.api.controller..*.*(..))
      * 详述：
@@ -50,7 +49,7 @@ public final class LogAspect {
      * 使用异步任务记录 http 请求接口日志
      * @param pjp
      * @return
-     *//*
+     */
     @Around("execution(public * com.education.*.*.controller..*.*(..))")
     public Object invoke(ProceedingJoinPoint pjp) throws Throwable {
         long startTime = System.currentTimeMillis();
@@ -70,8 +69,8 @@ public final class LogAspect {
                 AdminUserSession adminUserSession = systemLogService.getAdminUserSession();
                 taskParam.put("adminUserSession", adminUserSession);
             } else {
-                FrontUserInfoSession frontUserInfoSession = systemLogService.getFrontUserInfoSession();
-                taskParam.put("frontUserInfoSession", frontUserInfoSession);
+              //  FrontUserInfoSession frontUserInfoSession = systemLogService.getFrontUserInfoSession();
+              //  taskParam.put("frontUserInfoSession", frontUserInfoSession);
             }
             String methodName = request.getMethod();
             String contentType = request.getHeader("Content-Type");
@@ -119,5 +118,5 @@ public final class LogAspect {
             logger.error(error.toString(), throwable);
             throw throwable;
         }
-    }*/
+    }
 }

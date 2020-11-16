@@ -1,9 +1,11 @@
 package com.education.service.school;
 
 import com.alibaba.fastjson.util.TypeUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.ModelBeanMap;
+import com.education.common.model.PageInfo;
 import com.education.common.utils.Md5Utils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
@@ -12,6 +14,9 @@ import com.education.mapper.school.StudentInfoMapper;
 import com.education.mapper.system.SystemAdminMapper;
 import com.education.mapper.system.SystemAdminRoleMapper;
 import com.education.mapper.system.SystemRoleMapper;
+import com.education.model.entity.SchoolInfo;
+import com.education.model.entity.SystemRole;
+import com.education.model.request.PageParam;
 import com.education.service.BaseService;
 import com.education.service.task.PositionListener;
 import com.education.service.task.TaskParam;
@@ -31,7 +36,12 @@ import java.util.*;
  */
 @Service
 @Slf4j
-public class SchoolService {
+public class SchoolService extends BaseService<SchoolInfoMapper, SchoolInfo> {
+
+
+/*    public PageInfo<SchoolInfo> listPage(PageParam pageParam, SchoolInfo schoolInfo) {
+        return selectPage(pageParam, Wrappers.query(schoolInfo));
+    }*/
 
  /*   private static final String PRINCIPAL = "校长";
     @Autowired

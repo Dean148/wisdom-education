@@ -1,5 +1,6 @@
 package com.education.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 @TableName("system_menu")
@@ -7,12 +8,14 @@ public class SystemMenu extends BaseEntity<SystemMenu> {
 
 	private String name;
 	private String url;
-	private int parentId;
-	private String permissions;
+	@TableField("parent_id")
+	private Integer parentId;
+	private String permission;
 	private String icon;
-	private int sort;
-	private int type;
-	private int createType;
+	private Integer sort = 0;
+	private Integer type;
+	@TableField("create_type")
+	private Integer createType;
 
 	public String getName() {
 		return name;
@@ -30,20 +33,20 @@ public class SystemMenu extends BaseEntity<SystemMenu> {
 		this.url = url;
 	}
 
-	public int getParentId() {
+	public Integer getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(int parentId) {
+	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
 
-	public String getPermissions() {
-		return permissions;
+	public String getPermission() {
+		return permission;
 	}
 
-	public void setPermissions(String permissions) {
-		this.permissions = permissions;
+	public void setPermission(String permission) {
+		this.permission = permission;
 	}
 
 	public String getIcon() {
@@ -54,27 +57,27 @@ public class SystemMenu extends BaseEntity<SystemMenu> {
 		this.icon = icon;
 	}
 
-	public int getSort() {
+	public Integer getSort() {
 		return sort;
 	}
 
-	public void setSort(int sort) {
+	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
 
-	public int getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(int type) {
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
-	public int getCreateType() {
+	public Integer getCreateType() {
 		return createType;
 	}
 
-	public void setCreateType(int createType) {
+	public void setCreateType(Integer createType) {
 		this.createType = createType;
 	}
 }
