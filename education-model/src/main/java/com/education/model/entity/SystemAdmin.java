@@ -2,6 +2,7 @@ package com.education.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
@@ -18,7 +19,9 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 	@TableField("login_count")
 	private int loginCount;
 	private String name;
+
 	@TableField("last_login_time")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date lastLoginTime;
 	@TableField("create_type")
 	private int createType;
@@ -27,6 +30,15 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 	private boolean superFlag;
 	@TableField("account_type")
 	private int accountType;
+	private String ipAddress;
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
+	public String getIpAddress() {
+		return ipAddress;
+	}
 
 	public String getLoginName() {
 		return loginName;

@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.education.common.cache.EhcacheBean;
 import com.education.common.cache.CacheBean;
 import com.education.common.model.AdminUserSession;
+import com.education.common.model.PageInfo;
 import com.education.common.utils.IpUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.TreeUtils;
@@ -49,29 +50,58 @@ public class EducationAdminApiApplicationTests {
 
     @Test
     public void remove() {
+
+        List<Integer> list = new ArrayList<>();
+        for (int i = 1; i < 14; i++) {
+            list.add(i);
+        }
+
+      //  list = list.subList(9, 10);
+
+      //  list = list.subList(10, 15);
+
+        PageInfo<Integer> page = ObjectUtils.selectPageList(5, 4, list);
+        System.out.println(page.getDataList());
+        System.out.println(page.getTotal());
+     /*   PageInfo<Integer> page = ObjectUtils.selectPageList(3, 3, list);
+
+        System.out.println(page.getDataList());
+        System.out.println(page.getTotal());*/
+       // String address = IpUtils.getIpAddress("111.72.96.124");
+       // System.out.println(address);
+
+     //   redisTemplate.boundHashOps("test").increment("userId", 1);
+
+     //   System.err.println(redisTemplate.boundHashOps("test").get("userId"));
+       // redisTemplate.boundHashOps("test").
+
+       // Collection keys = redisTemplate.keys("*");
+    //    redisTemplate.delete(redisTemplate.keys("*"));
+      //  System.out.println(keys);
       //  List<ModelBeanMap> dataList = systemMenuMapper.treeList();
        // List<ModelBeanMap> parentList = MapTreeUtils.getParentList(dataList, 2);
        // System.out.println(parentList);
       //  redisTemplate.delete(redisTemplate.keys("*"));
-        Map params = new HashMap<>();
+      /*  Map params = new HashMap<>();
         String[] array = new String[]{"name", "dsdsd"};
         params.put("name"," test");
 
-        params.put("data", array);
+        params.put("data", array);*/
         //System.out.println(JSONObject.toJSONString(params));
     }
 
 
     @Test
     public void testRedisStringCache() {
-        cacheBean.put("1", "java");
-        cacheBean.put("2", "php");
-        cacheBean.put("3", "python");
-        String value = cacheBean.get(cacheName, "1");
-        System.out.println("value:" + value);
+            redisTemplate.delete(cacheBean.getKeys(""));
+       // cacheBean.put("1", "java");
+       // cacheBean.put("2", "php");
+       // cacheBean.put("3", "python");
+       // String value = cacheBean.get(cacheName, "1");
+      /*  System.out.println("value:" + value);
         System.out.println(cacheBean.getKeys(cacheName));
         cacheBean.removeAll(cacheName);
-        System.out.println(cacheBean.getKeys(cacheName));
+        System.out.println(cacheBean.getKeys(cacheName));*/
     }
 
     @Test

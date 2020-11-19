@@ -10,11 +10,15 @@ import com.education.model.dto.AdminRoleDto;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.request.PageParam;
 import com.education.service.system.SystemAdminService;
+import com.jfinal.i18n.Res;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -91,5 +95,14 @@ public class SystemAdminController extends BaseController {
     public Result updatePassword(@RequestBody AdminRoleDto adminRoleDto) {
         systemAdminService.updatePassword(adminRoleDto);
         return Result.success("修改密码成功");
+    }
+
+    /**
+     * 获取在线用户
+     * @return
+     */
+    @GetMapping("getOnlineUserList")
+    public Result<PageInfo<SystemAdmin>> getOnlineUserList(PageParam pageParam) {
+        return Result.success(systemAdminService.getOnlineUserList(pageParam));
     }
 }

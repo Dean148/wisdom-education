@@ -1,6 +1,9 @@
 package com.education.common.utils;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.education.common.model.PageInfo;
+
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -143,4 +146,37 @@ public class ObjectUtils {
 		}
 	}
 
+	/**
+	 * list 集合内存分页
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param data
+	 * @param <T>
+	 * @return
+	 */
+	public static <T> PageInfo<T> selectPageList(int pageNumber, int pageSize, List<T> data) {
+		int offset = (pageNumber - 1) * pageSize;
+		int totalRow = data.size();
+		int totalPage = totalRow / pageSize;
+		boolean flag = true; // 分页是否刚好整除
+		if (totalRow % pageSize != 0) {
+			totalPage++;
+			flag = false;
+		}
+
+		if (pageNumber > totalPage) {
+			return new PageInfo<>(new ArrayList<>(), totalPage, totalRow);
+		}
+
+		int limit = offset + pageSize;
+	    if (limit >= totalRow) {
+			if (offset < totalRow && !flag) {
+				 // 取最后一页所有元素
+				int index = (totalPage - 1) * pageSize; // 最后一页之前的下标
+				return new PageInfo<>(data.subList(index, totalRow), totalPage, totalRow);
+			}
+			return new PageInfo<>(new ArrayList<>(), totalPage, totalRow);
+		}
+		return new PageInfo(data.subList(offset, limit), totalPage, totalRow);
+	}
 }

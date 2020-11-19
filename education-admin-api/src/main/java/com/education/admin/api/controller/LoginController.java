@@ -10,6 +10,8 @@ import com.education.common.utils.RequestUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.AdminUserSession;
+import com.education.model.dto.OnlineUser;
+import com.education.model.dto.OnlineUserManager;
 import com.education.model.request.UserLoginRequest;
 import com.education.service.WebSocketMessageService;
 import com.education.service.system.SystemAdminService;
@@ -49,6 +51,9 @@ public class LoginController extends BaseController {
     private TaskManager taskManager;
     @Autowired
     private WebSocketMessageService webSocketMessageService;
+    @Autowired
+    private OnlineUserManager onlineUserManager;
+
 
     /**
      * 管理员登录接口
@@ -78,10 +83,19 @@ public class LoginController extends BaseController {
             Integer adminUserId = systemAdminService.getAdminUserId();
             String token = adminJwtToken.createToken(adminUserId, 24 * 60 * 60 * 1000 * 5); // 默认缓存5天
             AdminUserSession userSession = systemAdminService.getAdminUserSession();
-            webSocketMessageService.checkOnlineUser(adminUserId, EnumConstants.PlatformType.WEB_ADMIN);
-            userSession.setSessionId(request.getSession().getId());
             systemAdminService.loadUserMenuAndPermission(userSession);
+            userSession.setSessionId(request.getSession().getId());
+            String sessionId = request.getSession().getId();
+            synchronized (this) { // 防止相同账号并发登录
+                OnlineUser onlineUser = new OnlineUser(adminUserId, sessionId,
+                        EnumConstants.PlatformType.WEB_ADMIN);
+                onlineUser.setToken(token);
+                onlineUser.setAdminUserSession(userSession);
+                webSocketMessageService.checkOnlineUser(adminUserId, EnumConstants.PlatformType.WEB_ADMIN);
+                onlineUserManager.addOnlineUser(adminUserId, onlineUser);
+            }
 
+            // 是否记住密码登录
             boolean rememberMe = userLoginRequest.isChecked();
             if (rememberMe) {
                 // 先删除JSESSIONID
@@ -123,7 +137,7 @@ public class LoginController extends BaseController {
     @SystemLog(describe = "退出管理系统")
     @FormLimit
     public Result logout() {
-       // onlineUserManager.removeOnlineUser(systemAdminService.getUserId());
+        onlineUserManager.removeOnlineUser(systemAdminService.getAdminUserId());
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         return Result.success(ResultCode.SUCCESS, "退出成功");

@@ -1,11 +1,14 @@
 package com.education.common.cache;
 
 import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.nustaq.serialization.FSTObjectInput;
 import org.nustaq.serialization.FSTObjectOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
@@ -17,8 +20,23 @@ import java.io.IOException;
 public class FstRedisSerializer implements RedisSerializer<Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(FstRedisSerializer.class);
-    // 使用FastJsonRedisSerializer 代理
-    private final FastJsonRedisSerializer fastJsonRedisSerializer = new FastJsonRedisSerializer(Object.class);
+
+    private FastJsonRedisSerializer fastJsonRedisSerializer = new FastJsonRedisSerializer(Object.class);
+
+    /**
+     * 使用jackJson代理解析
+     * @return
+     */
+  /*  public RedisSerializer getFastJsonRedisSerializer() {
+        final Jackson2JsonRedisSerializer redisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        redisSerializer.setObjectMapper(objectMapper);
+        return redisSerializer;
+    }*/
+
+
 
     @Override
     public byte[] serialize(Object value) throws SerializationException {
@@ -51,7 +69,7 @@ public class FstRedisSerializer implements RedisSerializer<Object> {
             try {
                 return fstInput.readObject();
             } catch (Exception e) {
-                logger.warn(e.getMessage(), e);
+               // logger.warn(e.getMessage(), e);
                 // 解决使用RedisTemplate 获取计数器的值抛出空指针异常问题
                 return fastJsonRedisSerializer.deserialize(bytes);
             }

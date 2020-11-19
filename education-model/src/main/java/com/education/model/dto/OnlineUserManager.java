@@ -1,8 +1,9 @@
-package com.education.common.model.online;
+package com.education.model.dto;
 
 import com.education.common.cache.CacheBean;
 import com.education.common.utils.ObjectUtils;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.Resource;
 import java.util.Set;
 
@@ -18,11 +19,11 @@ public final class OnlineUserManager {
     @Resource(name = "redisCacheBean")
     private CacheBean cacheBean;
     // 用户id 集合
-    private static final String USER_ID_CACHE = "user:id:cache:";
+    public static final String USER_ID_CACHE = "user:id:cache";
 
 
     /**
-     * 添加用户
+     * 添加用户 （用户id 相同直接覆盖之前的登录用户信息）
      * @param userId
      * @param onlineUser
      */

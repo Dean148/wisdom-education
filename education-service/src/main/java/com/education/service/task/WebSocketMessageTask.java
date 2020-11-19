@@ -25,7 +25,7 @@ public class WebSocketMessageTask implements TaskListener {
     @Override
     public void onMessage(TaskParam taskParam) {
         try {
-            Thread.sleep(10000); // 休眠10秒后在发送消息到前端
+            Thread.sleep(15000); // 休眠15秒后在发送消息到前端
             String address = IpUtils.getIpAddress(taskParam.getStr("ip"));
             ResultCode message = new ResultCode(ResultCode.FAIL, "您的账号已在" + address + "登录，" +
                     "5秒后将自动下线，如非本人操作请重新登录并及时修改密码");

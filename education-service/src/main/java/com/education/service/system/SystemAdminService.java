@@ -11,9 +11,7 @@ import com.education.common.model.ModelBeanMap;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.*;
 import com.education.mapper.system.SystemAdminMapper;
-import com.education.model.dto.AdminRoleDto;
-import com.education.model.dto.AdminUserSession;
-import com.education.model.dto.MenuTree;
+import com.education.model.dto.*;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.entity.SystemAdminRole;
 import com.education.model.entity.SystemMenu;
@@ -177,6 +175,32 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         updateWrapper.set("password", passWord);
         updateWrapper.eq("id", adminRoleDto.getId());
         super.update(updateWrapper);
+    }
+
+    /**
+     * 在线用户分页列表
+     * @param pageParam
+     * @return
+     */
+    public PageInfo<SystemAdmin> getOnlineUserList(PageParam pageParam) {
+        List<OnlineUser> onlineUserList = new ArrayList<>();
+        Collection userIds = cacheBean.getKeys(OnlineUserManager.USER_ID_CACHE);
+        userIds.forEach(userId -> {
+            OnlineUser onlineUser = cacheBean.get(userId);
+            onlineUserList.add(onlineUser);
+        });
+
+        Set<AdminUserSession> adminUserSessionList = onlineUserList.stream()
+                .map(OnlineUser::getAdminUserSession)
+                .collect(Collectors.toSet());
+
+        if (ObjectUtils.isNotEmpty(adminUserSessionList)) {
+            List<SystemAdmin> systemAdminList = adminUserSessionList.stream()
+                    .map(AdminUserSession::getSystemAdmin)
+                    .collect(Collectors.toList());
+            return ObjectUtils.selectPageList(pageParam.getPageNumber(), pageParam.getPageSize(), systemAdminList);
+        }
+        return new PageInfo();
     }
 }
 

@@ -9,11 +9,30 @@ import java.util.List;
  */
 public class PageInfo<T> {
 
-    private long total;
+    public PageInfo(List<T> dataList, int totalPage, long total) {
+        this.dataList = dataList;
+        this.total = total;
+        this.totalPage = totalPage;
+    }
+
+    public PageInfo() {
+
+    }
+
+    private long total = 0;
+    private int totalPage; // 总页数
     private List<T> dataList;
 
     public long getTotal() {
         return total;
+    }
+
+    public void setTotalPage(int totalPage) {
+        this.totalPage = totalPage;
+    }
+
+    public int getTotalPage() {
+        return totalPage;
     }
 
     public void setTotal(long total) {

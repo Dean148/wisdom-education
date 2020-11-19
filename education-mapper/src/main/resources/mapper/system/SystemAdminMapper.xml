@@ -18,13 +18,11 @@
     </select>
 
     <select id="selectPageList" resultMap="adminRoleDto">
-        select admin.*, school.name school_name from system_admin admin left join school_info school
-        on admin.school_id = school.id
-
+        select * from system_admin
         <where>
             <if test="systemAdmin.loginName != null and systemAdmin.loginName != ''">
                 <bind name="searchName" value="'%' + loginName + '%'"/>
-                and admin.login_name like #{searchName}
+                and login_name like #{searchName} or name like #{searchName}
             </if>
         </where>
     </select>

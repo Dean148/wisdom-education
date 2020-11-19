@@ -1,11 +1,11 @@
 package com.education.service;
 
 import com.education.common.constants.EnumConstants;
-import com.education.common.model.online.OnlineUser;
-import com.education.common.model.online.OnlineUserManager;
 import com.education.common.utils.IpUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
+import com.education.model.dto.OnlineUser;
+import com.education.model.dto.OnlineUserManager;
 import com.education.service.task.TaskManager;
 import com.education.service.task.TaskParam;
 import com.education.service.task.WebSocketMessageTask;
@@ -25,6 +25,11 @@ public class WebSocketMessageService {
     @Autowired
     private TaskManager taskManager;
 
+    /**
+     * 校验用户是否已在线
+     * @param userId
+     * @param platformType
+     */
     public void checkOnlineUser(Integer userId, EnumConstants.PlatformType platformType) {
         OnlineUser onlineUser = onlineUserManager.getOnlineUser(userId);
         if (ObjectUtils.isNotEmpty(onlineUser)) {

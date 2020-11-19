@@ -1,11 +1,14 @@
 package com.education.common.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jfinal.kit.HttpKit;
 import com.jfinal.weixin.sdk.utils.HttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class IpUtils {
@@ -38,27 +41,42 @@ public class IpUtils {
 
     private static final String IP_SERVICE_URL = "http://ip.taobao.com/service/getIpInfo.php?ip=";
 
+    private static final String TENCENT_URL = "https://apis.map.qq.com/ws/location/v1/ip";
+
+    private static final String TENCENT_URL_KEY = "MYOBZ-OOEW3-KYC3G-YWDXA-DMQJ6-SPBMH";
+
     /**
      * 获取ip地址
      * @param ip
      * @return
      */
     public static String getIpAddress(String ip){
-		String address = null;
 		try {
-	//		{"code":0,"data":{"country":"中国","country_id":"CN","area":"华北","area_id":"100000","region":"北京市","region_id":"110000","city":"北京市","city_id":"110100","county":"","county_id":"-1","isp":"阿里巴巴","isp_id":"100098","ip":"47.94.12.108"}}
-			String data = HttpUtils.get(IP_SERVICE_URL + ip);
-			JSONObject jsonObject = JSONObject.parseObject(data);
-			if (ObjectUtils.isNotEmpty(jsonObject)) {
-				if (jsonObject.getInteger("code") == 0) {
-					JSONObject result = (JSONObject)jsonObject.get("data");
-					address = (String) result.get("country") + result.get("region") + result.get("city");
+			Map params = new HashMap<>();
+			params.put("key", TENCENT_URL_KEY);
+			params.put("ip", ip);
+			String content = HttpKit.get(TENCENT_URL, params);
+			JSONObject jsonObject = JSONObject.parseObject(content);
+			if (jsonObject != null && jsonObject.containsKey("result")) {
+				JSONObject location = JSONObject.parseObject(jsonObject.getString("result"));
+				if (location != null && location.containsKey("ad_info")) {
+					Map<String, String> resultMap = (Map<String, String>) JSONObject.parse(location.getString("ad_info"));
+					if (resultMap.containsKey("adcode")) {
+						String address = "";
+						String nation = resultMap.get("nation");
+						if (!"中国".equals(nation)) {
+							address += nation;
+						}
+						String provinceName = resultMap.get("province");
+						String cityName = resultMap.get("city");
+						// String district = resultMap.get("district");
+						return address + provinceName + cityName;
+					}
 				}
 			}
-			return address == null ? "" : address;
 		} catch (Exception e) {
 			logger.error("获取ip地址异常", e);
 		}
-		return "";
+		return "未知地址";
 	}
 }
