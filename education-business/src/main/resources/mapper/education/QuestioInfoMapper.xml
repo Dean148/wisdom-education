@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.education.business.mapper.education.QuestionInfoMapper">
+
+    <sql id="field">
+        question.id,
+        question.content,
+        question.subject_id,
+        question.video_url,
+        question.answer,
+        question.school_type,
+        case question_type when 1 then '单选题' when 2 then '多选题' when 3 then '填空题' when 4 then '综合题' when 5 then
+        '不定项' when 6 then '判断题' else '未知' end as questionTypeName,
+        question.question_type,
+        question.grade_info_Id,
+        question.options,
+        question.analysis,
+        question.summarize,
+        question.create_date
+    </sql>
+
+    <select id="selectPageList" resultType="questionInfoDto">
+        select
+          grade.name gradeInfoName,
+          subject.name subjectName,
+         <include refid="field"/>
+        from question_info question left join subject_info subject
+        on question.subject_id = subject.id
+        left join grade_info grade on question.grade_info_id = grade.id
+        <where>
+            <if test="questionInfo.subjectId != null">
+                and question.subject_id = #{questionInfo.subjectId}
+            </if>
+
+            <if test="questionInfo.content != null and questionInfo.content != ''">
+                <bind name="content" value="'%' + content + '%'"/>
+                and question.content like #{content} or name like #{content}
+            </if>
+        </where>
+    </select>
+</mapper>

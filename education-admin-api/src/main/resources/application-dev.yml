@@ -15,7 +15,7 @@ spring:
     password: 123456
     port: 6379
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/education_rbac?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3306/education_final?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -45,7 +45,7 @@ file:
   uploadPath: f:\\uploads\\
 
 mybatis-plus:
-  type-aliases-package: com.education.common.model
+  type-aliases-package: com.education.model
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: mapper/**/*.xml

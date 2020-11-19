@@ -3,12 +3,12 @@ package com.education.admin.api.config.shiro;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.education.business.mapper.system.SystemAdminMapper;
 import com.education.common.component.SpringBeanManager;
 import com.education.common.exception.BusinessException;
 import com.education.common.utils.Md5Utils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
-import com.education.mapper.system.SystemAdminMapper;
 import com.education.model.dto.AdminUserSession;
 import com.education.model.entity.SystemAdmin;
 import org.apache.shiro.authc.*;

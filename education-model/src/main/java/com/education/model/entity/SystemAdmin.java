@@ -19,7 +19,6 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 	@TableField("login_count")
 	private int loginCount;
 	private String name;
-
 	@TableField("last_login_time")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date lastLoginTime;
@@ -30,6 +29,7 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 	private boolean superFlag;
 	@TableField("account_type")
 	private int accountType;
+	@TableField("ip_address")
 	private String ipAddress;
 
 	public void setIpAddress(String ipAddress) {

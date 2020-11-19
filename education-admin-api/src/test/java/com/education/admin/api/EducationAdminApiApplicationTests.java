@@ -2,38 +2,18 @@ package com.education.admin.api;
 
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.education.common.cache.EhcacheBean;
-import com.education.common.cache.CacheBean;
-import com.education.common.model.AdminUserSession;
-import com.education.common.model.PageInfo;
-import com.education.common.utils.IpUtils;
-import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.TreeUtils;
-import com.education.mapper.system.SystemAdminMapper;
-import com.education.mapper.system.SystemMenuMapper;
-import com.education.model.dto.AdminRoleDto;
-import com.education.model.dto.MenuTree;
-import com.education.model.entity.SystemAdmin;
-import com.jfinal.kit.HttpKit;
-import org.apache.shiro.session.mgt.SimpleSession;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.*;
 
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class EducationAdminApiApplicationTests {
 
-    @Autowired
+  /*  @Autowired
     @Qualifier("redisCacheBean")
     public CacheBean cacheBean;
     static final String cacheName = "user:cache";
@@ -63,10 +43,10 @@ public class EducationAdminApiApplicationTests {
         PageInfo<Integer> page = ObjectUtils.selectPageList(5, 4, list);
         System.out.println(page.getDataList());
         System.out.println(page.getTotal());
-     /*   PageInfo<Integer> page = ObjectUtils.selectPageList(3, 3, list);
+     *//*   PageInfo<Integer> page = ObjectUtils.selectPageList(3, 3, list);
 
         System.out.println(page.getDataList());
-        System.out.println(page.getTotal());*/
+        System.out.println(page.getTotal());*//*
        // String address = IpUtils.getIpAddress("111.72.96.124");
        // System.out.println(address);
 
@@ -82,11 +62,11 @@ public class EducationAdminApiApplicationTests {
        // List<ModelBeanMap> parentList = MapTreeUtils.getParentList(dataList, 2);
        // System.out.println(parentList);
       //  redisTemplate.delete(redisTemplate.keys("*"));
-      /*  Map params = new HashMap<>();
+      *//*  Map params = new HashMap<>();
         String[] array = new String[]{"name", "dsdsd"};
         params.put("name"," test");
 
-        params.put("data", array);*/
+        params.put("data", array);*//*
         //System.out.println(JSONObject.toJSONString(params));
     }
 
@@ -98,10 +78,10 @@ public class EducationAdminApiApplicationTests {
        // cacheBean.put("2", "php");
        // cacheBean.put("3", "python");
        // String value = cacheBean.get(cacheName, "1");
-      /*  System.out.println("value:" + value);
+      *//*  System.out.println("value:" + value);
         System.out.println(cacheBean.getKeys(cacheName));
         cacheBean.removeAll(cacheName);
-        System.out.println(cacheBean.getKeys(cacheName));*/
+        System.out.println(cacheBean.getKeys(cacheName));*//*
     }
 
     @Test
@@ -154,7 +134,7 @@ public class EducationAdminApiApplicationTests {
         }
     }
 
-  /*  @Test
+  *//*  @Test
     public void testMyBatis() {
         SystemAdmin systemAdmin = new SystemAdmin();
        // systemAdmin.setAttr("login_name", "");
@@ -166,7 +146,7 @@ public class EducationAdminApiApplicationTests {
         systemAdmin.setAttr("create_date", new Date());
         int result = systemAdminMapper.saveAdmin(systemAdmin);
         System.out.println(result);
-    }*/
+    }*//*
 
 
 
@@ -181,11 +161,11 @@ public class EducationAdminApiApplicationTests {
        adminRoleDto.setId(null);
        int s = systemAdminMapper.insert(adminRoleDto);
        System.out.println(s);
-      /* QueryWrapper<SystemAdmin> queryWrapper = new QueryWrapper<SystemAdmin>();
+      *//* QueryWrapper<SystemAdmin> queryWrapper = new QueryWrapper<SystemAdmin>();
        String admin = "admin";
        queryWrapper.select("id", "name").eq(ObjectUtils.isNotEmpty(admin), "login_name", admin);
        SystemAdmin systemAdmin = systemAdminMapper.selectOne(queryWrapper);
-       System.out.println(systemAdmin);*/
+       System.out.println(systemAdmin);*//*
 
        SimpleSession simpleSession = new SimpleSession();
 
@@ -202,5 +182,5 @@ public class EducationAdminApiApplicationTests {
     @Test
     public void testIp() {
         System.out.println(IpUtils.getIpAddress("182.101.63.196"));
-    }
+    }*/
 }

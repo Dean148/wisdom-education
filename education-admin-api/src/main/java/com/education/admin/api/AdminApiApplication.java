@@ -20,7 +20,7 @@ import org.springframework.core.env.Environment;
        "com.education"
    }
 )
-@MapperScan("com.education.mapper")
+@MapperScan("com.education.business.mapper")
 public class AdminApiApplication {
 
     public static void main(String[] args) {

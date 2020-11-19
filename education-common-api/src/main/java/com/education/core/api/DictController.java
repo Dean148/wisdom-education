@@ -1,11 +1,11 @@
 package com.education.core.api;
 
+import com.education.business.service.system.SystemDictService;
 import com.education.common.base.BaseController;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.Result;
 import com.education.model.entity.SystemDict;
 import com.education.model.request.PageParam;
-import com.education.service.system.SystemDictService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

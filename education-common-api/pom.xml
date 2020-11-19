@@ -25,8 +25,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.education.service</groupId>
-            <artifactId>education-service</artifactId>
+            <groupId>com.education.business</groupId>
+            <artifactId>education-business</artifactId>
             <version>${service.version}</version>
         </dependency>
 

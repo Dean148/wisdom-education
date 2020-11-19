@@ -37,6 +37,7 @@
     <module>education-mapper</module>
     <module>education-model</module>
     <module>education-common-api</module>
+      <module>education-business</module>
   </modules>
 
   <dependencies>
