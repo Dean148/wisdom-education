@@ -18,6 +18,9 @@ public final class Constants {
     public static final String SESSION_NAME = "u_id_key";
     public static final String DEFAULT_SESSION_ID = "JSESSIONID";
     public static final int SESSION_TIME_OUT = 24 * 60 * 60 * 5;
+
+    public static final int ONE_DAY = 24 * 60;
+
     // 默认会话结束时失效
     public static final int DEFAULT_SESSION_TIME_OUT = -1;
     public static final String DEFAULT_STUDENT_NAME = "体验账号";

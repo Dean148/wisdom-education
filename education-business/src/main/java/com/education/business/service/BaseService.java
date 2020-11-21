@@ -7,10 +7,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.education.business.task.TaskManager;
 import com.education.common.cache.CacheBean;
+import com.education.common.constants.Constants;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.dto.AdminUserSession;
+import com.education.model.dto.StudentInfoSession;
 import com.education.model.entity.BaseEntity;
+import com.education.model.entity.StudentInfo;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.request.PageParam;
 import org.apache.shiro.SecurityUtils;
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +44,8 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImp
     @Autowired
     @Qualifier("redisCacheBean")
     protected CacheBean cacheBean;
+    @Autowired
+    protected HttpServletRequest request;
     @Resource
     protected CacheBean ehcacheBean;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -139,5 +145,18 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImp
             }
         }
         return super.saveOrUpdate(entity);
+    }
+
+    public StudentInfoSession getStudentInfoSession() {
+        String token = request.getHeader("token");
+        return cacheBean.get(Constants.USER_INFO_CACHE, token);
+    }
+
+    public StudentInfo getStudentInfo() {
+        StudentInfoSession studentInfoSession = getStudentInfoSession();
+       if (ObjectUtils.isNotEmpty(studentInfoSession)) {
+           return studentInfoSession.getStudentInfo();
+       }
+       return null;
     }
 }
