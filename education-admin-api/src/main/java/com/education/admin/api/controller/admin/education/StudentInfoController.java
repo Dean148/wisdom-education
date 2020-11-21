@@ -86,6 +86,7 @@ public class StudentInfoController extends BaseController {
      */
     @DeleteMapping("{id}")
     public Result deleteById(@PathVariable Integer id) {
+        studentInfoService.removeById(id);
         return Result.success();
     }
 
