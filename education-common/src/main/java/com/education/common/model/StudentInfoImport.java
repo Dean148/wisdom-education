@@ -13,7 +13,7 @@ import java.util.Date;
  * @version 1.0
  * @create_at 2019/4/20 21:22
  */
-public class StudentInfo extends BaseExcelModel {
+public class StudentInfoImport extends BaseExcelModel {
 
     @Excel(name = "学生姓名")
     @NotNull(message = "学生姓名不能为空")
@@ -43,30 +43,17 @@ public class StudentInfo extends BaseExcelModel {
     @NotNull(message = "家庭住址不能为空")
     private String address;
 
-    @Excel(name = "就读学校")
-    private String school;
-
     @Excel(name = "就读年级")
     @NotNull(message = "就读年级不能为空")
-    private String gradeType;
+    private String gradeName;
 
-    private Integer gradeTypeId;
-    private Integer schoolId;
-    private Integer sexId;
-    private Date createDate;
-    private Date updateDate;
-    private String loginName;
 
-    public String getLoginName() {
-        return loginName;
+    public String getName() {
+        return name;
     }
 
-    public void setLoginName(String loginName) {
-        this.loginName = loginName;
-    }
-
-    public String getPassword() {
-        return password;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getHeadImage() {
@@ -75,29 +62,6 @@ public class StudentInfo extends BaseExcelModel {
 
     public void setHeadImage(String headImage) {
         this.headImage = headImage;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEncrypt() {
-        return encrypt;
-    }
-
-    public void setEncrypt(String encrypt) {
-        this.encrypt = encrypt;
-    }
-
-    private String password;
-    private String encrypt;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getMobile() {
@@ -148,61 +112,11 @@ public class StudentInfo extends BaseExcelModel {
         this.address = address;
     }
 
-    public String getSchool() {
-        return school;
+    public String getGradeName() {
+        return gradeName;
     }
 
-    public void setSchool(String school) {
-        this.school = school;
+    public void setGradeName(String gradeName) {
+        this.gradeName = gradeName;
     }
-
-    public String getGradeType() {
-        return gradeType;
-    }
-
-    public void setGradeType(String gradeType) {
-        this.gradeType = gradeType;
-    }
-
-    public Integer getGradeTypeId() {
-        return gradeTypeId;
-    }
-
-    public void setGradeTypeId(Integer gradeTypeId) {
-        this.gradeTypeId = gradeTypeId;
-    }
-
-    public Integer getSchoolId() {
-        return schoolId;
-    }
-
-    public void setSchoolId(Integer schoolId) {
-        this.schoolId = schoolId;
-    }
-
-    public Integer getSexId() {
-        return sexId;
-    }
-
-    public void setSexId(Integer sexId) {
-        this.sexId = sexId;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
-
-
 }

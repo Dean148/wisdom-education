@@ -4,6 +4,7 @@ import com.education.business.service.education.LanguagePointsInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.model.entity.LanguagePointsInfo;
+import com.education.model.request.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,5 +41,15 @@ public class LanguagePointsInfoController extends BaseController {
     @GetMapping("selectByParentId")
     public Result selectByParentId(Integer parentId) {
         return Result.success(languagePointsInfoService.selectByParentId(parentId));
+    }
+
+    /**
+     * 获取知识点科目列表
+     * @param pageParam
+     * @return
+     */
+    @GetMapping("selectSubjectList")
+    public Result selectSubjectList(PageParam pageParam) {
+        return null;
     }
 }

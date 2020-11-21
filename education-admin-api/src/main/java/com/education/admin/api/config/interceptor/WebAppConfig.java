@@ -11,7 +11,6 @@ import com.education.common.interceptor.ParamsValidateInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -33,11 +32,9 @@ public class WebAppConfig implements WebMvcConfigurer {
 	@Autowired
 	private LogInterceptor logInterceptor;
 	@Autowired
-	private AuthInterceptor authInterceptor;
+	private AdminAuthInterceptor authInterceptor;
 	@Autowired
 	private ParamsValidateInterceptor paramsValidateInterceptor;
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
 	@Autowired
 	private FormLimitInterceptor formLimitInterceptor;
 
@@ -49,6 +46,7 @@ public class WebAppConfig implements WebMvcConfigurer {
 		{
 			add("/system/unAuth");
 			add("/system/login");
+			add("/api/image");
 		}
 	};
 
@@ -56,7 +54,10 @@ public class WebAppConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(logInterceptor).addPathPatterns("/**");
 		registry.addInterceptor(formLimitInterceptor).addPathPatterns("/**");
-	//	registry.addInterceptor(authInterceptor).excludePathPatterns(noInterceptorUrl).addPathPatterns("/system/**");
+		registry.addInterceptor(authInterceptor)
+				.excludePathPatterns(noInterceptorUrl)
+				.addPathPatterns("/api/**")
+				.addPathPatterns("/system/**");
 		registry.addInterceptor(paramsValidateInterceptor).addPathPatterns("/**");
 	}
 

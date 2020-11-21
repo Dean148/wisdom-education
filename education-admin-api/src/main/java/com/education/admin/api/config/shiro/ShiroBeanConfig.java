@@ -42,21 +42,28 @@ public class ShiroBeanConfig {
         shiroFilterFactoryBean.setLoginUrl("/system/unAuth");
         Map<String, String> filterChainDefinitionMap = new HashMap<>();
         // swagger-ui 配置
-        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
+      /*  filterChainDefinitionMap.put("/swagger-ui.html", "anon");
         filterChainDefinitionMap.put("/swagger-resources", "anon");
         filterChainDefinitionMap.put("/v2/api-docs", "anon");
         filterChainDefinitionMap.put("/webjars/springfox-swagger-ui/**", "anon");
         filterChainDefinitionMap.put("/doc.html", "anon"); // boostrap swagger ui
         filterChainDefinitionMap.put("/swagger-resources/**", "anon");
         filterChainDefinitionMap.put("/uploads/**", "anon");
-        filterChainDefinitionMap.put("/static/**", "anon");
+        filterChainDefinitionMap.put("/static/**", "anon");*/
+
         filterChainDefinitionMap.put("/system/login", "anon");
-        filterChainDefinitionMap.put("/*", "anon");
+       /* filterChainDefinitionMap.put("/*", "anon");*/
+        filterChainDefinitionMap.put("/uploads/**", "anon");
+        filterChainDefinitionMap.put("/static/**", "anon");
+
+  /*      filterChainDefinitionMap.put("/api/dict/**", "anon");
+        filterChainDefinitionMap.put("/api/dictValue/**", "anon");*/
+        filterChainDefinitionMap.put("/api/**", "anon");
 
         // 需要认证才能访问的url
         filterChainDefinitionMap.put("/ueditor/exec", "authc");
         filterChainDefinitionMap.put("/upload/**", "authc");
-        filterChainDefinitionMap.put("/api/**", "anon");
+
         filterChainDefinitionMap.put("/system/**", "authc");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         //自定义过滤器
