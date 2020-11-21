@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.education.business.mapper.education.QuestionInfoMapper">
 
+    <resultMap id="questionInfoDtoResultMap" autoMapping="true" type="questionInfoDto">
+        <id column="id" property="id"></id>
+        <collection property="languagePointsInfoId" ofType="Integer">
+            <id property="languagePointsInfoId" column="language_points_info_id"></id>
+        </collection>
+    </resultMap>
+
     <sql id="field">
         question.id,
         question.content,
@@ -28,14 +35,36 @@
         on question.subject_id = subject.id
         left join grade_info grade on question.grade_info_id = grade.id
         <where>
+
+            <if test="questionInfo.schoolType != null">
+                and question.school_type = #{questionInfo.schoolType}
+            </if>
+
+            <if test="questionInfo.gradeInfoId != null">
+                and question.grade_info_id = #{questionInfo.gradeInfoId}
+            </if>
+
             <if test="questionInfo.subjectId != null">
                 and question.subject_id = #{questionInfo.subjectId}
             </if>
 
             <if test="questionInfo.content != null and questionInfo.content != ''">
-                <bind name="content" value="'%' + content + '%'"/>
-                and question.content like #{content} or name like #{content}
+                <bind name="content" value="'%' + questionInfo.content + '%'"/>
+                and question.content like #{content}
+            </if>
+
+            <if test="questionInfo.questionIds != null and questionInfo.questionIds.size() > 0">
+                and question.id not in
+                <foreach collection="selectQuestionIds" separator="," open="(" close=")" item="id">
+                    #{id}
+                </foreach>
             </if>
         </where>
+        order by question.id desc
+    </select>
+
+    <select id="selectById" resultMap="questionInfoDtoResultMap">
+        select <include refid="field"/>, b.language_points_info_id from question_info question left join question_language_points_info b
+        on question.id = b.question_info_id where question.id = #{id}
     </select>
 </mapper>

@@ -8,9 +8,7 @@ import com.education.common.utils.Result;
 import com.education.model.entity.GradeInfo;
 import com.education.model.request.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 年级管理接口
@@ -34,5 +32,27 @@ public class GradeInfoController extends BaseController {
     @GetMapping
     public Result<PageInfo<GradeInfo>> list(PageParam pageParam, GradeInfo gradeInfo) {
         return Result.success(gradeInfoService.selectPage(pageParam, new QueryWrapper(gradeInfo)));
+    }
+
+    /**
+     * 保存或添加年级
+     * @param gradeInfo
+     * @return
+     */
+    @PostMapping("saveOrUpdate")
+    public Result saveOrUpdate(@RequestBody GradeInfo gradeInfo) {
+        gradeInfoService.saveOrUpdate(gradeInfo);
+        return Result.success();
+    }
+
+    /**
+     * 删除年级
+     * @param id
+     * @return
+     */
+    @PostMapping("{id}")
+    public Result deleteById(@PathVariable Integer id) {
+        gradeInfoService.removeById(id);
+        return Result.success();
     }
 }

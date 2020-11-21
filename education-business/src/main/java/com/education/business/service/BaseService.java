@@ -10,6 +10,7 @@ import com.education.common.cache.CacheBean;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.dto.AdminUserSession;
+import com.education.model.entity.BaseEntity;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.request.PageParam;
 import org.apache.shiro.SecurityUtils;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 
@@ -54,8 +56,8 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImp
 
     /**
      * 条件列表分页查询
+     * @param pageParam
      * @param queryWrapper
-     * @param <T>
      * @return
      */
     public PageInfo<T> selectPage(PageParam pageParam, Wrapper<T> queryWrapper) {
@@ -123,5 +125,19 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImp
             return userSession;
         }
         return null;
+    }
+
+    @Override
+    public boolean saveOrUpdate(T entity) {
+        if (entity instanceof BaseEntity) {
+            Date now = new Date();
+            BaseEntity baseEntity = (BaseEntity) entity;
+            if (baseEntity.getId() == null) {
+                baseEntity.setCreateDate(now);
+            } else {
+                baseEntity.setUpdateDate(now);
+            }
+        }
+        return super.saveOrUpdate(entity);
     }
 }

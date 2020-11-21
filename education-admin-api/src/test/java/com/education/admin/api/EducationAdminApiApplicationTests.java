@@ -2,8 +2,13 @@ package com.education.admin.api;
 
 
 
+import com.education.business.service.education.QuestionInfoService;
+import com.education.model.dto.QuestionInfoDto;
+import com.education.model.entity.QuestionInfo;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -12,6 +17,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class EducationAdminApiApplicationTests {
+
+    @Autowired
+    private QuestionInfoService questionInfoService;
+
+    @Test
+    public void testQuestion() {
+        QuestionInfoDto questionInfoDto = questionInfoService.selectById(1728);
+        System.out.println(questionInfoDto);
+    }
+
 
   /*  @Autowired
     @Qualifier("redisCacheBean")

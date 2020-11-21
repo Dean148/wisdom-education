@@ -11,6 +11,7 @@ import com.education.model.dto.QuestionInfoDto;
 import com.education.model.entity.QuestionInfo;
 import com.education.model.entity.QuestionLanguagePointsInfo;
 import com.education.model.request.PageParam;
+import com.education.model.request.QuestionInfoQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +38,9 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
      * @param questionInfo
      * @return
      */
-    public PageInfo<QuestionInfoDto> selectPageList(PageParam pageParam, QuestionInfo questionInfo) {
+    public PageInfo<QuestionInfoDto> selectPageList(PageParam pageParam, QuestionInfoQuery questionInfoQuery) {
         Page<QuestionInfoDto> page = new Page<>(pageParam.getPageNumber(), pageParam.getPageSize());
-        return selectPage(baseMapper.selectPageList(page, questionInfo));
+        return selectPage(baseMapper.selectPageList(page, questionInfoQuery));
     }
 
 
@@ -56,17 +57,23 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
             LambdaQueryWrapper queryWrapper = Wrappers.<QuestionLanguagePointsInfo>lambdaQuery()
                     .eq(QuestionLanguagePointsInfo::getQuestionInfoId, questionInfoDto.getId());
             questionLanguagePointsInfoService.remove(queryWrapper);
-            questionInfoDto.setUpdateDate(new Date());
         }
 
+        super.saveOrUpdate(questionInfoDto); // 保存试题记录
+
+        // 保存试题知识点关联信息
         List<QuestionLanguagePointsInfo> questionLanguagePointsInfoList = new ArrayList<>();
         languagePointsInfoIdList.forEach(languagePointsInfoId -> {
             QuestionLanguagePointsInfo questionLanguagePointsInfo = new QuestionLanguagePointsInfo();
             questionLanguagePointsInfo.setLanguagePointsInfoId(languagePointsInfoId);
             questionLanguagePointsInfo.setQuestionInfoId(questionInfoDto.getId());
+            questionLanguagePointsInfo.setCreateDate(new Date());
             questionLanguagePointsInfoList.add(questionLanguagePointsInfo);
         });
-        questionLanguagePointsInfoService.saveBatch(questionLanguagePointsInfoList);
-        return super.saveOrUpdate(questionInfoDto);
+        return questionLanguagePointsInfoService.saveBatch(questionLanguagePointsInfoList);
+    }
+
+    public QuestionInfoDto selectById(Integer id) {
+        return baseMapper.selectById(id);
     }
 }

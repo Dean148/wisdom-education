@@ -30,7 +30,7 @@ public class SubjectInfoController extends BaseController {
      */
     @GetMapping
     public Result list(PageParam pageParam, SubjectInfo subjectInfo) {
-        return Result.success(subjectInfoService.selectPage(pageParam, new QueryWrapper(subjectInfo)));
+        return Result.success(subjectInfoService.selectPageList(pageParam, subjectInfo));
     }
 
     /**
@@ -40,6 +40,7 @@ public class SubjectInfoController extends BaseController {
      */
     @PostMapping
     public Result saveOrUpdate(@RequestBody SubjectInfo subjectInfo) {
-        return null;
+        subjectInfoService.saveOrUpdate(subjectInfo);
+        return Result.success();
     }
 }

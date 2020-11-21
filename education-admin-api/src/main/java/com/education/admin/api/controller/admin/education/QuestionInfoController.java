@@ -6,6 +6,7 @@ import com.education.common.utils.Result;
 import com.education.model.dto.QuestionInfoDto;
 import com.education.model.entity.QuestionInfo;
 import com.education.model.request.PageParam;
+import com.education.model.request.QuestionInfoQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +26,12 @@ public class QuestionInfoController extends BaseController {
     /**
      * 试题列表
      * @param pageParam
-     * @param questionInfo
+     * @param questionInfoQuery
      * @return
      */
     @GetMapping
-    public Result list(PageParam pageParam, QuestionInfo questionInfo) {
-        return Result.success(questionInfoService.selectPageList(pageParam, questionInfo));
+    public Result list(PageParam pageParam, QuestionInfoQuery questionInfoQuery) {
+        return Result.success(questionInfoService.selectPageList(pageParam, questionInfoQuery));
     }
 
     /**
@@ -44,9 +45,23 @@ public class QuestionInfoController extends BaseController {
         return Result.success();
     }
 
-    public Result selectById() {
-        return null;
+    /**
+     * 试题详情
+     * @param id
+     * @return
+     */
+    @GetMapping("selectById")
+    public Result selectById(Integer id) {
+        return Result.success(questionInfoService.selectById(id));
     }
 
-/*    public Result selectById()*/
+    /**
+     * 根据id 删除试题
+     * @param id
+     * @return
+     */
+    @DeleteMapping("{id}")
+    public Result deleteById(@PathVariable Integer id) {
+        return Result.success();
+    }
 }
