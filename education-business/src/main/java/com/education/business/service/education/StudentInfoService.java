@@ -106,7 +106,11 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
             if (dataBasePassword.equals(Md5Utils.getMd5(password, encrypt))) {
                 String token = studentJwtToken.createToken(studentInfo.getId(), sessionTime); // 默认缓存5天
                 this.cacheStudentInfoSession(studentInfo, token);
-                return Result.success(ResultCode.SUCCESS, "登录成功", token);
+                Kv kv = Kv.create().set("name", studentInfo.getName())
+                        .set("token", token)
+                        .set("headImg", studentInfo.getHeadImg())
+                        .set("id", studentInfo.getId());
+                return Result.success(ResultCode.SUCCESS, "登录成功", kv);
             } else {
                 result.setCode(ResultCode.FAIL);
                 result.setMessage("用户名或密码错误");
