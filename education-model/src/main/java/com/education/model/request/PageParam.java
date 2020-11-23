@@ -1,6 +1,5 @@
 package com.education.model.request;
 
-import org.apache.ibatis.session.RowBounds;
 
 /**
  * @author zengjintao
@@ -11,8 +10,17 @@ public class PageParam {
 
     private static final int NO_PAGE = 1;
 
-    private Integer pageNumber;
-    private Integer pageSize;
+    private Integer pageNumber = NO_PAGE;
+    private Integer pageSize = Integer.MAX_VALUE;
+
+    public PageParam() {
+
+    }
+
+    public PageParam(Integer pageNumber, Integer pageSize) {
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
+    }
 
     public Integer getPageNumber() {
         return pageNumber;

@@ -1,8 +1,10 @@
-package com.education.core.api;
+package com.education.api.controller.admin.education;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.education.SubjectInfoService;
 import com.education.common.base.BaseController;
+import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.model.entity.SubjectInfo;
 import com.education.model.request.PageParam;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * @create_at 2020/11/19 13:51
  */
 @RestController
-@RequestMapping("/api/subject")
+@RequestMapping("/system/subject")
 public class SubjectInfoController extends BaseController {
 
     @Autowired
@@ -32,6 +34,7 @@ public class SubjectInfoController extends BaseController {
     public Result list(PageParam pageParam, SubjectInfo subjectInfo) {
         return Result.success(subjectInfoService.selectPageList(pageParam, subjectInfo));
     }
+
 
     /**
      * 添加或修改科目

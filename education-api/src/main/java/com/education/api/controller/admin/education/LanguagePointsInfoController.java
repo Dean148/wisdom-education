@@ -1,4 +1,4 @@
-package com.education.core.api;
+package com.education.api.controller.admin.education;
 
 import com.education.business.service.education.LanguagePointsInfoService;
 import com.education.common.base.BaseController;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @create_at 2020/11/19 14:14
  */
 @RestController
-@RequestMapping("/api/languagePointsInfo")
+@RequestMapping("/system/languagePointsInfo")
 public class LanguagePointsInfoController extends BaseController {
 
     @Autowired

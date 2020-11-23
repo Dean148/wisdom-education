@@ -1,5 +1,6 @@
 package com.education.common.utils;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +75,25 @@ public class DateUtils {
      */
     public static String getFormatDate(Date date) {
         return FORMAT.format(date);
+    }
+
+    public static String getDate(long date ) {
+        long h = date / 3600;
+        long m = (date % 3600) / 60;
+        long s = (date % 3600) % 60;
+        StringBuilder time = new StringBuilder();
+        if (h > 0) {
+            time.append(h + "小时");
+        }
+        if (m > 0) {
+            time.append(m + "分");
+        }
+        if (s > 0 && s <= 9) {
+            time.append("0" + s + "秒");
+        } else {
+            time.append(s + "秒");
+        }
+        return time.toString();
     }
 
     public static Date parseDateForChina(String date) {

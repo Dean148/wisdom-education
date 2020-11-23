@@ -6,13 +6,18 @@
         select paper.*, subject.name subject_name, grade.name gradeInfoName from test_paper_info paper
         left join grade_info grade on paper.grade_info_id = grade.id
         left join subject_info subject on paper.subject_id = subject.id
+        <where>
+            <if test="testPaperInfo.subjectId != null">
+                and paper.subject_id = #{testPaperInfo.subjectId}
+            </if>
+        </where>
         order by paper.id desc
     </select>
 
 
     <!-- 试卷试题列表 -->
     <select id="selectPaperQuestionList" resultType="testPaperQuestionDto">
-        select a.id, a.content, b.sort, b.mark, b.test_paper_info_id  from question_info a inner join test_paper_question_info b
+        select a.id, a.content, b.sort, b.mark, b.test_paper_info_id, a.question_type, a.answer, a.options from question_info a inner join test_paper_question_info b
         on a.id = b.question_info_id inner join test_paper_info c
         on b.test_paper_info_id = c.id where c.id = #{testPaperQuestionRequest.testPaperInfoId}
         <where>

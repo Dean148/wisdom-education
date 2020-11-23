@@ -49,6 +49,10 @@ public final class Result<T> {
         this.data = data;
     }
 
+    public static <T> Result success(int code, String message, T data) {
+        return new Result(code, message, data);
+    }
+
     public static <T> Result success(int code, T data) {
         return new Result(code, DEFAULT_SUCCESS_MESSAGE, data);
     }

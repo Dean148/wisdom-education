@@ -16,6 +16,7 @@ import com.education.model.entity.GradeInfo;
 import com.education.model.entity.StudentInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.UserLoginRequest;
+import com.jfinal.kit.Kv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -105,7 +106,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
             if (dataBasePassword.equals(Md5Utils.getMd5(password, encrypt))) {
                 String token = studentJwtToken.createToken(studentInfo.getId(), sessionTime); // 默认缓存5天
                 this.cacheStudentInfoSession(studentInfo, token);
-                return Result.success(token);
+                return Result.success(ResultCode.SUCCESS, "登录成功", token);
             } else {
                 result.setCode(ResultCode.FAIL);
                 result.setMessage("用户名或密码错误");

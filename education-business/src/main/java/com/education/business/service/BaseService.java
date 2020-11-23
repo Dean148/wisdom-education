@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.education.business.task.TaskManager;
 import com.education.common.cache.CacheBean;
 import com.education.common.constants.Constants;
+import com.education.common.constants.EnumConstants;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.dto.AdminUserSession;
@@ -59,6 +60,22 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImp
     public PageInfo<T> selectPage(PageParam pageParam, T entity) {
         return this.selectPage(pageParam, Wrappers.query(entity));
     }
+
+    /**
+     * 判断试题是否客观题
+     * 主观题由系统自动判分
+     * @param questionType
+     * @return
+     */
+    public boolean isObjectiveQuestion(int questionType) {
+        if (questionType == EnumConstants.QuestionType.SINGLE_QUESTION.getValue()
+                || questionType == EnumConstants.QuestionType.MULTIPLE_QUESTION.getValue()
+                || questionType == EnumConstants.QuestionType.JUDGMENT_QUESTION.getValue()) {
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * 条件列表分页查询

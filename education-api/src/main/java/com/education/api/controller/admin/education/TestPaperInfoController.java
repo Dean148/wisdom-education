@@ -35,7 +35,7 @@ public class TestPaperInfoController extends BaseController {
     private TestPaperQuestionInfoService testPaperQuestionInfoService;
 
     /**
-     * 试题列表
+     * 试卷列表
      * @param pageParam
      * @param testPaperInfoDto
      * @return

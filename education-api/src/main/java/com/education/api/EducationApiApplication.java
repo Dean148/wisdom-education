@@ -21,10 +21,10 @@ import org.springframework.core.env.Environment;
    }
 )
 @MapperScan("com.education.business.mapper")
-public class AdminApiApplication {
+public class EducationApiApplication {
 
     public static void main(String[] args) {
-        ApplicationContext applicationContext = SpringApplication.run(AdminApiApplication.class, args);
+        ApplicationContext applicationContext = SpringApplication.run(EducationApiApplication.class, args);
         Environment environment = applicationContext.getEnvironment();
         String uploadPath = environment.getProperty("file.uploadPath");
         FileUtils.setUploadPath(uploadPath);

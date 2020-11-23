@@ -1,4 +1,4 @@
-package com.education.core.api;
+package com.education.api.controller.admin.education;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.education.business.service.education.GradeInfoService;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * @create_at 2020/11/19 12:42
  */
 @RestController
-@RequestMapping("/api/gradeInfo")
+@RequestMapping("/system/gradeInfo")
 public class GradeInfoController extends BaseController {
 
     @Autowired

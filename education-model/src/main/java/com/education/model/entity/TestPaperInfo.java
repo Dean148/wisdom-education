@@ -2,29 +2,65 @@ package com.education.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.util.Date;
 
+/**
+ * 试卷信息表
+ */
 @TableName("test_paper_info")
 public class TestPaperInfo extends BaseEntity<TestPaperInfo> {
 
 	private String name;
 	private String remark;
 	private Integer mark;
+
 	@TableField("school_type")
 	private Integer schoolType;
+
 	@TableField("grade_info_id")
 	private Integer gradeInfoId;
+
 	@TableField("publish_flag")
 	private boolean publishFlag;
+
 	@TableField("subject_id")
 	private Integer subjectId;
+
 	private Integer sort;
+
 	@TableField("exam_number")
 	private Integer examNumber;
+
 	@TableField("correct_number")
 	private Integer correctNumber;
+
 	@TableField("exam_time")
 	private Integer examTime;
+
+	@TableField("question_number")
+	private Integer questionNumber;
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	@TableField("publish_time")
+	private Date publishTime;
+
+	public Integer getQuestionNumber() {
+		return questionNumber;
+	}
+
+	public void setQuestionNumber(Integer questionNumber) {
+		this.questionNumber = questionNumber;
+	}
+
+	public Date getPublishTime() {
+		return publishTime;
+	}
+
+	public void setPublishTime(Date publishTime) {
+		this.publishTime = publishTime;
+	}
 
 	public Integer getExamTime() {
 		return examTime;

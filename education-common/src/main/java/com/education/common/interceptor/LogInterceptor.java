@@ -4,12 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -22,8 +23,16 @@ import java.util.Enumeration;
 @Slf4j
 public class LogInterceptor extends BaseInterceptor {
 
+
     private static final String title = "\nSpringMvc" + " action report -------- ";
     private static int maxOutputLengthOfParaValue = 512;
+
+    private final ThreadLocal<Map<String, Long>> threadLocal = new ThreadLocal() {
+        @Override
+        protected ConcurrentHashMap initialValue() {
+            return new ConcurrentHashMap();
+        }
+    };
 
     private static final ThreadLocal<SimpleDateFormat> sdf = new ThreadLocal<SimpleDateFormat>() {
         protected SimpleDateFormat initialValue() {
@@ -33,6 +42,8 @@ public class LogInterceptor extends BaseInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        long startTime = System.currentTimeMillis();
+        threadLocal.get().put("startTime", startTime);
         //解决ajax跨域问题
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Methods", "*");
@@ -72,7 +83,7 @@ public class LogInterceptor extends BaseInterceptor {
                     if (values[0] != null && values[0].length() > maxOutputLengthOfParaValue) {
                         sb.append(values[0].substring(0, maxOutputLengthOfParaValue)).append("...");
                     } else {
-                        sb.append(values[0]);
+                        sb.append(values[0] + "(" + values[0].getClass().getSimpleName() + ")");
                     }
                 }
                 else {
@@ -88,15 +99,10 @@ public class LogInterceptor extends BaseInterceptor {
             }
             sb.append("\n");
         }
-        sb.append("--------------------------------------------------------------------------------\n");
+        long endTime = System.currentTimeMillis();
+        long startTime = threadLocal.get().get("startTime");
+        sb.append("------------------------- 接口响应时间:" +  (endTime - startTime) + "ms---------------------------------");
         log.info(sb.toString());
-        if (handler instanceof HandlerMethod) {
-
-        }
-    }
-
-    private void asyncSaveLog(HandlerMethod handlerMethod) {
-
     }
 
     /**

@@ -9,8 +9,28 @@ import com.education.model.entity.TestPaperQuestionInfo;
  */
 public class TestPaperQuestionDto extends TestPaperQuestionInfo {
 
+    private Integer questionType;
     private String content;
+    private String options;
+    private String answer;
     private Integer updateType; // 更新字段
+
+
+    public void setOptions(String options) {
+        this.options = options;
+    }
+
+    public String getOptions() {
+        return options;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
 
     public void setUpdateType(Integer updateType) {
         this.updateType = updateType;
@@ -26,5 +46,13 @@ public class TestPaperQuestionDto extends TestPaperQuestionInfo {
 
     public String getContent() {
         return content;
+    }
+
+    public void setQuestionType(Integer questionType) {
+        this.questionType = questionType;
+    }
+
+    public Integer getQuestionType() {
+        return questionType;
     }
 }

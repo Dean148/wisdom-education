@@ -37,6 +37,8 @@ public class WebAppConfig implements WebMvcConfigurer {
 	private ParamsValidateInterceptor paramsValidateInterceptor;
 	@Autowired
 	private FormLimitInterceptor formLimitInterceptor;
+	@Autowired
+	private StudentAuthInterceptor studentAuthInterceptor;
 
 	@Value("${file.uploadPath}")
 	private String uploadPath;
@@ -54,6 +56,9 @@ public class WebAppConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(logInterceptor).addPathPatterns("/**");
 		registry.addInterceptor(formLimitInterceptor).addPathPatterns("/**");
+		registry.addInterceptor(studentAuthInterceptor)
+				.excludePathPatterns("/student/login")
+				.addPathPatterns("/student/**");
 		registry.addInterceptor(authInterceptor)
 				.excludePathPatterns(noInterceptorUrl)
 				.addPathPatterns("/api/**")

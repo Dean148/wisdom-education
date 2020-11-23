@@ -13,6 +13,8 @@ import com.education.model.request.TestPaperQuestionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author zengjintao
  * @version 1.0
@@ -43,7 +45,5 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         return selectPage(baseMapper.selectPaperQuestionList(page, testPaperQuestionRequest));
     }
 
-    public void updatePaperQuestionMarkOrSort() {
 
-    }
 }
