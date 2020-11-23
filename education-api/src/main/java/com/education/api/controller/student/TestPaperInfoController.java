@@ -1,8 +1,7 @@
 package com.education.api.controller.student;
 
-import com.education.business.service.education.StudentQuestionAnswerService;
+import com.education.business.service.education.ExamInfoService;
 import com.education.business.service.education.TestPaperInfoService;
-import com.education.business.service.education.TestPaperQuestionInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.model.dto.TestPaperInfoDto;
@@ -10,10 +9,7 @@ import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
 import com.education.model.request.TestPaperQuestionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 学生端试卷管理
@@ -28,7 +24,7 @@ public class TestPaperInfoController extends BaseController {
     @Autowired
     private TestPaperInfoService testPaperInfoService;
     @Autowired
-    private StudentQuestionAnswerService studentQuestionAnswerService;
+    private ExamInfoService examInfoService;
 
     /**
      * 试卷列表
@@ -60,8 +56,8 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("commitPaper")
-    public Result commitPaper(StudentQuestionRequest studentQuestionRequest) {
-        studentQuestionAnswerService.commitTestPaperInfoQuestion(studentQuestionRequest);
+    public Result commitPaper(@RequestBody StudentQuestionRequest studentQuestionRequest) {
+        examInfoService.commitTestPaperInfoQuestion(studentQuestionRequest);
         return Result.success("提交成功");
     }
 }

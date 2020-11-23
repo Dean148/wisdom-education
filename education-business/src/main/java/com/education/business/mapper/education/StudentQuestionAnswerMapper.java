@@ -1,7 +1,12 @@
 package com.education.business.mapper.education;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.education.model.dto.ExamQuestionAnswer;
 import com.education.model.entity.StudentQuestionAnswer;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
 
 /**
  * @author zengjintao
@@ -9,4 +14,6 @@ import com.education.model.entity.StudentQuestionAnswer;
  * @create_at 2020/11/22 15:21
  */
 public interface StudentQuestionAnswerMapper extends BaseMapper<StudentQuestionAnswer> {
-}
+
+    List<ExamQuestionAnswer> selectQuestionAnswerList(@Param("studentId") Integer studentId, @Param("testPaperInfoId") Integer testPaperInfoId);
+ }

@@ -13,7 +13,6 @@ public class QuestionAnswer {
     private String answer;
     private String studentAnswer;
     private Integer questionType;
-    private Integer examTime;
     private String comment; // 评语
     private Integer correctStatus; // 批改状态
 
@@ -31,14 +30,6 @@ public class QuestionAnswer {
 
     public Integer getCorrectStatus() {
         return correctStatus;
-    }
-
-    public void setExamTime(Integer examTime) {
-        this.examTime = examTime;
-    }
-
-    public Integer getExamTime() {
-        return examTime;
     }
 
     public void setQuestionType(Integer questionType) {

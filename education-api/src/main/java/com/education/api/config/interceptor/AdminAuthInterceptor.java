@@ -29,6 +29,14 @@ public class AdminAuthInterceptor extends BaseInterceptor {
 		if (targetUrl.startsWith("/api/dict")) {
 			return true;
 		}
+
+		else if (targetUrl.startsWith("/api/upload")) {
+			/*String header = request.getHeader("httpType");
+			if ("student-product".equals(header)) {
+				return true;
+			}*/
+            return true;
+		}
 		return checkToken(adminJwtToken, request, response);
 	}
 }

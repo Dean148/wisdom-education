@@ -30,6 +30,28 @@ public class ExamInfo extends BaseEntity<ExamInfo> {
 	@TableField("teacher_mark")
 	private Integer teacherMark;
 
+	@TableField("right_number")
+	private Integer rightNumber;
+
+	@TableField("error_number")
+	private Integer errorNumber;
+
+	public Integer getRightNumber() {
+		return rightNumber;
+	}
+
+	public void setRightNumber(Integer rightNumber) {
+		this.rightNumber = rightNumber;
+	}
+
+	public Integer getErrorNumber() {
+		return errorNumber;
+	}
+
+	public void setErrorNumber(Integer errorNumber) {
+		this.errorNumber = errorNumber;
+	}
+
 	public Integer getStudentId() {
 		return studentId;
 	}

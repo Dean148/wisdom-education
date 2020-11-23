@@ -2,5 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.education.business.mapper.education.ExamInfoMapper">
 
+    <select id="selectStudentExamList" resultType="studentExamInfoDto">
+        select
+          exam.*, subject.name subject_name, paper.name test_paper_info_name, paper.question_number
+        from exam_info exam left join test_paper_info paper
+        on exam.test_paper_info_id = paper.id left join subject_info subject
+        on paper.subject_id = subject.id
+
+        <where>
+            <if test="studentExamInfoDto.studentId != null">
+                and exam.student_id = #{examInfo.studentId}
+            </if>
+
+            <if test="studentExamInfoDto.subjectId != null">
+                and paper.subject_id = #{examInfo.subjectId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectById" resultType="studentExamInfoDto">
+         select exam.*, paper.name test_paper_info_name, paper.question_number, paper.exam_time testPaperExamTime
+         from exam_info exam left join test_paper_info paper
+         on exam.test_paper_info_id = paper.id where exam.id = #{id}
+    </select>
 
 </mapper>
