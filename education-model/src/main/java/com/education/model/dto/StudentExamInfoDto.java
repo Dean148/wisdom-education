@@ -14,8 +14,36 @@ public class StudentExamInfoDto extends ExamInfo {
     private String testPaperInfoName;
     private Integer questionNumber;
     private String startTime;
+    private String studentName;
+    private String gradeName;
     private String endTime;
     private Integer testPaperExamTime; // 试卷考试时间
+
+    private Integer testPaperInfoMark;
+
+    public void setTestPaperInfoMark(Integer testPaperInfoMark) {
+        this.testPaperInfoMark = testPaperInfoMark;
+    }
+
+    public Integer getTestPaperInfoMark() {
+        return testPaperInfoMark;
+    }
+
+    public String getGradeName() {
+        return gradeName;
+    }
+
+    public void setGradeName(String gradeName) {
+        this.gradeName = gradeName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
 
     public void setTestPaperExamTime(Integer testPaperExamTime) {
         this.testPaperExamTime = testPaperExamTime;

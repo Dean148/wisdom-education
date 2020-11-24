@@ -26,4 +26,28 @@
          on exam.test_paper_info_id = paper.id where exam.id = #{id}
     </select>
 
+    <select id="selectExamList" resultType="studentExamInfoDto">
+        select
+        exam.*, grade.name grade_name, subject.name subject_name, paper.mark paper_mark, paper.name test_paper_info_name, student.name student_name
+        from exam_info exam left join test_paper_info paper on exam.test_paper_info_id = paper.id
+        left join subject_info subject on paper.subject_id = subject.id
+        left join student_info student on exam.student_id = student.id
+        left join grade_info grade on student.grade_info_id = grade.id
+
+        <where>
+            <if test="studentExamInfoDto.studentName != null and studentExamInfoDto.studentName != ''">
+                <bind name="name" value="'%' + studentExamInfoDto.studentName + '%'"/>
+                and student.name like #{name}
+            </if>
+
+            <if test="studentExamInfoDto.testPaperInfoName != null and studentExamInfoDto.testPaperInfoName != ''">
+                <bind name="name" value="'%' + studentExamInfoDto.testPaperInfoName + '%'"/>
+                and paper.name like #{name}
+            </if>
+
+            <if test="studentExamInfoDto.correctFlag != null ">
+                and exam.correct_flag = #{studentExamInfoDto.correctFlag}
+            </if>
+        </where>
+    </select>
 </mapper>

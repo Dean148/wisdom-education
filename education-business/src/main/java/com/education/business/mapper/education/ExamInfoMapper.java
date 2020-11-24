@@ -22,5 +22,13 @@ public interface ExamInfoMapper extends BaseMapper<ExamInfo> {
     Page<StudentExamInfoDto> selectStudentExamList(Page<StudentExamInfoDto> page, StudentExamInfoDto studentExamInfoDto);
 
 
+    /**
+     * 考试列表
+     * @param page
+     * @param studentExamInfoDto
+     * @return
+     */
+    Page<StudentExamInfoDto> selectExamList(Page<StudentExamInfoDto> page, StudentExamInfoDto studentExamInfoDto);
+
     StudentExamInfoDto selectById(@Param("id") Integer id);
 }

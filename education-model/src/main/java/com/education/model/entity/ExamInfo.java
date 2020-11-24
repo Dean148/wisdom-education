@@ -13,13 +13,19 @@ public class ExamInfo extends BaseEntity<ExamInfo> {
 	@TableField("correct_type")
 	private Integer correctType;
 
+	@TableField("subjective_question_number")
+	private Integer subjectiveQuestionNumber;
+
 	private Integer mark;
 
 	@TableField("test_paper_info_id")
 	private Integer testPaperInfoId;
 
 	@TableField("correct_flag")
-	private boolean correctFlag;
+	private Integer correctFlag;
+
+	@TableField("question_number")
+	private Integer questionNumber;
 
 	@TableField("exam_time")
 	private String examTime;
@@ -35,6 +41,34 @@ public class ExamInfo extends BaseEntity<ExamInfo> {
 
 	@TableField("error_number")
 	private Integer errorNumber;
+
+	@TableField("admin_id")
+	private Integer adminId;
+
+	public Integer getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+
+	public Integer getSubjectiveQuestionNumber() {
+		return subjectiveQuestionNumber;
+	}
+
+	public void setSubjectiveQuestionNumber(Integer subjectiveQuestionNumber) {
+		this.subjectiveQuestionNumber = subjectiveQuestionNumber;
+	}
+
+
+	public void setQuestionNumber(Integer questionNumber) {
+		this.questionNumber = questionNumber;
+	}
+
+	public Integer getQuestionNumber() {
+		return questionNumber;
+	}
 
 	public Integer getRightNumber() {
 		return rightNumber;
@@ -84,11 +118,11 @@ public class ExamInfo extends BaseEntity<ExamInfo> {
 		this.testPaperInfoId = testPaperInfoId;
 	}
 
-	public boolean isCorrectFlag() {
+	public Integer getCorrectFlag() {
 		return correctFlag;
 	}
 
-	public void setCorrectFlag(boolean correctFlag) {
+	public void setCorrectFlag(Integer correctFlag) {
 		this.correctFlag = correctFlag;
 	}
 

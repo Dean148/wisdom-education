@@ -38,19 +38,25 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
 
     public PageInfo<StudentExamInfoDto> selectStudentExamInfoList(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
         Page<StudentExamInfoDto> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
-        return selectPage(baseMapper.selectStudentExamList(page, studentExamInfoDto));
+        return selectPage(baseMapper.selectExamList(page, studentExamInfoDto));
     }
 
     @Transactional
     public void commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
+        Integer studentId = getStudentInfo().getId();
+        this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentId, new ExamInfo());
+    }
+
+    private void batchSaveStudentQuestionAnswer(StudentQuestionRequest studentQuestionRequest, Integer studentId, ExamInfo examInfo) {
         Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
         Date now = new Date();
         List<StudentQuestionAnswer> studentQuestionAnswerList = new ArrayList<>();
-        Integer studentId = getStudentInfo().getId();
         int systemMark = 0;
         int objectiveQuestionNumber = 0; // 客观题数量
+        int subjectiveQuestionNumber = 0; // 主观题数量
         int rightNumber = 0;
         int errorNumber = 0;
+        int teacherMark = 0;
         int questionNumber = studentQuestionRequest.getQuestionAnswerList().size();
         for (QuestionAnswer item : studentQuestionRequest.getQuestionAnswerList()) {
             StudentQuestionAnswer studentQuestionAnswer = new StudentQuestionAnswer();
@@ -58,7 +64,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             studentQuestionAnswer.setStudentId(studentId);
             studentQuestionAnswer.setQuestionPoints(item.getQuestionMark());
             String studentAnswer = item.getStudentAnswer();
-            // 验证试题是否为客观题
+            // 验证试题是否为客观题subjective;
             if (isObjectiveQuestion(item.getQuestionType())) {
                 String questionAnswer = item.getAnswer();
                 if (questionAnswer.equals(studentAnswer)) {
@@ -72,37 +78,58 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                 }
                 objectiveQuestionNumber++;
             } else {
-                studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECT_RUNNING.getValue());
+                if (studentQuestionRequest.isTeacherCorrectFlag()) {
+                    teacherMark += item.getQuestionMark();
+                    studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECTED.getValue());
+                } else {
+                    studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECT_RUNNING.getValue());
+                }
+                subjectiveQuestionNumber++;
             }
             studentQuestionAnswer.setStudentAnswer(studentAnswer);
-            studentQuestionAnswer.setTestPaperInfoId(testPaperInfoId);
+            studentQuestionAnswer.setTestPaperInfoId(studentQuestionRequest.getTestPaperInfoId());
             studentQuestionAnswer.setCreateDate(now);
             studentQuestionAnswerList.add(studentQuestionAnswer);
         }
 
         studentQuestionAnswerService.saveBatch(studentQuestionAnswerList);
 
-        // 保存考试记录表
-        ExamInfo examInfo = new ExamInfo();
-        examInfo.setStudentId(studentId);
-        examInfo.setTestPaperInfoId(testPaperInfoId);
-        examInfo.setCreateDate(now);
-        examInfo.setSystemMark(systemMark);
-        long examTime = studentQuestionRequest.getExamTime();
-        examInfo.setExamTime(DateUtils.getDate(examTime));
-        if (objectiveQuestionNumber == questionNumber) { // 如果全部为客观题的话，直接设置为已批改状态
-            examInfo.setCorrectFlag(true);
-            examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM.getValue());
+        if (!studentQuestionRequest.isTeacherCorrectFlag()) {
+            // 保存考试记录表
+            examInfo.setStudentId(studentId);
+            examInfo.setQuestionNumber(questionNumber);
+            examInfo.setTestPaperInfoId(testPaperInfoId);
+            examInfo.setCreateDate(now);
+            examInfo.setSystemMark(systemMark);
+            examInfo.setSubjectiveQuestionNumber(subjectiveQuestionNumber);
+            long examTime = studentQuestionRequest.getExamTime();
+            examInfo.setExamTime(DateUtils.getDate(examTime));
+            if (subjectiveQuestionNumber == 0) { // 如果全部为客观题的话，直接设置为已批改状态
+                examInfo.setCorrectFlag(EnumConstants.Flag.YES.getValue());
+                examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM.getValue());
+            }
             examInfo.setRightNumber(rightNumber);
             examInfo.setErrorNumber(errorNumber);
+            super.save(examInfo);
+        } else {
+            if (objectiveQuestionNumber == 0) {
+                examInfo.setCorrectType(EnumConstants.CorrectType.TEACHER.getValue());
+            } else {
+                examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM_AND_TEACHER.getValue());
+            }
+            examInfo.setMark(systemMark + teacherMark);
+            examInfo.setUpdateDate(now);
+            examInfo.setCorrectFlag(EnumConstants.Flag.YES.getValue());
+            examInfo.setAdminId(getAdminUserId());
+            super.updateById(examInfo);
         }
-        super.save(examInfo);
     }
 
-    public ExamQuestionResponse selectExamQuestionAnswer(Integer examInfoId) {
+
+    public ExamQuestionResponse selectExamQuestionAnswer(Integer studentId, Integer examInfoId) {
         StudentExamInfoDto studentExamInfoDto = baseMapper.selectById(examInfoId);
         List<ExamQuestionAnswer> examQuestionAnswerList = studentQuestionAnswerService
-                .getQuestionAnswerByTestPaperInfoId(studentExamInfoDto.getTestPaperInfoId());
+                .getQuestionAnswerByTestPaperInfoId(studentId, studentExamInfoDto.getTestPaperInfoId());
         EnumConstants.QuestionType questionType[] = EnumConstants.QuestionType.values();
         ExamQuestionResponse examQuestionResponse = new ExamQuestionResponse();
         List<ExamQuestionItemResponse> list = new ArrayList<>();
@@ -112,6 +139,9 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                     .filter(examQuestionAnswer -> value == examQuestionAnswer.getQuestionType().intValue())
                     .collect(Collectors.toList());
             if (ObjectUtils.isNotEmpty(questionList)) {
+                questionList.forEach(question -> {
+                    question.setQuestionTypeName(EnumConstants.QuestionType.getName(question.getQuestionType()));
+                });
                 ExamQuestionItemResponse examQuestionItemResponse = new ExamQuestionItemResponse();
                 examQuestionItemResponse.setQuestionTypeName(item.getName());
                 examQuestionItemResponse.setExamQuestionAnswerList(questionList);
@@ -121,5 +151,17 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         examQuestionResponse.setExamQuestionItemResponseList(list);
         examQuestionResponse.setStudentExamInfoDto(studentExamInfoDto);
         return examQuestionResponse;
+    }
+
+    /**
+     * 批改学员试卷
+     * @param studentQuestionRequest
+     */
+    @Transactional
+    public void correctStudentExam(StudentQuestionRequest studentQuestionRequest) {
+        Integer studentId = studentQuestionRequest.getStudentId();
+        studentQuestionAnswerService.deleteByTestPaperInfoId(studentId, studentQuestionRequest.getTestPaperInfoId());
+        ExamInfo examInfo = super.getById(studentQuestionRequest.getExamInfoId());
+        this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentQuestionRequest.getStudentId(), examInfo);
     }
 }

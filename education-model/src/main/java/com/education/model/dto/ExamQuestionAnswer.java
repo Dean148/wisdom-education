@@ -12,9 +12,17 @@ public class ExamQuestionAnswer extends QuestionInfo {
     private String studentAnswer;
     private Integer studentMark;
 
+    private String questionTypeName;
     private int questionMark;
     private Integer correctStatus;
 
+    public String getQuestionTypeName() {
+        return questionTypeName;
+    }
+
+    public void setQuestionTypeName(String questionTypeName) {
+        this.questionTypeName = questionTypeName;
+    }
 
     public void setQuestionMark(int questionMark) {
         this.questionMark = questionMark;

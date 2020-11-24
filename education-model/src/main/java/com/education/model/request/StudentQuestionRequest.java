@@ -11,8 +11,19 @@ import java.util.List;
 public class StudentQuestionRequest {
 
     private Integer testPaperInfoId;
+    private Integer examInfoId;
     private long examTime;
+    private boolean teacherCorrectFlag; // 是否教师批改
     private List<QuestionAnswer> questionAnswerList;
+    private Integer studentId;
+
+    public void setStudentId(Integer studentId) {
+        this.studentId = studentId;
+    }
+
+    public Integer getStudentId() {
+        return studentId;
+    }
 
     public Integer getTestPaperInfoId() {
         return testPaperInfoId;
@@ -24,6 +35,22 @@ public class StudentQuestionRequest {
 
     public void setExamTime(long examTime) {
         this.examTime = examTime;
+    }
+
+    public boolean isTeacherCorrectFlag() {
+        return teacherCorrectFlag;
+    }
+
+    public void setTeacherCorrectFlag(boolean teacherCorrectFlag) {
+        this.teacherCorrectFlag = teacherCorrectFlag;
+    }
+
+    public Integer getExamInfoId() {
+        return examInfoId;
+    }
+
+    public void setExamInfoId(Integer examInfoId) {
+        this.examInfoId = examInfoId;
     }
 
     public long getExamTime() {

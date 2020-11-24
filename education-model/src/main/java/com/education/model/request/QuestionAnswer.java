@@ -15,6 +15,15 @@ public class QuestionAnswer {
     private Integer questionType;
     private String comment; // 评语
     private Integer correctStatus; // 批改状态
+    private boolean errorQuestionFlag; // 是否加入错题本
+
+    public boolean isErrorQuestionFlag() {
+        return errorQuestionFlag;
+    }
+
+    public void setErrorQuestionFlag(boolean errorQuestionFlag) {
+        this.errorQuestionFlag = errorQuestionFlag;
+    }
 
     public String getComment() {
         return comment;
