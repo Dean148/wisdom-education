@@ -3,6 +3,7 @@ package com.education.api.controller.admin.education;
 import com.education.business.service.education.ExamInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
+import com.education.common.utils.ResultCode;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
@@ -46,6 +47,6 @@ public class ExamInfoController extends BaseController {
     @PostMapping("correctExamQuestion")
     public Result correctExamQuestion(@RequestBody StudentQuestionRequest studentQuestionRequest) {
         examInfoService.correctStudentExam(studentQuestionRequest);
-        return Result.success("批改成功");
+        return Result.success(ResultCode.SUCCESS, "批改成功");
     }
 }

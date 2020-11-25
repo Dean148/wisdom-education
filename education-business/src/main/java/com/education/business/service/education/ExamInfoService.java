@@ -11,6 +11,7 @@ import com.education.model.dto.ExamQuestionAnswer;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.ExamInfo;
 import com.education.model.entity.StudentQuestionAnswer;
+import com.education.model.entity.StudentWrongBook;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
@@ -35,6 +36,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
 
     @Autowired
     private StudentQuestionAnswerService studentQuestionAnswerService;
+    @Autowired
+    private StudentWrongBookService studentWrongBookService;
 
     public PageInfo<StudentExamInfoDto> selectStudentExamInfoList(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
         Page<StudentExamInfoDto> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
@@ -58,6 +61,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         int errorNumber = 0;
         int teacherMark = 0;
         int questionNumber = studentQuestionRequest.getQuestionAnswerList().size();
+        List<StudentWrongBook> studentWrongBookList = new ArrayList<>(); // 存储学员考试错题
         for (QuestionAnswer item : studentQuestionRequest.getQuestionAnswerList()) {
             StudentQuestionAnswer studentQuestionAnswer = new StudentQuestionAnswer();
             studentQuestionAnswer.setQuestionInfoId(item.getQuestionInfoId());
@@ -73,14 +77,20 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                     rightNumber++;
                     studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.RIGHT.getValue());
                 } else {
+                    studentWrongBookList.add(new StudentWrongBook(studentId, item.getQuestionInfoId(),
+                            item.getQuestionMark()));
                     errorNumber++;
                     studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.ERROR.getValue());
                 }
                 objectiveQuestionNumber++;
             } else {
                 if (studentQuestionRequest.isTeacherCorrectFlag()) {
-                    teacherMark += item.getQuestionMark();
+                    teacherMark += item.getStudentMark();
                     studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECTED.getValue());
+                    if (item.isErrorQuestionFlag()) {
+                        studentWrongBookList.add(new StudentWrongBook(studentId, item.getQuestionInfoId(),
+                                item.getQuestionMark()));
+                    }
                 } else {
                     studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECT_RUNNING.getValue());
                 }
@@ -93,6 +103,10 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         }
 
         studentQuestionAnswerService.saveBatch(studentQuestionAnswerList);
+
+        if (studentWrongBookList.size() > 0) {
+            studentWrongBookService.saveBatch(studentWrongBookList); // 批量保存错题
+        }
 
         if (!studentQuestionRequest.isTeacherCorrectFlag()) {
             // 保存考试记录表
@@ -159,9 +173,10 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
      */
     @Transactional
     public void correctStudentExam(StudentQuestionRequest studentQuestionRequest) {
-        Integer studentId = studentQuestionRequest.getStudentId();
-        studentQuestionAnswerService.deleteByTestPaperInfoId(studentId, studentQuestionRequest.getTestPaperInfoId());
         ExamInfo examInfo = super.getById(studentQuestionRequest.getExamInfoId());
+        Integer studentId = studentQuestionRequest.getStudentId();
+        studentQuestionAnswerService.deleteByTestPaperInfoId(studentId, examInfo.getTestPaperInfoId());
+        studentQuestionRequest.setTestPaperInfoId(examInfo.getTestPaperInfoId());
         this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentQuestionRequest.getStudentId(), examInfo);
     }
 }

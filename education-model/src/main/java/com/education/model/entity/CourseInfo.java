@@ -12,8 +12,7 @@ public class CourseInfo extends BaseEntity<CourseInfo> {
 	private Integer sort;
 	private Integer status;
 	private Integer studyNumber;
-	// private boolean hasChildren;
-	private boolean recommendIndexFlag;
+	private Integer recommendIndexFlag;
 
 
 	public String getRepresent() {
@@ -40,11 +39,11 @@ public class CourseInfo extends BaseEntity<CourseInfo> {
 		this.studyNumber = studyNumber;
 	}
 
-	public boolean isRecommendIndexFlag() {
+	public Integer getRecommendIndexFlag() {
 		return recommendIndexFlag;
 	}
 
-	public void setRecommendIndexFlag(boolean recommendIndexFlag) {
+	public void setRecommendIndexFlag(Integer recommendIndexFlag) {
 		this.recommendIndexFlag = recommendIndexFlag;
 	}
 

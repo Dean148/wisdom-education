@@ -28,7 +28,7 @@
 
     <select id="selectExamList" resultType="studentExamInfoDto">
         select
-        exam.*, grade.name grade_name, subject.name subject_name, paper.mark paper_mark, paper.name test_paper_info_name, student.name student_name
+        exam.*, grade.name grade_name, subject.name subject_name, paper.mark testPaperInfoMark, paper.name test_paper_info_name, student.name student_name
         from exam_info exam left join test_paper_info paper on exam.test_paper_info_id = paper.id
         left join subject_info subject on paper.subject_id = subject.id
         left join student_info student on exam.student_id = student.id
