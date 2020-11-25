@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.education.LanguagePointsInfoMapper;
 import com.education.business.service.BaseService;
-import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.ResultCode;
+import com.education.model.dto.LanguagePointsInfoDto;
 import com.education.model.entity.LanguagePointsInfo;
 import org.springframework.stereotype.Service;
 
@@ -24,23 +23,8 @@ public class LanguagePointsInfoService extends BaseService<LanguagePointsInfoMap
      * @param languagePointsInfo
      * @return
      */
-    public List<LanguagePointsInfo> selectFirstPoints(LanguagePointsInfo languagePointsInfo) {
-        languagePointsInfo.setParentId(ResultCode.FAIL);
-        LambdaQueryWrapper queryWrapper = Wrappers.<LanguagePointsInfo>lambdaQuery()
-                .eq(LanguagePointsInfo::getParentId, ResultCode.FAIL)
-                .eq(ObjectUtils.isNotEmpty(languagePointsInfo.getGradeInfoId()), LanguagePointsInfo::getGradeInfoId, languagePointsInfo.getGradeInfoId())
-                .eq(ObjectUtils.isNotEmpty(languagePointsInfo.getSubjectId()), LanguagePointsInfo::getSubjectId, languagePointsInfo.getSubjectId());
-        return baseMapper.selectList(queryWrapper);
-    }
-
-    /**
-     * 根据parentId 查找子节点
-     * @param parentId
-     * @return
-     */
-    public List<LanguagePointsInfo> selectByParentId(Integer parentId) {
-        LambdaQueryWrapper queryWrapper = Wrappers.<LanguagePointsInfo>lambdaQuery()
-                .eq(LanguagePointsInfo::getParentId, parentId);
+    public List<LanguagePointsInfoDto> selectList(LanguagePointsInfo languagePointsInfo) {
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(languagePointsInfo);
         return baseMapper.selectList(queryWrapper);
     }
 }

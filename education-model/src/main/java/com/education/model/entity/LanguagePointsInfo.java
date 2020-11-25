@@ -15,7 +15,7 @@ public class LanguagePointsInfo extends BaseEntity<LanguagePointsInfo> {
 	@TableField("parent_id")
 	private Integer parentId;
 	private Integer sort;
-	@TableField("has_children")
+	@TableField("hasChildren")
 	private boolean hasChildren;
 
 	public String getName() {

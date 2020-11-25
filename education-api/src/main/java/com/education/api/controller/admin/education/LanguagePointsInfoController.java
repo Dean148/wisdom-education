@@ -3,12 +3,10 @@ package com.education.api.controller.admin.education;
 import com.education.business.service.education.LanguagePointsInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
+import com.education.model.dto.LanguagePointsInfoDto;
 import com.education.model.entity.LanguagePointsInfo;
-import com.education.model.request.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 知识点管理接口
@@ -28,9 +26,9 @@ public class LanguagePointsInfoController extends BaseController {
      * @param languagePointsInfo
      * @return
      */
-    @GetMapping("selectFirstPoints")
-    public Result selectFirstPoints(LanguagePointsInfo languagePointsInfo) {
-        return Result.success(languagePointsInfoService.selectFirstPoints(languagePointsInfo));
+    @GetMapping("selectList")
+    public Result<LanguagePointsInfo> selectFirstPoints(LanguagePointsInfo languagePointsInfo) {
+        return Result.success(languagePointsInfoService.selectList(languagePointsInfo));
     }
 
     /**
@@ -39,17 +37,32 @@ public class LanguagePointsInfoController extends BaseController {
      * @return
      */
     @GetMapping("selectByParentId")
-    public Result selectByParentId(Integer parentId) {
-        return Result.success(languagePointsInfoService.selectByParentId(parentId));
+    public Result<LanguagePointsInfoDto> selectByParentId(Integer parentId) {
+        LanguagePointsInfo languagePointsInfo = new LanguagePointsInfo();
+        languagePointsInfo.setParentId(parentId);
+        return Result.success(languagePointsInfoService.selectList(languagePointsInfo));
     }
 
     /**
-     * 获取知识点科目列表
-     * @param pageParam
+     * 添加或修改知识点
+     * @param languagePointsInfo
      * @return
      */
-    @GetMapping("selectSubjectList")
-    public Result selectSubjectList(PageParam pageParam) {
-        return null;
+    @PostMapping("saveOrUpdate")
+    public Result saveOrUpdate(@RequestBody LanguagePointsInfo languagePointsInfo) {
+        languagePointsInfoService.saveOrUpdate(languagePointsInfo);
+        return Result.success();
     }
+
+    /**
+     * 删除知识点
+     * @param id
+     * @return
+     */
+    @DeleteMapping("{id}")
+    public Result deleteById(@PathVariable Integer id) {
+        languagePointsInfoService.removeById(id);
+        return Result.success();
+    }
+
 }
