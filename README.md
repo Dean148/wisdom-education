@@ -1,6 +1,6 @@
 #### 后端技术栈
    
-- 基于 SpringBoot + Mybatis + Shiro + mysql + redis构建的智慧云智能教育平台 
+- 基于 SpringBoot + Mybatis Plus+ Shiro + mysql + redis构建的智慧云智能教育平台 
 - 基于数据驱动视图的理念封装 element-ui，即使没有 vue 的使用经验也能快速上手  
 - 提供 lambda 、stream api 、webflux 的生产实践  
 
@@ -18,9 +18,11 @@
 依赖 | 版本
 ---|---
 Spring Boot |  2.2.5.RELEASE  
-Mybatis | 3.4.6  
+Mybatis Plus | 3.4.0  
 Mysql | 5.7
 Element-UI | 2.13.0
+Shiro | 1.4.0
+Jfinal Weixin | 2.3
 
 ### 系统特色
 
@@ -34,7 +36,7 @@ Element-UI | 2.13.0
 
 - 学生端管理后台  https://haokan.baidu.com/v?pd=bjh&vid=16055556239765271034&fr=bjhauthor&type=video
 - 学生端项目教程  https://haokan.baidu.com/v?pd=bjh&vid=13279860213867889185&fr=bjhauthor&type=video
-- 完整项目实战教程 （教程录制中，敬请期待，如何需要的朋友可直接加我qq）
+- 完整项目实战教程 （https://www.51zxw.net/list.aspx?cid=830）
 ### 项目演示地址
 
 - 管理后台  http://180.76.146.67:8002 （admin 123456）
@@ -45,11 +47,11 @@ Element-UI | 2.13.0
 
 ```
 - education
-- ├── education-admin-api-- 管理后台api模块
+- ├── education-api -- 项目api模块（包含学生端及管理后台education-business）
 - └── education-common -- 系统公共模块 
-- └── education-service-- 系统业务模块 
-- └── education-mapper-- 系统maperr接口及sql模块 
-- ├── education-student-api-- 学生端api模块	
+- └── education-business -- 系统业务模块
+- └── education-common-api -- 系统公共api模块
+- ├── education-model -- 实体类模块	
 ```
 ### 智慧云智能教育系统管理平台
 - 项目源码地址：  https://gitee.com/zhuimengshaonian/wisdom-education-admin-front
