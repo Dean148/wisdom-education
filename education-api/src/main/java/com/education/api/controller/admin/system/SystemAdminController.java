@@ -5,6 +5,7 @@ import com.education.common.annotation.SystemLog;
 import com.education.common.base.BaseController;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.Result;
+import com.education.common.utils.ResultCode;
 import com.education.model.dto.AdminRoleDto;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.request.PageParam;
@@ -62,6 +63,9 @@ public class SystemAdminController extends BaseController {
     @SystemLog(describe = "添加或修改管理员")
     @RequiresPermissions(value = {"system:admin:save", "system:admin:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody AdminRoleDto adminRoleDto) {
+        if (systemAdminService.checkIsUnique(adminRoleDto.getId(), adminRoleDto.getLoginName())) {
+            return Result.fail(ResultCode.FAIL, "账户名已存在，重复添加");
+        }
         systemAdminService.saveOrUpdate(adminRoleDto);
         return Result.success();
     }

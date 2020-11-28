@@ -6,6 +6,7 @@ import com.education.common.base.BaseController;
 import com.education.common.constants.EnumConstants;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.Result;
+import com.education.common.utils.ResultCode;
 import com.education.model.dto.RoleMenuDto;
 import com.education.model.entity.SystemRole;
 import com.education.model.request.PageParam;
@@ -78,6 +79,6 @@ public class SystemRoleController extends BaseController {
             return Result.success("您不能删除系统内置角色");
         }
         systemRoleService.removeById(id);
-        return Result.success("删除角色" + systemRole.getName() + "成功");
+        return Result.success(ResultCode.SUCCESS, "删除角色" + systemRole.getName() + "成功");
     }
 }

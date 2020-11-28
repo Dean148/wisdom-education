@@ -110,8 +110,23 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         return result;
     }
 
+    public boolean checkIsUnique(Integer id, String loginName) {
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemAdmin.class)
+                .eq(SystemAdmin::getLoginName, loginName);
+        SystemAdmin systemAdmin = super.getOne(queryWrapper);
+        if (ObjectUtils.isNotEmpty(systemAdmin)) {
+            if (ObjectUtils.isNotEmpty(id)
+                    && systemAdmin.getId().intValue() != id.intValue()) { // 修改 验证id 是否相同
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
     @Transactional
     public void saveOrUpdate(AdminRoleDto adminRoleDto) {
+
         if (ObjectUtils.isEmpty(adminRoleDto.getId())) {
             String password = adminRoleDto.getPassword();
             String confirmPassword = adminRoleDto.getConfirmPassword();
