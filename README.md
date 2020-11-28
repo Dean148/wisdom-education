@@ -8,6 +8,7 @@
 
 - Vue
 - Vuex
+- Vxe-Table (文档地址：https://gitee.com/xuliangzhan_admin/vxe-table)
 - Element-UI
 - vue-router
 - axios 
