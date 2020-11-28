@@ -72,7 +72,7 @@ public class SystemMenuController extends BaseController {
             return Result.success(ResultCode.FAIL, "您不能删除系统内置菜单");
         }
         systemMenuService.removeById(id);
-        return Result.success("删除成功");
+        return Result.success(ResultCode.SUCCESS, "删除成功");
     }
 
     /**

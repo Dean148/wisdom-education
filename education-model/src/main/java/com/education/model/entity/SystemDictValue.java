@@ -7,18 +7,18 @@ import com.baomidou.mybatisplus.annotation.TableName;
 public class SystemDictValue extends BaseEntity<SystemDictValue> {
 
 	@TableField("system_dict_id")
-	private int systemDictId;
+	private Integer systemDictId;
 	private String value;
-	private int code;
+	private Integer code;
 	@TableField("parent_id")
-	private int parentId;
-	private int sort;
+	private Integer parentId;
+	private Integer sort;
 
-	public int getSystemDictId() {
+	public Integer getSystemDictId() {
 		return systemDictId;
 	}
 
-	public void setSystemDictId(int systemDictId) {
+	public void setSystemDictId(Integer systemDictId) {
 		this.systemDictId = systemDictId;
 	}
 
@@ -30,27 +30,27 @@ public class SystemDictValue extends BaseEntity<SystemDictValue> {
 		this.value = value;
 	}
 
-	public int getCode() {
+	public Integer getCode() {
 		return code;
 	}
 
-	public void setCode(int code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 
-	public int getParentId() {
+	public Integer getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(int parentId) {
+	public void setParentId(Integer parentId) {
 		this.parentId = parentId;
 	}
 
-	public int getSort() {
+	public Integer getSort() {
 		return sort;
 	}
 
-	public void setSort(int sort) {
+	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
 }

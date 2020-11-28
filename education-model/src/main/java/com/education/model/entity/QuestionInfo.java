@@ -21,8 +21,6 @@ public class QuestionInfo extends BaseEntity<QuestionInfo> {
 	private String options;
 	private String analysis;
 	private String summarize;
-	//@TableField("language_points_id")
-	//private Integer languagePointsId;
 
 
 	public Integer getSubjectId() {

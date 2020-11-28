@@ -5,7 +5,7 @@ public class SystemDict extends BaseEntity<SystemDict> {
 
 	private String name;
 	private String type;
-	private int sort;
+	private Integer sort;
 	private String remark;
 
 	public String getName() {
@@ -24,11 +24,11 @@ public class SystemDict extends BaseEntity<SystemDict> {
 		this.type = type;
 	}
 
-	public int getSort() {
+	public Integer getSort() {
 		return sort;
 	}
 
-	public void setSort(int sort) {
+	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
 

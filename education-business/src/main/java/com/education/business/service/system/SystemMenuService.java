@@ -8,9 +8,7 @@ import com.education.model.dto.MenuTree;
 import com.education.model.entity.SystemMenu;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -113,10 +111,12 @@ public class SystemMenuService extends BaseService<SystemMenuMapper, SystemMenu>
         List<MenuTree> menuTreeList = baseMapper.getTreeMenuList();
         Integer parentId = menuTree.getParentId();
         List<MenuTree> parentMenuList = TreeUtils.getParentList(menuTreeList, parentId);
+
         List<Integer> parentIds = parentMenuList.stream()
+                .sorted(Comparator.comparing(MenuTree::getParentId))
                 .map(MenuTree::getId)
                 .collect(Collectors.toList());
-        Collections.sort(parentIds);// 集合从小到大排序
+     //   Collections.sort(parentIds);// 集合从小到大排序
         menuTree.setParentIds(parentIds);
         return menuTree;
     }

@@ -10,7 +10,7 @@
          a.type,
          a.create_type,
          a.sort, a.parent_id, a.permission, a.icon, b.name as parent_name from system_menu a left join (select id, name from system_menu) b
-       on a.parent_id = b.id order by sort desc
+       on a.parent_id = b.id order by sort asc
     </select>
 
     <select id="selectMenuTreeById" resultType="com.education.model.dto.MenuTree">

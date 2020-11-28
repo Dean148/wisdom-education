@@ -1,5 +1,7 @@
 package com.education.core.api;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.system.SystemDictService;
 import com.education.common.base.BaseController;
 import com.education.common.model.PageInfo;
@@ -33,7 +35,9 @@ public class DictController extends BaseController {
      */
     @GetMapping
     public Result<PageInfo<SystemDict>> list(PageParam pageParam, SystemDict systemDict) {
-        return Result.success(systemDictService.selectPage(pageParam, systemDict));
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(systemDict)
+                .orderByDesc(SystemDict::getSort);
+        return Result.success(systemDictService.selectPage(pageParam, queryWrapper));
     }
 
     /**

@@ -1,17 +1,26 @@
 package com.education.model.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+@TableName("course_info")
 public class CourseInfo extends BaseEntity<CourseInfo> {
 
 	private String name;
+	@TableField("grade_info_id")
 	private Integer gradeInfoId;
+	@TableField("school_type")
 	private Integer schoolType;
+	@TableField("subject_id")
 	private Integer subjectId;
 	private String represent;
 	private String code;
 	private Integer sort;
 	private Integer status;
+	@TableField("study_number")
 	private Integer studyNumber;
+	@TableField("recommend_index_flag")
 	private Integer recommendIndexFlag;
 
 
