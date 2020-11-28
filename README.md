@@ -48,7 +48,7 @@ Jfinal Weixin | 2.3
 
 ```
 - education
-- ├── education-api -- 项目api模块（包含学生端及管理后台education-business）
+- ├── education-api -- 系统api模块
 - └── education-common -- 系统公共模块 
 - └── education-business -- 系统业务模块
 - └── education-common-api -- 系统公共api模块
