@@ -1,5 +1,6 @@
 package com.education.model.dto;
 
+import com.education.common.constants.EnumConstants;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.entity.SystemMenu;
@@ -95,7 +96,7 @@ public class AdminUserSession extends BaseDto {
         if (ObjectUtils.isEmpty(systemAdmin)) {
             return false;
         }
-        return systemAdmin.isSuperFlag();
+        return systemAdmin.getSuperFlag() == EnumConstants.Flag.YES.getValue();
     }
 
 }

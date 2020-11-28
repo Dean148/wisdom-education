@@ -5,26 +5,49 @@ package com.education.api;
 import com.education.business.service.education.QuestionInfoService;
 import com.education.model.dto.QuestionInfoDto;
 import com.education.model.entity.QuestionInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+import java.util.Map;
 
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@Slf4j
 public class EducationAdminApiApplicationTests {
 
     @Autowired
     private QuestionInfoService questionInfoService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     public void testQuestion() {
-        QuestionInfoDto questionInfoDto = questionInfoService.selectById(1728);
-        System.out.println(questionInfoDto);
+        List<Map<String, Object>> questionList = jdbcTemplate.queryForList("SELECT * from (SELECT id, subject_id, content, count(1) number from question_info GROUP BY content, subject_id ) a\n" +
+                "\n" +
+                "where number > 1");
+        System.err.println(questionList.size());
+        questionList.forEach(item -> {
+            Integer subjectId = (Integer) item.get("subject_id");
+            String content = (String) item.get("content");
+            List<Map<String, Object>> questionEqList = jdbcTemplate.queryForList("select id from question_info where content = ? and subject_id = ?" +
+                    " order by id asc", content, subjectId);
+            for (int i = 1; i < questionEqList.size(); i++) {
+                Map eq = questionEqList.get(i);
+                String sql = "update question_info set delete_flag = 1 where id = ?";
+                jdbcTemplate.update("update question_info set delete_flag = 1 where id = ?", eq.get("id"));
+                log.info(sql.replace("?", "") + eq.get("id"));
+            }
+        });
+     //   QuestionInfoDto questionInfoDto = questionInfoService.selectById(1728);
+     //   System.out.println(questionInfoDto);
     }
 
 

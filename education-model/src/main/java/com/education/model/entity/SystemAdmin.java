@@ -2,6 +2,7 @@ package com.education.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.education.common.constants.EnumConstants;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
@@ -14,31 +15,23 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 	private String password;
 	private String encrypt;
 	@TableField("disabled_flag")
-	private boolean disabledFlag;
+	private Integer disabledFlag;
 	private String loginIp;
 	@TableField("login_count")
-	private int loginCount;
+	private Integer loginCount;
 	private String name;
 	@TableField("last_login_time")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date lastLoginTime;
 	@TableField("create_type")
-	private int createType;
+	private Integer createType;
 	private String mobile;
 	@TableField("super_flag")
-	private boolean superFlag;
-	@TableField("account_type")
-	private int accountType;
+	private Integer superFlag;
+/*	@TableField("account_type")
+	private Integer accountType;*/
 	@TableField("ip_address")
 	private String ipAddress;
-
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
-	}
-
-	public String getIpAddress() {
-		return ipAddress;
-	}
 
 	public String getLoginName() {
 		return loginName;
@@ -64,11 +57,11 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 		this.encrypt = encrypt;
 	}
 
-	public boolean isDisabledFlag() {
+	public Integer getDisabledFlag() {
 		return disabledFlag;
 	}
 
-	public void setDisabledFlag(boolean disabledFlag) {
+	public void setDisabledFlag(Integer disabledFlag) {
 		this.disabledFlag = disabledFlag;
 	}
 
@@ -80,11 +73,11 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 		this.loginIp = loginIp;
 	}
 
-	public int getLoginCount() {
+	public Integer getLoginCount() {
 		return loginCount;
 	}
 
-	public void setLoginCount(int loginCount) {
+	public void setLoginCount(Integer loginCount) {
 		this.loginCount = loginCount;
 	}
 
@@ -104,11 +97,11 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 		this.lastLoginTime = lastLoginTime;
 	}
 
-	public int getCreateType() {
+	public Integer getCreateType() {
 		return createType;
 	}
 
-	public void setCreateType(int createType) {
+	public void setCreateType(Integer createType) {
 		this.createType = createType;
 	}
 
@@ -120,19 +113,27 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 		this.mobile = mobile;
 	}
 
-	public boolean isSuperFlag() {
+	public Integer getSuperFlag() {
 		return superFlag;
 	}
 
-	public void setSuperFlag(boolean superFlag) {
+	public void setSuperFlag(Integer superFlag) {
 		this.superFlag = superFlag;
 	}
 
-	public int getAccountType() {
-		return accountType;
+	public String getIpAddress() {
+		return ipAddress;
 	}
 
-	public void setAccountType(int accountType) {
-		this.accountType = accountType;
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
+	public boolean isSuperFlag() {
+		return this.superFlag == EnumConstants.Flag.YES.getValue();
+	}
+
+	public boolean isDisabledFlag() {
+		return this.disabledFlag == EnumConstants.Flag.YES.getValue();
 	}
 }

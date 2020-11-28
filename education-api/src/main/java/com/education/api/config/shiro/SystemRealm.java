@@ -65,7 +65,7 @@ public class SystemRealm extends AuthorizingRealm {
 		if (ObjectUtils.isEmpty(systemAdmin)) {
 			throw new UnknownAccountException("用户不存在");
 		} else if (systemAdmin.isDisabledFlag()) {
-			throw new BusinessException(new ResultCode(ResultCode.FAIL, "此账号已被禁用"));
+			throw new BusinessException(new ResultCode(ResultCode.FAIL, "账号已被禁用"));
 		}
 		String password = Md5Utils.getMd5(new String(usernamePasswordToken.getPassword()), systemAdmin.getEncrypt());
 		usernamePasswordToken.setPassword(password.toCharArray());

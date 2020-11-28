@@ -1,7 +1,6 @@
 package com.education.model.response;
 
 import com.education.model.dto.StudentExamInfoDto;
-import com.education.model.entity.ExamInfo;
 
 import java.util.List;
 
