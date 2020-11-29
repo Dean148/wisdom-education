@@ -10,6 +10,10 @@
             <if test="testPaperInfo.subjectId != null">
                 and paper.subject_id = #{testPaperInfo.subjectId}
             </if>
+
+            <if test="testPaperInfo.publishFlag != null and testPaperInfo.publishFlag">
+                and paper.publish_flag = 1
+            </if>
         </where>
         order by paper.id desc
     </select>

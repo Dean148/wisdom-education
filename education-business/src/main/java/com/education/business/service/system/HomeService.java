@@ -1,8 +1,16 @@
 package com.education.business.service.system;
 
 
-import lombok.extern.slf4j.Slf4j;
+import com.education.business.service.education.QuestionInfoService;
+import com.education.business.service.education.StudentInfoService;
+import com.education.business.service.education.TestPaperInfoService;
+import com.jfinal.kit.Kv;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 
 /**
@@ -12,50 +20,27 @@ import org.springframework.stereotype.Service;
  * @create_at 2020/3/12 11:29
  */
 @Service
-@Slf4j
 public class HomeService {
-/*
+
     private static final Logger logger = LoggerFactory.getLogger(HomeService.class);
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private QuestionInfoService questionInfoService;
+    @Autowired
+    private TestPaperInfoService testPaperInfoService;
     @Autowired
     private StudentInfoService studentInfoService;
-    @Autowired
-    private ExamInfoService examInfoService;
-    @Autowired
-    private SchoolService schoolService;
 
-    public Result homeData() {
-        Result result = new Result();
-        try {
-            Integer schoolId = (Integer) studentInfoService.getAdminUser().get("school_id");
-            Map data = new HashMap<>();
-            Integer questionNumber = jdbcTemplate.queryForObject("select count(1) as question_number from question_info", Integer.class);
-            Integer studentNumber = 0;
-            data.put("has_school_data", true);
-            data.put("school_number", 0);
-            if (ObjectUtils.isEmpty(schoolId)) {
-                Integer schoolNumber = jdbcTemplate.queryForObject("select count(1) as school_number from school_info", Integer.class);
-                data.put("school_number", schoolNumber);
-                studentNumber = jdbcTemplate.queryForObject("select count(1) as student_number from student_info", Integer.class);
-            } else {
-                data.put("has_school_data", false);
-                studentNumber = jdbcTemplate.queryForObject("select count(1) as student_number from student_info where school_id = ?",
-                        Integer.class, schoolId);
-            }
-            data.put("question_number", questionNumber);
-            data.put("student_number", studentNumber);
-            this.setExamInfoData(data);
-            result.setData(data);
-        } catch (Exception e) {
-            result.setCode(ResultCode.FAIL);
-            result.setMessage("获取数据异常");
-            logger.error("获取数据异常", e);
-        }
-        return result;
+    public Kv countData() {
+        int questionNumber = questionInfoService.count();
+        int testPaperInfoNumber = testPaperInfoService.count();
+        int studentNumber = studentInfoService.count();
+        return Kv.create().set("questionNumber", questionNumber)
+                .set("testPaperInfoNumber", testPaperInfoNumber)
+                .set("studentNumber", studentNumber);
     }
 
-    *//**
+
+    /**
      * 获取考试记录统计
      * @param resultMap
      *//*

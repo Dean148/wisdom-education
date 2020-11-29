@@ -4,6 +4,7 @@ import com.education.business.service.education.ExamInfoService;
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
+import com.education.common.utils.ResultCode;
 import com.education.model.dto.TestPaperInfoDto;
 import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
@@ -34,6 +35,7 @@ public class TestPaperInfoController extends BaseController {
      */
     @GetMapping("list")
     public Result list(PageParam pageParam, TestPaperInfoDto testPaperInfoDto) {
+        testPaperInfoDto.setPublishFlag(true);
         return Result.success(testPaperInfoService.selectPageList(pageParam, testPaperInfoDto));
     }
 
@@ -58,6 +60,6 @@ public class TestPaperInfoController extends BaseController {
     @PostMapping("commitPaper")
     public Result commitPaper(@RequestBody StudentQuestionRequest studentQuestionRequest) {
         examInfoService.commitTestPaperInfoQuestion(studentQuestionRequest);
-        return Result.success("提交成功");
+        return Result.success(ResultCode.SUCCESS, "提交成功");
     }
 }

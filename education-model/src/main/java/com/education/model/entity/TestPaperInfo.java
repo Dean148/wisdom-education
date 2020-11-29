@@ -23,7 +23,7 @@ public class TestPaperInfo extends BaseEntity<TestPaperInfo> {
 	private Integer gradeInfoId;
 
 	@TableField("publish_flag")
-	private boolean publishFlag;
+	private Boolean publishFlag;
 
 	@TableField("subject_id")
 	private Integer subjectId;
@@ -46,46 +46,6 @@ public class TestPaperInfo extends BaseEntity<TestPaperInfo> {
 	@TableField("publish_time")
 	private Date publishTime;
 
-	public Integer getQuestionNumber() {
-		return questionNumber;
-	}
-
-	public void setQuestionNumber(Integer questionNumber) {
-		this.questionNumber = questionNumber;
-	}
-
-	public Date getPublishTime() {
-		return publishTime;
-	}
-
-	public void setPublishTime(Date publishTime) {
-		this.publishTime = publishTime;
-	}
-
-	public Integer getExamTime() {
-		return examTime;
-	}
-
-	public void setExamTime(Integer examTime) {
-		this.examTime = examTime;
-	}
-
-	public Integer getExamNumber() {
-		return examNumber;
-	}
-
-	public void setExamNumber(Integer examNumber) {
-		this.examNumber = examNumber;
-	}
-
-	public Integer getCorrectNumber() {
-		return correctNumber;
-	}
-
-	public void setCorrectNumber(Integer correctNumber) {
-		this.correctNumber = correctNumber;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -100,14 +60,6 @@ public class TestPaperInfo extends BaseEntity<TestPaperInfo> {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
-	}
-
-	public Integer getGradeInfoId() {
-		return gradeInfoId;
-	}
-
-	public void setGradeInfoId(Integer gradeInfoId) {
-		this.gradeInfoId = gradeInfoId;
 	}
 
 	public Integer getMark() {
@@ -126,11 +78,19 @@ public class TestPaperInfo extends BaseEntity<TestPaperInfo> {
 		this.schoolType = schoolType;
 	}
 
-	public boolean isPublishFlag() {
+	public Integer getGradeInfoId() {
+		return gradeInfoId;
+	}
+
+	public void setGradeInfoId(Integer gradeInfoId) {
+		this.gradeInfoId = gradeInfoId;
+	}
+
+	public Boolean getPublishFlag() {
 		return publishFlag;
 	}
 
-	public void setPublishFlag(boolean publishFlag) {
+	public void setPublishFlag(Boolean publishFlag) {
 		this.publishFlag = publishFlag;
 	}
 
@@ -148,5 +108,45 @@ public class TestPaperInfo extends BaseEntity<TestPaperInfo> {
 
 	public void setSort(Integer sort) {
 		this.sort = sort;
+	}
+
+	public Integer getExamNumber() {
+		return examNumber;
+	}
+
+	public void setExamNumber(Integer examNumber) {
+		this.examNumber = examNumber;
+	}
+
+	public Integer getCorrectNumber() {
+		return correctNumber;
+	}
+
+	public void setCorrectNumber(Integer correctNumber) {
+		this.correctNumber = correctNumber;
+	}
+
+	public Integer getExamTime() {
+		return examTime;
+	}
+
+	public void setExamTime(Integer examTime) {
+		this.examTime = examTime;
+	}
+
+	public Integer getQuestionNumber() {
+		return questionNumber;
+	}
+
+	public void setQuestionNumber(Integer questionNumber) {
+		this.questionNumber = questionNumber;
+	}
+
+	public Date getPublishTime() {
+		return publishTime;
+	}
+
+	public void setPublishTime(Date publishTime) {
+		this.publishTime = publishTime;
 	}
 }

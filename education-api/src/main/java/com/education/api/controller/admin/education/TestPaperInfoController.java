@@ -3,7 +3,9 @@ package com.education.api.controller.admin.education;
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.business.service.education.TestPaperQuestionInfoService;
 import com.education.common.base.BaseController;
+import com.education.common.exception.BusinessException;
 import com.education.common.utils.Result;
+import com.education.common.utils.ResultCode;
 import com.education.model.dto.TestPaperInfoDto;
 import com.education.model.dto.TestPaperQuestionDto;
 import com.education.model.entity.TestPaperInfo;
@@ -49,6 +51,12 @@ public class TestPaperInfoController extends BaseController {
      */
     @PostMapping
     public Result saveOrUpdate(@RequestBody TestPaperInfo testPaperInfo) {
+        if (testPaperInfo.getId() != null) {
+            TestPaperInfo dataBaseTestPaperInfo = testPaperInfoService.getById(testPaperInfo.getId());
+            if (dataBaseTestPaperInfo.getExamNumber() > 0) {
+                return Result.fail(ResultCode.FAIL, "试卷已被使用, 无法修改");
+            }
+        }
         testPaperInfoService.saveOrUpdate(testPaperInfo);
         return Result.success();
     }
@@ -70,7 +78,7 @@ public class TestPaperInfoController extends BaseController {
      */
     @PostMapping("updatePaperQuestionMarkOrSort")
     public Result updatePaperQuestionMarkOrSort(@RequestBody TestPaperQuestionDto testPaperQuestionDto) {
-        testPaperQuestionInfoService.updatePaperQuestionMarkOrSort(testPaperQuestionDto);
+        testPaperInfoService.updatePaperQuestionMarkOrSort(testPaperQuestionDto);
         return Result.success();
     }
 
@@ -87,5 +95,21 @@ public class TestPaperInfoController extends BaseController {
         });
         testPaperQuestionInfoService.saveBatch(testPaperQuestionInfoList);
         return Result.success();
+    }
+
+    /**
+     * 发布试卷
+     * @param testPaperInfoId
+     * @return
+     */
+    @PostMapping("publishTestPaperInfo/{testPaperInfoId}")
+    public Result publishTestPaperInfo(@PathVariable Integer testPaperInfoId) {
+        return Result.success(testPaperInfoService.publishTestPaperInfo(testPaperInfoId));
+    }
+
+
+    @DeleteMapping("{id}")
+    public Result deleteById(@PathVariable Integer id) {
+        return Result.success(testPaperInfoService.deleteById(id));
     }
 }
