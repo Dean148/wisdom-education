@@ -3,10 +3,12 @@ package com.education.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.education.common.annotation.Unique;
 
 @TableName("system_role")
 public class SystemRole extends BaseEntity<SystemRole> {
 
+	@Unique
 	private String name;
 	private String remark;
 	@TableField("create_type")

@@ -73,8 +73,8 @@ public class LogInterceptor extends BaseInterceptor {
             sb.append("ViewName     : ").append(modelAndView.getViewName()).append("\n");
 
         Enumeration<String> e = request.getParameterNames();
+        sb.append("Parameter    : ");
         if (e.hasMoreElements()) {
-            sb.append("Parameter    : ");
             while (e.hasMoreElements()) {
                 String name = e.nextElement();
                 String[] values = request.getParameterValues(name);
@@ -97,11 +97,15 @@ public class LogInterceptor extends BaseInterceptor {
                 }
                 sb.append("  ");
             }
-            sb.append("\n");
+
+        } else {
+            String params = readData(request);
+            sb.append(params);
         }
+        sb.append("\n");
         long endTime = System.currentTimeMillis();
         long startTime = threadLocal.get().get("startTime");
-        sb.append("------------------------- 接口响应时间:" +  (endTime - startTime) + "ms---------------------------------");
+        sb.append("------------------------- 接口响应时间:" +  (endTime - startTime) + "ms------------------------------------");
         log.info(sb.toString());
     }
 

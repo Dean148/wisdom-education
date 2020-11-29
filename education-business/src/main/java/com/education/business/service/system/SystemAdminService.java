@@ -110,7 +110,7 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         return result;
     }
 
-    public boolean checkIsUnique(Integer id, String loginName) {
+    /*public boolean checkIsUnique(Integer id, String loginName) {
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemAdmin.class)
                 .eq(SystemAdmin::getLoginName, loginName);
         SystemAdmin systemAdmin = super.getOne(queryWrapper);
@@ -123,7 +123,7 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         }
         return false;
     }
-
+*/
     @Transactional
     public void saveOrUpdate(AdminRoleDto adminRoleDto) {
 

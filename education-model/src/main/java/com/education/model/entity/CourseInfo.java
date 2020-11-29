@@ -3,25 +3,39 @@ package com.education.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.education.common.annotation.Unique;
 
 @TableName("course_info")
 public class CourseInfo extends BaseEntity<CourseInfo> {
 
+	@Unique
 	private String name;
+
+	@Unique("grade_info_id")
 	@TableField("grade_info_id")
 	private Integer gradeInfoId;
+
 	@TableField("school_type")
 	private Integer schoolType;
+
 	@TableField("subject_id")
+	@Unique("subject_id")
 	private Integer subjectId;
+
 	private String represent;
 	private String code;
 	private Integer sort;
 	private Integer status;
+
 	@TableField("study_number")
 	private Integer studyNumber;
+
 	@TableField("recommend_index_flag")
 	private Integer recommendIndexFlag;
+
+	@TableField("head_img")
+	private String headImg;
+
 
 
 	public String getRepresent() {
@@ -98,6 +112,14 @@ public class CourseInfo extends BaseEntity<CourseInfo> {
 
 	public Integer getSort() {
 		return sort;
+	}
+
+	public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
 	}
 
 	public void setSort(Integer sort) {

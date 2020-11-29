@@ -61,8 +61,7 @@ public class LanguagePointsInfoController extends BaseController {
      */
     @DeleteMapping("{id}")
     public Result deleteById(@PathVariable Integer id) {
-        languagePointsInfoService.removeById(id);
-        return Result.success();
+        return Result.success(languagePointsInfoService.deleteById(id));
     }
 
 }

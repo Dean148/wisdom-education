@@ -17,7 +17,8 @@ public class SystemRoleMenuService extends BaseService<SystemRoleMenuMapper, Sys
 
 
     public int deleteByRoleId(Integer roleId) {
-        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemRoleMenu.class).eq(SystemRoleMenu::getRoleId, roleId);
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemRoleMenu.class)
+                .eq(SystemRoleMenu::getRoleId, roleId);
         return baseMapper.delete(queryWrapper);
     }
 

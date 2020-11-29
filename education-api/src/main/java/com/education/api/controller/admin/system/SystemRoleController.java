@@ -78,7 +78,6 @@ public class SystemRoleController extends BaseController {
         if (systemRole.getCreateType() == EnumConstants.CreateType.SYSTEM_CREATE.getValue()) {
             return Result.success("您不能删除系统内置角色");
         }
-        systemRoleService.removeById(id);
-        return Result.success(ResultCode.SUCCESS, "删除角色" + systemRole.getName() + "成功");
+        return Result.success(systemRoleService.deleteById(id));
     }
 }

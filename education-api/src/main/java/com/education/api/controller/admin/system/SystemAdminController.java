@@ -63,9 +63,9 @@ public class SystemAdminController extends BaseController {
     @SystemLog(describe = "添加或修改管理员")
     @RequiresPermissions(value = {"system:admin:save", "system:admin:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody AdminRoleDto adminRoleDto) {
-        if (systemAdminService.checkIsUnique(adminRoleDto.getId(), adminRoleDto.getLoginName())) {
+        /*if (systemAdminService.checkIsUnique(adminRoleDto.getId(), adminRoleDto.getLoginName())) {
             return Result.fail(ResultCode.FAIL, "账户名已存在，重复添加");
-        }
+        }*/
         systemAdminService.saveOrUpdate(adminRoleDto);
         return Result.success();
     }
@@ -89,6 +89,7 @@ public class SystemAdminController extends BaseController {
      * @return
      */
     @PostMapping("updatePassword")
+    @SystemLog(describe = "修改管理员密码")
     @RequiresPermissions("system:admin:updatePassword")
     public Result updatePassword(@RequestBody AdminRoleDto adminRoleDto) {
         systemAdminService.updatePassword(adminRoleDto);
@@ -100,6 +101,7 @@ public class SystemAdminController extends BaseController {
      * @return
      */
     @GetMapping("getOnlineUserList")
+    @SystemLog(describe = "获取在线用户列表")
     public Result<PageInfo<SystemAdmin>> getOnlineUserList(PageParam pageParam) {
         return Result.success(systemAdminService.getOnlineUserList(pageParam));
     }

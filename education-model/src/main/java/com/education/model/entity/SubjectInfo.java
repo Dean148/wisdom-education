@@ -3,6 +3,7 @@ package com.education.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.education.common.annotation.Unique;
 
 /**
  * 科目信息表
@@ -10,9 +11,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("subject_info")
 public class SubjectInfo extends BaseEntity<SubjectInfo> {
 
+	@Unique
 	private String name;
 	@TableField("school_type")
 	private Integer schoolType;
+
+	@Unique("grade_info_id")
 	@TableField("grade_info_id")
 	private Integer gradeInfoId;
 

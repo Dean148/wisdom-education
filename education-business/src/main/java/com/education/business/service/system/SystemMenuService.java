@@ -116,8 +116,11 @@ public class SystemMenuService extends BaseService<SystemMenuMapper, SystemMenu>
                 .sorted(Comparator.comparing(MenuTree::getParentId))
                 .map(MenuTree::getId)
                 .collect(Collectors.toList());
-     //   Collections.sort(parentIds);// 集合从小到大排序
         menuTree.setParentIds(parentIds);
         return menuTree;
+    }
+
+    public void deleteById(Integer id) {
+        super.removeById(id);
     }
 }

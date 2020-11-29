@@ -7,6 +7,10 @@
         left join grade_info grade on subject.grade_info_id = grade.id
         <where>
 
+            <if test="subjectInfo.schoolType != null">
+                and subject.school_type = #{subjectInfo.schoolType}
+            </if>
+
             <if test="subjectInfo.gradeInfoId != null">
                 and subject.grade_info_id = #{subjectInfo.gradeInfoId}
             </if>

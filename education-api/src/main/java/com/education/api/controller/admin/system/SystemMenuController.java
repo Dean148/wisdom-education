@@ -1,6 +1,7 @@
 package com.education.api.controller.admin.system;
 
 import com.education.business.service.system.SystemMenuService;
+import com.education.common.annotation.SystemLog;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
@@ -33,6 +34,7 @@ public class SystemMenuController extends BaseController {
      */
     @GetMapping("menuTreeList")
     @RequiresPermissions("system:menu:list")
+    @SystemLog(describe = "获取菜单列表")
     public Result<List<MenuTree>> menuTreeList() {
         return Result.success(systemMenuService.selectMenuTreeList());
     }
@@ -71,7 +73,7 @@ public class SystemMenuController extends BaseController {
         if (systemMenu.getCreateType() == ResultCode.SUCCESS) {
             return Result.success(ResultCode.FAIL, "您不能删除系统内置菜单");
         }
-        systemMenuService.removeById(id);
+        systemMenuService.deleteById(id);
         return Result.success(ResultCode.SUCCESS, "删除成功");
     }
 

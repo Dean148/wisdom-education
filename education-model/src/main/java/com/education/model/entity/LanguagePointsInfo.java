@@ -16,7 +16,7 @@ public class LanguagePointsInfo extends BaseEntity<LanguagePointsInfo> {
 	private Integer parentId;
 	private Integer sort;
 	@TableField("hasChildren")
-	private boolean hasChildren;
+	private Boolean hasChildren;
 
 	public String getName() {
 		return name;
@@ -58,11 +58,11 @@ public class LanguagePointsInfo extends BaseEntity<LanguagePointsInfo> {
 		this.sort = sort;
 	}
 
-	public boolean isHasChildren() {
+	public Boolean getHasChildren() {
 		return hasChildren;
 	}
 
-	public void setHasChildren(boolean hasChildren) {
+	public void setHasChildren(Boolean hasChildren) {
 		this.hasChildren = hasChildren;
 	}
 }

@@ -3,8 +3,10 @@ package com.education.api;
 
 
 import com.education.business.service.education.QuestionInfoService;
+import com.education.business.service.system.SystemAdminService;
 import com.education.model.dto.QuestionInfoDto;
 import com.education.model.entity.QuestionInfo;
+import com.education.model.entity.SystemAdmin;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +29,19 @@ public class EducationAdminApiApplicationTests {
     private QuestionInfoService questionInfoService;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private SystemAdminService systemAdminService;
+
+    @Test
+    public void check() {
+        SystemAdmin systemAdmin = new SystemAdmin();
+        systemAdmin.setLoginName("admin");
+        systemAdmin.setEncrypt("1111");
+        systemAdmin.setPassword("12222");
+        systemAdmin.setCreateType(2);
+        systemAdminService.saveOrUpdate(systemAdmin);
+    }
 
     @Test
     public void testQuestion() {

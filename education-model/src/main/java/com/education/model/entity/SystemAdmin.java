@@ -2,6 +2,7 @@ package com.education.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.education.common.annotation.Unique;
 import com.education.common.constants.EnumConstants;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -11,7 +12,9 @@ import java.util.Date;
 public class SystemAdmin extends BaseEntity<SystemAdmin> {
 
 	@TableField("login_name")
+	@Unique("login_name")
 	private String loginName;
+
 	private String password;
 	private String encrypt;
 	@TableField("disabled_flag")
