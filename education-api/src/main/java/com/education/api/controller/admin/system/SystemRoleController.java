@@ -48,7 +48,7 @@ public class SystemRoleController extends BaseController {
      * @return
      */
     @PostMapping("saveRolePermission")
-    @RequiresPermissions("system:role:saveRolePermission")
+    @RequiresPermissions("system:role:savePermission")
     public Result saveRolePermission(@RequestBody RoleMenuDto roleMenuDto) {
         systemRoleService.saveRolePermission(roleMenuDto);
         return Result.success("权限设置成功");
