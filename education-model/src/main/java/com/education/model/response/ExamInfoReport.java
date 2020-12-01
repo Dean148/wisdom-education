@@ -7,7 +7,7 @@ import com.education.model.entity.ExamInfo;
  * @version 1.0
  * @create_at 2020/12/1 15:26
  */
-public class ExamCount extends ExamInfo {
+public class ExamInfoReport extends ExamInfo {
 
     private float avgSource; // 试卷平均分
     private String gradeName;

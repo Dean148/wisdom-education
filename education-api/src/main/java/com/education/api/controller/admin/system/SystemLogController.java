@@ -1,5 +1,6 @@
 package com.education.api.controller.admin.system;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.system.SystemLogService;
 import com.education.common.base.BaseController;
@@ -27,7 +28,9 @@ public class SystemLogController extends BaseController {
     @GetMapping("list")
     @RequiresPermissions("system:log:list")
     public Result<PageInfo<SystemLog>> list(PageParam pageParam, SystemLog systemLog) {
-        return Result.success(systemLogService.selectPage(pageParam, Wrappers.query(systemLog)));
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(systemLog)
+                .orderByDesc(SystemLog::getId);
+        return Result.success(systemLogService.selectPage(pageParam, queryWrapper));
     }
 
     @DeleteMapping("{id}")

@@ -5,7 +5,6 @@ import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.StudentExamInfoDto;
-import com.education.model.entity.ExamInfo;
 import com.education.model.entity.TestPaperInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
@@ -57,8 +56,8 @@ public class ExamInfoController extends BaseController {
      * @param testPaperInfo
      * @return
      */
-    @GetMapping("countExam")
-    public Result countExam(PageParam pageParam, TestPaperInfo testPaperInfo) {
-        return Result.success(examInfoService.countExam(pageParam, testPaperInfo));
+    @GetMapping("getExamReportList")
+    public Result selectExamReportList(PageParam pageParam, TestPaperInfo testPaperInfo) {
+        return Result.success(examInfoService.selectExamReportList(pageParam, testPaperInfo));
     }
 }

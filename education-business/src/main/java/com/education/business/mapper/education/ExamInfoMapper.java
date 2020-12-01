@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.ExamInfo;
 import com.education.model.entity.TestPaperInfo;
-import com.education.model.response.ExamCount;
+import com.education.model.response.ExamInfoReport;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -41,5 +41,5 @@ public interface ExamInfoMapper extends BaseMapper<ExamInfo> {
      * @param testPaperInfo
      * @return
      */
-    Page<ExamCount> countExam(Page<ExamCount> page, TestPaperInfo testPaperInfo);
+    Page<ExamInfoReport> selectExamReportList(Page<ExamInfoReport> page, TestPaperInfo testPaperInfo);
 }

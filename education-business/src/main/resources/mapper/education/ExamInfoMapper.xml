@@ -51,7 +51,7 @@
         </where>
     </select>
 
-    <select id="countExam" resultType="examCount">
+    <select id="selectExamReportList" resultType="examInfoReport">
         SELECT
             paper.name,
             paper.mark,

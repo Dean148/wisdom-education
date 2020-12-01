@@ -1,5 +1,6 @@
 package com.education.model.dto;
 
+import com.education.model.entity.LanguagePointsInfo;
 import com.education.model.entity.QuestionInfo;
 
 import java.util.List;
@@ -14,6 +15,16 @@ public class QuestionInfoDto extends QuestionInfo {
     private String subjectName;
     private String gradeInfoName;
     private String questionTypeName;
+
+    private List<LanguagePointsInfo> languagePointsInfoList;
+
+    public List<LanguagePointsInfo> getLanguagePointsInfoList() {
+        return languagePointsInfoList;
+    }
+
+    public void setLanguagePointsInfoList(List<LanguagePointsInfo> languagePointsInfoList) {
+        this.languagePointsInfoList = languagePointsInfoList;
+    }
 
     /**
      * 知识点列表

@@ -16,7 +16,7 @@ import com.education.model.entity.TestPaperInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
-import com.education.model.response.ExamCount;
+import com.education.model.response.ExamInfoReport;
 import com.education.model.response.ExamQuestionItemResponse;
 import com.education.model.response.ExamQuestionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,8 +182,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentQuestionRequest.getStudentId(), examInfo);
     }
 
-    public PageInfo<ExamCount> countExam(PageParam pageParam, TestPaperInfo testPaperInfo) {
-        Page<ExamCount> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
-        return selectPage(baseMapper.countExam(page, testPaperInfo));
+    public PageInfo<ExamInfoReport> selectExamReportList(PageParam pageParam, TestPaperInfo testPaperInfo) {
+        Page<ExamInfoReport> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
+        return selectPage(baseMapper.selectExamReportList(page, testPaperInfo));
     }
 }

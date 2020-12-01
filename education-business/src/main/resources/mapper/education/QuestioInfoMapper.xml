@@ -4,8 +4,9 @@
 
     <resultMap id="questionInfoDtoResultMap" autoMapping="true" type="questionInfoDto">
         <id column="id" property="id"></id>
-        <collection property="languagePointsInfoId" ofType="Integer">
-            <id property="languagePointsInfoId" column="language_points_info_id"></id>
+        <collection property="languagePointsInfoList" ofType="languagePointsInfo">
+            <id property="id" column="language_points_info_id"></id>
+            <id property="name" column="name"></id>
         </collection>
     </resultMap>
 
@@ -64,7 +65,8 @@
     </select>
 
     <select id="selectById" resultMap="questionInfoDtoResultMap">
-        select <include refid="field"/>, b.language_points_info_id from question_info question left join question_language_points_info b
-        on question.id = b.question_info_id where question.id = #{id}
+        select <include refid="field"/>, b.language_points_info_id, points_info.name from question_info question left join question_language_points_info b
+        on question.id = b.question_info_id left join language_points_info points_info on b.language_points_info_id = points_info.id
+        where question.id = #{id}
     </select>
 </mapper>
