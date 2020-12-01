@@ -12,9 +12,11 @@ import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.ExamInfo;
 import com.education.model.entity.StudentQuestionAnswer;
 import com.education.model.entity.StudentWrongBook;
+import com.education.model.entity.TestPaperInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
+import com.education.model.response.ExamCount;
 import com.education.model.response.ExamQuestionItemResponse;
 import com.education.model.response.ExamQuestionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -178,5 +180,10 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         studentQuestionAnswerService.deleteByTestPaperInfoId(studentId, examInfo.getTestPaperInfoId());
         studentQuestionRequest.setTestPaperInfoId(examInfo.getTestPaperInfoId());
         this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentQuestionRequest.getStudentId(), examInfo);
+    }
+
+    public PageInfo<ExamCount> countExam(PageParam pageParam, TestPaperInfo testPaperInfo) {
+        Page<ExamCount> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
+        return selectPage(baseMapper.countExam(page, testPaperInfo));
     }
 }

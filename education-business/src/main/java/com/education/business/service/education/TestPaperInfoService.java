@@ -56,12 +56,12 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
     @Transactional
     public void updatePaperQuestionMarkOrSort(TestPaperQuestionDto testPaperQuestionDto) {
         testPaperQuestionDto.setUpdateDate(new Date());
-        LambdaUpdateWrapper updateWrapper = Wrappers.<TestPaperQuestionInfo>lambdaUpdate()
+        LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(TestPaperQuestionInfo.class)
                 .eq(TestPaperQuestionInfo::getQuestionInfoId, testPaperQuestionDto.getQuestionInfoId())
                 .eq(TestPaperQuestionInfo::getTestPaperInfoId, testPaperQuestionDto.getTestPaperInfoId())
                 .set(TestPaperQuestionInfo::getMark, testPaperQuestionDto.getMark())
                 .set(TestPaperQuestionInfo::getSort, testPaperQuestionDto.getSort());
-        super.update(updateWrapper);
+        testPaperQuestionInfoService.update(updateWrapper);
 
         // 更新试卷总分
         if (ObjectUtils.isNotEmpty(testPaperQuestionDto.getUpdateType()) &&
@@ -104,7 +104,18 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         }
 
         testPaperInfo.setPublishFlag(true);
+        testPaperInfo.setPublishTime(new Date());
         super.updateById(testPaperInfo);
         return new ResultCode(ResultCode.SUCCESS, "发布成功");
+    }
+
+    public Object cancelTestPaperInfo(Integer testPaperInfoId) {
+        TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
+        if (testPaperInfo.getExamNumber() > 0) {
+            return new ResultCode(ResultCode.FAIL, "试卷已有学员作答, 无法撤回");
+        }
+        testPaperInfo.setPublishFlag(false);
+        super.updateById(testPaperInfo);
+        return new ResultCode(ResultCode.SUCCESS, "撤销成功");
     }
 }

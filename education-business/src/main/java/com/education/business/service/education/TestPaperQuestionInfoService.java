@@ -34,8 +34,8 @@ public class TestPaperQuestionInfoService extends BaseService<TestPaperQuestionI
     public boolean hasTestPaperInfoQuestion(Integer testPaperInfoId) {
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(TestPaperQuestionInfo.class)
                 .eq(TestPaperQuestionInfo::getTestPaperInfoId, testPaperInfoId)
-                .select(TestPaperQuestionInfo::getId)
-                .apply(" limit 1");
+                .select(TestPaperQuestionInfo::getId);
+              //  .apply(" limit 1");
         TestPaperQuestionInfo testPaperQuestionInfo = super.getOne(queryWrapper);
         return ObjectUtils.isNotEmpty(testPaperQuestionInfo);
     }

@@ -107,7 +107,22 @@ public class TestPaperInfoController extends BaseController {
         return Result.success(testPaperInfoService.publishTestPaperInfo(testPaperInfoId));
     }
 
+    /**
+     * 撤销试卷
+     * @param testPaperInfoId
+     * @return
+     */
+    @PostMapping("cancelTestPaperInfo/{testPaperInfoId}")
+    public Result cancelTestPaperInfo(@PathVariable Integer testPaperInfoId) {
+        return Result.success(testPaperInfoService.cancelTestPaperInfo(testPaperInfoId));
+    }
 
+
+    /**
+     * 删除试卷
+     * @param id
+     * @return
+     */
     @DeleteMapping("{id}")
     public Result deleteById(@PathVariable Integer id) {
         return Result.success(testPaperInfoService.deleteById(id));

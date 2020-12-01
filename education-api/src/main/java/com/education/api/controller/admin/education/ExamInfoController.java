@@ -5,6 +5,8 @@ import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.StudentExamInfoDto;
+import com.education.model.entity.ExamInfo;
+import com.education.model.entity.TestPaperInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +50,15 @@ public class ExamInfoController extends BaseController {
     public Result correctExamQuestion(@RequestBody StudentQuestionRequest studentQuestionRequest) {
         examInfoService.correctStudentExam(studentQuestionRequest);
         return Result.success(ResultCode.SUCCESS, "批改成功");
+    }
+
+    /**
+     * 考试统计
+     * @param testPaperInfo
+     * @return
+     */
+    @GetMapping("countExam")
+    public Result countExam(PageParam pageParam, TestPaperInfo testPaperInfo) {
+        return Result.success(examInfoService.countExam(pageParam, testPaperInfo));
     }
 }

@@ -8,6 +8,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <description>公共api接口模块</description>
 
     <artifactId>education-common-api</artifactId>
     <groupId>com.education.common.api</groupId>
