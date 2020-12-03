@@ -35,7 +35,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
     /**
      * 试题分页列表
      * @param pageParam
-     * @param questionInfo
+     * @param questionInfoQuery
      * @return
      */
     public PageInfo<QuestionInfoDto> selectPageList(PageParam pageParam, QuestionInfoQuery questionInfoQuery) {

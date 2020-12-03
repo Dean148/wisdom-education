@@ -56,7 +56,7 @@
 
             <if test="questionInfo.questionIds != null and questionInfo.questionIds.size() > 0">
                 and question.id not in
-                <foreach collection="selectQuestionIds" separator="," open="(" close=")" item="id">
+                <foreach collection="questionInfo.questionIds" separator="," open="(" close=")" item="id">
                     #{id}
                 </foreach>
             </if>

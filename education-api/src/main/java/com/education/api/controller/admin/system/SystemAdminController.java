@@ -63,9 +63,6 @@ public class SystemAdminController extends BaseController {
     @SystemLog(describe = "添加或修改管理员")
     @RequiresPermissions(value = {"system:admin:save", "system:admin:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody AdminRoleDto adminRoleDto) {
-        /*if (systemAdminService.checkIsUnique(adminRoleDto.getId(), adminRoleDto.getLoginName())) {
-            return Result.fail(ResultCode.FAIL, "账户名已存在，重复添加");
-        }*/
         systemAdminService.saveOrUpdate(adminRoleDto);
         return Result.success();
     }

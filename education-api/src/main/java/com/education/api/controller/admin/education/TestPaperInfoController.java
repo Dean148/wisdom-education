@@ -3,7 +3,6 @@ package com.education.api.controller.admin.education;
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.business.service.education.TestPaperQuestionInfoService;
 import com.education.common.base.BaseController;
-import com.education.common.exception.BusinessException;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.TestPaperInfoDto;
@@ -14,8 +13,6 @@ import com.education.model.request.PageParam;
 import com.education.model.request.TestPaperQuestionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -89,11 +86,7 @@ public class TestPaperInfoController extends BaseController {
      */
     @PostMapping("saveTestPaperInfoQuestion")
     public Result saveTestPaperInfoQuestion(@RequestBody List<TestPaperQuestionInfo> testPaperQuestionInfoList) {
-        Date now = new Date();
-        testPaperQuestionInfoList.forEach(item -> {
-            item.setCreateDate(now);
-        });
-        testPaperQuestionInfoService.saveBatch(testPaperQuestionInfoList);
+        testPaperInfoService.saveTestPaperInfoQuestion(testPaperQuestionInfoList);
         return Result.success();
     }
 

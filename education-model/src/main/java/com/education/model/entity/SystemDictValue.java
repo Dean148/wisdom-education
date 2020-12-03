@@ -2,16 +2,23 @@ package com.education.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.education.common.annotation.Unique;
 
 @TableName("system_dict_value")
 public class SystemDictValue extends BaseEntity<SystemDictValue> {
 
 	@TableField("system_dict_id")
+	@Unique("system_dict_id")
 	private Integer systemDictId;
+
 	private String value;
+
+	@Unique
 	private Integer code;
+
 	@TableField("parent_id")
 	private Integer parentId;
+
 	private Integer sort;
 
 	public Integer getSystemDictId() {

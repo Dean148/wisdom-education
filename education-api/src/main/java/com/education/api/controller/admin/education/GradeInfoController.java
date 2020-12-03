@@ -1,9 +1,12 @@
 package com.education.api.controller.admin.education;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.education.GradeInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.model.PageInfo;
+import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.model.entity.GradeInfo;
 import com.education.model.request.PageParam;
@@ -31,7 +34,11 @@ public class GradeInfoController extends BaseController {
      */
     @GetMapping
     public Result<PageInfo<GradeInfo>> list(PageParam pageParam, GradeInfo gradeInfo) {
-        return Result.success(gradeInfoService.selectPage(pageParam, new QueryWrapper(gradeInfo)));
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(GradeInfo.class)
+                .like(ObjectUtils.isNotEmpty(gradeInfo.getName()), GradeInfo::getName, gradeInfo.getName())
+                .eq(ObjectUtils.isNotEmpty(gradeInfo.getSchoolType()),
+                        GradeInfo::getSchoolType, gradeInfo.getSchoolType());
+        return Result.success(gradeInfoService.selectPage(pageParam, queryWrapper));
     }
 
     /**

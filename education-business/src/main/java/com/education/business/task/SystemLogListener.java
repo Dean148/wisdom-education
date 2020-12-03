@@ -30,6 +30,9 @@ public class SystemLogListener implements TaskListener {
         if (ObjectUtils.isNotEmpty(adminUserSession)) {
             systemLog.setUserId(adminUserSession.getAdminId());
             systemLog.setOperationName(adminUserSession.getSystemAdmin().getLoginName());
+            systemLog.setPlatformType(EnumConstants.PlatformType.WEB_ADMIN.getValue());
+        } else {
+            systemLog.setOperationName("匿名用户");
         }
         systemLog.setCreateDate(new Date());
         systemLog.setPlatformType(EnumConstants.PlatformType.WEB_ADMIN.getValue());
