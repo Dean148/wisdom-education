@@ -4,7 +4,7 @@
 
     <select id="selectStudentExamList" resultType="studentExamInfoDto">
         select
-          exam.*, subject.name subject_name, paper.name test_paper_info_name, paper.question_number
+          exam.*, subject.name subject_name, paper.name test_paper_info_name, paper.question_number, paper.mark testPaperInfoMark
         from exam_info exam left join test_paper_info paper
         on exam.test_paper_info_id = paper.id left join subject_info subject
         on paper.subject_id = subject.id

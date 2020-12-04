@@ -123,6 +123,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             if (subjectiveQuestionNumber == 0) { // 如果全部为客观题的话，直接设置为已批改状态
                 examInfo.setCorrectFlag(EnumConstants.Flag.YES.getValue());
                 examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM.getValue());
+                examInfo.setMark(systemMark);
             }
             examInfo.setRightNumber(rightNumber);
             examInfo.setErrorNumber(errorNumber);
