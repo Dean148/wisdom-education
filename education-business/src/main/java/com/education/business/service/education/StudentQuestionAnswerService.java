@@ -1,11 +1,10 @@
 package com.education.business.service.education;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.education.StudentQuestionAnswerMapper;
 import com.education.business.service.BaseService;
-import com.education.model.dto.ExamQuestionAnswer;
+import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.entity.StudentQuestionAnswer;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -22,7 +21,7 @@ public class StudentQuestionAnswerService extends BaseService<StudentQuestionAns
      * 获取试卷试题及学员试题答案
      * @return
      */
-    public List<ExamQuestionAnswer> getQuestionAnswerByTestPaperInfoId(Integer studentId, Integer testPaperInfoId) {
+    public List<QuestionInfoAnswer> getQuestionAnswerByTestPaperInfoId(Integer studentId, Integer testPaperInfoId) {
         return baseMapper.selectQuestionAnswerList(studentId, testPaperInfoId);
     }
 

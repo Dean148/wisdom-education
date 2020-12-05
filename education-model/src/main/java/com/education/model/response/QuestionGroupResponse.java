@@ -1,6 +1,5 @@
 package com.education.model.response;
 
-import com.education.model.dto.StudentExamInfoDto;
 
 import java.util.List;
 
@@ -12,7 +11,6 @@ import java.util.List;
 public class QuestionGroupResponse {
 
     private List<QuestionGroupItemResponse> questionGroupItemResponseList;
-    private StudentExamInfoDto studentExamInfoDto;
     private long totalQuestion;
 
     public long getTotalQuestion() {
@@ -21,14 +19,6 @@ public class QuestionGroupResponse {
 
     public void setTotalQuestion(long totalQuestion) {
         this.totalQuestion = totalQuestion;
-    }
-
-    public void setStudentExamInfoDto(StudentExamInfoDto studentExamInfoDto) {
-        this.studentExamInfoDto = studentExamInfoDto;
-    }
-
-    public StudentExamInfoDto getStudentExamInfoDto() {
-        return studentExamInfoDto;
     }
 
     public List<QuestionGroupItemResponse> getQuestionGroupItemResponseList() {

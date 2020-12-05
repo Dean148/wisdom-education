@@ -13,6 +13,30 @@ public class TestPaperQuestionRequest {
     private String content;
     private List<Integer> questionInfoIds;
 
+    public Integer getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(Integer questionType) {
+        this.questionType = questionType;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public List<Integer> getQuestionInfoIds() {
+        return questionInfoIds;
+    }
+
+    public void setQuestionInfoIds(List<Integer> questionInfoIds) {
+        this.questionInfoIds = questionInfoIds;
+    }
+
     public Integer getTestPaperInfoId() {
         return testPaperInfoId;
     }

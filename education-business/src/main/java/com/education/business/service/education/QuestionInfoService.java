@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.QuestionInfoMapper;
 import com.education.business.service.BaseService;
+import com.education.common.constants.EnumConstants;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.ObjectUtils;
+import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.dto.QuestionInfoDto;
 import com.education.model.entity.QuestionInfo;
 import com.education.model.entity.QuestionLanguagePointsInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionInfoQuery;
+import com.education.model.response.QuestionGroupItemResponse;
 import com.education.model.response.QuestionGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 试题管理
@@ -78,5 +82,26 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
         return baseMapper.selectById(id);
     }
 
-    /*public QuestionGroupResponse groupQuesiton(List<>)*/
+
+    /**
+     * 对用户作答试题分组
+     * @param questionInfoAnswerList
+     * @return
+     */
+    public List<QuestionGroupItemResponse> groupQuestion(List<QuestionInfoAnswer> questionInfoAnswerList) {
+        List<QuestionGroupItemResponse> list = new ArrayList<>();
+        for (EnumConstants.QuestionType item : EnumConstants.QuestionType.values()) {
+            int value = item.getValue();
+            List<QuestionInfoAnswer> questionList = questionInfoAnswerList.stream()
+                    .filter(questionInfoAnswer -> value == questionInfoAnswer.getQuestionType().intValue())
+                    .collect(Collectors.toList());
+            if (ObjectUtils.isNotEmpty(questionList)) {
+                QuestionGroupItemResponse examQuestionItemResponse = new QuestionGroupItemResponse();
+                examQuestionItemResponse.setQuestionTypeName(item.getName());
+                examQuestionItemResponse.setQuestionInfoAnswerList(questionList);
+                list.add(examQuestionItemResponse);
+            }
+        }
+        return list;
+    }
 }

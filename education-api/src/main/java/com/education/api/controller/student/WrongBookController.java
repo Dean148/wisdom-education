@@ -2,9 +2,11 @@ package com.education.api.controller.student;
 
 import com.education.business.service.education.StudentWrongBookService;
 import com.education.common.base.BaseController;
+import com.education.common.model.PageInfo;
 import com.education.common.utils.Result;
-import com.education.model.entity.StudentWrongBook;
+import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.request.PageParam;
+import com.education.model.request.WrongBookQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,11 +28,11 @@ public class WrongBookController extends BaseController {
     /**
      * 错题本列表
      * @param pageParam
-     * @param studentWrongBook
+     * @param wrongBookQuery
      * @return
      */
     @GetMapping
-    public Result list(PageParam pageParam, StudentWrongBook studentWrongBook) {
-        return Result.success(studentWrongBookService.selectPageList(pageParam, studentWrongBook));
+    public Result<PageInfo<QuestionInfoAnswer>> list(PageParam pageParam, WrongBookQuery wrongBookQuery) {
+        return Result.success(studentWrongBookService.selectPageList(pageParam, wrongBookQuery));
     }
 }

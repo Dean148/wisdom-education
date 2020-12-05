@@ -1,5 +1,7 @@
 package com.education.model.dto;
 
+import com.education.common.constants.EnumConstants;
+import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.QuestionInfo;
 
 /**
@@ -7,16 +9,28 @@ import com.education.model.entity.QuestionInfo;
  * @version 1.0
  * @create_at 2020/11/23 15:34
  */
-public class ExamQuestionAnswer extends QuestionInfo {
+public class QuestionInfoAnswer extends QuestionInfo {
 
     private String studentAnswer;
     private Integer studentMark;
 
+    private String subjectName;
     private String questionTypeName;
     private int questionMark;
     private Integer correctStatus;
 
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+
     public String getQuestionTypeName() {
+        if (ObjectUtils.isNotEmpty(this.getQuestionType())) {
+            return EnumConstants.QuestionType.getName(this.getQuestionType());
+        }
         return questionTypeName;
     }
 

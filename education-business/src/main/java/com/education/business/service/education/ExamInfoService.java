@@ -6,8 +6,7 @@ import com.education.business.service.BaseService;
 import com.education.common.constants.EnumConstants;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.DateUtils;
-import com.education.common.utils.ObjectUtils;
-import com.education.model.dto.ExamQuestionAnswer;
+import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.ExamInfo;
 import com.education.model.entity.StudentQuestionAnswer;
@@ -17,16 +16,15 @@ import com.education.model.request.PageParam;
 import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
 import com.education.model.response.ExamInfoReport;
+import com.education.model.response.ExamQuestionGroupResponse;
 import com.education.model.response.QuestionGroupItemResponse;
 import com.education.model.response.QuestionGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author zengjintao
@@ -40,6 +38,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     private StudentQuestionAnswerService studentQuestionAnswerService;
     @Autowired
     private StudentWrongBookService studentWrongBookService;
+    @Autowired
+    private QuestionInfoService questionInfoService;
 
     public PageInfo<StudentExamInfoDto> selectStudentExamInfoList(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
         Page<StudentExamInfoDto> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
@@ -127,6 +127,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             }
             examInfo.setRightNumber(rightNumber);
             examInfo.setErrorNumber(errorNumber);
+            examInfo.setCreateDate(now);
             super.save(examInfo);
         } else {
             if (objectiveQuestionNumber == 0) {
@@ -145,26 +146,10 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
 
     public QuestionGroupResponse selectExamQuestionAnswer(Integer studentId, Integer examInfoId) {
         StudentExamInfoDto studentExamInfoDto = baseMapper.selectById(examInfoId);
-        List<ExamQuestionAnswer> examQuestionAnswerList = studentQuestionAnswerService
+        List<QuestionInfoAnswer> examQuestionAnswerList = studentQuestionAnswerService
                 .getQuestionAnswerByTestPaperInfoId(studentId, studentExamInfoDto.getTestPaperInfoId());
-        EnumConstants.QuestionType questionType[] = EnumConstants.QuestionType.values();
-        QuestionGroupResponse examQuestionResponse = new QuestionGroupResponse();
-        List<QuestionGroupItemResponse> list = new ArrayList<>();
-        for (EnumConstants.QuestionType item : questionType) {
-            int value = item.getValue();
-            List<ExamQuestionAnswer> questionList = examQuestionAnswerList.stream()
-                    .filter(examQuestionAnswer -> value == examQuestionAnswer.getQuestionType().intValue())
-                    .collect(Collectors.toList());
-            if (ObjectUtils.isNotEmpty(questionList)) {
-                questionList.forEach(question -> {
-                    question.setQuestionTypeName(EnumConstants.QuestionType.getName(question.getQuestionType()));
-                });
-                QuestionGroupItemResponse examQuestionItemResponse = new QuestionGroupItemResponse();
-                examQuestionItemResponse.setQuestionTypeName(item.getName());
-                examQuestionItemResponse.setExamQuestionAnswerList(questionList);
-                list.add(examQuestionItemResponse);
-            }
-        }
+        List<QuestionGroupItemResponse> list = questionInfoService.groupQuestion(examQuestionAnswerList);
+        ExamQuestionGroupResponse examQuestionResponse = new ExamQuestionGroupResponse();
         examQuestionResponse.setQuestionGroupItemResponseList(list);
         examQuestionResponse.setTotalQuestion(list.size());
         examQuestionResponse.setStudentExamInfoDto(studentExamInfoDto);

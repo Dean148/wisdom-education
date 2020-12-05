@@ -2,8 +2,9 @@ package com.education.business.mapper.education;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.education.model.dto.StudentWrongBookDto;
+import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.entity.StudentWrongBook;
+import com.education.model.request.WrongBookQuery;
 
 /**
  * @author zengjintao
@@ -12,5 +13,5 @@ import com.education.model.entity.StudentWrongBook;
  */
 public interface StudentWrongBookMapper extends BaseMapper<StudentWrongBook> {
 
-    Page<StudentWrongBookDto> selectPageList(Page<StudentWrongBookDto> page, StudentWrongBook studentWrongBook);
+    Page<QuestionInfoAnswer> selectPageList(Page<QuestionInfoAnswer> page, WrongBookQuery wrongBookQuery);
 }

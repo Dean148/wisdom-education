@@ -3,6 +3,8 @@ package com.education.model.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import java.util.Date;
+
 /**
  * 学员错题本实体类
  * @author zengjintao
@@ -27,6 +29,7 @@ public class StudentWrongBook extends BaseEntity<StudentWrongBook> {
         this.studentId = studentId;
         this.questionInfoId = questionInfoId;
         this.questionMark = questionMark;
+        this.createDate = new Date();
     }
 
     public Integer getQuestionInfoId() {

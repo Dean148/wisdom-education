@@ -1,7 +1,6 @@
 package com.education.model.response;
 
-import com.education.model.dto.ExamQuestionAnswer;
-
+import com.education.model.dto.QuestionInfoAnswer;
 import java.util.List;
 
 /**
@@ -12,7 +11,7 @@ import java.util.List;
 public class QuestionGroupItemResponse {
 
     private String questionTypeName;
-    private List<ExamQuestionAnswer> examQuestionAnswerList;
+    private List<QuestionInfoAnswer> questionInfoAnswerList;
 
     public String getQuestionTypeName() {
         return questionTypeName;
@@ -22,11 +21,11 @@ public class QuestionGroupItemResponse {
         this.questionTypeName = questionTypeName;
     }
 
-    public List<ExamQuestionAnswer> getExamQuestionAnswerList() {
-        return examQuestionAnswerList;
+    public List<QuestionInfoAnswer> getQuestionInfoAnswerList() {
+        return questionInfoAnswerList;
     }
 
-    public void setExamQuestionAnswerList(List<ExamQuestionAnswer> examQuestionAnswerList) {
-        this.examQuestionAnswerList = examQuestionAnswerList;
+    public void setQuestionInfoAnswerList(List<QuestionInfoAnswer> questionInfoAnswerList) {
+        this.questionInfoAnswerList = questionInfoAnswerList;
     }
 }
