@@ -26,7 +26,7 @@ public interface TestPaperInfoMapper extends BaseMapper<TestPaperInfo> {
     /**
      * 试卷试题列表
      * @param page
-     * @param questionInfo
+     * @param testPaperQuestionRequest
      * @return
      */
     Page<TestPaperQuestionDto> selectPaperQuestionList(Page<TestPaperQuestionDto> page, TestPaperQuestionRequest testPaperQuestionRequest);

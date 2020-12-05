@@ -12,6 +12,7 @@ import com.education.model.entity.QuestionInfo;
 import com.education.model.entity.QuestionLanguagePointsInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionInfoQuery;
+import com.education.model.response.QuestionGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,4 +77,6 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
     public QuestionInfoDto selectById(Integer id) {
         return baseMapper.selectById(id);
     }
+
+    /*public QuestionGroupResponse groupQuesiton(List<>)*/
 }

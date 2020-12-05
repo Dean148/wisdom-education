@@ -59,6 +59,22 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
 
     @Transactional
     public void updatePaperQuestionMarkOrSort(TestPaperQuestionDto testPaperQuestionDto) {
+        // 更新试卷总分
+        if (ObjectUtils.isNotEmpty(testPaperQuestionDto.getUpdateType()) &&
+                testPaperQuestionDto.getUpdateType().intValue() == ResultCode.SUCCESS) {
+            TestPaperInfo testPaperInfo = this.getById(testPaperQuestionDto.getTestPaperInfoId());
+            int testPaperInfoMark = testPaperInfo.getMark();
+            TestPaperQuestionInfo testPaperQuestionInfo = testPaperQuestionInfoService.getById(testPaperQuestionDto.getId());
+            if (testPaperQuestionInfo.getMark() == 0) {
+                testPaperInfo.setMark(testPaperQuestionDto.getMark() + testPaperInfoMark);
+            } else {
+                testPaperInfoMark -= testPaperQuestionInfo.getMark();
+                testPaperInfoMark += testPaperQuestionDto.getMark();
+                testPaperInfo.setMark(testPaperInfoMark);
+            }
+            this.updateById(testPaperInfo);
+        }
+
         testPaperQuestionDto.setUpdateDate(new Date());
         LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(TestPaperQuestionInfo.class)
                 .eq(TestPaperQuestionInfo::getQuestionInfoId, testPaperQuestionDto.getQuestionInfoId())
@@ -66,14 +82,6 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
                 .set(TestPaperQuestionInfo::getMark, testPaperQuestionDto.getMark())
                 .set(TestPaperQuestionInfo::getSort, testPaperQuestionDto.getSort());
         testPaperQuestionInfoService.update(updateWrapper);
-
-        // 更新试卷总分
-        if (ObjectUtils.isNotEmpty(testPaperQuestionDto.getUpdateType()) &&
-                testPaperQuestionDto.getUpdateType().intValue() == ResultCode.SUCCESS) {
-            TestPaperInfo testPaperInfo = this.getById(testPaperQuestionDto.getTestPaperInfoId());
-            testPaperInfo.setMark(testPaperQuestionDto.getMark() + testPaperInfo.getMark());
-            this.updateById(testPaperInfo);
-        }
     }
 
     @Override
@@ -137,5 +145,25 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         super.updateById(testPaperInfo);
         // 保存试卷试题
         testPaperQuestionInfoService.saveBatch(testPaperQuestionInfoList);
+    }
+
+    @Transactional
+    public ResultCode removePaperQuestion(TestPaperQuestionInfo testPaperQuestionInfo) {
+        TestPaperInfo testPaperInfo = super.getById(testPaperQuestionInfo.getTestPaperInfoId());
+        if (testPaperInfo.getExamNumber() > 0) {
+            return new ResultCode(ResultCode.FAIL, "试卷已被使用,无法移除试题");
+        }
+        Integer testPaperInfoId = testPaperQuestionInfo.getTestPaperInfoId();
+        testPaperQuestionInfoService.removeById(testPaperQuestionInfo.getId());
+        // 更新试卷试题数量
+        int questionNumber = testPaperInfo.getQuestionNumber() - 1;
+        int mark = testPaperInfo.getMark() - testPaperQuestionInfo.getMark();
+        testPaperInfo.setQuestionNumber(testPaperInfo.getQuestionNumber() - 1);
+        LambdaUpdateWrapper updateWrapper = Wrappers.<TestPaperInfo>lambdaUpdate()
+                .set(TestPaperInfo::getQuestionNumber, questionNumber)
+                .set(TestPaperInfo::getMark, mark)
+                .eq(TestPaperInfo::getId, testPaperInfoId);
+        super.update(updateWrapper);
+        return new ResultCode(ResultCode.SUCCESS, "删除成功");
     }
 }

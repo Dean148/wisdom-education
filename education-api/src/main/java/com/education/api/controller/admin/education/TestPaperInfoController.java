@@ -1,7 +1,6 @@
 package com.education.api.controller.admin.education;
 
 import com.education.business.service.education.TestPaperInfoService;
-import com.education.business.service.education.TestPaperQuestionInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
@@ -27,8 +26,6 @@ public class TestPaperInfoController extends BaseController {
 
     @Autowired
     private TestPaperInfoService testPaperInfoService;
-    @Autowired
-    private TestPaperQuestionInfoService testPaperQuestionInfoService;
 
     /**
      * 试卷列表
@@ -119,5 +116,15 @@ public class TestPaperInfoController extends BaseController {
     @DeleteMapping("{id}")
     public Result deleteById(@PathVariable Integer id) {
         return Result.success(testPaperInfoService.deleteById(id));
+    }
+
+    /**
+     * 移除试卷试题
+     * @param testPaperQuestionInfo
+     * @return
+     */
+    @DeleteMapping("removePaperQuestion")
+    public Result removePaperQuestion(@RequestBody TestPaperQuestionInfo testPaperQuestionInfo) {
+        return Result.success(testPaperInfoService.removePaperQuestion(testPaperQuestionInfo));
     }
 }

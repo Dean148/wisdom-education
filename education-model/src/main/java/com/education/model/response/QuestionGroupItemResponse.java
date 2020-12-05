@@ -9,7 +9,7 @@ import java.util.List;
  * @version 1.0
  * @create_at 2020/11/23 15:44
  */
-public class ExamQuestionItemResponse {
+public class QuestionGroupItemResponse {
 
     private String questionTypeName;
     private List<ExamQuestionAnswer> examQuestionAnswerList;

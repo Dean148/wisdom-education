@@ -17,8 +17,8 @@ import com.education.model.request.PageParam;
 import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
 import com.education.model.response.ExamInfoReport;
-import com.education.model.response.ExamQuestionItemResponse;
-import com.education.model.response.ExamQuestionResponse;
+import com.education.model.response.QuestionGroupItemResponse;
+import com.education.model.response.QuestionGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,13 +143,13 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     }
 
 
-    public ExamQuestionResponse selectExamQuestionAnswer(Integer studentId, Integer examInfoId) {
+    public QuestionGroupResponse selectExamQuestionAnswer(Integer studentId, Integer examInfoId) {
         StudentExamInfoDto studentExamInfoDto = baseMapper.selectById(examInfoId);
         List<ExamQuestionAnswer> examQuestionAnswerList = studentQuestionAnswerService
                 .getQuestionAnswerByTestPaperInfoId(studentId, studentExamInfoDto.getTestPaperInfoId());
         EnumConstants.QuestionType questionType[] = EnumConstants.QuestionType.values();
-        ExamQuestionResponse examQuestionResponse = new ExamQuestionResponse();
-        List<ExamQuestionItemResponse> list = new ArrayList<>();
+        QuestionGroupResponse examQuestionResponse = new QuestionGroupResponse();
+        List<QuestionGroupItemResponse> list = new ArrayList<>();
         for (EnumConstants.QuestionType item : questionType) {
             int value = item.getValue();
             List<ExamQuestionAnswer> questionList = examQuestionAnswerList.stream()
@@ -159,13 +159,14 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                 questionList.forEach(question -> {
                     question.setQuestionTypeName(EnumConstants.QuestionType.getName(question.getQuestionType()));
                 });
-                ExamQuestionItemResponse examQuestionItemResponse = new ExamQuestionItemResponse();
+                QuestionGroupItemResponse examQuestionItemResponse = new QuestionGroupItemResponse();
                 examQuestionItemResponse.setQuestionTypeName(item.getName());
                 examQuestionItemResponse.setExamQuestionAnswerList(questionList);
                 list.add(examQuestionItemResponse);
             }
         }
-        examQuestionResponse.setExamQuestionItemResponseList(list);
+        examQuestionResponse.setQuestionGroupItemResponseList(list);
+        examQuestionResponse.setTotalQuestion(list.size());
         examQuestionResponse.setStudentExamInfoDto(studentExamInfoDto);
         return examQuestionResponse;
     }

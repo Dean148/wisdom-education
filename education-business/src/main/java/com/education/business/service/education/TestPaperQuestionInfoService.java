@@ -26,6 +26,7 @@ public class TestPaperQuestionInfoService extends BaseService<TestPaperQuestionI
         return super.remove(queryWrapper);
     }
 
+
     /**
      * 校验试卷是否关联了试题
      * @param testPaperInfoId
@@ -35,7 +36,6 @@ public class TestPaperQuestionInfoService extends BaseService<TestPaperQuestionI
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(TestPaperQuestionInfo.class)
                 .eq(TestPaperQuestionInfo::getTestPaperInfoId, testPaperInfoId)
                 .select(TestPaperQuestionInfo::getId).last(" limit 1");
-              //  .apply(" limit 1");
         TestPaperQuestionInfo testPaperQuestionInfo = super.getOne(queryWrapper);
         return ObjectUtils.isNotEmpty(testPaperQuestionInfo);
     }
