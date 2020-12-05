@@ -166,4 +166,19 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         super.update(updateWrapper);
         return new ResultCode(ResultCode.SUCCESS, "删除成功");
     }
+
+    /**
+     * 更新考试人数
+     * @param testPaperInfoId
+     * @return
+     */
+    public boolean updateExamNumber(Integer testPaperInfoId) {
+        // 更新考试参考人数
+        TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
+        int examNumber = testPaperInfo.getExamNumber() + 1;
+        LambdaUpdateWrapper updateWrapper = new LambdaUpdateWrapper<>(TestPaperInfo.class)
+                .set(TestPaperInfo::getExamNumber, examNumber)
+                .eq(TestPaperInfo::getId, testPaperInfo.getId());
+        return super.update(updateWrapper);
+    }
 }

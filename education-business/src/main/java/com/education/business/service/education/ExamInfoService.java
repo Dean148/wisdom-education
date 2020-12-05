@@ -1,5 +1,7 @@
 package com.education.business.service.education;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.service.BaseService;
@@ -40,6 +42,9 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     private StudentWrongBookService studentWrongBookService;
     @Autowired
     private QuestionInfoService questionInfoService;
+    @Autowired
+    private TestPaperInfoService testPaperInfoService;
+
 
     public PageInfo<StudentExamInfoDto> selectStudentExamInfoList(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
         Page<StudentExamInfoDto> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
@@ -129,6 +134,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             examInfo.setErrorNumber(errorNumber);
             examInfo.setCreateDate(now);
             super.save(examInfo);
+            // 更新考试参考人数
+            testPaperInfoService.updateExamNumber(examInfo.getTestPaperInfoId());
         } else {
             if (objectiveQuestionNumber == 0) {
                 examInfo.setCorrectType(EnumConstants.CorrectType.TEACHER.getValue());

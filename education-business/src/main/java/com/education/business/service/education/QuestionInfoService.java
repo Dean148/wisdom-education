@@ -8,18 +8,19 @@ import com.education.business.service.BaseService;
 import com.education.common.constants.EnumConstants;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.ObjectUtils;
+import com.education.common.utils.ResultCode;
 import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.dto.QuestionInfoDto;
 import com.education.model.entity.QuestionInfo;
 import com.education.model.entity.QuestionLanguagePointsInfo;
+import com.education.model.entity.StudentQuestionAnswer;
+import com.education.model.entity.TestPaperQuestionInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionInfoQuery;
 import com.education.model.response.QuestionGroupItemResponse;
-import com.education.model.response.QuestionGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +37,10 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
 
     @Autowired
     private QuestionLanguagePointsInfoService questionLanguagePointsInfoService;
+    @Autowired
+    private TestPaperQuestionInfoService testPaperQuestionInfoService;
+    @Autowired
+    private StudentQuestionAnswerService studentQuestionAnswerService;
 
     /**
      * 试题分页列表
@@ -48,16 +53,19 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
         return selectPage(baseMapper.selectPageList(page, questionInfoQuery));
     }
 
-
     /**
      * 添加或修改试题
      * @param questionInfoDto
      * @return
      */
     @Transactional
-    public boolean saveOrUpdate(QuestionInfoDto questionInfoDto) {
+    public ResultCode saveOrUpdateQuestionInfo(QuestionInfoDto questionInfoDto) {
         List<Integer> languagePointsInfoIdList = questionInfoDto.getLanguagePointsInfoId();
-        if (ObjectUtils.isNotEmpty(questionInfoDto.getId())) {
+        Integer questionInfoId = questionInfoDto.getId();
+        if (ObjectUtils.isNotEmpty(questionInfoId)) {
+            if (!this.verificationQuestionInfo(questionInfoId)) {
+                return new ResultCode(ResultCode.SUCCESS, "试题已被使用，禁止修改");
+            }
             // 删除试题知识点关联
             LambdaQueryWrapper queryWrapper = Wrappers.<QuestionLanguagePointsInfo>lambdaQuery()
                     .eq(QuestionLanguagePointsInfo::getQuestionInfoId, questionInfoDto.getId());
@@ -75,8 +83,10 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
             questionLanguagePointsInfo.setCreateDate(new Date());
             questionLanguagePointsInfoList.add(questionLanguagePointsInfo);
         });
-        return questionLanguagePointsInfoService.saveBatch(questionLanguagePointsInfoList);
+        questionLanguagePointsInfoService.saveBatch(questionLanguagePointsInfoList);
+        return new ResultCode(ResultCode.SUCCESS, "操作成功");
     }
+
 
     public QuestionInfoDto selectById(Integer id) {
         return baseMapper.selectById(id);
@@ -103,5 +113,30 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
             }
         }
         return list;
+    }
+
+    public ResultCode deleteById(Integer questionInfoId) {
+        if (verificationQuestionInfo(questionInfoId)) {
+            super.removeById(questionInfoId);
+            return new ResultCode(ResultCode.SUCCESS, "删除成功");
+        }
+        return new ResultCode(ResultCode.FAIL, "试题已被使用，无法删除");
+
+    }
+
+    private boolean verificationQuestionInfo(Integer questionInfoId) {
+        LambdaQueryWrapper queryWrapper = Wrappers.<TestPaperQuestionInfo>lambdaQuery()
+                .eq(TestPaperQuestionInfo::getQuestionInfoId, questionInfoId)
+                .last(" limit 1");
+        TestPaperQuestionInfo testPaperQuestionInfo = testPaperQuestionInfoService.getOne(queryWrapper);
+        if (ObjectUtils.isNotEmpty(testPaperQuestionInfo)) {
+            return false;
+        }
+
+        StudentQuestionAnswer studentQuestionAnswer = studentQuestionAnswerService.selectByQuestionInfoId(questionInfoId);
+        if (ObjectUtils.isNotEmpty(studentQuestionAnswer)) {
+            return false;
+        }
+        return true;
     }
 }

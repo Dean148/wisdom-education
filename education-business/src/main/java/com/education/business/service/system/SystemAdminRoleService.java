@@ -25,8 +25,7 @@ public class SystemAdminRoleService extends BaseService<SystemAdminRoleMapper, S
     public boolean checkRoleIsUse(Integer roleId) {
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemAdminRole.class)
                 .eq(SystemAdminRole::getRoleId, roleId)
-                .select(SystemAdminRole::getId)
-                .apply(" limit 1");
+                .select(SystemAdminRole::getId).last(" limit 1");
         return super.getOne(queryWrapper) == null ? false : true;
     }
 }

@@ -58,7 +58,7 @@
             paper.exam_number,
             paper.grade_info_id,
             paper.subject_id,
-            grade.name grade_name,
+            grade.name grade_info_name,
             subject.name subject_name,
             a.avg_source
         FROM

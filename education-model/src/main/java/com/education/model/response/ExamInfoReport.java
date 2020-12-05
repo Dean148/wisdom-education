@@ -1,33 +1,16 @@
 package com.education.model.response;
 
-import com.education.model.entity.ExamInfo;
+
+import com.education.model.dto.TestPaperInfoDto;
 
 /**
  * @author zengjintao
  * @version 1.0
  * @create_at 2020/12/1 15:26
  */
-public class ExamInfoReport extends ExamInfo {
+public class ExamInfoReport extends TestPaperInfoDto {
 
     private float avgSource; // 试卷平均分
-    private String gradeName;
-    private String subjectName;
-
-    public String getGradeName() {
-        return gradeName;
-    }
-
-    public void setGradeName(String gradeName) {
-        this.gradeName = gradeName;
-    }
-
-    public String getSubjectName() {
-        return subjectName;
-    }
-
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
-    }
 
     public float getAvgSource() {
         return avgSource;

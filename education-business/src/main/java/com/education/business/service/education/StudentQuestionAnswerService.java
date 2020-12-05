@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.education.StudentQuestionAnswerMapper;
 import com.education.business.service.BaseService;
+import com.education.common.utils.ObjectUtils;
+import com.education.common.utils.ResultCode;
 import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.entity.StudentQuestionAnswer;
 import org.springframework.stereotype.Service;
@@ -37,4 +39,12 @@ public class StudentQuestionAnswerService extends BaseService<StudentQuestionAns
                 .eq(StudentQuestionAnswer::getTestPaperInfoId, testPaperInfoId);
         return super.remove(queryWrapper);
     }
+
+    public StudentQuestionAnswer selectByQuestionInfoId(Integer questionInfoId) {
+        LambdaQueryWrapper queryWrapper = Wrappers.<StudentQuestionAnswer>lambdaQuery()
+                .eq(StudentQuestionAnswer::getQuestionInfoId, questionInfoId)
+                .last(" limit 1");
+        return super.getOne(queryWrapper);
+    }
+
 }
