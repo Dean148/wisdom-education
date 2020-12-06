@@ -158,7 +158,7 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         // 更新试卷试题数量
         int questionNumber = testPaperInfo.getQuestionNumber() - 1;
         int mark = testPaperInfo.getMark() - testPaperQuestionInfo.getMark();
-        testPaperInfo.setQuestionNumber(testPaperInfo.getQuestionNumber() - 1);
+        testPaperInfo.setQuestionNumber(questionNumber);
         LambdaUpdateWrapper updateWrapper = Wrappers.<TestPaperInfo>lambdaUpdate()
                 .set(TestPaperInfo::getQuestionNumber, questionNumber)
                 .set(TestPaperInfo::getMark, mark)

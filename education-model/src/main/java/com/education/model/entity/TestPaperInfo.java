@@ -114,6 +114,9 @@ public class TestPaperInfo extends BaseEntity<TestPaperInfo> {
 	}
 
 	public Integer getExamNumber() {
+		if (examNumber == null) {
+			return 0;
+		}
 		return examNumber;
 	}
 
