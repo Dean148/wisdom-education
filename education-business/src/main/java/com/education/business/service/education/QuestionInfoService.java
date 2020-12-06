@@ -64,7 +64,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
         Integer questionInfoId = questionInfoDto.getId();
         if (ObjectUtils.isNotEmpty(questionInfoId)) {
             if (!this.verificationQuestionInfo(questionInfoId)) {
-                return new ResultCode(ResultCode.SUCCESS, "试题已被使用，禁止修改");
+                return new ResultCode(ResultCode.FAIL, "试题已被使用，禁止修改");
             }
             // 删除试题知识点关联
             LambdaQueryWrapper queryWrapper = Wrappers.<QuestionLanguagePointsInfo>lambdaQuery()

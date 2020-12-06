@@ -31,6 +31,8 @@ public class LanguagePointsInfoService extends BaseService<LanguagePointsInfoMap
     public List<LanguagePointsInfoDto> selectList(LanguagePointsInfo languagePointsInfo) {
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(LanguagePointsInfo.class)
                 .eq(LanguagePointsInfo::getParentId, languagePointsInfo.getParentId())
+                .eq(ObjectUtils.isNotEmpty(languagePointsInfo.getSubjectId()),
+                        LanguagePointsInfo::getSubjectId, languagePointsInfo.getSubjectId())
                 .like(ObjectUtils.isNotEmpty(languagePointsInfo.getName()),
                         LanguagePointsInfo::getName, languagePointsInfo.getName());
         return baseMapper.selectList(queryWrapper);
