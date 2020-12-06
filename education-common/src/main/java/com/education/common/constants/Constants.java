@@ -37,4 +37,8 @@ public final class Constants {
     public static final String STUDY_SOURCE_TEMPLATE_MESSAGE_ID = "ENvpai6wUX3pjOoIBvltn7RUMzdrlsgZmGZ8u18kByg";
 
     public static final Integer MIN_PASS_MARK = 60; // 及格分数
+
+
+    public static final double PASS_MARK_RATE = 0.6; // 及格比例
+    public static final double NICE_MARK_RATE = 0.8; // 优秀比例
 }

@@ -144,12 +144,12 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
     @Transactional
     public Result deleteById(Integer id) {
         SystemAdmin systemAdmin = super.getById(id);
-        if (systemAdmin.isSuperFlag()) {
+        if (systemAdmin.isSuper()) {
             return Result.fail(ResultCode.FAIL, "不允许删除超级管理员");
         }
         super.removeById(id);
         systemAdminRoleService.deleteByAdminId(id);
-        return Result.success("删除管理员" + systemAdmin.getLoginName() + "成功");
+        return Result.success(ResultCode.SUCCESS, "删除管理员" + systemAdmin.getLoginName() + "成功");
     }
 
     /**

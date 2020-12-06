@@ -1,22 +1,39 @@
 package com.education.model.response;
 
-
-import com.education.model.dto.TestPaperInfoDto;
+import com.education.model.entity.ExamInfo;
 
 /**
  * @author zengjintao
  * @version 1.0
- * @create_at 2020/12/1 15:26
+ * @create_at 2020/12/5 16:29
  */
-public class ExamInfoReport extends TestPaperInfoDto {
+public class ExamInfoReport extends ExamInfo {
 
-    private float avgSource; // 试卷平均分
+    private String testPaperInfoName;
+    private String studentName;
+    private String sex;
 
-    public float getAvgSource() {
-        return avgSource;
+    public String getSex() {
+        return sex;
     }
 
-    public void setAvgSource(float avgSource) {
-        this.avgSource = avgSource;
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getTestPaperInfoName() {
+        return testPaperInfoName;
+    }
+
+    public void setTestPaperInfoName(String testPaperInfoName) {
+        this.testPaperInfoName = testPaperInfoName;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 }

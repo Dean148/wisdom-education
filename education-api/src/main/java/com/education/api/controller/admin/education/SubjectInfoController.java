@@ -1,10 +1,7 @@
 package com.education.api.controller.admin.education;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.education.SubjectInfoService;
 import com.education.common.base.BaseController;
-import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.model.entity.SubjectInfo;
 import com.education.model.request.PageParam;
@@ -45,5 +42,10 @@ public class SubjectInfoController extends BaseController {
     public Result saveOrUpdate(@RequestBody SubjectInfo subjectInfo) {
         subjectInfoService.saveOrUpdate(subjectInfo);
         return Result.success();
+    }
+
+    @DeleteMapping("{id}")
+    public Result deleteById(@PathVariable Integer id) {
+        return null;
     }
 }

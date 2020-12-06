@@ -57,7 +57,7 @@ public class GradeInfoController extends BaseController {
      * @param id
      * @return
      */
-    @PostMapping("{id}")
+    @DeleteMapping("{id}")
     public Result deleteById(@PathVariable Integer id) {
         gradeInfoService.removeById(id);
         return Result.success();

@@ -51,8 +51,9 @@
         </where>
     </select>
 
-    <select id="selectExamReportList" resultType="examInfoReport">
+    <select id="selectExamReportList" resultType="testPaperInfoReport">
         SELECT
+            paper.id,
             paper.name,
             paper.mark,
             paper.exam_number,
@@ -77,5 +78,39 @@
            </where>
         ORDER BY
             paper.sort ASC
+    </select>
+
+
+    <select id="selectExamListByTestPaperInfoId" resultType="com.education.model.response.ExamInfoReport">
+        SELECT
+            exam.id,
+            exam.create_date,
+            exam.mark,
+            exam.system_mark,
+            exam.teacher_mark,
+            exam.exam_time,
+            paper.name test_paper_info_name,
+            student.name student_name,
+            case student.sex when 1 then '男' when 2 then '女' else '未知' end sex
+        FROM
+            exam_info exam
+            LEFT JOIN test_paper_info paper ON exam.test_paper_info_id = paper.id
+            LEFT JOIN student_info student ON student.id = exam.student_id
+        WHERE
+            exam.test_paper_info_id = #{testPaperInfoId}
+            AND exam.correct_flag = 1
+        ORDER BY
+	    exam.mark DESC
+    </select>
+
+    <select id="selectExamInfoDetail" parameterType="map" resultType="com.education.model.response.ExamInfoDetail">
+        select
+            avg(mark) avg_exam_mark,
+            avg(exam_time_long_value) avg_exam_time,
+            min(mark) min_exam_mark,
+            max(mark) max_exam_mark,
+            sum(case mark &lt;= #{passMark} when 1 then 0 end) as pass_exam_number,
+            sum(case mark &lt;= #{niceMark} when 1 then 0 end) as nice_exam_number
+        from exam_info where test_paper_info_id = #{testPaperInfoId}
     </select>
 </mapper>

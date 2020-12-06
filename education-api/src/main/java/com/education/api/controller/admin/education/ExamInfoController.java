@@ -60,4 +60,24 @@ public class ExamInfoController extends BaseController {
     public Result selectExamReportList(PageParam pageParam, TestPaperInfo testPaperInfo) {
         return Result.success(examInfoService.selectExamReportList(pageParam, testPaperInfo));
     }
+
+    /**
+     * 考试成绩分析
+     * @param testPaperInfoId
+     * @return
+     */
+    @GetMapping("getExamDetailReport/{testPaperInfoId}")
+    public Result getExamDetailReport(@PathVariable Integer testPaperInfoId) {
+        return Result.success(examInfoService.examDetailReport(testPaperInfoId));
+    }
+
+    /**
+     * 获取考试排名列表
+     * @param testPaperInfoId
+     * @return
+     */
+    @GetMapping("getExamRankingList/{testPaperInfoId}")
+    public Result getExamRankingList(PageParam pageParam, @PathVariable Integer testPaperInfoId) {
+        return Result.success(examInfoService.getExamRankingList(pageParam, testPaperInfoId));
+    }
 }

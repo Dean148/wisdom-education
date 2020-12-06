@@ -132,11 +132,11 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 		this.ipAddress = ipAddress;
 	}
 
-	public boolean isSuperFlag() {
+	public boolean isSuper() {
 		return this.superFlag == EnumConstants.Flag.YES.getValue();
 	}
 
-	public boolean isDisabledFlag() {
+	public boolean isDisabled() {
 		return this.disabledFlag == EnumConstants.Flag.YES.getValue();
 	}
 }

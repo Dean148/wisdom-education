@@ -1,13 +1,15 @@
 package com.education.business.service.education;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.service.BaseService;
+import com.education.common.constants.Constants;
 import com.education.common.constants.EnumConstants;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.DateUtils;
+import com.education.common.utils.NumberUtils;
 import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.ExamInfo;
@@ -17,10 +19,8 @@ import com.education.model.entity.TestPaperInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
-import com.education.model.response.ExamInfoReport;
-import com.education.model.response.ExamQuestionGroupResponse;
-import com.education.model.response.QuestionGroupItemResponse;
-import com.education.model.response.QuestionGroupResponse;
+import com.education.model.response.*;
+import com.jfinal.kit.Kv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +48,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
 
     public PageInfo<StudentExamInfoDto> selectStudentExamInfoList(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
         Page<StudentExamInfoDto> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
-        return selectPage(baseMapper.selectExamList(page, studentExamInfoDto));
+        return selectPage(baseMapper.selectStudentExamList(page, studentExamInfoDto));
     }
 
     @Transactional
@@ -176,8 +176,28 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentQuestionRequest.getStudentId(), examInfo);
     }
 
-    public PageInfo<ExamInfoReport> selectExamReportList(PageParam pageParam, TestPaperInfo testPaperInfo) {
-        Page<ExamInfoReport> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
+    public PageInfo<TestPaperInfoReport> selectExamReportList(PageParam pageParam, TestPaperInfo testPaperInfo) {
+        Page<TestPaperInfoReport> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
         return selectPage(baseMapper.selectExamReportList(page, testPaperInfo));
+    }
+
+    public ExamInfoDetail examDetailReport(Integer testPaperInfoId) {
+        TestPaperInfo testPaperInfo = testPaperInfoService.getById(testPaperInfoId);
+        Integer mark = testPaperInfo.getMark();
+        double passMark = NumberUtils.doubleToBigDecimal(mark * Constants.PASS_MARK_RATE);
+        double niceMark = NumberUtils.doubleToBigDecimal(mark * Constants.NICE_MARK_RATE);
+        Kv params = Kv.create().set("testPaperInfoId", testPaperInfoId).set("passMark", passMark)
+                .set("niceMark", niceMark);
+        ExamInfoDetail examInfoDetail = baseMapper.selectExamInfoDetail(params);
+        examInfoDetail.setPassExamMark(passMark);
+        examInfoDetail.setNiceExamMark(niceMark);
+        examInfoDetail.setExamTime(DateUtils.getDate(testPaperInfo.getExamTime()));
+        examInfoDetail.setExamNumber(testPaperInfo.getExamNumber());
+        return examInfoDetail;
+    }
+
+    public PageInfo<ExamInfoReport> getExamRankingList(PageParam pageParam, Integer testPaperInfoId) {
+        Page<ExamInfoReport> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
+        return selectPage(baseMapper.selectExamListByTestPaperInfoId(page, testPaperInfoId));
     }
 }

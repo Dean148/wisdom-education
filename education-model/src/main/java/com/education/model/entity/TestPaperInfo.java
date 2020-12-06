@@ -41,9 +41,9 @@ public class TestPaperInfo extends BaseEntity<TestPaperInfo> {
 
 	@TableField("question_number")
 	private Integer questionNumber;
-
+/*
 	@TableField("pass_mark")
-	private Integer passMark;
+	private Integer passMark;*/
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@TableField("publish_time")
@@ -55,14 +55,6 @@ public class TestPaperInfo extends BaseEntity<TestPaperInfo> {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Integer getPassMark() {
-		return passMark;
-	}
-
-	public void setPassMark(Integer passMark) {
-		this.passMark = passMark;
 	}
 
 	public String getRemark() {
