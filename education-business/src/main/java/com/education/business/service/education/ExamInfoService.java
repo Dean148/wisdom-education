@@ -45,7 +45,24 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     @Autowired
     private TestPaperInfoService testPaperInfoService;
 
+    /**
+     * 后台考试列表
+     * @param pageParam
+     * @param studentExamInfoDto
+     * @return
+     */
+    public PageInfo<StudentExamInfoDto> selectExamInfoList(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
+        Page<StudentExamInfoDto> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
+        return selectPage(baseMapper.selectExamList(page, studentExamInfoDto));
+    }
 
+
+    /**
+     * 获取学员考试记录列表
+     * @param pageParam
+     * @param studentExamInfoDto
+     * @return
+     */
     public PageInfo<StudentExamInfoDto> selectStudentExamInfoList(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
         Page<StudentExamInfoDto> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
         return selectPage(baseMapper.selectStudentExamList(page, studentExamInfoDto));

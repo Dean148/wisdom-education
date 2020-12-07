@@ -26,7 +26,7 @@ public class ExamInfoController extends BaseController {
 
     @GetMapping
     public Result list(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
-        return Result.success(examInfoService.selectStudentExamInfoList(pageParam, studentExamInfoDto));
+        return Result.success(examInfoService.selectExamInfoList(pageParam, studentExamInfoDto));
     }
 
     /**
