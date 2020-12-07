@@ -10,6 +10,7 @@ import com.education.model.entity.ExamInfo;
 public class StudentExamInfoDto extends ExamInfo {
 
     private Integer subjectId;
+    private Integer gradeInfoId;
     private String subjectName;
     private String testPaperInfoName;
     private Integer questionNumber;
@@ -20,6 +21,14 @@ public class StudentExamInfoDto extends ExamInfo {
     private Integer testPaperExamTime; // 试卷考试时间
 
     private Integer testPaperInfoMark;
+
+    public Integer getGradeInfoId() {
+        return gradeInfoId;
+    }
+
+    public void setGradeInfoId(Integer gradeInfoId) {
+        this.gradeInfoId = gradeInfoId;
+    }
 
     public void setTestPaperInfoMark(Integer testPaperInfoMark) {
         this.testPaperInfoMark = testPaperInfoMark;

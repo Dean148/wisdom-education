@@ -35,14 +35,17 @@
         left join grade_info grade on student.grade_info_id = grade.id
 
         <where>
-            <if test="studentExamInfoDto.studentName != null and studentExamInfoDto.studentName != ''">
-                <bind name="name" value="'%' + studentExamInfoDto.studentName + '%'"/>
-                and student.name like #{name}
-            </if>
-
             <if test="studentExamInfoDto.testPaperInfoName != null and studentExamInfoDto.testPaperInfoName != ''">
                 <bind name="name" value="'%' + studentExamInfoDto.testPaperInfoName + '%'"/>
-                and paper.name like #{name}
+                and (paper.name like #{name} or student.name like #{name})
+            </if>
+
+            <if test="studentExamInfoDto.subjectId != null">
+                and subject.id = #{studentExamInfoDto.subjectId}
+            </if>
+
+            <if test="studentExamInfoDto.gradeInfoId != null">
+                and grade.id = #{studentExamInfoDto.gradeInfoId}
             </if>
 
             <if test="studentExamInfoDto.correctFlag != null ">
