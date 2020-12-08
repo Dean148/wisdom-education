@@ -50,8 +50,8 @@ public final class LogAspect {
      * 使用异步任务记录 http 请求接口日志
      * @param pjp
      * @return
-     */
-    @Around("execution(public * com.education.*.*.controller..*.*(..))")
+     */                       //  com.education.api.controller.admin.education.CourseInfoController
+    @Around("execution(public * com.education.*.controller..*.*(..))")
     public Object invoke(ProceedingJoinPoint pjp) throws Throwable {
         long startTime = System.currentTimeMillis();
         MethodSignature signature = (MethodSignature) pjp.getSignature();

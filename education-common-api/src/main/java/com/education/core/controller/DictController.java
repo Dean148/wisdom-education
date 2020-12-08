@@ -1,4 +1,4 @@
-package com.education.core.api;
+package com.education.core.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;

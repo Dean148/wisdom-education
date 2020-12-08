@@ -1,4 +1,4 @@
-package com.education.core.api;
+package com.education.core.controller;
 
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;

@@ -1,4 +1,4 @@
-package com.education.core.api;
+package com.education.core.controller;
 
 import com.baidu.ueditor.ActionEnter;
 import com.education.common.utils.PathKit;

@@ -1,4 +1,4 @@
-package com.education.core.api;
+package com.education.core.controller;
 
 import com.education.common.base.BaseController;
 import com.education.common.model.Captcha;
