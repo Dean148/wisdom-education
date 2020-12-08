@@ -9,6 +9,7 @@ import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.LanguagePointsInfoDto;
 import com.education.model.entity.LanguagePointsInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,9 @@ import java.util.List;
  */
 @Service
 public class LanguagePointsInfoService extends BaseService<LanguagePointsInfoMapper, LanguagePointsInfo> {
+
+    @Autowired
+    private QuestionLanguagePointsInfoService questionLanguagePointsInfoService;
 
     /**
      * 获取一级知识点
@@ -59,6 +63,12 @@ public class LanguagePointsInfoService extends BaseService<LanguagePointsInfoMap
         LanguagePointsInfo languagePointsInfo = super.getOne(queryWrapper);
         if (ObjectUtils.isNotEmpty(languagePointsInfo)) {
             return new ResultCode(ResultCode.FAIL, "存在子节点,无法删除");
+        }
+
+        // 验证知识点是否有试题使用
+        boolean flag = questionLanguagePointsInfoService.verificationIsUse(id);
+        if (flag) {
+            return new ResultCode(ResultCode.FAIL, "知识点已有试题使用,无法删除");
         }
         super.removeById(id);
         return new ResultCode(ResultCode.SUCCESS, "删除成功");
