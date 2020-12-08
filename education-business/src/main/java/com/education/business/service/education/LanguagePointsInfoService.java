@@ -54,8 +54,10 @@ public class LanguagePointsInfoService extends BaseService<LanguagePointsInfoMap
     }
 
     public ResultCode deleteById(Integer id) {
-        LanguagePointsInfo languagePointsInfo = super.getById(id);
-        if (languagePointsInfo.getHasChildren()) {
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(LanguagePointsInfo.class)
+                .eq(LanguagePointsInfo::getParentId, id);
+        LanguagePointsInfo languagePointsInfo = super.getOne(queryWrapper);
+        if (ObjectUtils.isNotEmpty(languagePointsInfo)) {
             return new ResultCode(ResultCode.FAIL, "存在子节点,无法删除");
         }
         super.removeById(id);
