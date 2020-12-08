@@ -66,7 +66,7 @@ public final class LogAspect {
             HttpServletRequest request = RequestUtils.getRequest();
             String requestUrl = RequestUtils.getRequestUrl(request);
             taskParam.put("request_url", requestUrl);
-            if (requestUrl.startsWith("/mapper/system")) {
+            if (requestUrl.startsWith("/system")) {
                 AdminUserSession adminUserSession = systemLogService.getAdminUserSession();
                 taskParam.put("adminUserSession", adminUserSession);
             } else {
