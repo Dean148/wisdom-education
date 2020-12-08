@@ -4,6 +4,7 @@ import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.entity.SystemRole;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -62,6 +63,9 @@ public class AdminRoleDto extends SystemAdmin {
         if (ObjectUtils.isNotEmpty(systemRoleList)) {
             return systemRoleList.stream().map(SystemRole::getId).collect(Collectors.toSet());
         }
-        return null;
+        else if (ObjectUtils.isEmpty(this.roleIds)) {
+            return new HashSet<>();
+        }
+        return this.roleIds;
     }
 }

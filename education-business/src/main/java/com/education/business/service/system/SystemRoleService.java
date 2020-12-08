@@ -1,6 +1,7 @@
 package com.education.business.service.system;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.system.SystemRoleMapper;
@@ -38,7 +39,9 @@ public class SystemRoleService extends BaseService<SystemRoleMapper, SystemRole>
     private SystemAdminRoleService systemAdminRoleService;
 
     public PageInfo<SystemRole> listPage(PageParam pageParam, SystemRole systemRole) {
-        return selectPage(pageParam, Wrappers.query(systemRole));
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemRole.class)
+                .like(ObjectUtils.isNotEmpty(systemRole.getName()), SystemRole::getName, systemRole.getName());
+        return selectPage(pageParam, queryWrapper);
     }
 
     /**

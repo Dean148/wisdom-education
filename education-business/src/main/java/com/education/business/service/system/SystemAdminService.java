@@ -134,6 +134,7 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
                 SystemAdminRole systemAdminRole = new SystemAdminRole();
                 systemAdminRole.setAdminId(adminRoleDto.getId());
                 systemAdminRole.setRoleId(roleId);
+                adminRoleList.add(systemAdminRole);
             });
 
             systemAdminRoleService.deleteByAdminId(adminRoleDto.getId());
