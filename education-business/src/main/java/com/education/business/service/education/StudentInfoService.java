@@ -1,6 +1,7 @@
 package com.education.business.service.education;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.StudentInfoMapper;
@@ -136,5 +137,29 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         studentInfo.setLoginCount(++loginCount);
         studentInfo.setUpdateDate(now);
         super.updateById(studentInfo);
+    }
+
+
+    public ResultCode updatePassword(String password, String newPassword, String confirmPassword) {
+
+        if (!newPassword.equals(confirmPassword)) {
+            return new ResultCode(ResultCode.FAIL, "新密码与确认密码不一致");
+        }
+
+        // 验证新密码是否正确
+        StudentInfo studentInfo = getStudentInfo();
+        String encrypt = studentInfo.getEncrypt();
+        String dataBasePassword = Md5Utils.getMd5(password, encrypt);
+        if (dataBasePassword.equals(password)) {
+            return new ResultCode(ResultCode.FAIL, "原始密码错误");
+        }
+
+        password = Md5Utils.getMd5(newPassword, encrypt);
+
+        LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(StudentInfo.class)
+                .set(StudentInfo::getPassword, password)
+                .eq(StudentInfo::getId, studentInfo.getId());
+        super.update(updateWrapper);
+        return new ResultCode(ResultCode.SUCCESS, "密码修改成功,退出后请使用新密码进行登录");
     }
 }

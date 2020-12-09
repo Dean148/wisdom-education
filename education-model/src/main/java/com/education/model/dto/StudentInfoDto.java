@@ -11,6 +11,15 @@ public class StudentInfoDto extends StudentInfo {
 
     private String gradeName;
     private String confirmPassword;
+    private String newPassword;
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
 
     public String getConfirmPassword() {
         return confirmPassword;
