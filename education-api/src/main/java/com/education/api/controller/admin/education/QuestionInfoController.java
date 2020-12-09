@@ -6,6 +6,8 @@ import com.education.common.utils.Result;
 import com.education.model.dto.QuestionInfoDto;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionInfoQuery;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,7 @@ public class QuestionInfoController extends BaseController {
      * @return
      */
     @GetMapping
+    @RequiresPermissions("system:question:list")
     public Result list(PageParam pageParam, QuestionInfoQuery questionInfoQuery) {
         return Result.success(questionInfoService.selectPageList(pageParam, questionInfoQuery));
     }
@@ -39,6 +42,7 @@ public class QuestionInfoController extends BaseController {
      * @return
      */
     @PostMapping("saveOrUpdate")
+    @RequiresPermissions(value = {"system:question:save", "system:question:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody QuestionInfoDto questionInfoDto) {
         return Result.success(questionInfoService.saveOrUpdateQuestionInfo(questionInfoDto));
     }
@@ -59,6 +63,7 @@ public class QuestionInfoController extends BaseController {
      * @return
      */
     @DeleteMapping("{id}")
+    @RequiresPermissions("system:question:deleteById")
     public Result deleteById(@PathVariable Integer id) {
         return Result.success(questionInfoService.deleteById(id));
     }

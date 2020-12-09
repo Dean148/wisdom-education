@@ -5,6 +5,8 @@ import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.model.entity.CourseInfo;
 import com.education.model.request.PageParam;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +30,7 @@ public class CourseInfoController extends BaseController {
      * @return
      */
     @GetMapping
+    @RequiresPermissions("system:course:list")
     public Result list(PageParam pageParam, CourseInfo courseInfo) {
         return Result.success(courseInfoService.selectPageList(pageParam, courseInfo));
     }
@@ -38,6 +41,7 @@ public class CourseInfoController extends BaseController {
      * @return
      */
     @PostMapping("saveOrUpdate")
+    @RequiresPermissions(value = {"system:course:save", "system:course:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody CourseInfo courseInfo) {
         courseInfoService.saveOrUpdate(courseInfo);
         return Result.success();
@@ -49,7 +53,8 @@ public class CourseInfoController extends BaseController {
      * @return
      */
     @DeleteMapping("{id}")
-    public Result saveOrUpdate(@PathVariable Integer id) {
+    @RequiresPermissions("system:course:deleteById")
+    public Result deleteById(@PathVariable Integer id) {
         courseInfoService.removeById(id);
         return Result.success();
     }

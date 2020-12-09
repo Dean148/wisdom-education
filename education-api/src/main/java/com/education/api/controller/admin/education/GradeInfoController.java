@@ -10,6 +10,8 @@ import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.model.entity.GradeInfo;
 import com.education.model.request.PageParam;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +35,7 @@ public class GradeInfoController extends BaseController {
      * @return
      */
     @GetMapping
+    @RequiresPermissions("system:grade:list")
     public Result<PageInfo<GradeInfo>> list(PageParam pageParam, GradeInfo gradeInfo) {
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(GradeInfo.class)
                 .like(ObjectUtils.isNotEmpty(gradeInfo.getName()), GradeInfo::getName, gradeInfo.getName())
@@ -47,6 +50,7 @@ public class GradeInfoController extends BaseController {
      * @return
      */
     @PostMapping("saveOrUpdate")
+    @RequiresPermissions(value = {"system:grade:save", "system:grade:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody GradeInfo gradeInfo) {
         gradeInfoService.saveOrUpdate(gradeInfo);
         return Result.success();
@@ -58,6 +62,7 @@ public class GradeInfoController extends BaseController {
      * @return
      */
     @DeleteMapping("{id}")
+    @RequiresPermissions("system:grade:deleteById")
     public Result deleteById(@PathVariable Integer id) {
         gradeInfoService.removeById(id);
         return Result.success();

@@ -8,6 +8,7 @@ import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.TestPaperInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class ExamInfoController extends BaseController {
     private ExamInfoService examInfoService;
 
     @GetMapping
+    @RequiresPermissions("system:exam:list")
     public Result list(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
         return Result.success(examInfoService.selectExamInfoList(pageParam, studentExamInfoDto));
     }
@@ -36,6 +38,7 @@ public class ExamInfoController extends BaseController {
      * @return
      */
     @GetMapping("getExamQuestionList/{studentId}/{examInfoId}")
+    @RequiresPermissions("system:exam:examQuestionList")
     public Result getExamQuestionList(@PathVariable Integer studentId, @PathVariable Integer examInfoId) {
         return Result.success(examInfoService.selectExamQuestionAnswer(studentId, examInfoId));
     }
@@ -46,6 +49,7 @@ public class ExamInfoController extends BaseController {
      * @return
      */
     @PostMapping("correctExamQuestion")
+    @RequiresPermissions("system:exam:correct")
     public Result correctExamQuestion(@RequestBody StudentQuestionRequest studentQuestionRequest) {
         examInfoService.correctStudentExam(studentQuestionRequest);
         return Result.success(ResultCode.SUCCESS, "批改成功");

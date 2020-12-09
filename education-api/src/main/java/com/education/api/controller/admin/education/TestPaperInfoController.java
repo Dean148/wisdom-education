@@ -10,6 +10,8 @@ import com.education.model.entity.TestPaperInfo;
 import com.education.model.entity.TestPaperQuestionInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.TestPaperQuestionRequest;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -34,6 +36,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @GetMapping
+    @RequiresPermissions("system:testPaperInfo:list")
     public Result list(PageParam pageParam, TestPaperInfoDto testPaperInfoDto) {
         return Result.success(testPaperInfoService.selectPageList(pageParam, testPaperInfoDto));
     }
@@ -44,6 +47,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions(value = {"system:testPaperInfo:save", "system:testPaperInfo:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody TestPaperInfo testPaperInfo) {
         if (testPaperInfo.getId() != null) {
             TestPaperInfo dataBaseTestPaperInfo = testPaperInfoService.getById(testPaperInfo.getId());
@@ -114,6 +118,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @DeleteMapping("{id}")
+    @RequiresPermissions("system:testPaperInfo:deleteById")
     public Result deleteById(@PathVariable Integer id) {
         return Result.success(testPaperInfoService.deleteById(id));
     }

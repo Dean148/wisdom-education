@@ -12,6 +12,8 @@ import com.education.common.utils.ResultCode;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.entity.StudentInfo;
 import com.education.model.request.PageParam;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +40,7 @@ public class StudentInfoController extends BaseController {
      * @return
      */
     @GetMapping
+    @RequiresPermissions("system:student:list")
     public Result selectPage(PageParam pageParam, StudentInfo studentInfo) {
         return Result.success(studentInfoService.selectPageList(pageParam, studentInfo));
     }
@@ -48,6 +51,7 @@ public class StudentInfoController extends BaseController {
      * @return
      */
     @PostMapping
+    @RequiresPermissions(value = {"system:student:save", "system:student:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody StudentInfoDto studentInfoDto) {
         if (ObjectUtils.isEmpty(studentInfoDto.getId()) && !checkPassword(studentInfoDto)) {
             return Result.fail(ResultCode.FAIL, "密码与确认密码不一致");
@@ -71,6 +75,7 @@ public class StudentInfoController extends BaseController {
      * @return
      */
     @PostMapping("updatePassword")
+    @RequiresPermissions("system:student:updatePassword")
     public Result updatePassword(@RequestBody StudentInfoDto studentInfoDto) {
         if (!checkPassword(studentInfoDto)) {
             return Result.fail(ResultCode.FAIL, "密码与确认密码不一致");
@@ -85,6 +90,7 @@ public class StudentInfoController extends BaseController {
      * @return
      */
     @DeleteMapping("{id}")
+    @RequiresPermissions("system:student:deleteById")
     public Result deleteById(@PathVariable Integer id) {
         studentInfoService.removeById(id);
         return Result.success();
@@ -97,6 +103,7 @@ public class StudentInfoController extends BaseController {
      * @throws Exception
      */
     @RequestMapping("importStudent")
+    @RequiresPermissions("system:student:import")
     public Result importStudent(@RequestParam MultipartFile file) throws Exception {
         if (!excelTypes.contains(file.getContentType())) {
             return Result.fail(ResultCode.FAIL, "只能导入excel文件");
