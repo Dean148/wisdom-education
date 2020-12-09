@@ -74,10 +74,6 @@ public class SystemRoleController extends BaseController {
     @DeleteMapping("{id}")
     @RequiresPermissions("system:role:deleteById")
     public Result deleteById(@PathVariable Integer id) {
-        SystemRole systemRole = systemRoleService.getById(id);
-        if (systemRole.getCreateType() == EnumConstants.CreateType.SYSTEM_CREATE.getValue()) {
-            return Result.success("您不能删除系统内置角色");
-        }
         return Result.success(systemRoleService.deleteById(id));
     }
 }

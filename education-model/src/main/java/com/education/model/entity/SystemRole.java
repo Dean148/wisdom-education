@@ -1,7 +1,6 @@
 package com.education.model.entity;
 
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.education.common.annotation.Unique;
 
@@ -11,8 +10,6 @@ public class SystemRole extends BaseEntity<SystemRole> {
 	@Unique
 	private String name;
 	private String remark;
-	@TableField("create_type")
-	private Integer createType;
 
 	public String getName() {
 		return name;
@@ -28,13 +25,5 @@ public class SystemRole extends BaseEntity<SystemRole> {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
-	}
-
-	public Integer getCreateType() {
-		return createType;
-	}
-
-	public void setCreateType(Integer createType) {
-		this.createType = createType;
 	}
 }
