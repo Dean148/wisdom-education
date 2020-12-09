@@ -65,6 +65,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @GetMapping("getPaperQuestionList")
+    @RequiresPermissions("system:testPaper:relevanceQuestion")
     public Result selectPaperQuestionList(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
         return Result.success(testPaperInfoService.selectPaperQuestionList(pageParam, testPaperQuestionRequest));
     }
@@ -97,6 +98,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("publishTestPaperInfo/{testPaperInfoId}")
+    @RequiresPermissions("system:testPaperInfo:publish")
     public Result publishTestPaperInfo(@PathVariable Integer testPaperInfoId) {
         return Result.success(testPaperInfoService.publishTestPaperInfo(testPaperInfoId));
     }
@@ -107,6 +109,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("cancelTestPaperInfo/{testPaperInfoId}")
+    @RequiresPermissions("system:testPaperInfo:cancel")
     public Result cancelTestPaperInfo(@PathVariable Integer testPaperInfoId) {
         return Result.success(testPaperInfoService.cancelTestPaperInfo(testPaperInfoId));
     }
