@@ -38,7 +38,6 @@ public class ExamInfoController extends BaseController {
      * @return
      */
     @GetMapping("getExamQuestionList/{studentId}/{examInfoId}")
-    @RequiresPermissions("system:exam:examQuestionList")
     public Result getExamQuestionList(@PathVariable Integer studentId, @PathVariable Integer examInfoId) {
         return Result.success(examInfoService.selectExamQuestionAnswer(studentId, examInfoId));
     }
@@ -61,6 +60,7 @@ public class ExamInfoController extends BaseController {
      * @return
      */
     @GetMapping("getExamReportList")
+    @RequiresPermissions("system:exam:examReportList")
     public Result selectExamReportList(PageParam pageParam, TestPaperInfo testPaperInfo) {
         return Result.success(examInfoService.selectExamReportList(pageParam, testPaperInfo));
     }
