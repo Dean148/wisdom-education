@@ -65,7 +65,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @GetMapping("getPaperQuestionList")
-    @RequiresPermissions("system:testPaper:relevanceQuestion")
+    @RequiresPermissions("system:testPaperInfo:relevanceQuestion")
     public Result selectPaperQuestionList(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
         return Result.success(testPaperInfoService.selectPaperQuestionList(pageParam, testPaperQuestionRequest));
     }
