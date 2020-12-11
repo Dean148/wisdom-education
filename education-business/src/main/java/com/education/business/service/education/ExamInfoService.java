@@ -175,6 +175,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             } else {
                 examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM_AND_TEACHER.getValue());
             }
+            examInfo.setTeacherMark(teacherMark);
             examInfo.setMark(systemMark + teacherMark);
             examInfo.setUpdateDate(now);
             examInfo.setErrorNumber(examInfo.getErrorNumber() + teacherErrorNumber);
