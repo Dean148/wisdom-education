@@ -1,7 +1,5 @@
 package com.education.business.service.education;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.service.BaseService;
@@ -10,6 +8,7 @@ import com.education.common.constants.EnumConstants;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.DateUtils;
 import com.education.common.utils.NumberUtils;
+import com.education.common.utils.ObjectUtils;
 import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.ExamInfo;
@@ -92,8 +91,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             studentQuestionAnswer.setStudentId(studentId);
             studentQuestionAnswer.setQuestionPoints(item.getQuestionMark());
             String studentAnswer = item.getStudentAnswer();
-            // 验证试题是否为客观题subjective;
-            if (isObjectiveQuestion(item.getQuestionType())) {
+            // 验证试题是否为客观题 // 教师评分直接跳过客观题
+            if (isObjectiveQuestion(item.getQuestionType()) && !studentQuestionRequest.isTeacherCorrectFlag()) {
                 String questionAnswer = item.getAnswer();
                 if (questionAnswer.equals(studentAnswer)) {
                     studentQuestionAnswer.setMark(item.getQuestionMark());
@@ -101,22 +100,33 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                     rightNumber++;
                     studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.RIGHT.getValue());
                 } else {
-                    studentWrongBookList.add(new StudentWrongBook(studentId, item.getQuestionInfoId(),
-                            item.getQuestionMark()));
+                    studentWrongBookList.add(studentWrongBookService.newStudentWrongBook(studentId, item));
                     errorNumber++;
                     studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.ERROR.getValue());
                 }
                 objectiveQuestionNumber++;
             } else {
                 if (studentQuestionRequest.isTeacherCorrectFlag()) {
+                    // 答案为空，系统已批改，直接跳过
+                    if (ObjectUtils.isEmpty(item.getStudentAnswer())) {
+                        continue;
+                    }
                     teacherMark += item.getStudentMark();
                     studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECTED.getValue());
+
+                    // 后台指定加入学员错题本
                     if (item.isErrorQuestionFlag()) {
-                        studentWrongBookList.add(new StudentWrongBook(studentId, item.getQuestionInfoId(),
-                                item.getQuestionMark()));
+                        studentWrongBookList.add(studentWrongBookService.newStudentWrongBook(studentId, item));
                     }
                 } else {
-                    studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECT_RUNNING.getValue());
+                    // 主观题答案为空，系统自动判错
+                    if (ObjectUtils.isEmpty(studentQuestionAnswer.getStudentAnswer())) {
+                        studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.ERROR.getValue());
+                        studentWrongBookList.add(studentWrongBookService.newStudentWrongBook(studentId, item));
+                        errorNumber++;
+                    } else {
+                        studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECT_RUNNING.getValue());
+                    }
                 }
                 subjectiveQuestionNumber++;
             }

@@ -21,8 +21,38 @@ public class StudentWrongBook extends BaseEntity<StudentWrongBook> {
     @TableField("question_mark")
     private Integer questionMark;
 
+    @TableField("student_answer")
+    private String studentAnswer;
+
+    @TableField("correct_status")
+    private Integer correctStatus;
+
     public StudentWrongBook() {
 
+    }
+
+    public Integer getQuestionMark() {
+        return questionMark;
+    }
+
+    public void setQuestionMark(Integer questionMark) {
+        this.questionMark = questionMark;
+    }
+
+    public String getStudentAnswer() {
+        return studentAnswer;
+    }
+
+    public void setStudentAnswer(String studentAnswer) {
+        this.studentAnswer = studentAnswer;
+    }
+
+    public Integer getCorrectStatus() {
+        return correctStatus;
+    }
+
+    public void setCorrectStatus(Integer correctStatus) {
+        this.correctStatus = correctStatus;
     }
 
     public StudentWrongBook(Integer studentId, Integer questionInfoId, Integer questionMark) {

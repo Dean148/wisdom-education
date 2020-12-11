@@ -13,5 +13,11 @@ import com.education.model.request.WrongBookQuery;
  */
 public interface StudentWrongBookMapper extends BaseMapper<StudentWrongBook> {
 
+    /**
+     * 学员错题本列表
+     * @param page
+     * @param wrongBookQuery
+     * @return
+     */
     Page<QuestionInfoAnswer> selectPageList(Page<QuestionInfoAnswer> page, WrongBookQuery wrongBookQuery);
 }

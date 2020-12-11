@@ -19,6 +19,8 @@
         from question_info question, student_wrong_book wrong_book, subject_info subject
        where question.id = wrong_book.question_info_id and question.subject_id = subject.id
 
+       and wrong_book.student_id = #{wrongBookQuery.studentId}
+
        <if test="wrongBookQuery.subjectId != null">
            and question.subject_id = #{wrongBookQuery.subjectId }
        </if>
