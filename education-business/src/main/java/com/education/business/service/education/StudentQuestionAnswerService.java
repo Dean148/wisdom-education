@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.education.StudentQuestionAnswerMapper;
 import com.education.business.service.BaseService;
+import com.education.common.constants.EnumConstants;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.QuestionInfoAnswer;
@@ -36,6 +37,7 @@ public class StudentQuestionAnswerService extends BaseService<StudentQuestionAns
     public boolean deleteByTestPaperInfoId(Integer studentId, Integer testPaperInfoId) {
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(StudentQuestionAnswer.class)
                 .eq(StudentQuestionAnswer::getStudentId, studentId)
+                .eq(StudentQuestionAnswer::getCorrectStatus, EnumConstants.CorrectStatus.CORRECT_RUNNING.getValue())
                 .eq(StudentQuestionAnswer::getTestPaperInfoId, testPaperInfoId);
         return super.remove(queryWrapper);
     }

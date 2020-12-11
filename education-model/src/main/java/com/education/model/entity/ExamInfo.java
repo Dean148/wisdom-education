@@ -45,6 +45,9 @@ public class ExamInfo extends BaseEntity<ExamInfo> {
 	@TableField("admin_id")
 	private Integer adminId;
 
+	@TableField("exam_time_long_value")
+	private Long examTimeLongValue;
+
 	public Integer getAdminId() {
 		return adminId;
 	}
@@ -61,6 +64,13 @@ public class ExamInfo extends BaseEntity<ExamInfo> {
 		this.subjectiveQuestionNumber = subjectiveQuestionNumber;
 	}
 
+	public Long getExamTimeLongValue() {
+		return examTimeLongValue;
+	}
+
+	public void setExamTimeLongValue(Long examTimeLongValue) {
+		this.examTimeLongValue = examTimeLongValue;
+	}
 
 	public void setQuestionNumber(Integer questionNumber) {
 		this.questionNumber = questionNumber;

@@ -114,6 +114,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                     if (ObjectUtils.isEmpty(item.getStudentAnswer())) {
                         continue;
                     }
+                    studentQuestionAnswer.setMark(item.getStudentMark());
                     teacherMark += item.getStudentMark();
                     // 后台指定加入学员错题本
                     if (item.isErrorQuestionFlag()) {
@@ -125,7 +126,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                     }
                 } else {
                     // 主观题答案为空，系统自动判错 // 错题数+1
-                    if (ObjectUtils.isEmpty(studentQuestionAnswer.getStudentAnswer())) {
+                    if (ObjectUtils.isEmpty(item.getStudentAnswer())) {
                         studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.ERROR.getValue());
                         studentWrongBookList.add(studentWrongBookService.newStudentWrongBook(studentId, item));
                         errorNumber++;
@@ -135,9 +136,11 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                 }
                 subjectiveQuestionNumber++;
             }
+
             studentQuestionAnswer.setStudentAnswer(studentAnswer);
             studentQuestionAnswer.setTestPaperInfoId(studentQuestionRequest.getTestPaperInfoId());
             studentQuestionAnswer.setCreateDate(now);
+            studentQuestionAnswer.setComment(item.getComment());
             studentQuestionAnswerList.add(studentQuestionAnswer);
         }
 
@@ -155,13 +158,14 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             examInfo.setTestPaperInfoId(testPaperInfoId);
             examInfo.setCreateDate(now);
             examInfo.setSystemMark(systemMark);
+            examInfo.setMark(systemMark);
             examInfo.setSubjectiveQuestionNumber(subjectiveQuestionNumber);
             long examTime = studentQuestionRequest.getExamTime();
             examInfo.setExamTime(DateUtils.getDate(examTime));
+            examInfo.setExamTimeLongValue(examTime);
             if (subjectiveQuestionNumber == 0) { // 如果全部为客观题的话，直接设置为已批改状态
                 examInfo.setCorrectFlag(EnumConstants.Flag.YES.getValue());
                 examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM.getValue());
-                examInfo.setMark(systemMark);
             }
             examInfo.setRightNumber(rightNumber);
             examInfo.setErrorNumber(errorNumber);
