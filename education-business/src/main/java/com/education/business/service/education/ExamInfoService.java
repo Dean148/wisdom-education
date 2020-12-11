@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author zengjintao
@@ -73,7 +74,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentId, new ExamInfo());
     }
 
-    private void batchSaveStudentQuestionAnswer(StudentQuestionRequest studentQuestionRequest, Integer studentId, ExamInfo examInfo) {
+    private void batchSaveStudentQuestionAnswer(StudentQuestionRequest studentQuestionRequest,
+                                                Integer studentId, ExamInfo examInfo) {
         Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
         Date now = new Date();
         List<StudentQuestionAnswer> studentQuestionAnswerList = new ArrayList<>();
@@ -83,6 +85,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         int rightNumber = 0;
         int errorNumber = 0;
         int teacherMark = 0;
+        int teacherErrorNumber = 0; // 记录教师后台批改指定的错题数
         int questionNumber = studentQuestionRequest.getQuestionAnswerList().size();
         List<StudentWrongBook> studentWrongBookList = new ArrayList<>(); // 存储学员考试错题
         for (QuestionAnswer item : studentQuestionRequest.getQuestionAnswerList()) {
@@ -112,14 +115,16 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                         continue;
                     }
                     teacherMark += item.getStudentMark();
-                    studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECTED.getValue());
-
                     // 后台指定加入学员错题本
                     if (item.isErrorQuestionFlag()) {
+                        teacherErrorNumber++; // 错题数+1
+                        studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.ERROR.getValue());
                         studentWrongBookList.add(studentWrongBookService.newStudentWrongBook(studentId, item));
+                    } else {
+                        studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECTED.getValue());
                     }
                 } else {
-                    // 主观题答案为空，系统自动判错
+                    // 主观题答案为空，系统自动判错 // 错题数+1
                     if (ObjectUtils.isEmpty(studentQuestionAnswer.getStudentAnswer())) {
                         studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.ERROR.getValue());
                         studentWrongBookList.add(studentWrongBookService.newStudentWrongBook(studentId, item));
@@ -136,6 +141,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             studentQuestionAnswerList.add(studentQuestionAnswer);
         }
 
+        // 批量保存学员试题答案
         studentQuestionAnswerService.saveBatch(studentQuestionAnswerList);
 
         if (studentWrongBookList.size() > 0) {
@@ -171,6 +177,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             }
             examInfo.setMark(systemMark + teacherMark);
             examInfo.setUpdateDate(now);
+            examInfo.setErrorNumber(examInfo.getErrorNumber() + teacherErrorNumber);
             examInfo.setCorrectFlag(EnumConstants.Flag.YES.getValue());
             examInfo.setAdminId(getAdminUserId());
             super.updateById(examInfo);

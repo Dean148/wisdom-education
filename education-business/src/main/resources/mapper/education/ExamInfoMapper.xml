@@ -11,11 +11,11 @@
 
         <where>
             <if test="studentExamInfoDto.studentId != null">
-                and exam.student_id = #{examInfo.studentId}
+                and exam.student_id = #{studentExamInfoDto.studentId}
             </if>
 
             <if test="studentExamInfoDto.subjectId != null">
-                and paper.subject_id = #{examInfo.subjectId}
+                and paper.subject_id = #{studentExamInfoDto.subjectId}
             </if>
         </where>
         order by exam.id desc

@@ -40,7 +40,7 @@ weChat:
   appSecret: e03f5ab03906d4d943675c233d4c3cb3
 ## 文件上传根路径
 file:
-  uploadPath: f:\\uploads\\
+  uploadPath: F:\\uploads\\
 
 mybatis-plus:
   type-aliases-package: com.education.model
