@@ -14,6 +14,7 @@
         subject.id subject_id,
         subject.name subject_name,
         wrong_book.mark student_mark,
+        wrong_book.create_date,
         wrong_book.question_mark,
         wrong_book.correct_status
         from question_info question, student_wrong_book wrong_book, subject_info subject
