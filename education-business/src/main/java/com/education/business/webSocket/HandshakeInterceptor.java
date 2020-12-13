@@ -38,7 +38,6 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         if (serverHttpRequest instanceof ServletServerHttpRequest) {
             ServletServerHttpRequest servletServerHttpRequest = (ServletServerHttpRequest)serverHttpRequest;
             HttpServletRequest request = servletServerHttpRequest.getServletRequest();
-         // String sessionId = RequestUtils.getCookieValue("user_session_key"); // request.getSession().getId();
             String sessionId = RequestUtils.getCookieValue(Constants.SESSION_NAME);
             attributes.put("sessionId", request.getSession().getId());
             if (ObjectUtils.isNotEmpty(sessionId)) {

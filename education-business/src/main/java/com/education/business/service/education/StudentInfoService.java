@@ -106,7 +106,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
             String encrypt = studentInfo.getEncrypt();
             if (dataBasePassword.equals(Md5Utils.getMd5(password, encrypt))) {
                 String token = studentJwtToken.createToken(studentInfo.getId(), sessionTime); // 默认缓存5天
-                this.cacheStudentInfoSession(studentInfo, token);
+                this.cacheStudentInfoSession(studentInfo, token, sessionTime);
                 Kv kv = Kv.create().set("name", studentInfo.getName())
                         .set("token", token)
                         .set("headImg", studentInfo.getHeadImg())
@@ -125,12 +125,14 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
      * @param studentInfo
      * @param token
      */
-    private void cacheStudentInfoSession(StudentInfo studentInfo, String token) {
+    private void cacheStudentInfoSession(StudentInfo studentInfo, String token, long sessionTime) {
         StudentInfoSession studentInfoSession = new StudentInfoSession();
         studentInfoSession.setToken(token);
         studentInfoSession.setStudentInfo(studentInfo);
-        cacheBean.put(Constants.USER_INFO_CACHE, token, studentInfoSession);
+        int value = new Long(sessionTime).intValue();
+        cacheBean.put(Constants.SESSION_NAME, token, studentInfoSession, value);
         Date now = new Date();
+        RequestUtils.createCookie(Constants.SESSION_NAME, token, value);
         studentInfo.setLastLoginTime(now);
         studentInfo.setLoginIp(IpUtils.getAddressIp(RequestUtils.getRequest()));
         int loginCount = studentInfo.getLoginCount();

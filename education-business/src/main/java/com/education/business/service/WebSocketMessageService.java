@@ -40,6 +40,7 @@ public class WebSocketMessageService {
             String sessionId = onlineUser.getSessionId();
             TaskParam taskParam = new TaskParam(WebSocketMessageTask.class);
             taskParam.put("sessionId", sessionId);
+            taskParam.put("message_type", EnumConstants.MessageType.STUDENT_LOGIN.getValue());
             taskParam.put("ip", IpUtils.getAddressIp(RequestUtils.getRequest()));
             taskManager.pushTask(taskParam);
         }

@@ -1,14 +1,17 @@
 package com.education.business.service.education;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.service.BaseService;
+import com.education.business.service.WebSocketMessageService;
+import com.education.business.task.TaskParam;
+import com.education.business.task.WebSocketMessageTask;
 import com.education.common.constants.Constants;
 import com.education.common.constants.EnumConstants;
+import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
-import com.education.common.utils.DateUtils;
-import com.education.common.utils.NumberUtils;
-import com.education.common.utils.ObjectUtils;
+import com.education.common.utils.*;
 import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.ExamInfo;
@@ -20,6 +23,7 @@ import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
 import com.education.model.response.*;
 import com.jfinal.kit.Kv;
+import org.aspectj.weaver.ast.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +47,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     private QuestionInfoService questionInfoService;
     @Autowired
     private TestPaperInfoService testPaperInfoService;
+    @Autowired
+    private WebSocketMessageService webSocketMessageService;
 
     /**
      * 后台考试列表
@@ -79,7 +85,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         Date now = new Date();
         List<StudentQuestionAnswer> studentQuestionAnswerList = new ArrayList<>();
         int systemMark = 0;
-        int objectiveQuestionNumber = 0; // 客观题数量
+       // int objectiveQuestionNumber = 0; // 客观题数量
         int subjectiveQuestionNumber = 0; // 主观题数量
         int rightNumber = 0;
         int errorNumber = 0;
@@ -106,7 +112,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                     errorNumber++;
                     studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.ERROR.getValue());
                 }
-                objectiveQuestionNumber++;
+              //  objectiveQuestionNumber++;
             } else {
                 if (studentQuestionRequest.isTeacherCorrectFlag()) {
                     // 答案为空，系统已批改，直接跳过
@@ -158,7 +164,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             long examTime = studentQuestionRequest.getExamTime();
             examInfo.setExamTime(DateUtils.getDate(examTime));
             examInfo.setExamTimeLongValue(examTime);
-            if (subjectiveQuestionNumber == 0) { // 如果全部为客观题的话，直接设置为已批改状态
+            if (subjectiveQuestionNumber == 0) { // 如果全部为客观题的话（主观题数量为0），直接设置为已批改状态
                 examInfo.setCorrectFlag(EnumConstants.Flag.YES.getValue());
                 examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM.getValue());
             }
@@ -183,6 +189,13 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             examInfo.setCorrectFlag(EnumConstants.Flag.YES.getValue());
             examInfo.setAdminId(getAdminUserId());
             super.updateById(examInfo);
+
+            // 发送批改消息通知
+            TaskParam taskParam = new TaskParam(WebSocketMessageTask.class);
+            taskParam.put("message_type", EnumConstants.MessageType.EXAM_CORRECT.getValue());
+            taskParam.put("sessionId", RequestUtils.getCookieValue(Constants.DEFAULT_SESSION_ID));
+            taskParam.put("studentId", studentId);
+            taskManager.pushTask(taskParam);
         }
         studentQuestionAnswerList.stream().forEach(item -> item.setExamInfoId(examInfo.getId()));
         // 批量保存学员试题答案
@@ -209,6 +222,9 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     @Transactional
     public void correctStudentExam(StudentQuestionRequest studentQuestionRequest) {
         ExamInfo examInfo = super.getById(studentQuestionRequest.getExamInfoId());
+        if (examInfo.getCorrectFlag().intValue() == ResultCode.SUCCESS) {
+            throw new BusinessException(new ResultCode(ResultCode.FAIL, "试卷已被批改"));
+        }
         Integer studentId = studentQuestionRequest.getStudentId();
         studentQuestionAnswerService.deleteByExamInfoId(studentId, examInfo.getId());
         studentQuestionRequest.setTestPaperInfoId(examInfo.getTestPaperInfoId());
