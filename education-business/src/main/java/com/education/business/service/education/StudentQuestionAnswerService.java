@@ -21,24 +21,24 @@ import java.util.List;
 public class StudentQuestionAnswerService extends BaseService<StudentQuestionAnswerMapper, StudentQuestionAnswer> {
 
     /**
-     * 获取试卷试题及学员试题答案
+     * 获取考试试题及学员试题答案
      * @return
      */
-    public List<QuestionInfoAnswer> getQuestionAnswerByTestPaperInfoId(Integer studentId, Integer testPaperInfoId) {
-        return baseMapper.selectQuestionAnswerList(studentId, testPaperInfoId);
+    public List<QuestionInfoAnswer> getQuestionAnswerByExamInfoId(Integer studentId, Integer examInfoId) {
+        return baseMapper.selectQuestionAnswerList(studentId, examInfoId);
     }
 
     /**
-     * 删除学员试卷答题记录
+     * 删除学员考试未批改的答题记录
      * @param studentId
-     * @param testPaperInfoId
+     * @param examInfoId
      * @return
      */
-    public boolean deleteByTestPaperInfoId(Integer studentId, Integer testPaperInfoId) {
+    public boolean deleteByExamInfoId(Integer studentId, Integer examInfoId) {
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(StudentQuestionAnswer.class)
                 .eq(StudentQuestionAnswer::getStudentId, studentId)
                 .eq(StudentQuestionAnswer::getCorrectStatus, EnumConstants.CorrectStatus.CORRECT_RUNNING.getValue())
-                .eq(StudentQuestionAnswer::getTestPaperInfoId, testPaperInfoId);
+                .eq(StudentQuestionAnswer::getExamInfoId, examInfoId);
         return super.remove(queryWrapper);
     }
 

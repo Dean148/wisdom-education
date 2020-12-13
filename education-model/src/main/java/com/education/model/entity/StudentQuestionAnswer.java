@@ -20,8 +20,8 @@ public class StudentQuestionAnswer extends BaseEntity<StudentQuestionAnswer> {
     @TableField("student_answer")
     private String studentAnswer;
 
-    @TableField("test_paper_info_id")
-    private Integer testPaperInfoId;
+    @TableField("exam_info_id")
+    private Integer examInfoId;
 
     private Integer mark;
 
@@ -57,14 +57,6 @@ public class StudentQuestionAnswer extends BaseEntity<StudentQuestionAnswer> {
         this.studentAnswer = studentAnswer;
     }
 
-    public Integer getTestPaperInfoId() {
-        return testPaperInfoId;
-    }
-
-    public void setTestPaperInfoId(Integer testPaperInfoId) {
-        this.testPaperInfoId = testPaperInfoId;
-    }
-
     public Integer getMark() {
         return mark;
     }
@@ -75,6 +67,14 @@ public class StudentQuestionAnswer extends BaseEntity<StudentQuestionAnswer> {
 
     public Integer getQuestionPoints() {
         return questionPoints;
+    }
+
+    public Integer getExamInfoId() {
+        return examInfoId;
+    }
+
+    public void setExamInfoId(Integer examInfoId) {
+        this.examInfoId = examInfoId;
     }
 
     public void setQuestionPoints(Integer questionPoints) {

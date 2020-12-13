@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author zengjintao
@@ -138,14 +137,10 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             }
 
             studentQuestionAnswer.setStudentAnswer(studentAnswer);
-            studentQuestionAnswer.setTestPaperInfoId(studentQuestionRequest.getTestPaperInfoId());
             studentQuestionAnswer.setCreateDate(now);
             studentQuestionAnswer.setComment(item.getComment());
             studentQuestionAnswerList.add(studentQuestionAnswer);
         }
-
-        // 批量保存学员试题答案
-        studentQuestionAnswerService.saveBatch(studentQuestionAnswerList);
 
         if (studentWrongBookList.size() > 0) {
             studentWrongBookService.saveBatch(studentWrongBookList); // 批量保存错题
@@ -187,13 +182,16 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             examInfo.setAdminId(getAdminUserId());
             super.updateById(examInfo);
         }
+        studentQuestionAnswerList.stream().forEach(item -> item.setExamInfoId(examInfo.getId()));
+        // 批量保存学员试题答案
+        studentQuestionAnswerService.saveBatch(studentQuestionAnswerList);
     }
 
 
     public QuestionGroupResponse selectExamQuestionAnswer(Integer studentId, Integer examInfoId) {
         StudentExamInfoDto studentExamInfoDto = baseMapper.selectById(examInfoId);
         List<QuestionInfoAnswer> examQuestionAnswerList = studentQuestionAnswerService
-                .getQuestionAnswerByTestPaperInfoId(studentId, studentExamInfoDto.getTestPaperInfoId());
+                .getQuestionAnswerByExamInfoId(studentId, examInfoId);
         List<QuestionGroupItemResponse> list = questionInfoService.groupQuestion(examQuestionAnswerList);
         ExamQuestionGroupResponse examQuestionResponse = new ExamQuestionGroupResponse();
         examQuestionResponse.setQuestionGroupItemResponseList(list);
@@ -210,7 +208,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     public void correctStudentExam(StudentQuestionRequest studentQuestionRequest) {
         ExamInfo examInfo = super.getById(studentQuestionRequest.getExamInfoId());
         Integer studentId = studentQuestionRequest.getStudentId();
-        studentQuestionAnswerService.deleteByTestPaperInfoId(studentId, examInfo.getTestPaperInfoId());
+        studentQuestionAnswerService.deleteByExamInfoId(studentId, examInfo.getId());
         studentQuestionRequest.setTestPaperInfoId(examInfo.getTestPaperInfoId());
         this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentQuestionRequest.getStudentId(), examInfo);
     }

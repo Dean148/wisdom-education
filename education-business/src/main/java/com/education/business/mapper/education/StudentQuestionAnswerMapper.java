@@ -15,5 +15,11 @@ import java.util.List;
  */
 public interface StudentQuestionAnswerMapper extends BaseMapper<StudentQuestionAnswer> {
 
-    List<QuestionInfoAnswer> selectQuestionAnswerList(@Param("studentId") Integer studentId, @Param("testPaperInfoId") Integer testPaperInfoId);
- }
+    /**
+     * 获取学员考试答题记录
+     * @param studentId
+     * @param examInfoId
+     * @return
+     */
+    List<QuestionInfoAnswer> selectQuestionAnswerList(@Param("studentId") Integer studentId, @Param("examInfoId") Integer examInfoId);
+}

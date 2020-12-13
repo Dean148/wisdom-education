@@ -18,7 +18,6 @@
              question_answer.mark student_mark
         from question_info question
         inner join student_question_answer question_answer on question.id = question_answer.question_info_id
-        inner join test_paper_info paper on question_answer.test_paper_info_id = paper.id
-        where question_answer.student_id = #{studentId} and paper.id = #{testPaperInfoId}
+        where question_answer.student_id = #{studentId} and question_answer.exam_info_id = #{examInfoId}
     </select>
 </mapper>
