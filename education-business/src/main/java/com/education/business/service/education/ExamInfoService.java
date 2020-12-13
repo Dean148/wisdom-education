@@ -169,9 +169,11 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             // 更新考试参考人数
             testPaperInfoService.updateExamNumber(examInfo.getTestPaperInfoId());
         } else {
-            if (objectiveQuestionNumber == 0) {
+            // 主观题数量为0， 设置为教师评分
+            if (examInfo.getSubjectiveQuestionNumber() == 0) {
                 examInfo.setCorrectType(EnumConstants.CorrectType.TEACHER.getValue());
             } else {
+                // 系统 + 教师评分
                 examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM_AND_TEACHER.getValue());
             }
             examInfo.setTeacherMark(teacherMark);
