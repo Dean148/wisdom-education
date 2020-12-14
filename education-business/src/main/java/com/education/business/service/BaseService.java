@@ -221,7 +221,7 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImp
 
     public StudentInfoSession getStudentInfoSession() {
         String token = request.getHeader("token");
-        return cacheBean.get(Constants.USER_INFO_CACHE, token);
+        return cacheBean.get(Constants.SESSION_NAME, token);
     }
 
     public StudentInfo getStudentInfo() {

@@ -53,12 +53,12 @@ public class RedisCacheBean implements CacheBean {
 
     @Override
     public void put(Object key, Object value, int liveSeconds) {
-        this.valueOperations.set(key, value, liveSeconds);
+        this.valueOperations.set(key, value, liveSeconds, TimeUnit.SECONDS);
     }
 
     @Override
     public void put(String cacheName, Object key, Object value, int liveSeconds) {
-        this.valueOperations.set(this.createNewKey(cacheName, key), value, liveSeconds);
+        this.valueOperations.set(this.createNewKey(cacheName, key), value, liveSeconds, TimeUnit.SECONDS);
     }
 
     @Override

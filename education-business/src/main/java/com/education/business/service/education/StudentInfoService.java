@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 学员管理
@@ -130,7 +131,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         studentInfoSession.setToken(token);
         studentInfoSession.setStudentInfo(studentInfo);
         int value = new Long(sessionTime).intValue();
-        cacheBean.put(Constants.SESSION_NAME, token, studentInfoSession, value);
+        cacheBean.put(Constants.SESSION_NAME, token, studentInfoSession, value, TimeUnit.MILLISECONDS);
         Date now = new Date();
         RequestUtils.createCookie(Constants.SESSION_NAME, token, value);
         studentInfo.setLastLoginTime(now);
