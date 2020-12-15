@@ -11,6 +11,8 @@ import com.education.model.entity.MessageInfo;
 import com.education.model.request.PageParam;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 /**
  * @author zengjintao
  * @version 1.0
@@ -24,6 +26,7 @@ public class MessageInfoService extends BaseService<MessageInfoMapper, MessageIn
         // 将未读消息设置为已读状态
         LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageInfo.class)
                 .set(MessageInfo::getReadFlag, EnumConstants.Flag.YES.getValue())
+                .set(MessageInfo::getUpdateDate, new Date())
                 .eq(MessageInfo::getStudentId, studentId);
         super.update(updateWrapper);
         return super.selectPage(pageParam, Wrappers.lambdaQuery(MessageInfo.class)

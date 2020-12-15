@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 
 /**
  * websocket 异步发送消息通知
@@ -36,7 +38,7 @@ public class WebSocketMessageTask implements TaskListener {
     @Override
     public void onMessage(TaskParam taskParam) {
         try {
-            Thread.sleep(5000); // 休眠15秒后在发送消息到前端
+            Thread.sleep(5000); // 休眠5秒后在发送消息到前端
             Integer messageType = taskParam.getInt("message_type");
             String content = "";
             if (messageType == EnumConstants.MessageType.STUDENT_LOGIN.getValue()) {
@@ -54,20 +56,21 @@ public class WebSocketMessageTask implements TaskListener {
             String sessionId = taskParam.getStr("sessionId");
             systemWebSocketHandler.sendMessageToPage(sessionId, JSONObject.toJSONString(message));
         } catch (Exception e) {
-            log.error("websocket消息发送异常");
+            log.error("websocket消息发送异常", e);
         }
     }
 
     private void publishExamMessage(TaskParam taskParam) {
         TestPaperInfo testPaperInfo = testPaperInfoService.getOne(Wrappers.lambdaQuery(TestPaperInfo.class)
                 .select(TestPaperInfo::getName)
-                .eq(TestPaperInfo::getId, taskParam.getInt("id")));
+                .eq(TestPaperInfo::getId, taskParam.getInt("testPaperInfoId")));
 
         MessageInfo messageInfo = new MessageInfo();
         String content = "您参加的考试【" + testPaperInfo.getName() + "】已被管理员批改,赶紧去查看吧!";
         messageInfo.setContent(content);
         messageInfo.setStudentId(taskParam.getInt("studentId"));
         messageInfo.setMessageType(EnumConstants.MessageType.EXAM_CORRECT.getValue());
+        messageInfo.setCreateDate(new Date());
         messageInfoService.save(messageInfo);
     }
 }

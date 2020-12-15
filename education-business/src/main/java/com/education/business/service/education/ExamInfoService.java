@@ -195,6 +195,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             taskParam.put("message_type", EnumConstants.MessageType.EXAM_CORRECT.getValue());
             taskParam.put("sessionId", RequestUtils.getCookieValue(Constants.DEFAULT_SESSION_ID));
             taskParam.put("studentId", studentId);
+            taskParam.put("testPaperInfoId", examInfo.getTestPaperInfoId());
             taskManager.pushTask(taskParam);
         }
         studentQuestionAnswerList.stream().forEach(item -> item.setExamInfoId(examInfo.getId()));

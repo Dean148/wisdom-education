@@ -90,7 +90,7 @@ public class SystemAdminController extends BaseController {
     @RequiresPermissions("system:admin:updatePassword")
     public Result updatePassword(@RequestBody AdminRoleDto adminRoleDto) {
         systemAdminService.updatePassword(adminRoleDto);
-        return Result.success("修改密码成功");
+        return Result.success(ResultCode.SUCCESS, "修改密码成功");
     }
 
     /**
