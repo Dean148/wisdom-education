@@ -31,6 +31,10 @@ public final class OnlineUserManager {
         this.cacheBean.put(USER_ID_CACHE, userId, onlineUser, liveSeconds);
     }
 
+/*    public void addOnlineUser(String sessionId, OnlineUser onlineUser, int liveSeconds) {
+        this.cacheBean.put(USER_ID_CACHE, sessionId, onlineUser, liveSeconds);
+    }*/
+
     public void removeOnlineUser(Integer userId) {
         this.cacheBean.remove(USER_ID_CACHE, userId);
     }

@@ -8,7 +8,6 @@ import com.education.business.service.BaseService;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.TestPaperInfoDto;
 import com.education.model.dto.TestPaperQuestionDto;
@@ -19,8 +18,6 @@ import com.education.model.request.TestPaperQuestionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.util.Date;
 import java.util.List;
 

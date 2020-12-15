@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.education.TestPaperQuestionInfoMapper;
 import com.education.business.service.BaseService;
-
-import com.education.model.entity.SystemAdminRole;
 import com.education.model.entity.TestPaperQuestionInfo;
 import org.springframework.stereotype.Service;
 
