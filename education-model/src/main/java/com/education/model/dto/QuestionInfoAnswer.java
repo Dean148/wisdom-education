@@ -19,6 +19,16 @@ public class QuestionInfoAnswer extends QuestionInfo {
     private int questionMark;
     private Integer correctStatus;
 
+    private String comment;
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public String getSubjectName() {
         return subjectName;
     }

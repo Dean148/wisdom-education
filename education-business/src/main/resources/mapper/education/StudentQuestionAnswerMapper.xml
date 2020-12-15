@@ -12,6 +12,7 @@
              question.options,
              question.analysis,
              question.summarize,
+             question_answer.comment,
              question_answer.student_answer,
              question_answer.correct_status,
              question_answer.question_points question_mark,
