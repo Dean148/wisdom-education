@@ -121,7 +121,7 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         return new ResultCode(ResultCode.SUCCESS, "发布成功");
     }
 
-    public Object cancelTestPaperInfo(Integer testPaperInfoId) {
+    public ResultCode cancelTestPaperInfo(Integer testPaperInfoId) {
         TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
         if (testPaperInfo.getExamNumber() > 0) {
             return new ResultCode(ResultCode.FAIL, "试卷已有学员作答, 无法撤回");

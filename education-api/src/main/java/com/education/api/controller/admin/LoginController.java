@@ -82,18 +82,19 @@ public class LoginController extends BaseController {
 
         if (result.isSuccess()) {
             Integer adminUserId = systemAdminService.getAdminUserId();
-            String token = adminJwtToken.createToken(adminUserId, 24 * 60 * 60 * 1000 * 5); // 默认缓存5天
+            long liveSeconds = 24 * 60 * 60 * 1000 * 5;
+            String token = adminJwtToken.createToken(adminUserId, liveSeconds); // 默认缓存5天
             AdminUserSession userSession = systemAdminService.getAdminUserSession();
             systemAdminService.loadUserMenuAndPermission(userSession);
             userSession.setSessionId(request.getSession().getId());
             String sessionId = request.getSession().getId();
-            synchronized (this) { // 防止相同账号并发登录
+            synchronized (this) { // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
                 OnlineUser onlineUser = new OnlineUser(adminUserId, sessionId,
                         EnumConstants.PlatformType.WEB_ADMIN);
                 onlineUser.setToken(token);
                 onlineUser.setAdminUserSession(userSession);
                 webSocketMessageService.checkOnlineUser(adminUserId, EnumConstants.PlatformType.WEB_ADMIN);
-                onlineUserManager.addOnlineUser(adminUserId, onlineUser);
+                onlineUserManager.addOnlineUser(adminUserId, onlineUser, new Long(liveSeconds).intValue());
             }
 
             // 是否记住密码登录

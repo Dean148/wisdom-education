@@ -27,8 +27,8 @@ public final class OnlineUserManager {
      * @param userId
      * @param onlineUser
      */
-    public void addOnlineUser(Integer userId, OnlineUser onlineUser) {
-        this.cacheBean.put(USER_ID_CACHE, userId, onlineUser);
+    public void addOnlineUser(Integer userId, OnlineUser onlineUser, int liveSeconds) {
+        this.cacheBean.put(USER_ID_CACHE, userId, onlineUser, liveSeconds);
     }
 
     public void removeOnlineUser(Integer userId) {
