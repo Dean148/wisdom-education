@@ -1,6 +1,7 @@
 package com.education.api.config.shiro;
 
 import com.education.common.cache.CacheBean;
+import com.education.common.constants.Constants;
 import com.education.common.utils.ObjectUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.UnknownSessionException;
@@ -22,7 +23,7 @@ public class DistributeShiroSession extends AbstractSessionDAO {
 
     private CacheBean redisCacheBean;
 
-    private static final String SESSION_KEY = "user.session.cache";
+    private static final String SESSION_KEY = Constants.SESSION_KEY;
 
     private static final int ONE_DAY = 24 * 60 * 60; //默认失效时间为1天
 

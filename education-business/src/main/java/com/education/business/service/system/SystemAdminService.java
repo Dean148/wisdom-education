@@ -191,16 +191,16 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
      * @return
      */
     public PageInfo<SystemAdmin> getOnlineUserList(PageParam pageParam) {
-        List<OnlineUser> onlineUserList = new ArrayList<>();
+        List<AdminUserSession> adminUserSessionList = new ArrayList<>();
         Collection userIds = cacheBean.getKeys(OnlineUserManager.USER_ID_CACHE);
         userIds.forEach(userId -> {
-            OnlineUser onlineUser = cacheBean.get(userId);
-            onlineUserList.add(onlineUser);
+            AdminUserSession onlineUser = cacheBean.get(userId);
+            adminUserSessionList.add(onlineUser);
         });
 
-        Set<AdminUserSession> adminUserSessionList = onlineUserList.stream()
+        /*Set<AdminUserSession> adminUserSessionList = onlineUserList.stream()
                 .map(OnlineUser::getAdminUserSession)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet());*/
 
         if (ObjectUtils.isNotEmpty(adminUserSessionList)) {
             List<SystemAdmin> systemAdminList = adminUserSessionList.stream()

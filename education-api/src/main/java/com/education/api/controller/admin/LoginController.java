@@ -87,13 +87,10 @@ public class LoginController extends BaseController {
             systemAdminService.loadUserMenuAndPermission(userSession);
             String sessionId = request.getSession().getId();
             userSession.setSessionId(sessionId);
+            userSession.setToken(token);
             synchronized (this) { // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
-                OnlineUser onlineUser = new OnlineUser(adminUserId, sessionId,
-                        EnumConstants.PlatformType.WEB_ADMIN);
-                onlineUser.setToken(token);
-                onlineUser.setAdminUserSession(userSession);
-                webSocketMessageService.checkOnlineUser(adminUserId, EnumConstants.PlatformType.WEB_ADMIN);
-                onlineUserManager.addOnlineUser(adminUserId, onlineUser,
+                webSocketMessageService.checkOnlineUser(adminUserId);
+                onlineUserManager.addOnlineUser(sessionId, userSession,
                         new Long(Constants.SESSION_TIME_OUT_SECOND).intValue());
             }
 
@@ -139,7 +136,7 @@ public class LoginController extends BaseController {
     @SystemLog(describe = "退出管理系统")
     @FormLimit
     public Result logout() {
-        onlineUserManager.removeOnlineUser(systemAdminService.getAdminUserId());
+        onlineUserManager.removeOnlineUser(systemAdminService.getAdminUserSession().getSessionId());
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         return Result.success(ResultCode.SUCCESS, "退出成功");

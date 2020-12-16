@@ -41,4 +41,6 @@ public final class Constants {
 
     public static final double PASS_MARK_RATE = 0.6; // 及格比例
     public static final double NICE_MARK_RATE = 0.8; // 优秀比例
+
+    public static final String SESSION_KEY = "user.session.cache";
 }

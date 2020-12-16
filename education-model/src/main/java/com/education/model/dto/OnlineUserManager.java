@@ -15,44 +15,43 @@ import java.util.Set;
  */
 @Component
 public final class OnlineUserManager {
-
     @Resource(name = "redisCacheBean")
     private CacheBean cacheBean;
     // 用户id 集合
     public static final String USER_ID_CACHE = "user:id:cache";
 
-
     /**
      * 添加用户 （用户id 相同直接覆盖之前的登录用户信息）
-     * @param userId
-     * @param onlineUser
+     * @param adminUserSession
      */
-    public void addOnlineUser(Integer userId, OnlineUser onlineUser, int liveSeconds) {
-        this.cacheBean.put(USER_ID_CACHE, userId, onlineUser, liveSeconds);
+
+    public void addOnlineUser(String sessionId, AdminUserSession adminUserSession, int liveSeconds) {
+        cacheBean.put(USER_ID_CACHE, sessionId, adminUserSession, liveSeconds);
     }
 
-/*    public void addOnlineUser(String sessionId, OnlineUser onlineUser, int liveSeconds) {
-        this.cacheBean.put(USER_ID_CACHE, sessionId, onlineUser, liveSeconds);
-    }*/
-
-    public void removeOnlineUser(Integer userId) {
-        this.cacheBean.remove(USER_ID_CACHE, userId);
+    public void removeOnlineUser(String sessionId) {
+        cacheBean.remove(USER_ID_CACHE, sessionId);
     }
 
+    public AdminUserSession getOnlineUser(String cacheKey) {
+        return cacheBean.get(cacheKey);
+    }
 
-    public OnlineUser getOnlineUser(Integer userId) {
-        return this.cacheBean.get(USER_ID_CACHE, userId);
+    public AdminUserSession getOnlineUser(Integer userId) {
+        Set<String> sessionIdList = (Set<String>) cacheBean.getKeys(USER_ID_CACHE);
+        for (String sessionId : sessionIdList) {
+            AdminUserSession adminUserSession = getOnlineUser(sessionId);
+            if (adminUserSession != null && adminUserSession.getAdminId().intValue() == userId.intValue()) {
+                return adminUserSession;
+            }
+        }
+        return null;
     }
 
     /**
      * 删除所有用户
      */
     public void clearOnlineUser() {
-        Set<String> userIds = (Set<String>) this.cacheBean.getKeys(USER_ID_CACHE);
-        if (ObjectUtils.isNotEmpty(userIds)) {
-            userIds.forEach(key -> {
-                this.cacheBean.remove(key);
-            });
-        }
+        this.cacheBean.remove(USER_ID_CACHE);
     }
 }
