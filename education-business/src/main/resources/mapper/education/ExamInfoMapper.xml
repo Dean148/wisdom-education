@@ -67,7 +67,7 @@
             subject.name subject_name,
             a.avg_source
         FROM
-            ( SELECT test_paper_info_id, AVG( mark ) avg_source FROM exam_info where correct_flag = 1 GROUP BY test_paper_info_id ) a
+            ( SELECT test_paper_info_id, CAST(AVG(mark) AS DECIMAL(10,2)) avg_source FROM exam_info where correct_flag = 1 GROUP BY test_paper_info_id ) a
             LEFT JOIN test_paper_info paper ON a.test_paper_info_id = paper.id
             LEFT JOIN subject_info subject ON paper.subject_id = subject.id
             LEFT JOIN grade_info grade ON grade.id = paper.grade_info_id
