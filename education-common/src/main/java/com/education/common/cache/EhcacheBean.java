@@ -4,10 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 基于Ehcache 缓存
@@ -66,16 +64,6 @@ public class EhcacheBean implements CacheBean {
             element.setTimeToLive(liveSeconds);
             this.getOrAddCache(cacheName).put(element);
         }
-    }
-
-    @Override
-    public void put(String cacheName, Object key, Object value, int liveSeconds, TimeUnit timeUnit) {
-        this.put(cacheName, key, value, liveSeconds);
-    }
-
-    @Override
-    public void put(Object key, Object value, int liveSeconds, TimeUnit timeUnit) {
-        this.put(key, value, liveSeconds);
     }
 
     public void put(Object key, Object value) {

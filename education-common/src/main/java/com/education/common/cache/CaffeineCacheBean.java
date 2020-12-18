@@ -3,10 +3,10 @@ package com.education.common.cache;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 基于Caffeine 实现的本地缓存
@@ -17,29 +17,34 @@ import java.util.concurrent.TimeUnit;
 public class CaffeineCacheBean implements CacheBean {
 
     private final Map<String, Cache> cacheMap = new ConcurrentHashMap<>();
-
     private static final String MAIN_CACHE = "main_cache";
-
-    private static final int NO_EXPIRE = 0;
-
 
     @Override
     public <T> T get(String cacheName, Object key) {
-        Cache cache = getCache(cacheName, NO_EXPIRE, null);
-        return (T) cache.getIfPresent(key);
+        Cache cache = getCache(cacheName);
+        CaffeineCacheElement caffeineCacheElement = (CaffeineCacheElement) cache.getIfPresent(key);
+        if (caffeineCacheElement == null) {
+            return null;
+        }
+
+        if (caffeineCacheElement.isTimeOut()) {
+            cache.invalidate(key);
+            return null;
+        }
+        return (T) caffeineCacheElement.getValue();
     }
 
-    private Cache getCache(String cacheName, int liveSeconds, TimeUnit timeUnit) {
+    private Cache getCacheOnly(String cacheName) {
+        return cacheMap.get(cacheName);
+    }
+
+    private Cache getCache(String cacheName) {
         Cache cache = cacheMap.get(cacheName);
         if (cache == null) {
             synchronized (CaffeineCacheBean.class) {
                 cache = cacheMap.get(cacheName);
                 if (cache == null) {
-                    if (liveSeconds == 0) {
-                        cache = this.createCache();
-                    } else {
-                        cache = this.createCache(liveSeconds, timeUnit);
-                    }
+                    cache = this.createCache();
                     cacheMap.put(cacheName, cache);
                 }
             }
@@ -49,92 +54,76 @@ public class CaffeineCacheBean implements CacheBean {
 
     @Override
     public <T> T get(Object key) {
-        Cache cache = getCache(MAIN_CACHE, NO_EXPIRE, null);
-        return (T) cache.getIfPresent(key);
+        return this.get(MAIN_CACHE, key);
     }
 
-    @Override
-    public void put(String cacheName, Object key, Object value) {
-        Cache cache = getCache(cacheName, NO_EXPIRE, null);
-        cache.put(key, value);
-    }
 
     @Override
     public void put(Object key, Object value) {
-        Cache cache = getCache(MAIN_CACHE, NO_EXPIRE, null);
-        cache.put(key, value);
+        Cache cache = getCache(MAIN_CACHE);
+        cache.put(key, new CaffeineCacheElement(value));
     }
 
     @Override
     public void put(Object key, Object value, int liveSeconds) {
-        Cache cache = getCache(MAIN_CACHE, liveSeconds, TimeUnit.SECONDS);
-        cache.put(key, value);
+        this.put(MAIN_CACHE, key, value, liveSeconds);
     }
 
     @Override
     public void put(String cacheName, Object key, Object value, int liveSeconds) {
-        Cache cache = getCache(cacheName, liveSeconds, TimeUnit.SECONDS);
-        cache.put(key, value);
-    }
-
-    @Override
-    public void put(String cacheName, Object key, Object value, int liveSeconds, TimeUnit timeUnit) {
-        Cache cache = getCache(cacheName, liveSeconds, timeUnit);
-        cache.put(key, value);
-    }
-
-    @Override
-    public void put(Object key, Object value, int liveSeconds, TimeUnit timeUnit) {
-        Cache cache = getCache(MAIN_CACHE, liveSeconds, timeUnit);
-        cache.put(key, value);
+        Cache cache = getCache(cacheName);
+        CaffeineCacheElement caffeineCacheElement = new CaffeineCacheElement(value);
+        caffeineCacheElement.setLiveSeconds(liveSeconds);
+        caffeineCacheElement.setCreateTime(new Date());
+        cache.put(key, caffeineCacheElement);
     }
 
     @Override
     public Collection getKeys(String cacheName) {
-        Cache cache = getCache(MAIN_CACHE, 0, null);
+        Cache cache = getCache(cacheName);
         return cache.asMap().keySet();
     }
 
     @Override
     public Collection getKeys() {
-        return null;
+        return this.cacheMap.keySet();
     }
 
     @Override
     public void remove(Object key) {
-        Cache cache = getCache(MAIN_CACHE, 0, null);
-        cache.invalidate(key);
+        Cache cache = getCacheOnly(MAIN_CACHE);
+        if (cache != null) {
+            cache.invalidate(key);
+        }
     }
 
     @Override
     public void remove() {
         Set<String> keys = this.cacheMap.keySet();
         keys.forEach(key -> {
+            Cache cache = getCacheOnly(key);
+            cache.invalidateAll();
             this.cacheMap.remove(key);
         });
     }
 
     @Override
     public void remove(String cacheName, Object key) {
-        Cache cache = getCache(cacheName, 0, null);
-        cache.invalidate(key);
+        Cache cache = getCacheOnly(cacheName);
+        if (cache != null) {
+            cache.invalidate(key);
+        }
     }
 
     @Override
     public void removeAll(String cacheName) {
-        Cache cache = getCache(cacheName, 0, null);
-        cache.invalidateAll();
-    }
-
-    private Caffeine createCaffeine() {
-        return Caffeine.newBuilder();
+        Cache cache = getCacheOnly(cacheName);
+        if (cache != null) {
+            cache.invalidateAll();
+        }
     }
 
     private Cache createCache() {
-        return createCaffeine().build();
-    }
-
-    private Cache createCache(long duration, TimeUnit timeUnit) {
-        return createCaffeine().expireAfterWrite(duration, timeUnit).build();
+        return Caffeine.newBuilder().build();
     }
 }

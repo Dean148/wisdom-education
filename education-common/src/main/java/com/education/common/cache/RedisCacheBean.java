@@ -37,10 +37,6 @@ public class RedisCacheBean implements CacheBean {
         return (T) this.valueOperations.get(key);
     }
 
-    @Override
-    public void put(String cacheName, Object key, Object value) {
-        this.valueOperations.set(this.createNewKey(cacheName, key), value);
-    }
 
     private String createNewKey(String cacheName, Object key) {
        return String.format("%s:%s", cacheName, key);
@@ -59,16 +55,6 @@ public class RedisCacheBean implements CacheBean {
     @Override
     public void put(String cacheName, Object key, Object value, int liveSeconds) {
         this.valueOperations.set(this.createNewKey(cacheName, key), value, liveSeconds, TimeUnit.SECONDS);
-    }
-
-    @Override
-    public void put(String cacheName, Object key, Object value, int liveSeconds, TimeUnit timeUnit) {
-        this.valueOperations.set(this.createNewKey(cacheName, key), value, liveSeconds, timeUnit);
-    }
-
-    @Override
-    public void put(Object key, Object value, int liveSeconds, TimeUnit timeUnit) {
-        this.valueOperations.set(key, value, liveSeconds, timeUnit);
     }
 
     @Override

@@ -15,17 +15,15 @@ public interface CacheBean {
 
     <T> T get(Object key);
 
-    void put(String cacheName, Object key, Object value);
-
     void put(Object key, Object value);
 
     void put(Object key, Object value, int liveSeconds);
 
     void put(String cacheName, Object key, Object value, int liveSeconds);
 
-    void put(String cacheName, Object key, Object value, int liveSeconds, TimeUnit timeUnit);
+ //   void put(String cacheName, Object key, Object value, int liveSeconds, TimeUnit timeUnit);
 
-    void put(Object key, Object value, int liveSeconds, TimeUnit timeUnit);
+  //  void put(Object key, Object value, int liveSeconds, TimeUnit timeUnit);
 
     Collection getKeys(String cacheName);
 
