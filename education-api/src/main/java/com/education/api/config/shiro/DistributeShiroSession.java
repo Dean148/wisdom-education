@@ -56,7 +56,7 @@ public class DistributeShiroSession extends AbstractSessionDAO {
             throw new NullPointerException("id argument cannot be null.");
         }
         // 设置session时间为24小时
-        redisCacheBean.put(SESSION_KEY, sessionId, session, ONE_DAY, TimeUnit.SECONDS);
+        redisCacheBean.put(SESSION_KEY, sessionId, session, ONE_DAY);
     }
 
     /**

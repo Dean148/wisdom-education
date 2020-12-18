@@ -47,7 +47,7 @@ public class Captcha {
 		setBorder(graphics);
 		setRandomLine(graphics);
 		String num = serRandomNum(graphics);
-		cacheBean.put(key, num, 60, TimeUnit.SECONDS);
+		cacheBean.put(key, num, 60);
 		response.setHeader("Pragma","no-cache");
 		response.setHeader("Cache-Control","no-cache");
 		response.setDateHeader("Expires", 0);

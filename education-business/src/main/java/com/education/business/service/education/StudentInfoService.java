@@ -99,7 +99,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
 
             String password = userLoginRequest.getPassword();
             boolean rememberMe = userLoginRequest.isChecked(); // 是否记住密码
-            long sessionTime = Constants.ONE_HOUR_MILLISECONDS; // 默认session 会话为1小时
+            long sessionTime = Constants.ONE_HOUR_SECOND; // 默认session 会话为1小时
             if (rememberMe) {
                 sessionTime = Constants.SESSION_TIME_OUT_SECOND;
             }
@@ -131,7 +131,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         studentInfoSession.setToken(token);
         studentInfoSession.setStudentInfo(studentInfo);
         int value = new Long(sessionTime).intValue();
-        cacheBean.put(Constants.SESSION_NAME, token, studentInfoSession, value, TimeUnit.MILLISECONDS);
+        cacheBean.put(Constants.SESSION_NAME, token, studentInfoSession, value);
         Date now = new Date();
         RequestUtils.createCookie(Constants.SESSION_NAME, token, value);
         studentInfo.setLastLoginTime(now);
