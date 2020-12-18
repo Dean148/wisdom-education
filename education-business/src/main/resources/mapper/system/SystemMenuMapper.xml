@@ -10,7 +10,7 @@
          a.type,
          a.create_type,
          a.sort, a.parent_id, a.permission, a.icon, b.name as parent_name from system_menu a left join (select id, name from system_menu) b
-       on a.parent_id = b.id order by sort asc
+       on a.parent_id = b.id order by a.sort asc
     </select>
 
     <select id="selectMenuTreeById" resultType="com.education.model.dto.MenuTree">
@@ -23,7 +23,7 @@
            a.sort, a.parent_id, a.permission, a.icon, b.name as parent_name
          from system_menu a left join (select id, name from system_menu) b
          on a.parent_id = b.id
-         where a.id = #{id}
+         where a.id = #{id} order by a.sort asc
     </select>
 
     <select id="getMenuListByRoles" resultType="com.education.model.entity.SystemMenu">
@@ -32,11 +32,12 @@
            <foreach collection="roleIds" separator="," open="(" close=")" item="roleId">
                #{roleId}
            </foreach>
-        )
+        ) order by sort asc
     </select>
 
 
     <select id="selectTreeMenuListByRoleId" resultType="com.education.model.dto.MenuTree">
         select * from system_menu where id in(select menu_id from system_role_menu where role_id = #{roleId})
+        order by sort asc
     </select>
 </mapper>

@@ -99,9 +99,9 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
 
             String password = userLoginRequest.getPassword();
             boolean rememberMe = userLoginRequest.isChecked(); // 是否记住密码
-            long sessionTime = 60 * 60 * 60 * 1000; // 默认session 会话为1小时
+            long sessionTime = Constants.ONE_HOUR_MILLISECONDS; // 默认session 会话为1小时
             if (rememberMe) {
-                sessionTime = Constants.SESSION_TIME_OUT * 60 * 1000;
+                sessionTime = Constants.SESSION_TIME_OUT_SECOND;
             }
             String dataBasePassword = studentInfo.getPassword();
             String encrypt = studentInfo.getEncrypt();

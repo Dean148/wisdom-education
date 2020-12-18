@@ -1,5 +1,7 @@
 package com.education.common.constants;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 系统常量类
  * @author zengjintao
@@ -18,6 +20,9 @@ public final class Constants {
     public static final String SESSION_NAME = "u_id_key";
     public static final String DEFAULT_SESSION_ID = "JSESSIONID";
     public static final int SESSION_TIME_OUT = 24 * 60 * 60 * 5;
+
+    public static final int ONE_HOUR_MILLISECONDS = 24 * 60 * 60 * 1000;
+
     public static final long SESSION_TIME_OUT_SECOND = SESSION_TIME_OUT * 1000;
     public static final int ONE_DAY = 24 * 60;
 
