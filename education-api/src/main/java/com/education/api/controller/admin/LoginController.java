@@ -80,7 +80,7 @@ public class LoginController extends BaseController {
 
         if (result.isSuccess()) {
             Integer adminUserId = systemAdminService.getAdminUserId();
-            String token = adminJwtToken.createToken(adminUserId, Constants.SESSION_TIME_OUT * 1000); // 默认缓存5天
+            String token = adminJwtToken.createToken(adminUserId, Constants.SESSION_TIME_OUT_MILLISECONDS); // 默认缓存5天
             AdminUserSession userSession = systemAdminService.getAdminUserSession();
             systemAdminService.loadUserMenuAndPermission(userSession);
             String sessionId = request.getSession().getId();
