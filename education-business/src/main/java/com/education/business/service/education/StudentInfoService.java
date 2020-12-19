@@ -99,14 +99,14 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
 
             String password = userLoginRequest.getPassword();
             boolean rememberMe = userLoginRequest.isChecked(); // 是否记住密码
-            long sessionTime = Constants.ONE_HOUR_SECOND; // 默认session 会话为1小时
+            long sessionTime = Constants.TWO_HOUR_SECOND; // 默认session 会话为2小时 (单位秒)
             if (rememberMe) {
-                sessionTime = Constants.SESSION_TIME_OUT_SECOND;
+                sessionTime = Constants.SESSION_TIME_OUT;
             }
             String dataBasePassword = studentInfo.getPassword();
             String encrypt = studentInfo.getEncrypt();
             if (dataBasePassword.equals(Md5Utils.getMd5(password, encrypt))) {
-                String token = studentJwtToken.createToken(studentInfo.getId(), sessionTime); // 默认缓存5天
+                String token = studentJwtToken.createToken(studentInfo.getId(), sessionTime * 1000); // 默认缓存5天
                 this.cacheStudentInfoSession(studentInfo, token, sessionTime);
                 Kv kv = Kv.create().set("name", studentInfo.getName())
                         .set("token", token)
