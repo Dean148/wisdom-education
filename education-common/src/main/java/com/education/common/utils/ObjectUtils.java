@@ -179,4 +179,10 @@ public class ObjectUtils {
 		}
 		return new PageInfo(data.subList(offset, limit), totalPage, totalRow);
 	}
+
+	public static String charSort(String value) {
+		char[] c = value.toCharArray(); //将字符串转换成char数组
+		Arrays.sort(c);//对数组进行排序
+		return new String(c); //返回数组。注
+	}
 }

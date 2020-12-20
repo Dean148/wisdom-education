@@ -101,8 +101,13 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             String studentAnswer = item.getStudentAnswer();
             // 验证试题是否为客观题 // 教师评分直接跳过客观题
             if (isObjectiveQuestion(item.getQuestionType()) && !studentQuestionRequest.isTeacherCorrectFlag()) {
-                String questionAnswer = item.getAnswer();
-                if (questionAnswer.equals(studentAnswer)) {
+                String questionAnswer = item.getAnswer().replaceAll(",", "");
+                String studentAnswerProxy = null;
+                if (ObjectUtils.isNotEmpty(studentAnswer)) {
+                    studentAnswerProxy = ObjectUtils.charSort(studentAnswer.replaceAll(",", ""));
+                }
+                // 此处需要注意多选题 答案排序问题  例如前端传递过来的答案为B,A,C, 而答案为A,B,C
+                if (questionAnswer.equals(studentAnswerProxy)) {
                     studentQuestionAnswer.setMark(item.getQuestionMark());
                     systemMark += item.getQuestionMark();
                     rightNumber++;
