@@ -68,6 +68,11 @@ Jfinal Weixin | 2.3
 
 ### 小程序及app
  - 项目源码地址：  https://gitee.com/zhuimengshaonian/education-app (功能开发中，敬请期待。。。)
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1221/154809_080680e2_1526010.jpeg "QQ图片20201221154646.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1221/154818_7c275efc_1526010.jpeg "QQ图片20201221154703.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1221/154831_32f292e7_1526010.jpeg "QQ图片20201221154716.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1221/154841_0159e6bd_1526010.jpeg "QQ图片20201221154724.jpg")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1221/154850_46395ade_1526010.jpeg "QQ图片20201221154729.jpg")
 ### 智慧云智能教育系统交流群（加群获取项目正式部署教程和免费视频教程）
 
  -  **QQ交流群 1072042422** 
