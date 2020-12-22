@@ -105,10 +105,13 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
             String encrypt = studentInfo.getEncrypt();
             if (dataBasePassword.equals(Md5Utils.getMd5(password, encrypt))) {
                 String token = studentJwtToken.createToken(studentInfo.getId(), sessionTime * 1000); // 默认缓存5天
+                GradeInfo gradeInfo = gradeInfoService.getById(studentInfo.getGradeInfoId());
                 this.cacheStudentInfoSession(studentInfo, token, sessionTime);
                 Kv kv = Kv.create().set("name", studentInfo.getName())
                         .set("token", token)
+                        .set("gradeInfoId", gradeInfo.getId())
                         .set("headImg", studentInfo.getHeadImg())
+                        .set("gradeInfoName", gradeInfo.getName())
                         .set("id", studentInfo.getId());
                 return Result.success(ResultCode.SUCCESS, "登录成功", kv);
             } else {
@@ -162,5 +165,10 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
                 .eq(StudentInfo::getId, studentInfo.getId());
         super.update(updateWrapper);
         return new ResultCode(ResultCode.SUCCESS, "密码修改成功,退出后请使用新密码进行登录");
+    }
+
+    public boolean updateInfo(StudentInfo studentInfo) {
+        studentInfo.setId(getStudentInfo().getId());
+        return super.updateById(studentInfo);
     }
 }

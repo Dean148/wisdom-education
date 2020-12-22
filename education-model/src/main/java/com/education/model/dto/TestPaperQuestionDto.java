@@ -1,5 +1,6 @@
 package com.education.model.dto;
 
+import com.education.common.constants.EnumConstants;
 import com.education.model.entity.TestPaperQuestionInfo;
 
 /**
@@ -14,7 +15,14 @@ public class TestPaperQuestionDto extends TestPaperQuestionInfo {
     private String options;
     private String answer;
     private Integer updateType; // 更新字段
+    private String questionTypeName;
 
+    public String getQuestionTypeName() {
+        if (questionType != null) {
+            return EnumConstants.QuestionType.getName(this.questionType);
+        }
+        return questionTypeName;
+    }
 
     public void setOptions(String options) {
         this.options = options;

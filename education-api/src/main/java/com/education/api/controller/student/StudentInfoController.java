@@ -8,6 +8,7 @@ import com.education.common.utils.RequestUtils;
 import com.education.common.utils.Result;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.dto.StudentInfoSession;
+import com.education.model.entity.StudentInfo;
 import com.education.model.request.UserLoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,5 +59,15 @@ public class StudentInfoController extends BaseController {
     public Result updatePassword(@RequestBody StudentInfoDto studentInfoDto) {
         return Result.success(studentInfoService.updatePassword(studentInfoDto.getPassword(),
                 studentInfoDto.getNewPassword(), studentInfoDto.getConfirmPassword()));
+    }
+
+    /**
+     * 修改个人资料
+     * @param studentInfo
+     * @return
+     */
+    @PostMapping("updateStudentInfo")
+    public Result updateInfo(@RequestBody StudentInfo studentInfo) {
+        return Result.success(studentInfoService.updateInfo(studentInfo));
     }
 }
