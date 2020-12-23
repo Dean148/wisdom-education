@@ -59,7 +59,7 @@ public class TestPaperInfoController extends BaseController {
      */
     @PostMapping("commitPaper")
     public Result commitPaper(@RequestBody StudentQuestionRequest studentQuestionRequest) {
-        examInfoService.commitTestPaperInfoQuestion(studentQuestionRequest);
-        return Result.success(ResultCode.SUCCESS, "提交成功");
+        Integer examInfoId = examInfoService.commitTestPaperInfoQuestion(studentQuestionRequest);
+        return Result.success(ResultCode.SUCCESS, "提交成功", examInfoId);
     }
 }

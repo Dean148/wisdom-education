@@ -47,4 +47,14 @@ public class ExamInfoController extends BaseController {
         Integer studentId = examInfoService.getStudentInfo().getId();
         return Result.success(examInfoService.selectExamQuestionAnswer(studentId, examInfoId));
     }
+
+    /**
+     * 获取考试结果
+     * @param examInfoId
+     * @return
+     */
+    @GetMapping("selectExamInfo/{id}")
+    public Result<StudentExamInfoDto> selectExamInfo(@PathVariable("id") Integer examInfoId) {
+        return Result.success(examInfoService.getExamInfoById(examInfoId));
+    }
 }

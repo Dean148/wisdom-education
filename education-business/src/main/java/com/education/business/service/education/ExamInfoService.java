@@ -74,12 +74,12 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     }
 
     @Transactional
-    public void commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
+    public Integer commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
         Integer studentId = getStudentInfo().getId();
-        this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentId, new ExamInfo());
+        return this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentId, new ExamInfo());
     }
 
-    private void batchSaveStudentQuestionAnswer(StudentQuestionRequest studentQuestionRequest,
+    private Integer batchSaveStudentQuestionAnswer(StudentQuestionRequest studentQuestionRequest,
                                                 Integer studentId, ExamInfo examInfo) {
         Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
         Date now = new Date();
@@ -206,11 +206,12 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         studentQuestionAnswerList.stream().forEach(item -> item.setExamInfoId(examInfo.getId()));
         // 批量保存学员试题答案
         studentQuestionAnswerService.saveBatch(studentQuestionAnswerList);
+        return examInfo.getId();
     }
 
 
     public QuestionGroupResponse selectExamQuestionAnswer(Integer studentId, Integer examInfoId) {
-        StudentExamInfoDto studentExamInfoDto = baseMapper.selectById(examInfoId);
+        StudentExamInfoDto studentExamInfoDto = this.getExamInfoById(examInfoId);
         List<QuestionInfoAnswer> examQuestionAnswerList = studentQuestionAnswerService
                 .getQuestionAnswerByExamInfoId(studentId, examInfoId);
         List<QuestionGroupItemResponse> list = questionInfoService.groupQuestion(examQuestionAnswerList);
@@ -219,6 +220,10 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         examQuestionResponse.setTotalQuestion(list.size());
         examQuestionResponse.setStudentExamInfoDto(studentExamInfoDto);
         return examQuestionResponse;
+    }
+
+    public StudentExamInfoDto getExamInfoById(Integer examInfoId) {
+        return baseMapper.selectById(examInfoId);
     }
 
     /**

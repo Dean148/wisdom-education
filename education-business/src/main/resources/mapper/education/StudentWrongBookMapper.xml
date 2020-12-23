@@ -9,6 +9,7 @@
         question.options,
         question.analysis,
         question.answer,
+        question.video_url,
         question.question_type,
         wrong_book.student_answer,
         subject.id subject_id,
