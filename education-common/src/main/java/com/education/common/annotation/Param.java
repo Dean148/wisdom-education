@@ -31,7 +31,7 @@ public @interface Param {
      * 需要校验的字段
      * @return
      */
-    Property[] property();
+    Property[] property() default {};
 
     /**
      * 校验类型
