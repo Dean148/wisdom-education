@@ -231,4 +231,11 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImp
        }
        return null;
     }
+
+    public Integer getStudentId() {
+        if (this.getStudentInfo() != null) {
+            return this.getStudentInfo().getId();
+        }
+        return null;
+    }
 }

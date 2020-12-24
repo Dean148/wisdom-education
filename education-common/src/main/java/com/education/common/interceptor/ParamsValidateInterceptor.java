@@ -4,6 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
+import com.education.common.annotation.Property;
+import com.education.common.interceptor.validate.DefaultValidate;
+import com.education.common.interceptor.validate.Validate;
+import com.education.common.interceptor.validate.ValidateBuilder;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RegexUtils;
 import com.education.common.utils.Result;
@@ -41,6 +45,8 @@ public class ParamsValidateInterceptor extends BaseInterceptor {
                                ParamsType paramsType) {
         Map dataMap = null;
         boolean isJsonData = false;
+
+        // Validate validate = new DefaultValidate();
         if (paramsType == ParamsType.JSON_DATA) {
             String data = readData(request);
             dataMap = JSONObject.parseObject(data);
@@ -58,13 +64,21 @@ public class ParamsValidateInterceptor extends BaseInterceptor {
                 renderJson(response, Result.fail(param.errorCode(), param.message()));
                 return false;
             } else {
-                String regexp = param.regexp();
-                if (ObjectUtils.isNotEmpty(param.regexp())) {
-                    boolean regexpFlag = RegexUtils.compile(regexp, value);
-                    if (!regexpFlag) {
-                        renderJson(response, Result.fail(param.errorCode(), param.regexpMessage()));
-                        return false;
-                    }
+                Property[] property = param.property();
+               // ValidateBuilder.build();
+                // 获取字段值类型
+                Class paramValueClazz = value.getClass();
+                if (property != null) {
+
+                }
+            }
+
+            String regexp = param.regexp();
+            if (ObjectUtils.isNotEmpty(param.regexp())) {
+                boolean regexpFlag = RegexUtils.compile(regexp, value);
+                if (!regexpFlag) {
+                    renderJson(response, Result.fail(param.errorCode(), param.regexpMessage()));
+                    return false;
                 }
             }
         }

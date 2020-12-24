@@ -7,6 +7,16 @@
         left join grade_info grade on paper.grade_info_id = grade.id
         left join subject_info subject on paper.subject_id = subject.id
         <where>
+
+            <if test="testPaperInfo.gradeInfoId != null">
+                and paper.grade_info_id = #{testPaperInfo.gradeInfoId}
+            </if>
+
+            <if test="testPaperInfo.name != null and testPaperInfo.name != ''">
+                <bind name="name" value="'%' + testPaperInfo.name+ '%'"/>
+                and paper.name like #{name}
+            </if>
+
             <if test="testPaperInfo.subjectId != null">
                 and paper.subject_id = #{testPaperInfo.subjectId}
             </if>

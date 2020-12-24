@@ -28,6 +28,12 @@ public @interface Param {
     String message();
 
     /**
+     * 需要校验的字段
+     * @return
+     */
+    Property[] property();
+
+    /**
      * 校验类型
      * @return
      */
@@ -44,4 +50,10 @@ public @interface Param {
      * @return
      */
     String regexpMessage() default "";
+
+    /**
+     * 字段类型
+     * @return
+     */
+    /*Class<?> clazzType() default String.class;*/
 }

@@ -1,6 +1,5 @@
 package com.education.business.service.education;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.service.BaseService;
@@ -23,7 +22,6 @@ import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
 import com.education.model.response.*;
 import com.jfinal.kit.Kv;
-import org.aspectj.weaver.ast.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,8 +45,6 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     private QuestionInfoService questionInfoService;
     @Autowired
     private TestPaperInfoService testPaperInfoService;
-    @Autowired
-    private WebSocketMessageService webSocketMessageService;
 
     /**
      * 后台考试列表
@@ -69,6 +65,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
      * @return
      */
     public PageInfo<StudentExamInfoDto> selectStudentExamInfoList(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
+        studentExamInfoDto.setStudentId(getStudentId());
         Page<StudentExamInfoDto> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
         return selectPage(baseMapper.selectStudentExamList(page, studentExamInfoDto));
     }
@@ -103,11 +100,12 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             if (isObjectiveQuestion(item.getQuestionType()) && !studentQuestionRequest.isTeacherCorrectFlag()) {
                 String questionAnswer = item.getAnswer().replaceAll(",", "");
                 String studentAnswerProxy = null;
+                String questionAnswerProxy = ObjectUtils.charSort(questionAnswer);
                 if (ObjectUtils.isNotEmpty(studentAnswer)) {
                     studentAnswerProxy = ObjectUtils.charSort(studentAnswer.replaceAll(",", ""));
                 }
                 // 此处需要注意多选题 答案排序问题  例如前端传递过来的答案为B,A,C, 而答案为A,B,C
-                if (questionAnswer.equals(studentAnswerProxy)) {
+                if (questionAnswerProxy.equals(studentAnswerProxy)) {
                     studentQuestionAnswer.setMark(item.getQuestionMark());
                     systemMark += item.getQuestionMark();
                     rightNumber++;
