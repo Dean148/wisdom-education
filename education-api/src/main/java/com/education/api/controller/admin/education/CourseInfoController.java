@@ -1,6 +1,9 @@
 package com.education.api.controller.admin.education;
 
 import com.education.business.service.education.CourseInfoService;
+import com.education.common.annotation.Param;
+import com.education.common.annotation.ParamsType;
+import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.model.entity.CourseInfo;
@@ -41,6 +44,13 @@ public class CourseInfoController extends BaseController {
      * @return
      */
     @PostMapping("saveOrUpdate")
+    @ParamsValidate(params = {
+        @Param(name = "name", message = "请输入课程名称"),
+        @Param(name = "headImg", message = "请上传课程封面"),
+        @Param(name = "schoolType", message = "请选择课程阶段"),
+        @Param(name = "gradeInfoId", message = "请选择年级"),
+        @Param(name = "subjectId", message = "请选择所属科目")
+    }, paramsType = ParamsType.JSON_DATA)
     @RequiresPermissions(value = {"system:course:save", "system:course:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody CourseInfo courseInfo) {
         courseInfoService.saveOrUpdate(courseInfo);

@@ -14,9 +14,34 @@ import java.lang.annotation.*;
 public @interface Param {
 
     int errorCode() default 0; //返回码
+
+    /**
+     * 校验字段名
+     * @return
+     */
     String name();
+
+    /**
+     * 返回提示
+     * @return
+     */
     String message();
 
-    String regexp() default ""; // 参数校验正则
-    String regexpMessage() default ""; // 参数校验正则校验失败错误提示
+    /**
+     * 校验类型
+     * @return
+     */
+    ValidateType validateType() default ValidateType.SAVE;
+
+    /**
+     * 参数校验正则
+     * @return
+     */
+    String regexp() default "";
+
+    /**
+     * 参数校验正则校验失败错误提示
+     * @return
+     */
+    String regexpMessage() default "";
 }
