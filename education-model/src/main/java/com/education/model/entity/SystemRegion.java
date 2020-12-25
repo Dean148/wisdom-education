@@ -1,70 +1,49 @@
 package com.education.model.entity;
 
-import java.util.Date;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 
-public class  SystemRegion{
+@TableName("system_region")
+public class SystemRegion extends BaseEntity<SystemRegion> {
 
-	private int id;
-
+	@TableField("parent_code")
 	private String parentCode;
-
 	private String code;
 
 	private String name;
 
+	@TableField("full_name")
 	private String fullName;
 
-	private Date createDate;
-
-	private Date updateDate;
-
-	public void setId(int id){
-		this.id = id;
+	public String getParentCode() {
+		return parentCode;
 	}
 
-	public  int  getId(){
-		return	id;
-	}
-	public void setParentCode(String parentCode){
+	public void setParentCode(String parentCode) {
 		this.parentCode = parentCode;
 	}
 
-	public  String  getParentCode(){
-		return	parentCode;
+	public String getCode() {
+		return code;
 	}
-	public void setCode(String code){
+
+	public void setCode(String code) {
 		this.code = code;
 	}
 
-	public  String  getCode(){
-		return	code;
+	public String getName() {
+		return name;
 	}
-	public void setName(String name){
+
+	public void setName(String name) {
 		this.name = name;
 	}
 
-	public  String  getName(){
-		return	name;
+	public String getFullName() {
+		return fullName;
 	}
-	public void setFullName(String fullName){
+
+	public void setFullName(String fullName) {
 		this.fullName = fullName;
-	}
-
-	public  String  getFullName(){
-		return	fullName;
-	}
-	public void setCreateDate(Date createDate){
-		this.createDate = createDate;
-	}
-
-	public  Date  getCreateDate(){
-		return	createDate;
-	}
-	public void setUpdateDate(Date updateDate){
-		this.updateDate = updateDate;
-	}
-
-	public  Date  getUpdateDate(){
-		return	updateDate;
 	}
 }

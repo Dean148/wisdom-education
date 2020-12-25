@@ -41,6 +41,17 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         return selectPage(baseMapper.selectPageList(page, studentInfo));
     }
 
+    @Override
+    public boolean saveOrUpdate(StudentInfo studentInfo) {
+        if (studentInfo.getId() == null) {
+            String encrypt = Md5Utils.encodeSalt(Md5Utils.generatorKey());
+            String password = Md5Utils.getMd5(studentInfo.getPassword(), encrypt); //生成默认密码
+            studentInfo.setPassword(password);
+            studentInfo.setEncrypt(encrypt);
+        }
+        return super.saveOrUpdate(studentInfo);
+    }
+
     public void updatePassword(StudentInfoDto studentInfoDto) {
         String password = studentInfoDto.getPassword();
         String encrypt = studentInfoDto.getEncrypt();
