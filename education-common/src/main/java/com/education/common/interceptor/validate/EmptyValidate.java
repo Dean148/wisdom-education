@@ -1,16 +1,18 @@
 package com.education.common.interceptor.validate;
 
-import java.util.Map;
+
 
 /**
+ * 非空参数校验
  * @author zengjintao
  * @version 1.0
  * @create_at 2020/12/24 12:14
  */
-public class DefaultValidate extends AbstractValidate {
+public class EmptyValidate extends AbstractValidate {
+
 
     @Override
-    boolean doValidateEvent(Map<String, Object> params) {
+    public boolean validate() {
         return false;
     }
 }

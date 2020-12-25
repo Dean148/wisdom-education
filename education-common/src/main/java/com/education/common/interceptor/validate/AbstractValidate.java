@@ -1,6 +1,5 @@
 package com.education.common.interceptor.validate;
 
-import java.util.Map;
 
 /**
  * @author zengjintao
@@ -9,10 +8,14 @@ import java.util.Map;
  */
 public abstract class AbstractValidate implements Validate {
 
+    private Object paramValue;
+
     @Override
-    public boolean validateEvent() {
-        return false;
+    public void setParamValue(Object paramValue) {
+        this.paramValue = paramValue;
     }
 
-    abstract boolean doValidateEvent(Map<String, Object> params);
+    protected Object getParamValue() {
+        return paramValue;
+    }
 }

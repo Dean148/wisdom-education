@@ -7,11 +7,18 @@ package com.education.common.interceptor.validate;
  */
 public interface Validate {
 
+
+    void setParamValue(Object paramValue);
+
     /**
-     * 校验是否通过
+     * 参数校验方法
      * @return
      */
-    default boolean validateEvent() {
-       return false;
+    boolean validate();
+
+
+    default void setValidateProperty() {
+
     }
+
 }

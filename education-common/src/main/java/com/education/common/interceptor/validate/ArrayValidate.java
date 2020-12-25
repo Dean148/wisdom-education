@@ -1,6 +1,6 @@
 package com.education.common.interceptor.validate;
 
-import java.util.Map;
+
 
 /**
  * 数组类型校验
@@ -11,12 +11,13 @@ import java.util.Map;
 public class ArrayValidate extends AbstractValidate {
 
 
-    public ArrayValidate(String jsonParam) {
-        super(jsonParam);
+    @Override
+    public boolean validate() {
+        return false;
     }
 
     @Override
-    boolean doValidateEvent(Map<String, Object> params) {
-        return false;
+    public void setValidateProperty() {
+
     }
 }

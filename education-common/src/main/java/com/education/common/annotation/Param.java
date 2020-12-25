@@ -50,10 +50,4 @@ public @interface Param {
      * @return
      */
     String regexpMessage() default "";
-
-    /**
-     * 字段类型
-     * @return
-     */
-    /*Class<?> clazzType() default String.class;*/
 }

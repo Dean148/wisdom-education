@@ -5,9 +5,8 @@ import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
 import com.education.common.annotation.Property;
-import com.education.common.interceptor.validate.DefaultValidate;
 import com.education.common.interceptor.validate.Validate;
-import com.education.common.interceptor.validate.ValidateBuilder;
+import com.education.common.interceptor.validate.ValidateManager;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RegexUtils;
 import com.education.common.utils.Result;
@@ -60,6 +59,12 @@ public class ParamsValidateInterceptor extends BaseInterceptor {
             } else if (isJsonData && dataMap != null) {
                 value = dataMap.get(name);
             }
+           /* ValidateManager validateManager = ValidateManager.build();
+            Validate validate = validateManager.getValidate(value);
+            if (validate.validate()) {
+
+            }*/
+
             if (ObjectUtils.isEmpty(value)) {
                 renderJson(response, Result.fail(param.errorCode(), param.message()));
                 return false;
