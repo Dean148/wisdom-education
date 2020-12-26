@@ -1,5 +1,11 @@
 package com.education.common.interceptor.validate;
 
+import com.education.common.annotation.Param;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
 /**
  * @author zengjintao
  * @version 1.0
@@ -8,17 +14,25 @@ package com.education.common.interceptor.validate;
 public interface Validate {
 
 
-    void setParamValue(Object paramValue);
-
     /**
-     * 参数校验方法
+     * 判断value 类型
+     * @param paramValue
      * @return
      */
-    boolean validate();
+    boolean supportParamType(Object paramValue);
 
+    /**
+     * 执行参数校验
+     * @param request
+     * @param response
+     * @param errorCode
+     * @param errorMsg
+     * @param paramValue
+     */
+    void validateParam(HttpServletRequest request, HttpServletResponse response,
+                       Integer errorCode, String errorMsg, Object paramValue);
 
-    default void setValidateProperty() {
+    void setParam(Param param);
 
-    }
-
+    Param getParam();
 }

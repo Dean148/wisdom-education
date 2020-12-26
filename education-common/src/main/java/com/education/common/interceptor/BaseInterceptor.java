@@ -1,6 +1,5 @@
 package com.education.common.interceptor;
 
-import com.alibaba.fastjson.JSONObject;
 import com.education.common.model.JwtToken;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
@@ -11,9 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 
 /**
  * @author zengjintao
@@ -22,29 +18,7 @@ import java.io.PrintWriter;
  */
 public abstract class BaseInterceptor implements HandlerInterceptor {
 
-
-    private static final String contentType = "application/json; charset=utf-8";
-    private static final String contentTypeForIE = "text/html; charset=utf-8";
-    private boolean forIE = false;
     private static final Logger logger = LoggerFactory.getLogger(BaseInterceptor.class);
-
-
-    protected void renderJson(HttpServletResponse response, Result result) {
-        String dataJson = JSONObject.toJSONString(result);
-        PrintWriter writer = null;
-        try {
-            response.setHeader("Pragma", "no-cache");
-            response.setHeader("Cache-Control", "no-cache");
-            response.setDateHeader("Expires", 0);
-            response.setContentType(forIE ? contentTypeForIE : contentType);
-            writer = response.getWriter();
-            writer.write(dataJson);
-            writer.flush();
-            return;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * 校验token 是否合法
@@ -59,7 +33,7 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
         String userId = jwtToken.parseTokenToString(token);
         if (ObjectUtils.isEmpty(token) || ObjectUtils.isEmpty(userId)) { //token不存在 或者token失效
             logger.warn("token 不存在或者token已失效");
-            renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE, "用户未认证"));
+            Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE, "用户未认证"));
             return false;
         }
         return true;

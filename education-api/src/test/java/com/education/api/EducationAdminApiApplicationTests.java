@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -31,16 +32,23 @@ public class EducationAdminApiApplicationTests {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
     private SystemAdminService systemAdminService;
 
     @Test
     public void check() {
-        SystemAdmin systemAdmin = new SystemAdmin();
+        redisTemplate.boundHashOps("userId").increment("user:1", 1);
+
+        System.out.println(redisTemplate.boundHashOps("userId").get("user:1"));
+       // redisTemplate.opsForValue().b
+       /* SystemAdmin systemAdmin = new SystemAdmin();
         systemAdmin.setLoginName("admin");
         systemAdmin.setEncrypt("1111");
         systemAdmin.setPassword("12222");
         systemAdmin.setCreateType(2);
-        systemAdminService.saveOrUpdate(systemAdmin);
+        systemAdminService.saveOrUpdate(systemAdmin);*/
     }
 
     @Test

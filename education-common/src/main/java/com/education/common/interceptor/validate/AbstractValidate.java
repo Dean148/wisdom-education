@@ -1,6 +1,8 @@
 package com.education.common.interceptor.validate;
 
 
+import com.education.common.annotation.Param;
+
 /**
  * @author zengjintao
  * @version 1.0
@@ -8,14 +10,13 @@ package com.education.common.interceptor.validate;
  */
 public abstract class AbstractValidate implements Validate {
 
-    private Object paramValue;
+    private Param param;
 
-    @Override
-    public void setParamValue(Object paramValue) {
-        this.paramValue = paramValue;
+    public void setParam(Param param) {
+        this.param = param;
     }
 
-    protected Object getParamValue() {
-        return paramValue;
+    public Param getParam() {
+        return param;
     }
 }

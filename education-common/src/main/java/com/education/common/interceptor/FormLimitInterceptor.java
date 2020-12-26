@@ -37,7 +37,7 @@ public class FormLimitInterceptor extends BaseInterceptor {
                 if (!flag) {
                     String message = formLimit.message();
                     if (ObjectUtils.isNotEmpty(message)) {
-                        renderJson(response, Result.fail(formLimit.errorCode(), message));
+                        Result.renderJson(response, Result.fail(formLimit.errorCode(), message));
                     }
                     return false;
                 }

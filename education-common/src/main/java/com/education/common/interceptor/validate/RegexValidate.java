@@ -2,18 +2,19 @@ package com.education.common.interceptor.validate;
 
 
 import com.education.common.utils.ObjectUtils;
+import com.education.common.utils.RegexUtils;
 import com.education.common.utils.Result;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 非空参数校验
+ * 正则表达式校验器
  * @author zengjintao
  * @version 1.0
- * @create_at 2020/12/24 12:14
+ * @create_at 2020/12/25 21:36
  */
-public class EmptyValidate extends AbstractValidate {
-
+public class RegexValidate extends AbstractValidate {
 
     @Override
     public boolean supportParamType(Object paramValue) {
@@ -23,9 +24,12 @@ public class EmptyValidate extends AbstractValidate {
     @Override
     public void validateParam(HttpServletRequest request, HttpServletResponse response,
                               Integer errorCode, String errorMsg, Object paramValue) {
-        if (ObjectUtils.isEmpty(paramValue)) {
-            Result.renderJson(response, Result.fail(errorCode, errorMsg));
-            return;
+        String regexp = getParam().regexp();
+        if (ObjectUtils.isNotEmpty(regexp)) {
+            boolean regexpFlag = RegexUtils.compile(regexp, paramValue);
+            if (!regexpFlag) {
+                Result.renderJson(response, Result.fail(errorCode, errorMsg));
+            }
         }
     }
 }

@@ -1,6 +1,12 @@
 package com.education.common.utils;
 
 
+import com.alibaba.fastjson.JSONObject;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 /**
  * @descript: 返回结果类
  * @Auther: zengjintao
@@ -119,6 +125,24 @@ public final class Result<T> {
     }
 
 
+    static final String contentType = "application/json; charset=utf-8";
+
+    public static void renderJson(HttpServletResponse response, Result result) {
+        String dataJson = JSONObject.toJSONString(result);
+        PrintWriter writer = null;
+        try {
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Cache-Control", "no-cache");
+            response.setDateHeader("Expires", 0);
+            response.setContentType(contentType);
+            writer = response.getWriter();
+            writer.write(dataJson);
+            writer.flush();
+            return;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 }

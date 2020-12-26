@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,12 +46,12 @@ public class ParamsValidateInterceptor extends BaseInterceptor {
         Map dataMap = null;
         boolean isJsonData = false;
 
-        // Validate validate = new DefaultValidate();
         if (paramsType == ParamsType.JSON_DATA) {
             String data = readData(request);
             dataMap = JSONObject.parseObject(data);
             isJsonData = true;
         }
+        //ValidateManager validateManager = ValidateManager.build();
         for (Param param : params) {
             String name = param.name();
             Object value = null;
@@ -59,30 +60,25 @@ public class ParamsValidateInterceptor extends BaseInterceptor {
             } else if (isJsonData && dataMap != null) {
                 value = dataMap.get(name);
             }
-           /* ValidateManager validateManager = ValidateManager.build();
-            Validate validate = validateManager.getValidate(value);
-            if (validate.validate()) {
-
+          /*  List<Validate> validateList = validateManager.getValidateList();
+            for (Validate validate: validateList) {
+                if (validate.supportParamType(value)) {
+                    validate.setParam(param);
+                    validate.validateParam(request, response, param.errorCode(), param.message(), value);
+                }
             }*/
 
-            if (ObjectUtils.isEmpty(value)) {
-                renderJson(response, Result.fail(param.errorCode(), param.message()));
-                return false;
-            } else {
-                Property[] property = param.property();
-               // ValidateBuilder.build();
-                // 获取字段值类型
-                Class paramValueClazz = value.getClass();
-                if (property != null) {
 
-                }
+            if (ObjectUtils.isEmpty(value)) {
+                Result.renderJson(response, Result.fail(param.errorCode(), param.message()));
+                return false;
             }
 
             String regexp = param.regexp();
             if (ObjectUtils.isNotEmpty(param.regexp())) {
                 boolean regexpFlag = RegexUtils.compile(regexp, value);
                 if (!regexpFlag) {
-                    renderJson(response, Result.fail(param.errorCode(), param.regexpMessage()));
+                    Result.renderJson(response, Result.fail(param.errorCode(), param.regexpMessage()));
                     return false;
                 }
             }

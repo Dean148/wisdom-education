@@ -30,7 +30,7 @@ public class StudentAuthInterceptor extends BaseInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         StudentInfoSession studentInfoSession = studentInfoService.getStudentInfoSession();
         if (ObjectUtils.isEmpty(studentInfoSession)) {
-            renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE));
+            Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE));
             return false;
         }
          return checkToken(studentJwtToken, request, response);

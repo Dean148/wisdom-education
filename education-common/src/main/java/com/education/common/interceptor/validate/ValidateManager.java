@@ -1,9 +1,7 @@
 package com.education.common.interceptor.validate;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author zengjintao
@@ -12,24 +10,23 @@ import java.util.Map;
  */
 public class ValidateManager {
 
-    private final Map<String, Validate> validateMap = new HashMap<>();
+    private final List<Validate> validateList = new ArrayList();
 
-    private static ValidateManager validateManager = new ValidateManager();
+    private static final ValidateManager validateManager = new ValidateManager();
 
     private ValidateManager() {
-        registerValidate(String.class, new EmptyValidate());
-        registerValidate(Integer.class, new EmptyValidate());
-        registerValidate(Collection.class, new ArrayValidate());
+        this.registerValidate();
     }
 
-    private void registerValidate(Class<?> typeClass, Validate validate) {
-        this.validateMap.put(typeClass.getName(), validate);
+    private void registerValidate() {
+        validateList.add(new EmptyValidate());
+        validateList.add(new CollectionValidate());
+        validateList.add(new PropertyValidate());
+        validateList.add(new RegexValidate());
     }
 
-    public Validate getValidate(Object paramValue) {
-        Validate validate = validateMap.get(paramValue.getClass());
-        validate.setParamValue(paramValue);
-        return validate;
+    public List<Validate> getValidateList() {
+        return validateList;
     }
 
     public static ValidateManager build() {
