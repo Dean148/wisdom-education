@@ -1,12 +1,13 @@
 package com.education.api.controller.student;
 
 import com.education.business.service.education.StudentInfoService;
+import com.education.common.annotation.FormLimit;
+import com.education.common.annotation.Param;
+import com.education.common.annotation.ParamsType;
+import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
 import com.education.common.constants.Constants;
-import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.RequestUtils;
-import com.education.common.utils.Result;
-import com.education.common.utils.ResultCode;
+import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.dto.StudentInfoSession;
 import com.education.model.entity.StudentInfo;
@@ -68,6 +69,12 @@ public class StudentInfoController extends BaseController {
      * @return
      */
     @PostMapping("updateStudentInfo")
+    @ParamsValidate(params = {
+        @Param(name = "name", message = "请输入姓名"),
+        @Param(name = "age", message = "请输入年龄"),
+        @Param(name = "sex", message = "请选择性别"),
+        @Param(name = "mobile", message = "请输入手机号", regexp = RegexUtils.MOBILE_REGEX, regexpMessage = "非法手机号")
+    }, paramsType = ParamsType.JSON_DATA)
     public Result updateInfo(@RequestBody StudentInfo studentInfo) {
         return Result.success(studentInfoService.updateInfo(studentInfo));
     }

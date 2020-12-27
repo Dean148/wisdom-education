@@ -11,6 +11,7 @@ import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.TestPaperInfoDto;
 import com.education.model.dto.TestPaperQuestionDto;
+import com.education.model.entity.StudentInfo;
 import com.education.model.entity.TestPaperInfo;
 import com.education.model.entity.TestPaperQuestionInfo;
 import com.education.model.request.PageParam;
@@ -40,6 +41,10 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
      */
     public PageInfo<TestPaperInfoDto> selectPageList(PageParam pageParam, TestPaperInfo testPaperInfo) {
         Page<TestPaperInfoDto> page = new Page<>(pageParam.getPageNumber(), pageParam.getPageSize());
+        StudentInfo studentInfo = getStudentInfo();
+        if (studentInfo != null) {
+            testPaperInfo.setGradeInfoId(studentInfo.getGradeInfoId());
+        }
         return selectPage(baseMapper.selectPageList(page, testPaperInfo));
     }
 

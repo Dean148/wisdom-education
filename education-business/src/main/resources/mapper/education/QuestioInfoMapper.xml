@@ -49,6 +49,10 @@
                 and question.subject_id = #{questionInfo.subjectId}
             </if>
 
+            <if test="questionInfo.questionType != null">
+                and question.question_type = #{questionInfo.questionType}
+            </if>
+
             <if test="questionInfo.content != null and questionInfo.content != ''">
                 <bind name="content" value="'%' + questionInfo.content + '%'"/>
                 and question.content like #{content}
