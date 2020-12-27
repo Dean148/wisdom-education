@@ -122,6 +122,10 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
                         .set("token", token)
                         .set("gradeInfoId", gradeInfo.getId())
                         .set("headImg", studentInfo.getHeadImg())
+                        .set("sex", studentInfo.getSex())
+                        .set("age", studentInfo.getAge())
+                        .set("address", studentInfo.getAddress())
+                        .set("mobile", studentInfo.getMobile())
                         .set("gradeInfoName", gradeInfo.getName())
                         .set("id", studentInfo.getId());
                 return Result.success(ResultCode.SUCCESS, "登录成功", kv);

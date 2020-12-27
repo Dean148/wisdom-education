@@ -6,6 +6,7 @@ import com.education.common.constants.Constants;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
 import com.education.common.utils.Result;
+import com.education.common.utils.ResultCode;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.dto.StudentInfoSession;
 import com.education.model.entity.StudentInfo;
@@ -43,11 +44,11 @@ public class StudentInfoController extends BaseController {
     public Result logout() {
         StudentInfoSession userInfoSession = studentInfoService.getStudentInfoSession();
         if (ObjectUtils.isEmpty(userInfoSession)) {
-            return Result.success("退出成功");
+            return Result.success(ResultCode.SUCCESS, "退出成功");
         }
         RequestUtils.clearCookie(Constants.SESSION_NAME);
         cacheBean.remove(Constants.USER_INFO_CACHE, userInfoSession.getToken()); // 删除用户缓存
-        return Result.success("退出成功");
+        return Result.success(ResultCode.SUCCESS, "退出成功");
     }
 
     /**
