@@ -3,19 +3,16 @@ package com.education.core.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.system.SystemDictService;
-import com.education.common.annotation.Param;
-import com.education.common.annotation.ParamsType;
-import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
+import com.education.common.constants.CacheKey;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.Result;
-import com.education.model.entity.SystemAdmin;
 import com.education.model.entity.SystemDict;
 import com.education.model.request.PageParam;
-import com.education.model.request.StudentQuestionRequest;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -33,20 +30,6 @@ public class DictController extends BaseController {
     @Autowired
     private SystemDictService systemDictService;
 
-    @GetMapping("test")
-    @ParamsValidate(params = {
-            @Param(name = "name", message = "请输入课程名称"),
-            @Param(name = "headImg", message = "请上传课程封面"),
-            @Param(
-                name = "questionAnswerList",
-                message = "questionAnswerList不能为空"
-            ),
-            @Param(name = "gradeInfoId", message = "请选择年级"),
-            @Param(name = "subjectId", message = "请选择所属科目")
-    }, paramsType = ParamsType.JSON_DATA)
-    public Result test(@Validated StudentQuestionRequest studentQuestionRequest) {
-        return Result.success();
-    }
 
     /**
      * 字典类型列表
@@ -55,6 +38,7 @@ public class DictController extends BaseController {
      * @return
      */
     @GetMapping
+    @Cacheable(cacheNames = CacheKey.SYSTEM_DICT, keyGenerator = CacheKey.KEY_GENERATOR_BEAN_NAME)
     public Result<PageInfo<SystemDict>> list(PageParam pageParam, SystemDict systemDict) {
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(systemDict)
                 .orderByDesc(SystemDict::getSort);
@@ -64,9 +48,11 @@ public class DictController extends BaseController {
     /**
      * 添加或修改字典类型
      * @param systemDict
+     * allEntries 设置为true 清空所有key
      * @return
      */
     @PostMapping
+    @CacheEvict(cacheNames = CacheKey.SYSTEM_DICT, keyGenerator = CacheKey.KEY_GENERATOR_BEAN_NAME, allEntries = true)
     public Result saveOrUpdate(@RequestBody SystemDict systemDict) {
         systemDictService.saveOrUpdate(systemDict);
         return Result.success();
@@ -78,6 +64,11 @@ public class DictController extends BaseController {
      * @return
      */
     @DeleteMapping("{id}")
+    @CacheEvict(
+        cacheNames = {CacheKey.SYSTEM_DICT, CacheKey.SYSTEM_DICT_VALUE},
+        keyGenerator = CacheKey.KEY_GENERATOR_BEAN_NAME,
+        allEntries = true
+    )
     public Result deleteById(@PathVariable Integer id) {
         systemDictService.deleteById(id);
         return Result.success();

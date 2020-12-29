@@ -45,8 +45,8 @@ public class Md5Utils {
 	 */
 	public static String getMd5(String password){
 		try {
-			MessageDigest digest=MessageDigest.getInstance("md5");
-		    byte[] bytes=digest.digest(password.getBytes());
+			MessageDigest digest = MessageDigest.getInstance("md5");
+		    byte[] bytes = digest.digest(password.getBytes());
 		    return Hex.encodeHexString(bytes);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();

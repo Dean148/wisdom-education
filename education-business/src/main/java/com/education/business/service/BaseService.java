@@ -49,7 +49,7 @@ import java.util.Map;
  * @version 1.0
  * @create_at 2020/3/8 10:40
  */
-public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImpl<M, T> {
+public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudService<M, T> {
 
     @Autowired
     protected TaskManager taskManager;
@@ -61,16 +61,6 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImp
     @Resource
     protected CacheBean ehcacheBean;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    /**
-     * 单表分页查询
-     * @param pageParam
-     * @param entity
-     * @return
-     */
-    public PageInfo<T> selectPage(PageParam pageParam, T entity) {
-        return this.selectPage(pageParam, Wrappers.query(entity));
-    }
 
     /**
      * 判断试题是否客观题
@@ -88,35 +78,7 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends ServiceImp
     }
 
 
-    /**
-     * 条件列表分页查询
-     * @param pageParam
-     * @param queryWrapper
-     * @return
-     */
-    public PageInfo<T> selectPage(PageParam pageParam, Wrapper<T> queryWrapper) {
-        PageInfo<T> pageInfo = new PageInfo();
-        Integer pageNumber = pageParam.getPageNumber();
-        Integer pageSize = pageParam.getPageSize();
-        if (ObjectUtils.isEmpty(pageNumber) && ObjectUtils.isEmpty(pageSize)) {
-            List<T> list = baseMapper.selectList(queryWrapper);
-            pageInfo.setDataList(list);
-            pageInfo.setTotal(ObjectUtils.isEmpty(list) ? 0 : list.size());
-        } else {
-            Page<T> page = new Page<>(pageNumber, pageSize);
-            Page<T> listPage = super.page(page, queryWrapper);
-            pageInfo.setTotal(listPage.getTotal());
-            pageInfo.setDataList(page.getRecords());
-        }
-        return pageInfo;
-    }
 
-    public <V> PageInfo<V> selectPage(Page<V> page) {
-        PageInfo<V> pageInfo = new PageInfo();
-        pageInfo.setTotal(page.getTotal());
-        pageInfo.setDataList(page.getRecords());
-        return pageInfo;
-    }
 
     /**
      * 更新shiro 缓存中的用户信息，避免由于redis 缓存导致获取用户信息不一致问题

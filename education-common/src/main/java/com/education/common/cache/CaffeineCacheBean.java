@@ -73,9 +73,16 @@ public class CaffeineCacheBean implements CacheBean {
     public void put(String cacheName, Object key, Object value, int liveSeconds) {
         Cache cache = getCache(cacheName);
         CaffeineCacheElement caffeineCacheElement = new CaffeineCacheElement(value);
-        caffeineCacheElement.setLiveSeconds(liveSeconds);
+        if (liveSeconds > 0) {
+            caffeineCacheElement.setLiveSeconds(liveSeconds);
+        }
         caffeineCacheElement.setCreateTime(new Date());
         cache.put(key, caffeineCacheElement);
+    }
+
+    @Override
+    public void putValue(String cacheName, Object key, Object value) {
+        this.put(cacheName, key, value, 0);
     }
 
     @Override

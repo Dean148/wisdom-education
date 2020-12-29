@@ -6,6 +6,7 @@ import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -37,14 +38,14 @@ public class CacheBeanConfiguration {
     }
 
     @Bean
-    public CacheManager ehCacheManager(net.sf.ehcache.CacheManager cacheManager) {
+    public CacheManager ehCacheManager(net.sf.ehcache.CacheManager educationCacheManager) {
         EhCacheManager ehCacheManager = new EhCacheManager();
-        ehCacheManager.setCacheManager(cacheManager);
+        ehCacheManager.setCacheManager(educationCacheManager);
         return ehCacheManager;
     }
 
     @Bean
-    public net.sf.ehcache.CacheManager cacheManager() {
+    public net.sf.ehcache.CacheManager educationCacheManager() {
         return net.sf.ehcache.CacheManager.create(this.getClass()
                 .getClassLoader()
                 .getResourceAsStream("ehcache.xml"));

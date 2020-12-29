@@ -66,6 +66,11 @@ public class EhcacheBean implements CacheBean {
         }
     }
 
+    @Override
+    public void putValue(String cacheName, Object key, Object value) {
+        this.put(cacheName, key, value);
+    }
+
     public void put(Object key, Object value) {
         put(DEFAULT_CACHE, key, value);
     }

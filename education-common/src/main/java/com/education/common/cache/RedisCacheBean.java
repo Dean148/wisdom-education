@@ -58,6 +58,11 @@ public class RedisCacheBean implements CacheBean {
     }
 
     @Override
+    public void putValue(String cacheName, Object key, Object value) {
+        this.valueOperations.set(this.createNewKey(cacheName, key), value);
+    }
+
+    @Override
     public Collection getKeys(String cacheName) {
         return this.redisTemplate.keys(cacheName + "*");
     }
