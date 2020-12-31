@@ -1,6 +1,7 @@
 package com.education.model.entity;
 
 
+import cn.afterturn.easypoi.handler.inter.IExcelDataModel;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -16,7 +17,7 @@ import java.util.Date;
  * @version 1.0
  * @create_at 2020/11/12 19:21
  */
-public abstract class BaseEntity<T extends BaseEntity<T>> implements Serializable {
+public abstract class BaseEntity<T extends BaseEntity<T>> implements IExcelDataModel, Serializable {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -29,6 +30,18 @@ public abstract class BaseEntity<T extends BaseEntity<T>> implements Serializabl
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     Date updateDate;
 
+    @TableField(exist = false)
+    private int rowNum;
+
+    @Override
+    public int getRowNum() {
+        return rowNum;
+    }
+
+    @Override
+    public void setRowNum(int rowNum) {
+        this.rowNum = rowNum;
+    }
 
     public void setId(Integer id) {
         this.id = id;

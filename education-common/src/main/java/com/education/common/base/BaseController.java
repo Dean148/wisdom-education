@@ -33,4 +33,12 @@ public abstract class BaseController {
         }
     };
 
+    protected static final Set<String> textTypes = new HashSet<String>() {
+        {
+            add("text/plain");
+        }
+    };
+
+
+
 }
