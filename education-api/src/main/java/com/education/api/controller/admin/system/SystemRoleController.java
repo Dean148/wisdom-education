@@ -1,6 +1,9 @@
 package com.education.api.controller.admin.system;
 
 import com.education.business.service.system.SystemRoleService;
+import com.education.common.annotation.Param;
+import com.education.common.annotation.ParamsType;
+import com.education.common.annotation.ParamsValidate;
 import com.education.common.annotation.SystemLog;
 import com.education.common.base.BaseController;
 import com.education.common.constants.EnumConstants;
@@ -51,7 +54,7 @@ public class SystemRoleController extends BaseController {
     @RequiresPermissions("system:role:savePermission")
     public Result saveRolePermission(@RequestBody RoleMenuDto roleMenuDto) {
         systemRoleService.saveRolePermission(roleMenuDto);
-        return Result.success("权限设置成功");
+        return Result.success(ResultCode.SUCCESS, "权限设置成功");
     }
 
     /**
@@ -61,6 +64,9 @@ public class SystemRoleController extends BaseController {
      */
     @PostMapping
     @RequiresPermissions(value = {"system:role:save", "system:role:update"}, logical = Logical.OR)
+    @ParamsValidate(params = {
+       @Param(name = "name", message = "请输入角色名称")
+    }, paramsType = ParamsType.JSON_DATA)
     public Result saveOrUpdate(@RequestBody SystemRole systemRole) {
         systemRoleService.saveOrUpdate(systemRole);
         return Result.success();

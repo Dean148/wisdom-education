@@ -116,6 +116,9 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
 
         if (ObjectUtils.isEmpty(adminRoleDto.getId())) {
             String password = adminRoleDto.getPassword();
+            if (ObjectUtils.isEmpty(password)) {
+                throw new BusinessException(new ResultCode(ResultCode.FAIL, "请输入密码"));
+            }
             String confirmPassword = adminRoleDto.getConfirmPassword();
             if (!password.equals(confirmPassword)) {
                 throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码与确认密码不一致"));
@@ -196,12 +199,10 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         Collection userIds = cacheBean.getKeys(OnlineUserManager.USER_ID_CACHE);
         userIds.forEach(userId -> {
             AdminUserSession onlineUser = cacheBean.get(userId);
-            adminUserSessionList.add(onlineUser);
+            if (onlineUser != null) {
+                adminUserSessionList.add(onlineUser);
+            }
         });
-
-        /*Set<AdminUserSession> adminUserSessionList = onlineUserList.stream()
-                .map(OnlineUser::getAdminUserSession)
-                .collect(Collectors.toSet());*/
 
         if (ObjectUtils.isNotEmpty(adminUserSessionList)) {
             List<SystemAdmin> systemAdminList = adminUserSessionList.stream()

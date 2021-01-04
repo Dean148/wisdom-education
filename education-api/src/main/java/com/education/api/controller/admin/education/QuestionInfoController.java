@@ -8,6 +8,8 @@ import cn.afterturn.easypoi.handler.inter.IExcelModel;
 import cn.afterturn.easypoi.handler.inter.IExcelVerifyHandler;
 import cn.afterturn.easypoi.util.PoiValidationUtil;
 import com.education.business.service.education.QuestionInfoService;
+import com.education.common.annotation.Param;
+import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
 import com.education.common.constants.EnumConstants;
 import com.education.common.model.QuestionInfoImport;
@@ -62,6 +64,14 @@ public class QuestionInfoController extends BaseController {
      */
     @PostMapping("saveOrUpdate")
     @RequiresPermissions(value = {"system:question:save", "system:question:update"}, logical = Logical.OR)
+    @ParamsValidate(params = {
+        @Param(name = "schoolType", message = "请选择所属阶段"),
+        @Param(name = "gradeInfoId", message = "请选择所属年级"),
+        @Param(name = "subjectId", message = "请选择所属科目"),
+        @Param(name = "questionType", message = "请选择试题类型"),
+        @Param(name = "content", message = "请输入试题内容"),
+        @Param(name = "answer", message = "请输入试题答案")
+    })
     public Result saveOrUpdate(@RequestBody QuestionInfoDto questionInfoDto) {
         return Result.success(questionInfoService.saveOrUpdateQuestionInfo(questionInfoDto));
     }
@@ -98,6 +108,15 @@ public class QuestionInfoController extends BaseController {
     public Result importQuestion(@PathVariable Integer gradeInfoId,
                                  @PathVariable Integer subjectId,
                                  @RequestParam MultipartFile file) {
+
+        if (ObjectUtils.isEmpty(gradeInfoId)) {
+            return Result.fail(ResultCode.FAIL, "请选择导入知识点所属年级");
+        }
+
+        if (ObjectUtils.isEmpty(subjectId)) {
+            return Result.fail(ResultCode.FAIL, "请选择导入知识点所属科目");
+        }
+
         String contentType = file.getContentType();
         if (!excelTypes.contains(contentType) && textTypes.contains(contentType)) {
             return Result.fail(ResultCode.FAIL, "只能导入excel或者txt类型文件");
