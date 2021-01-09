@@ -104,19 +104,17 @@ public class QuestionInfoController extends BaseController {
      * @param file
      * @return
      */
-    @PostMapping("importQuestion/{gradeInfoId}/subjectId")
-    public Result importQuestion(@PathVariable Integer gradeInfoId,
-                                 @PathVariable Integer subjectId,
+    @PostMapping("importQuestion")
+    @ParamsValidate(params = {
+        @Param(name = "schoolType", message = "请选择导入所属阶段"),
+        @Param(name = "gradeInfoId", message = "请选择导入所属年级"),
+        @Param(name = "subjectId", message = "请选择导入所属科目")
+    })
+    public Result importQuestion(
+                                 @RequestParam Integer schoolType,
+                                 @RequestParam Integer gradeInfoId,
+                                 @RequestParam Integer subjectId,
                                  @RequestParam MultipartFile file) {
-
-        if (ObjectUtils.isEmpty(gradeInfoId)) {
-            return Result.fail(ResultCode.FAIL, "请选择导入知识点所属年级");
-        }
-
-        if (ObjectUtils.isEmpty(subjectId)) {
-            return Result.fail(ResultCode.FAIL, "请选择导入知识点所属科目");
-        }
-
         String contentType = file.getContentType();
         if (!excelTypes.contains(contentType) && textTypes.contains(contentType)) {
             return Result.fail(ResultCode.FAIL, "只能导入excel或者txt类型文件");
@@ -142,11 +140,15 @@ public class QuestionInfoController extends BaseController {
                     for (EnumConstants.QuestionType value : EnumConstants.QuestionType.values()) {
                         if (value.equals(questionTypeName)) {
                             flag = true;
+                        } else {
+                            flag = false;
                         }
                     }
                     if (!flag) {
+                        verifyHandlerResult.setSuccess(false);
                         verifyHandlerResult.setMsg("试题类型不正确");
                     }
+                    verifyHandlerResult.setSuccess(true);
                     return verifyHandlerResult;
                 }
             });
@@ -170,7 +172,8 @@ public class QuestionInfoController extends BaseController {
                 return Result.fail(ResultCode.FAIL, errorMsg.toString() + "行数据错误，" +
                         "请根据表格错误提示进行修改后再导入");
             }
-            questionInfoService.importQuestion(gradeInfoId, subjectId, result.getList());
+            questionInfoService.importQuestion(schoolType, gradeInfoId, subjectId, result.getList());
+            return Result.success(ResultCode.SUCCESS, result.getList().size() + "道试题导入成功");
         } catch (Exception e) {
             logger.error("数据导入失败", e);
         }

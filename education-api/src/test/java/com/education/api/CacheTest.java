@@ -1,14 +1,13 @@
 package com.education.api;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.education.common.cache.CaffeineCacheBean;
-import com.education.common.cache.CaffeineCacheElement;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
+import com.education.common.model.QuestionInfoImport;
 import org.junit.Test;
+import java.io.File;
 
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author zengjintao
@@ -16,6 +15,24 @@ import java.util.concurrent.TimeUnit;
  * @create_at 2020/12/17 10:21
  */
 public class CacheTest {
+
+    @Test
+    public void poiTest() throws Exception {
+        File file = new File("F:\\idea\\test.xlsx");
+        ImportParams importParams = new ImportParams();
+        importParams.setNeedVerfiy(true); // 设置需要校验
+        ExcelImportResult<QuestionInfoImport> result = ExcelImportUtil.importExcelMore(file,
+                QuestionInfoImport.class, importParams);
+    }
+
+    @Test
+    public void testParserToken() {
+        String value = "{十点多4554}";
+        value = value.substring("{".length(), value.length() - "|".length());
+        System.out.println(value);
+        System.out.println();
+      //  System.out.println(new DefaultQuestionParser().parserToken("${十点多}, ${{十点多4554}}, ${十点sdsds多4554}") );
+    }
 
     @Test
     public void cache() throws InterruptedException {

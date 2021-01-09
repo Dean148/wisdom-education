@@ -19,8 +19,8 @@ public class QuestionInfo extends BaseEntity<QuestionInfo> implements IExcelData
 	@NotNull(message = "请输入试题答案")
 	private String answer;
 
-	@Excel(name = "试题类型")
-	@NotNull(message = "请输入试题类型")
+	@Excel(name = "试题内容")
+	@NotNull(message = "请输入试题内容")
 	private String content;
 
 	@TableField("school_type")

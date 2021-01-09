@@ -144,13 +144,21 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
         return true;
     }
 
-    public void importQuestion(Integer gradeInfoId, Integer subjectId, List<QuestionInfo> questionInfoList) {
+    public void importQuestion(Integer schoolType, Integer gradeInfoId, Integer subjectId, List<QuestionInfo> questionInfoList) {
         questionInfoList.forEach(questionInfo -> {
+            for (EnumConstants.QuestionType item : EnumConstants.QuestionType.values()) {
+                if (item.getName().equals(questionInfo.getQuestionTypeName())) {
+                    questionInfo.setQuestionType(item.getValue());
+                    break;
+                }
+            }
             ExcelQuestionParser excelQuestionParser = ExcelQuestionParserManager.build()
                     .createExcelQuestionParser(questionInfo.getQuestionType());
             questionInfo.setAnswer(excelQuestionParser.parseAnswerText(questionInfo.getAnswer()));
-            questionInfo.setOptions(excelQuestionParser.parseAnswerText(questionInfo.getOptions()));
+            questionInfo.setOptions(excelQuestionParser.parseOptionText(questionInfo.getOptions()));
             questionInfo.setGradeInfoId(gradeInfoId);
+            questionInfo.setSchoolType(schoolType);
+            questionInfo.setCreateDate(new Date());
             questionInfo.setSubjectId(subjectId);
         });
         super.saveBatch(questionInfoList);

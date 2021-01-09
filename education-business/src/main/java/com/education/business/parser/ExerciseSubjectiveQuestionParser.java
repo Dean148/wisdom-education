@@ -12,10 +12,10 @@ public class ExerciseSubjectiveQuestionParser extends DefaultQuestionParser {
 
     @Override
     public String parseAnswerText(String answer) {
-        if (ObjectUtils.isEmpty(answer)) {
-            return super.parseAnswerText(answer);
+        if (ObjectUtils.isNotEmpty(answer)) {
+            String[] answerArray = super.parserToken(answer);
+            return jackson.toJson(answerArray);
         }
-        return super.parserToken(answer);
+        return null;
     }
-
 }

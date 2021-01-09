@@ -1,9 +1,6 @@
 package com.education.common.utils;
 
-
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.common.model.PageInfo;
-
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -69,6 +66,13 @@ public class ObjectUtils {
 		if (str == null)
 			throw new NullPointerException("str can not be null");
 		return str.split(",");
+	}
+
+	public static List<String> spiltToList(String str) {
+		if (str == null)
+			throw new NullPointerException("str can not be null");
+		String[] array = str.split(",");
+		return Arrays.asList(array);
 	}
 
 	public static String[] spilt(String str, String separator) {

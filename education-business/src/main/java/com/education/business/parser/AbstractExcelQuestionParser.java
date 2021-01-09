@@ -3,6 +3,10 @@ package com.education.business.parser;
 import com.education.common.utils.ObjectUtils;
 import com.jfinal.json.Jackson;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author zengjintao
  * @version 1.0
@@ -23,11 +27,21 @@ public abstract class AbstractExcelQuestionParser implements ExcelQuestionParser
         return openToken;
     }
 
-    protected String parserToken(String text) {
+   protected String[] parserToken(String text) {
         if (text.startsWith(openToken) && endToken.endsWith(endToken)) {
             String[] answerArray = ObjectUtils.spilt(text);
-            return jackson.toJson(answerArray);
+            for (int i = 0; i < answerArray.length; i++) {
+                String item = answerArray[i];
+                int length = item.length();
+                if (i > 0) {
+                    answerArray[i] = item.substring(openToken.length() + 1, length - endToken.length());
+                } else {
+                    answerArray[i] = item.substring(openToken.length(), length - endToken.length());
+                }
+            }
+            return answerArray;
         }
-        return parseAnswerText(text);
+        return null;
     }
+
 }

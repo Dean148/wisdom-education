@@ -12,6 +12,6 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface MessageInfoMapper extends BaseMapper<MessageInfo> {
 
-    @Select("select count(1) number from message_info where read_flag = 0 and student_id = #{studentId}")
+    @Select("select count(0) number from message_info where read_flag = 0 and student_id = #{studentId}")
     long countUnReadMessage(@Param("studentId") Integer studentId);
 }
