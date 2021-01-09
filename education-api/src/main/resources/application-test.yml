@@ -55,8 +55,5 @@ weChat:
   appId: wx7874d0c23d07e2aa
   token: education
   appSecret: e03f5ab03906d4d943675c233d4c3cb3
-mybatis:
-  config-location: classPath:mybatis/mybatis-config.xml
-  mapper-locations: xml/**/*.xml
 logging:
   file:  /root/jar/education.log

@@ -1,10 +1,6 @@
 server:
   port: 8001
-  tomcat:
-    max-http-header-size: 10240000
-    accesslog:
-      directory: logs
-    basedir: /root/logs
+
 ## spring jdbc配置
 spring:
   redis:
@@ -14,15 +10,21 @@ spring:
         max-wait: 30
         max-idle: 8
         min-idle: 0
-    host: 111.229.169.170
-    password: 123456
+    #host: 39.105.165.90
+    #port: 6379
+    #password: liu_QUSHI_3-22=-19
+    host: 127.0.0.1
     port: 6379
+    password: 123456
+    #host: 111.229.169.170
+   # password: 123456
+    #port: 6379
   freemarker:
     template-loader-path: classpath:/template/
     suffix: .ftl
     charset: utf-8
   datasource:
-    url: jdbc:mysql://111.229.169.170:3306/education?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3306/education?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -48,8 +50,6 @@ weChat:
   appId: wxc5d3bf3c1fbf6d25
   token: education
   appSecret: cf05150f801935391f29d73695f04300
-mybatis:
-  mapper-locations: mapper/**/*.xml
-  type-aliases-package: com.education.common.model
+
 logging:
-    file:  /root/jar/education-admin.log
+    file:  /root/jar/education.log
