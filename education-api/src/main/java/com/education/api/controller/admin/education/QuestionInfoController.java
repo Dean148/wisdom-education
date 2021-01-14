@@ -9,6 +9,7 @@ import cn.afterturn.easypoi.handler.inter.IExcelVerifyHandler;
 import cn.afterturn.easypoi.util.PoiValidationUtil;
 import com.education.business.service.education.QuestionInfoService;
 import com.education.common.annotation.Param;
+import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
 import com.education.common.constants.EnumConstants;
@@ -71,7 +72,7 @@ public class QuestionInfoController extends BaseController {
         @Param(name = "questionType", message = "请选择试题类型"),
         @Param(name = "content", message = "请输入试题内容"),
         @Param(name = "answer", message = "请输入试题答案")
-    })
+    }, paramsType = ParamsType.JSON_DATA)
     public Result saveOrUpdate(@RequestBody QuestionInfoDto questionInfoDto) {
         return Result.success(questionInfoService.saveOrUpdateQuestionInfo(questionInfoDto));
     }
