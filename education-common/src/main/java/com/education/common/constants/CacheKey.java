@@ -1,6 +1,5 @@
 package com.education.common.constants;
 
-import com.education.common.config.EntityParamGenerator;
 
 /**
  * @author zengjintao
@@ -16,4 +15,11 @@ public interface CacheKey {
     String SYSTEM_DICT = "system:dict";
 
     String SYSTEM_DICT_VALUE = "system:dict:value";
+
+    /**
+     * 考试相关缓存名
+     */
+    String EXAM_CACHE = "exam:cache";
+
+    String TEST_PAPER_INFO_CACHE = "test:paper:info:cache";
 }

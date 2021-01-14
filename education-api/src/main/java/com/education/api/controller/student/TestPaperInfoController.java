@@ -3,6 +3,7 @@ package com.education.api.controller.student;
 import com.education.business.service.education.ExamInfoService;
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.common.base.BaseController;
+import com.education.common.constants.CacheKey;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.TestPaperInfoDto;
@@ -10,6 +11,7 @@ import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
 import com.education.model.request.TestPaperQuestionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -45,6 +47,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @GetMapping("selectPaperQuestionById")
+    @Cacheable(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#id")
     public Result selectPaperQuestionById(Integer id) {
         PageParam pageParam = new PageParam(); // 设置不分页
         TestPaperQuestionRequest testPaperQuestionRequest = new TestPaperQuestionRequest();

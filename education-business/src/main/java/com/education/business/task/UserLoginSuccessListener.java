@@ -17,7 +17,7 @@ import java.util.Date;
 @Component
 public class UserLoginSuccessListener implements TaskListener {
 
-   @Autowired
+    @Autowired
     private SystemAdminService systemAdminService;
 
     @Override

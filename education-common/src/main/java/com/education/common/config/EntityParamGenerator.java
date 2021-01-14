@@ -23,6 +23,8 @@ public class EntityParamGenerator implements KeyGenerator {
     @Override
     public Object generate(Object target, Method method, Object... params) {
         if (params.length >= 1) {
+            String methodName = method.getName();
+            params[params.length - 1] = methodName;
             String key = jackJson.toJson(params);
             return Md5Utils.getMd5(key);
         }
