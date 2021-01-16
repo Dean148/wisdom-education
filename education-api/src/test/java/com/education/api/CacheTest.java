@@ -6,6 +6,7 @@ import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.education.common.cache.CaffeineCacheBean;
 import com.education.common.model.QuestionInfoImport;
 import org.junit.Test;
+
 import java.io.File;
 
 
@@ -15,6 +16,58 @@ import java.io.File;
  * @create_at 2020/12/17 10:21
  */
 public class CacheTest {
+
+    @Test
+    public void readTxt() {
+       /* StringBuilder result = new StringBuilder();
+        try{
+            File file = new File("F:\\idea\\questionImport.txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));//构造一个BufferedReader类来读取文件
+            String s = null;
+            QuestionInfo questionInfo = null;
+            List<QuestionInfo> questionInfoList = new ArrayList();
+            Integer questionType = null;
+
+            while ((s = br.readLine()) != null ) {//使用readLine方法，一次读一行
+                ExcelQuestionParser excelQuestionParser = null;
+                if (questionType != null) {
+                   excelQuestionParser = ExcelQuestionParserManager.build()
+                     .createExcelQuestionParser(questionType);
+                }
+                if (s.startsWith("[题干]")) {
+                    questionInfo = new QuestionInfo();
+                    questionInfo.setContent(s);
+                } else if (s.startsWith("[类型]")) {
+                    int questionTypeValueLength = "[类型]".length();
+                    String questionTypeName = s.substring(questionTypeValueLength, s.length());
+                    for (EnumConstants.QuestionType item : EnumConstants.QuestionType.values()) {
+                        if (item.getName().equals(questionTypeName)) {
+                           questionType = item.getValue();
+                           break;
+                        }
+                    }
+                    questionInfo.setQuestionType(questionType);
+                } else if (s.startsWith("[答案]")) {
+                    int questionTypeValueLength = "[答案]".length();
+                    String content = s.substring(questionTypeValueLength, s.length());
+                    String answer = excelQuestionParser.parseAnswerText(content);
+                    questionInfo.setAnswer(answer);
+                } else if (s.startsWith("[解析]")) {
+                    int questionTypeValueLength = "[答案]".length();
+                    String content = s.substring(questionTypeValueLength, s.length());
+                    String optionText = excelQuestionParser.parseOptionText(content);
+                    questionInfo.setAnalysis(optionText);
+                    questionInfoList.add(questionInfo);
+                }
+                // result.append(System.lineSeparator()+s);
+            }
+            br.close();
+            System.out.println(questionInfoList);
+            System.out.println(result.toString().split("\n\n"));
+        }catch(Exception e){
+            e.printStackTrace();
+        }*/
+    }
 
     @Test
     public void poiTest() throws Exception {

@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.QuestionInfoMapper;
-import com.education.business.parser.ExcelQuestionParser;
-import com.education.business.parser.ExcelQuestionParserManager;
+import com.education.business.parser.QuestionImportParser;
+import com.education.business.parser.QuestionImportParserManager;
 import com.education.business.service.BaseService;
 import com.education.common.constants.EnumConstants;
 import com.education.common.model.PageInfo;
@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.Document;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -152,7 +151,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
                     break;
                 }
             }
-            ExcelQuestionParser excelQuestionParser = ExcelQuestionParserManager.build()
+            QuestionImportParser excelQuestionParser = QuestionImportParserManager.build()
                     .createExcelQuestionParser(questionInfo.getQuestionType());
             questionInfo.setAnswer(excelQuestionParser.parseAnswerText(questionInfo.getAnswer()));
             questionInfo.setOptions(excelQuestionParser.parseOptionText(questionInfo.getOptions()));

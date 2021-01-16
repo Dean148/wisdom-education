@@ -3,16 +3,12 @@ package com.education.business.parser;
 import com.education.common.utils.ObjectUtils;
 import com.jfinal.json.Jackson;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * @author zengjintao
  * @version 1.0
  * @create_at 2020/12/31 9:48
  */
-public abstract class AbstractExcelQuestionParser implements ExcelQuestionParser {
+public abstract class AbstractExcelQuestionParser implements QuestionImportParser {
 
     protected final Jackson jackson = new Jackson();
 

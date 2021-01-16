@@ -8,29 +8,29 @@ import com.education.common.constants.EnumConstants;
  * @version 1.0
  * @create_at 2020/12/31 9:52
  */
-public class ExcelQuestionParserManager {
+public class QuestionImportParserManager {
 
-    private ExcelQuestionParser excelQuestionParser;
+    private QuestionImportParser excelQuestionParser;
 
-    private static final ExcelQuestionParserManager me = new ExcelQuestionParserManager();
+    private static final QuestionImportParserManager me = new QuestionImportParserManager();
 
-    public static ExcelQuestionParserManager build() {
+    public static QuestionImportParserManager build() {
         return me;
     }
 
-    public void setExcelQuestionParser(ExcelQuestionParser excelQuestionParser) {
+    public void setExcelQuestionParser(QuestionImportParser excelQuestionParser) {
         this.excelQuestionParser = excelQuestionParser;
     }
 
-    public ExcelQuestionParser getExcelQuestionParser() {
+    public QuestionImportParser getExcelQuestionParser() {
         return excelQuestionParser;
     }
 
-    private ExcelQuestionParserManager() {
+    private QuestionImportParserManager() {
 
     }
 
-    public ExcelQuestionParser createExcelQuestionParser(Integer questionType) {
+    public QuestionImportParser createExcelQuestionParser(Integer questionType) {
         if (this.getExcelQuestionParser() != null) {
             return getExcelQuestionParser();
         }
