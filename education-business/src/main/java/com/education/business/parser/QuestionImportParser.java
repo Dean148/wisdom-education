@@ -6,7 +6,7 @@ package com.education.business.parser;
  * @version 1.0
  * @create_at 2020/12/31 9:38
  */
-public interface ExcelQuestionParser {
+public interface QuestionImportParser {
 
     /**
      * 解析答案
