@@ -1,7 +1,6 @@
 package com.education.api.controller.admin.education;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.education.GradeInfoService;
 import com.education.common.base.BaseController;

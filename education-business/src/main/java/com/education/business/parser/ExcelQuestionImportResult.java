@@ -8,6 +8,7 @@ import cn.afterturn.easypoi.handler.inter.IExcelVerifyHandler;
 import cn.afterturn.easypoi.util.PoiValidationUtil;
 import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
+import com.education.common.utils.FileUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
 import com.education.model.entity.QuestionInfo;
@@ -41,7 +42,8 @@ public class ExcelQuestionImportResult extends QuestionImportResult {
         try {
             ImportParams importParams = new ImportParams();
             importParams.setNeedVerfiy(true); // 设置需要校验
-
+            // 设置excel文件路径
+            importParams.setSaveUrl(FileUtils.getUploadPath() + importParams.getSaveUrl());
             importParams.setVerifyHandler(new IExcelVerifyHandler<QuestionInfo>() {
                 @Override
                 public ExcelVerifyHandlerResult verifyHandler(QuestionInfo questionInfo) {
