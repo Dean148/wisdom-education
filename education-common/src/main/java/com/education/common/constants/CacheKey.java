@@ -22,4 +22,6 @@ public interface CacheKey {
     String EXAM_CACHE = "exam:cache";
 
     String TEST_PAPER_INFO_CACHE = "test:paper:info:cache";
+
+    String QUESTION_INFO_CACHE = "question:info:cache";
 }

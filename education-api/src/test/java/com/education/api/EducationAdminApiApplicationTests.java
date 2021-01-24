@@ -4,6 +4,8 @@ package com.education.api;
 
 import com.education.business.service.education.QuestionInfoService;
 import com.education.business.service.system.SystemAdminService;
+import com.education.common.cache.CacheBean;
+import com.education.common.cache.EhcacheBean;
 import com.education.model.dto.QuestionInfoDto;
 import com.education.model.entity.QuestionInfo;
 import com.education.model.entity.SystemAdmin;
@@ -34,14 +36,23 @@ public class EducationAdminApiApplicationTests {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    private CacheBean cacheBean = new EhcacheBean();
+
     @Autowired
     private SystemAdminService systemAdminService;
 
     @Test
     public void check() {
-        redisTemplate.boundHashOps("userId").increment("user:1", 1);
+      //  redisTemplate.opsForList().ad
 
-        System.out.println(redisTemplate.boundHashOps("userId").get("user:1"));
+        cacheBean.put("test", "test");
+
+
+        System.out.println(cacheBean.getKeys());
+
+       // redisTemplate.boundHashOps("userId").increment("user:1", 1);
+
+      //  System.out.println(redisTemplate.boundHashOps("userId").get("user:1"));
        // redisTemplate.opsForValue().b
        /* SystemAdmin systemAdmin = new SystemAdmin();
         systemAdmin.setLoginName("admin");
