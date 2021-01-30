@@ -57,9 +57,15 @@ public class EducationTestApi {
 
     @Test
     public void redisList() {
+
+        redisTemplate.opsForList().remove("list", 0, 11);
         for (int i = 0; i < 5; i++) {
             redisTemplate.opsForList().leftPush("list", i);
         }
+
+        this.getRedisList();
+        redisTemplate.opsForList().remove("list", 0, 2);
+        this.getRedisList();
     }
 
     public static void main(String[] args) {

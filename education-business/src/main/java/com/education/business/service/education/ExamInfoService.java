@@ -11,6 +11,7 @@ import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.*;
+import com.education.model.dto.ExamMonitor;
 import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.ExamInfo;
@@ -45,7 +46,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     private QuestionInfoService questionInfoService;
     @Autowired
     private TestPaperInfoService testPaperInfoService;
-
+    @Autowired
+    private ExamMonitorService examMonitorService;
     /**
      * 后台考试列表
      * @param pageParam
@@ -75,6 +77,10 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         Integer studentId = getStudentInfo().getId();
         return this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentId, new ExamInfo());
     }
+
+ /*   public void updateStudentExamRate(ExamMonitor examMonitor) {
+
+    }*/
 
     private Integer batchSaveStudentQuestionAnswer(StudentQuestionRequest studentQuestionRequest,
                                                 Integer studentId, ExamInfo examInfo) {
@@ -177,6 +183,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             super.save(examInfo);
             // 更新考试参考人数
             testPaperInfoService.updateExamNumber(examInfo.getTestPaperInfoId());
+
+            examMonitorService.removeStudent(studentId, testPaperInfoId); // 离开考试监控
         } else {
             // 主观题数量为0， 设置为教师评分
             if (examInfo.getSubjectiveQuestionNumber() == 0) {

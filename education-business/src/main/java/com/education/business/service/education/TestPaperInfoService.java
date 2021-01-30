@@ -7,8 +7,10 @@ import com.education.business.mapper.education.TestPaperInfoMapper;
 import com.education.business.service.BaseService;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
+import com.education.common.utils.DateUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
+import com.education.model.dto.ExamMonitor;
 import com.education.model.dto.TestPaperInfoDto;
 import com.education.model.dto.TestPaperQuestionDto;
 import com.education.model.entity.StudentInfo;
@@ -32,6 +34,8 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
 
     @Autowired
     private TestPaperQuestionInfoService testPaperQuestionInfoService;
+    @Autowired
+    private ExamMonitorService examMonitorService;
 
     /**
      * 试卷分页列表
@@ -56,8 +60,16 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
      */
     public PageInfo<TestPaperQuestionDto> selectPaperQuestionList(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
         Page<TestPaperQuestionDto> page = new Page<>(pageParam.getPageNumber(), pageParam.getPageSize());
-        return selectPage(baseMapper.selectPaperQuestionList(page, testPaperQuestionRequest));
+        PageInfo<TestPaperQuestionDto> pageInfo = selectPage(baseMapper.selectPaperQuestionList(page, testPaperQuestionRequest));
+        ExamMonitor examMonitor = new ExamMonitor();
+        examMonitor.setStartExamTime(DateUtils.getSecondDate(new Date()));
+        examMonitor.setQuestionCount((int) pageInfo.getTotal());
+        examMonitor.setStudentInfo(super.getStudentInfo());
+        examMonitorService.addStudentToExamMonitor(testPaperQuestionRequest.getTestPaperInfoId(), examMonitor);
+        return pageInfo;
     }
+
+
 
     @Transactional
     public void updatePaperQuestionMarkOrSort(TestPaperQuestionDto testPaperQuestionDto) {
