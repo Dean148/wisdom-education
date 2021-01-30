@@ -2,12 +2,14 @@ package com.education.model.dto;
 
 import com.education.model.entity.StudentInfo;
 
+import java.io.Serializable;
+
 /**
  * @author zengjintao
  * @version 1.0
  * @create_at 2021/1/29 16:26
  */
-public class ExamMonitor {
+public class ExamMonitor implements Serializable {
 
     private int answerQuestionCount = 0; // 已答题
     private int questionCount;
