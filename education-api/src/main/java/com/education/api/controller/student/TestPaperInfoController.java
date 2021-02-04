@@ -81,7 +81,8 @@ public class TestPaperInfoController extends BaseController {
         ExamMonitor examMonitor = examMonitorService.getExamMonitorStudent(studentExamRate.getTestPaperInfoId(),
                 examInfoService.getStudentId());
         examMonitor.setAnswerQuestionCount(studentExamRate.getAnswerQuestionCount());
-        examMonitorService.addStudentToExamMonitor(studentExamRate.getTestPaperInfoId(), examMonitor);
+        examMonitor.setTestPaperInfoId(studentExamRate.getTestPaperInfoId());
+        examMonitorService.addStudentToExamMonitor(examMonitor);
         return Result.success();
     }
 }

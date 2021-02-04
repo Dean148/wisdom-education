@@ -16,6 +16,7 @@ public class ExamMonitor implements Serializable {
     private StudentInfo studentInfo;
     private String device; // 答题设备
     private String startExamTime; // 考试开始时间
+    private Integer testPaperInfoId;
 
 
     private String rateStr; // 答题进度
@@ -58,6 +59,14 @@ public class ExamMonitor implements Serializable {
 
     public String getStartExamTime() {
         return startExamTime;
+    }
+
+    public Integer getTestPaperInfoId() {
+        return testPaperInfoId;
+    }
+
+    public void setTestPaperInfoId(Integer testPaperInfoId) {
+        this.testPaperInfoId = testPaperInfoId;
     }
 
     public void setStartExamTime(String startExamTime) {

@@ -1,10 +1,13 @@
 package com.education.business.service.education;
 
 import com.education.common.constants.CacheKey;
+import com.education.common.utils.DateUtils;
 import com.education.model.dto.ExamMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,9 +22,10 @@ public class ExamMonitorService {
     @Autowired
     private RedisTemplate redisTemplate;
 
-    public void addStudentToExamMonitor(Integer testPaperInfoId, ExamMonitor examMonitor) {
+    public void addStudentToExamMonitor(ExamMonitor examMonitor) {
         Integer studentId = examMonitor.getStudentInfo().getId();
-        redisTemplate.boundHashOps(CacheKey.EXAM_MONITOR_CACHE_KEY + testPaperInfoId)
+        examMonitor.setStartExamTime(DateUtils.getSecondDate(new Date()));
+        redisTemplate.boundHashOps(CacheKey.EXAM_MONITOR_CACHE_KEY + examMonitor.getTestPaperInfoId())
                 .put(studentId, examMonitor);
     }
 

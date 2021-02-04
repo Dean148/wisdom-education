@@ -15,7 +15,6 @@ import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -69,7 +68,7 @@ public class TestPaperInfoController extends BaseController {
      */
     @GetMapping("getPaperQuestionList")
     @RequiresPermissions("system:testPaperInfo:relevanceQuestion")
-    @Cacheable(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionRequest.testPaperInfoId")
+  //  @Cacheable(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionRequest.testPaperInfoId")
     public Result selectPaperQuestionList(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
         return Result.success(testPaperInfoService.selectPaperQuestionList(pageParam, testPaperQuestionRequest));
     }
@@ -145,5 +144,16 @@ public class TestPaperInfoController extends BaseController {
     @CacheEvict(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionInfo.testPaperInfoId")
     public Result removePaperQuestion(@RequestBody TestPaperQuestionInfo testPaperQuestionInfo) {
         return Result.success(testPaperInfoService.removePaperQuestion(testPaperQuestionInfo));
+    }
+
+    /**
+     * 试卷打印
+     * @param testPaperInfoId
+     * @return
+     */
+    @GetMapping("printPaperInfo/{testPaperInfoId}")
+    public Result printPaperInfo(@PathVariable Integer testPaperInfoId) {
+        testPaperInfoService.printPaperInfo(testPaperInfoId);
+        return Result.success();
     }
 }
