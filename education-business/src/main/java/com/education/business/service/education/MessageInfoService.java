@@ -1,6 +1,5 @@
 package com.education.business.service.education;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.education.MessageInfoMapper;

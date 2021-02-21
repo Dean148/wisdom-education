@@ -153,7 +153,6 @@ public class TestPaperInfoController extends BaseController {
      */
     @GetMapping("printPaperInfo/{testPaperInfoId}")
     public Result printPaperInfo(@PathVariable Integer testPaperInfoId) {
-        testPaperInfoService.printPaperInfo(testPaperInfoId);
-        return Result.success();
+        return Result.success(testPaperInfoService.printPaperInfo(testPaperInfoId));
     }
 }

@@ -5,17 +5,15 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.TestPaperInfoMapper;
 import com.education.business.service.BaseService;
-import com.education.common.constants.CacheKey;
 import com.education.common.constants.Constants;
 import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
 import com.education.common.template.BaseTemplate;
 import com.education.common.template.EnjoyTemplate;
-import com.education.common.utils.DateUtils;
+import com.education.common.utils.FileUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
-import com.education.model.dto.ExamMonitor;
 import com.education.model.dto.TestPaperInfoDto;
 import com.education.model.dto.TestPaperQuestionDto;
 import com.education.model.entity.StudentInfo;
@@ -41,9 +39,6 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
 
     @Autowired
     private TestPaperQuestionInfoService testPaperQuestionInfoService;
-    @Autowired
-    private ExamMonitorService examMonitorService;
-
 
     /**
      * 试卷分页列表
@@ -69,26 +64,6 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
     public PageInfo<TestPaperQuestionDto> selectPaperQuestionList(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
         Page<TestPaperQuestionDto> page = new Page<>(pageParam.getPageNumber(), pageParam.getPageSize());
         return selectPage(baseMapper.selectPaperQuestionList(page, testPaperQuestionRequest));
-        // 只对学生端进行数据缓存
-       /* if (pageParam.getPageSize().intValue() == Integer.MAX_VALUE) {
-            pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperQuestionRequest.getTestPaperInfoId());
-            synchronized (this) {
-                if (pageInfo == null) {
-                    pageInfo = selectPage(baseMapper.selectPaperQuestionList(page, testPaperQuestionRequest));
-                    cacheBean.putValue(CacheKey.TEST_PAPER_INFO_CACHE, testPaperQuestionRequest.getTestPaperInfoId(), pageInfo);
-                }
-            }
-        } else {
-            pageInfo = selectPage(baseMapper.selectPaperQuestionList(page, testPaperQuestionRequest));
-        }*/
-       /* if (testPaperQuestionRequest.isAddExamMonitor()) {
-            ExamMonitor examMonitor = new ExamMonitor();
-            examMonitor.setStartExamTime(DateUtils.getSecondDate(new Date()));
-            examMonitor.setQuestionCount((int) pageInfo.getTotal());
-            examMonitor.setStudentInfo(super.getStudentInfo());
-            examMonitorService.addStudentToExamMonitor(testPaperQuestionRequest.getTestPaperInfoId(), examMonitor);
-        }
-        return pageInfo;*/
     }
 
 
@@ -230,7 +205,7 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
      * 打印试卷
      * @param testPaperInfoId
      */
-    public void printPaperInfo(Integer testPaperInfoId) {
+    public String printPaperInfo(Integer testPaperInfoId) {
         TestPaperQuestionRequest testPaperQuestionRequest = new TestPaperQuestionRequest();
         testPaperQuestionRequest.setTestPaperInfoId(testPaperInfoId);
         testPaperQuestionRequest.setAddExamMonitor(false);
@@ -240,8 +215,13 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
         Kv data = Kv.create().set("testPaperQuestionList", this.groupQuestion(testPaperQuestionDtoList))
                 .set("title", testPaperInfo.getName());
-        BaseTemplate template = new EnjoyTemplate(Constants.PAPER_INFO_TEMPLATE, null);
-        template.generateTemplate(data, "");
+        String htmlName = testPaperInfo + ".html";
+        String outDirPath = "/paper_print/"
+                + testPaperInfoId + "/" + htmlName;
+        String paperTemplateSavePath = FileUtils.getUploadPath() + outDirPath;
+        BaseTemplate template = new EnjoyTemplate(Constants.PAPER_INFO_TEMPLATE, paperTemplateSavePath);
+        template.generateTemplate(data, htmlName);
+        return outDirPath;
     }
 
     /**
