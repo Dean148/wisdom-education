@@ -6,19 +6,16 @@ import com.education.business.service.education.QuestionInfoService;
 import com.education.business.service.system.SystemAdminService;
 import com.education.common.cache.CacheBean;
 import com.education.common.cache.EhcacheBean;
-import com.education.model.dto.QuestionInfoDto;
-import com.education.model.entity.QuestionInfo;
-import com.education.model.entity.SystemAdmin;
+import com.education.common.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
-
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +24,12 @@ import java.util.Map;
 @RunWith(SpringRunner.class)
 @Slf4j
 public class EducationAdminApiApplicationTests {
+
+    public static void main(String[] args) {
+        System.out.println(ObjectUtils.charSort("A,B,C".replaceAll(",", "")));
+
+        System.out.println(ObjectUtils.charSort("C,A,B".replaceAll(",", "")));
+    }
 
     @Autowired
     private QuestionInfoService questionInfoService;
@@ -40,6 +43,26 @@ public class EducationAdminApiApplicationTests {
 
     @Autowired
     private SystemAdminService systemAdminService;
+
+
+    @Test
+    public void importData() {
+        List<Map<String, Object>> dataList = jdbcTemplate.queryForList("select course_id, language_points_id" +
+                " from question_info");
+        dataList.forEach(data -> {
+            Integer courseId = (Integer) data.get("course_id");
+            Integer languagePointsId = (Integer) data.get("language_points_id");
+            List<Map<String, Object>> courseLanguageDataList = jdbcTemplate.queryForList("select * from course_language_points where course_id = ? and language_points_id = ?",
+                    courseId, languagePointsId);
+
+            if (courseLanguageDataList.size() ==  0) {
+                jdbcTemplate.update("insert into course_language_points(course_id, language_points_id, create_date) values (?, ?, ?)",
+                        courseId, languagePointsId, new Date());
+                log.info("insert into course_language_points(course_id, language_points_id, create_date) values " + "(" + courseId
+                        + "," + languagePointsId + "," + new Date());
+            }
+        });
+    }
 
     @Test
     public void check() {

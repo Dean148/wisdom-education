@@ -13,9 +13,9 @@ spring:
     password: 123456
     port: 6379
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/education_final?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://39.108.217.122:3306/education?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
     username: root
-    password: 123456
+    password: gxsr2222
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       #数据库连接超时时间
