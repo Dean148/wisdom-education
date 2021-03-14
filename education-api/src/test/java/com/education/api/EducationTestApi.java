@@ -124,16 +124,16 @@ public class EducationTestApi {
         try {
             ImportParams params = new ImportParams();
             params.setNeedVerfiy(true);
-            ExcelImportResult<ExcelVerifyEntityOfMode> result = ExcelImportUtil.importExcelMore(
-                    new FileInputStream(new File("C:\\Users\\Administrator\\Desktop\\paper\\test.xlsx")),
-                    ExcelVerifyEntityOfMode.class, params);
+//            ExcelImportResult<ExcelVerifyEntityOfMode> result = ExcelImportUtil.importExcelMore(
+//                    new FileInputStream(new File("C:\\Users\\Administrator\\Desktop\\paper\\test.xlsx")),
+//                    ExcelVerifyEntityOfMode.class, params);
 
-            FileOutputStream fos = new FileOutputStream("D:/baseModetest.xlsx");
-            result.getFailWorkbook().write(fos);
-            fos.close();
-            for (int i = 0; i < result.getList().size(); i++) {
-                System.out.println(ReflectionToStringBuilder.toString(result.getList().get(i)));
-            }
+//            FileOutputStream fos = new FileOutputStream("D:/baseModetest.xlsx");
+//            result.getFailWorkbook().write(fos);
+//            fos.close();
+//            for (int i = 0; i < result.getList().size(); i++) {
+//                System.out.println(ReflectionToStringBuilder.toString(result.getList().get(i)));
+//            }
            // Assert.assertTrue(result.getList().size() == 4);
         } catch (Exception e) {
             e.printStackTrace();
