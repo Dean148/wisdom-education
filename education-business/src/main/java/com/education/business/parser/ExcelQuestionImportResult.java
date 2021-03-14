@@ -79,7 +79,7 @@ public class ExcelQuestionImportResult extends QuestionImportResult {
                 throw new BusinessException(new ResultCode(ResultCode.FAIL, "导入excel模板内容为空,请添加数据之后再导入"));
             }
             // 存在校验失败数据
-            if (result.isVerfiyFail() && result.getFailList().size() > 1) {
+            if (result.isVerfiyFail() && result.getFailList().size() > 0) {
                 List<QuestionInfo> failQuestionInfoList = result.getFailList();
                 StringBuilder errorMsg = new StringBuilder("表格第");
                 for (int i = 0; i < failQuestionInfoList.size() - 1; i++ ) {

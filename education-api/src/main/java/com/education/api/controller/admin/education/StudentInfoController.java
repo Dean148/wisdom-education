@@ -6,20 +6,21 @@ import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.education.business.service.education.StudentInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.model.StudentInfoImport;
-import com.education.common.utils.Md5Utils;
-import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.Result;
-import com.education.common.utils.ResultCode;
+import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.entity.StudentInfo;
 import com.education.model.request.PageParam;
+import com.jfinal.kit.FileKit;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 学员管理
@@ -112,9 +113,41 @@ public class StudentInfoController extends BaseController {
 
         InputStream inputStream = file.getInputStream();
         ImportParams importParams = new ImportParams();
+        importParams.setNeedVerfiy(true);
         importParams.setSaveUrl(baseUploadPath + "/image"); // 设置头像上传路径
-        ExcelImportResult importResult = ExcelImportUtil.importExcelMore(inputStream, StudentInfoImport.class, importParams);
-        studentInfoService.importStudentFromExcel(importResult.getList());
-        return Result.success();
+        ExcelImportResult importResult = ExcelImportUtil.importExcelMore(inputStream,
+                StudentInfoImport.class,
+                importParams);
+
+        // 存在数据校验失败
+        if (importResult.isVerfiyFail() && ObjectUtils.isNotEmpty(importResult.getFailList())) {
+            List<StudentInfoImport> failQuestionInfoList = importResult.getFailList();
+            StringBuilder errorMsg = new StringBuilder("表格第");
+            for (int i = 0; i < failQuestionInfoList.size(); i++ ) {
+                int rowNumber = failQuestionInfoList.get(i).getRowNum() + 1;
+                if (i == failQuestionInfoList.size() -1) {
+                    errorMsg.append(rowNumber);
+                } else {
+                    errorMsg.append(rowNumber + ",");
+                }
+            }
+
+            String targetPath = "/student/importExcelError/";
+            String errorExcelUrl = targetPath
+                    + ObjectUtils.generateUuId() + ".xlsx";
+            String errorExcelPath = FileUtils.getUploadPath() + errorExcelUrl;
+            File targetFile = new File(FileUtils.getUploadPath() + targetPath);
+            if (!targetFile.exists()) {
+                targetFile.mkdirs();
+            }
+            FileOutputStream fos = new FileOutputStream(errorExcelPath);
+            importResult.getFailWorkbook().write(fos);
+
+            return Result.success(ResultCode.EXCEL_VERFIY_FAIL, errorMsg.toString() + "行数据错误，" +
+                    "请根据表格错误提示进行修改后再导入", errorExcelUrl);
+        }
+
+        int successCount = studentInfoService.importStudentFromExcel(importResult.getList());
+        return Result.success(successCount);
     }
 }
