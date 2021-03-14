@@ -1,6 +1,7 @@
 package com.education.business.parser;
 
 import com.education.common.constants.EnumConstants;
+import com.education.model.dto.ExcelQuestionData;
 import com.education.model.entity.QuestionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,8 @@ public class TxtQuestionImportResult extends QuestionImportResult {
     }
 
     @Override
-    public List<QuestionInfo> readTemplate() {
+    public ExcelQuestionData readTemplate() {
+        ExcelQuestionData excelQuestionData = new ExcelQuestionData();
         BufferedReader reader = new BufferedReader(new InputStreamReader(super.getInputStream()));
         String lineContent = null;
         List<QuestionInfo> questionInfoList = new ArrayList();
@@ -73,9 +75,10 @@ public class TxtQuestionImportResult extends QuestionImportResult {
                     questionInfoList.add(questionInfo);
                 }
             }
+            excelQuestionData.setQuestionInfoList(questionInfoList);
         } catch (Exception e) {
             logger.error("试题导入异常", e);
         }
-        return questionInfoList;
+        return excelQuestionData;
     }
 }

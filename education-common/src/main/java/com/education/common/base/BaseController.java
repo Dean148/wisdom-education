@@ -1,20 +1,9 @@
 package com.education.common.base;
 
-import cn.afterturn.easypoi.excel.ExcelImportUtil;
-import cn.afterturn.easypoi.excel.entity.ImportParams;
-import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.education.common.cache.CacheBean;
-import com.education.common.exception.BusinessException;
-import com.education.common.model.StudentInfoImport;
-import com.education.common.utils.ResultCode;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-
 import javax.annotation.Resource;
-import java.io.InputStream;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -48,9 +37,5 @@ public abstract class BaseController {
     };
 
 
-    protected void importExcel(InputStream inputstream,
-                               Class<?> pojoClass,
-                               ImportParams params) {
-    }
 
 }

@@ -8,8 +8,10 @@ import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
+import com.education.common.model.ExcelResult;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
+import com.education.model.dto.ExcelQuestionData;
 import com.education.model.dto.QuestionInfoDto;
 import com.education.model.entity.QuestionInfo;
 import com.education.model.request.PageParam;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -104,6 +107,7 @@ public class QuestionInfoController extends BaseController {
         @Param(name = "subjectId", message = "请选择导入所属科目")
     })
     public Result importQuestion(
+                                 HttpServletResponse response,
                                  @RequestParam Integer schoolType,
                                  @RequestParam Integer gradeInfoId,
                                  @RequestParam Integer subjectId,
@@ -115,11 +119,21 @@ public class QuestionInfoController extends BaseController {
         try {
             QuestionImportResult questionImportResult = null;
             if (excelTypes.contains(contentType)) {
-                questionImportResult = new ExcelQuestionImportResult(file);
+                questionImportResult = new ExcelQuestionImportResult(file, response);
             } else {
                 questionImportResult = new TxtQuestionImportResult(file);
             }
-            List<QuestionInfo> questionInfoList = questionImportResult.readTemplate();
+
+            ExcelQuestionData excelQuestionData = questionImportResult.readTemplate();
+            ExcelResult excelResult = excelQuestionData.getExcelResult();
+
+            // excel 数据校验失败
+            if (!excelResult.isSuccess()) {
+                return Result.success(ResultCode.EXCEL_VERFIY_FAIL, excelResult.getErrorMsg(),
+                        excelResult.getErrorExcelUrl());
+            }
+
+            List<QuestionInfo> questionInfoList = excelQuestionData.getQuestionInfoList();
             questionInfoService.importQuestion(schoolType, gradeInfoId, subjectId, questionInfoList);
             return Result.success(ResultCode.SUCCESS, questionInfoList.size() + "道试题导入成功");
         } catch (Exception e) {
