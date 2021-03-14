@@ -11,7 +11,6 @@ import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.entity.StudentInfo;
 import com.education.model.request.PageParam;
-import com.jfinal.kit.FileKit;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
