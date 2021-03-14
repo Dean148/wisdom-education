@@ -160,7 +160,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
             questionInfo.setCreateDate(new Date());
             questionInfo.setSubjectId(subjectId);
         });
+        super.saveBatch(questionInfoList);
         return questionInfoList.size();
-        // super.saveBatch(questionInfoList);
     }
 }

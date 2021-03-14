@@ -88,9 +88,7 @@ public class ExcelQuestionImportResult extends QuestionImportResult {
                 excelResult.setErrorMsg("导入excel模板内容为空,请添加数据之后再导入");
             }
 
-            if (excelResult.isSuccess()) {
-                excelQuestionData.setQuestionInfoList(result.getList());
-            }
+            excelQuestionData.setQuestionInfoList(result.getList());
             return excelQuestionData;
         } catch (Exception e) {
             logger.error("模板数据解析异常", e);
