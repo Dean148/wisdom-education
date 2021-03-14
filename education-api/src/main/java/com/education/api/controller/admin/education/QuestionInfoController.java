@@ -127,15 +127,27 @@ public class QuestionInfoController extends BaseController {
             ExcelQuestionData excelQuestionData = questionImportResult.readTemplate();
             ExcelResult excelResult = excelQuestionData.getExcelResult();
 
-            // excel 数据校验失败
-            if (!excelResult.isSuccess()) {
-                return Result.success(ResultCode.EXCEL_VERFIY_FAIL, excelResult.getErrorMsg(),
-                        excelResult.getErrorExcelUrl());
-            }
 
             List<QuestionInfo> questionInfoList = excelQuestionData.getQuestionInfoList();
-            questionInfoService.importQuestion(schoolType, gradeInfoId, subjectId, questionInfoList);
-            return Result.success(ResultCode.SUCCESS, questionInfoList.size() + "道试题导入成功");
+            int successCount = questionInfoService.importQuestion(schoolType, gradeInfoId, subjectId, questionInfoList);
+
+            int failCount = 0;
+            List<QuestionInfo> failQuestionList = excelQuestionData.getFailQuestionList();
+
+            if (failQuestionList != null) {
+                failCount = failQuestionList.size();
+            }
+
+            // excel 数据校验失败
+            String msg = successCount + "道试题导入成功";
+            if (!excelResult.isSuccess()) {
+                if (failCount > 0) {
+                    msg += failCount + "道试题导入失败(分别为)" + excelResult.getErrorMsg();
+                }
+                return Result.success(ResultCode.EXCEL_VERFIY_FAIL,
+                        msg, excelResult.getErrorExcelUrl());
+            }
+            return Result.success(ResultCode.SUCCESS, msg);
         } catch (Exception e) {
             logger.error("数据导入失败", e);
         }

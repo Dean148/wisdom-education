@@ -17,9 +17,6 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
 
@@ -119,13 +116,22 @@ public class StudentInfoController extends BaseController {
 
         ExcelResult excelResult = ExcelUtils.importExcel(inputStream,
                 StudentInfoImport.class, importParams, "/student/importExcelError/");
+        int successCount = studentInfoService.importStudentFromExcel(excelResult.getExcelImportResult().getList());
 
-        if (excelResult.isSuccess()) {
-            int successCount = studentInfoService.importStudentFromExcel(excelResult.getExcelImportResult().getList());
-            return Result.success(successCount);
+        List<StudentInfoImport> studentInfoImportList = excelResult.getExcelImportResult().getFailList();
+
+        int failCount = 0;
+        if (studentInfoImportList != null) {
+            failCount = studentInfoImportList.size();
         }
 
-        return Result.success(ResultCode.EXCEL_VERFIY_FAIL, excelResult.getErrorMsg(),
-                excelResult.getErrorExcelUrl());
+        String msg = successCount + "名学员数据导入成功";
+        if (!excelResult.isSuccess()) {
+            if (failCount > 0) {
+                msg += failCount + "名学员数据导入失败(分别为)" + excelResult.getErrorMsg();
+            }
+            return Result.success(ResultCode.EXCEL_VERFIY_FAIL, msg, excelResult.getErrorExcelUrl());
+        }
+        return Result.success(ResultCode.SUCCESS, msg);
     }
 }

@@ -15,8 +15,14 @@ public class ExcelQuestionData {
     private ExcelResult excelResult;
     private List<QuestionInfo> questionInfoList;
 
+    private List<QuestionInfo> failQuestionList;
+
     public ExcelResult getExcelResult() {
         return excelResult;
+    }
+
+    public List<QuestionInfo> getFailQuestionList() {
+        return this.excelResult.getExcelImportResult().getFailList();
     }
 
     public void setExcelResult(ExcelResult excelResult) {
