@@ -44,6 +44,8 @@ public class TxtQuestionImportResult extends QuestionImportResult {
         try {
             QuestionInfo questionInfo = null;
             Integer questionType = null;
+
+          //  int readTypeValue = 1;
             while ((lineContent = reader.readLine()) != null ) {
                 QuestionImportParser excelQuestionParser = null;
                 if (questionType != null) {
@@ -59,25 +61,40 @@ public class TxtQuestionImportResult extends QuestionImportResult {
                     questionInfo.setContent(content);
                     // 解析试题类型
                 } else if (tokenStart.startsWith(QUESTION_TYPE_VALUE)) {
+                 //   readTypeValue = 2;
                     for (EnumConstants.QuestionType item : EnumConstants.QuestionType.values()) {
                         if (item.getName().equals(content)) {
                             questionType = item.getValue();
                             break;
                         }
                     }
+
                     questionInfo.setQuestionType(questionType);
                 } else if (tokenStart.startsWith(QUESTION_ANSWER)) {  // 解析试题答案
+                 //   readTypeValue = 3;
                     String answer = excelQuestionParser.parseAnswerText(content);
                     questionInfo.setAnswer(answer);
                 } else if (tokenStart.startsWith(QUESTION_ANALYSIS)) { // 解析试题选项
+                 //   readTypeValue = 4;
                     String optionText = excelQuestionParser.parseOptionText(content);
                     questionInfo.setAnalysis(optionText);
                     questionInfoList.add(questionInfo);
+                } else {
+                  /*  if (readTypeValue == 1) {
+                        questionInfo.setContent(questionInfo.getContent() + content);
+                    } else if (readTypeValue == 2) {
+
+                    } else if (readTypeValue == 3) {
+
+                    } else if (readTypeValue == 4) {
+
+                    }*/
                 }
+
             }
             excelQuestionData.setQuestionInfoList(questionInfoList);
         } catch (Exception e) {
-            logger.error("试题导入异常", e);
+            logger.error("试题导入异常, 请检查txt 内容数据是否有换行", e);
         }
         return excelQuestionData;
     }
