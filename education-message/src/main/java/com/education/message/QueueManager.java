@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  * @create_at 2021/3/17 21:05
  */
-//@Component
+@Component
 public class QueueManager {
 
     private static Logger logger = LoggerFactory.getLogger(QueueManager.class);

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @Date: 2019/11/20 15:49
  * @Version:2.1.0
  */
-//@Component("confirmCallback")
+@Component("confirmCallback")
 @Slf4j
 public class ConfirmCallbackImpl implements RabbitTemplate.ConfirmCallback {
 

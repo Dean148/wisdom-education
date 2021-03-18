@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @Version:2.1.0
  */
 @Slf4j
-//@Component
+@Component
 public class RabbitReturnCallback implements RabbitTemplate.ReturnCallback {
 
 
