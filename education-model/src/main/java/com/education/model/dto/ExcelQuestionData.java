@@ -14,6 +14,8 @@ public class ExcelQuestionData {
 
     private ExcelResult excelResult;
     private List<QuestionInfo> questionInfoList;
+    // 导入失败试题集合
+    private List<QuestionInfo> failImportQuestionList;
 
 
     public ExcelResult getExcelResult() {
@@ -25,7 +27,14 @@ public class ExcelQuestionData {
      * @return
      */
     public List<QuestionInfo> getFailQuestionList() {
-        return this.excelResult.getExcelImportResult().getFailList();
+        if (excelResult != null) {
+            this.failImportQuestionList = this.excelResult.getExcelImportResult().getFailList();
+        }
+        return this.failImportQuestionList;
+    }
+
+    public void setFailImportQuestionList(List<QuestionInfo> failImportQuestionList) {
+        this.failImportQuestionList = failImportQuestionList;
     }
 
     public void setExcelResult(ExcelResult excelResult) {

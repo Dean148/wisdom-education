@@ -118,7 +118,9 @@ public class QuestionInfoController extends BaseController {
         }
         try {
             QuestionImportResult questionImportResult = null;
+            boolean isExcelFile = false;
             if (excelTypes.contains(contentType)) {
+                isExcelFile = true;
                 questionImportResult = new ExcelQuestionImportResult(file, response);
             } else {
                 questionImportResult = new TxtQuestionImportResult(file);
