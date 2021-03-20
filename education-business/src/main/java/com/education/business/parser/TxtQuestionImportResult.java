@@ -85,7 +85,12 @@ public class TxtQuestionImportResult extends QuestionImportResult {
                     String answer = excelQuestionParser.parseAnswerText(content);
                     questionInfo.setAnswer(answer);
                 } else if (tokenStart.startsWith(QUESTION_OPTIONS)) { // 解析试题选项
-                    String options = excelQuestionParser.parseOptionText(content);
+                    String options = null;
+                    if (ObjectUtils.isEmpty(content)) {
+                        options = null; // 将options 设置为null, 防止选项为空导致插入数据库失败，因为mysql json 类型不支持字符串""
+                    } else {
+                        options = excelQuestionParser.parseOptionText(content);
+                    }
                     questionInfo.setOptions(options);
                 } else if (tokenStart.startsWith(QUESTION_ANALYSIS)) {
                     questionInfo.setAnalysis(content);

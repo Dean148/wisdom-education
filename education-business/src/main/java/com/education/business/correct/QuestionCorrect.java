@@ -1,7 +1,11 @@
-package com.education.business.parser;
+package com.education.business.correct;
 
 import com.education.model.entity.ExamInfo;
+import com.education.model.entity.QuestionInfo;
+import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
+
+import java.util.List;
 
 
 /**
@@ -23,8 +27,8 @@ public abstract class QuestionCorrect {
     }
 
     public void correctStudentQuestion() {
-        doCorrectStudentQuestion();
+        doCorrectStudentQuestion(studentQuestionRequest.getQuestionAnswerList());
     }
 
-    abstract void doCorrectStudentQuestion();
+    abstract void doCorrectStudentQuestion(List<QuestionAnswer> questionInfoList);
 }
