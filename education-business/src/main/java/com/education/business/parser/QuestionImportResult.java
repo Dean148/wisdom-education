@@ -1,6 +1,5 @@
 package com.education.business.parser;
 
-import com.education.model.dto.ExcelQuestionData;
 import com.education.model.entity.QuestionInfo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,8 +17,29 @@ public abstract class QuestionImportResult {
 
     private final InputStream inputStream;
     private MultipartFile file;
-
     private HttpServletResponse response;
+
+    private String errorFileUrl; // 错误提示文件路径url
+    private boolean hasData = true; // 文件是否有内容
+    private List<QuestionInfo> successImportQuestionList; // 导入成功试题
+    private List<QuestionInfo> failImportQuestionList; // 导入失败试题
+    private String errorMsg; // 错误提示信息
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public boolean isHasData() {
+        return hasData;
+    }
+
+    public void setHasData(boolean hasData) {
+        this.hasData = hasData;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
 
     public InputStream getInputStream() {
         return inputStream;
@@ -40,9 +60,33 @@ public abstract class QuestionImportResult {
         this.response = response;
     }
 
+    public void setErrorFileUrl(String errorFileUrl) {
+        this.errorFileUrl = errorFileUrl;
+    }
+
+    public String getErrorFileUrl() {
+        return errorFileUrl;
+    }
+
+    public List<QuestionInfo> getSuccessImportQuestionList() {
+        return successImportQuestionList;
+    }
+
+    public void setSuccessImportQuestionList(List<QuestionInfo> successImportQuestionList) {
+        this.successImportQuestionList = successImportQuestionList;
+    }
+
+    public List<QuestionInfo> getFailImportQuestionList() {
+        return failImportQuestionList;
+    }
+
+    public void setFailImportQuestionList(List<QuestionInfo> failImportQuestionList) {
+        this.failImportQuestionList = failImportQuestionList;
+    }
+
     public HttpServletResponse getResponse() {
         return response;
     }
 
-    public abstract ExcelQuestionData readTemplate();
+    public abstract void readTemplate();
 }

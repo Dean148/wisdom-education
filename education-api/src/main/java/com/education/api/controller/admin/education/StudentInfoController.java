@@ -125,10 +125,8 @@ public class StudentInfoController extends BaseController {
         }
 
         String msg = successCount + "名学员数据导入成功";
-        if (!excelResult.isSuccess()) {
-            if (failCount > 0) {
-                msg += failCount + "名学员数据导入失败(分别为)" + excelResult.getErrorMsg();
-            }
+        if (failCount > 0) {
+            msg += failCount + "名学员数据导入失败(分别为)" + excelResult.getErrorMsg();
             return Result.success(ResultCode.EXCEL_VERFIY_FAIL, msg, excelResult.getErrorExcelUrl());
         }
         return Result.success(ResultCode.SUCCESS, msg);

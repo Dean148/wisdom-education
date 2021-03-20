@@ -8,10 +8,9 @@ import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
-import com.education.common.model.ExcelResult;
+import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
-import com.education.model.dto.ExcelQuestionData;
 import com.education.model.dto.QuestionInfoDto;
 import com.education.model.entity.QuestionInfo;
 import com.education.model.request.PageParam;
@@ -118,23 +117,24 @@ public class QuestionInfoController extends BaseController {
         }
         try {
             QuestionImportResult questionImportResult = null;
-            boolean isExcelFile = false;
             if (excelTypes.contains(contentType)) {
-                isExcelFile = true;
                 questionImportResult = new ExcelQuestionImportResult(file, response);
             } else {
                 questionImportResult = new TxtQuestionImportResult(file);
             }
 
-            ExcelQuestionData excelQuestionData = questionImportResult.readTemplate();
-            ExcelResult excelResult = excelQuestionData.getExcelResult();
+            questionImportResult.readTemplate();
 
+            if (!questionImportResult.isHasData()) {
+                return Result.success(ResultCode.FAIL, questionImportResult.getErrorMsg());
+            }
 
-            List<QuestionInfo> questionInfoList = excelQuestionData.getQuestionInfoList();
-            int successCount = questionInfoService.importQuestion(schoolType, gradeInfoId, subjectId, questionInfoList);
+            List<QuestionInfo> questionInfoList = questionImportResult.getSuccessImportQuestionList();
+            int successCount = questionInfoService.importQuestion(schoolType, gradeInfoId,
+                    subjectId, questionInfoList);
 
             int failCount = 0;
-            List<QuestionInfo> failQuestionList = excelQuestionData.getFailQuestionList();
+            List<QuestionInfo> failQuestionList = questionImportResult.getFailImportQuestionList();
 
             if (failQuestionList != null) {
                 failCount = failQuestionList.size();
@@ -142,12 +142,12 @@ public class QuestionInfoController extends BaseController {
 
             // excel 数据校验失败
             String msg = successCount + "道试题导入成功";
-            if (!excelResult.isSuccess()) {
+            if (ObjectUtils.isNotEmpty(questionImportResult.getErrorMsg())) {
                 if (failCount > 0) {
-                    msg += failCount + "道试题导入失败(分别为)" + excelResult.getErrorMsg();
+                    msg += "," + failCount + "道试题导入失败(分别为)" + questionImportResult.getErrorMsg();
                 }
                 return Result.success(ResultCode.EXCEL_VERFIY_FAIL,
-                        msg, excelResult.getErrorExcelUrl());
+                       msg, questionImportResult.getErrorFileUrl());
             }
             return Result.success(ResultCode.SUCCESS, msg);
         } catch (Exception e) {

@@ -9,7 +9,7 @@ import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
  */
 public class ExcelResult {
 
-    private boolean success = true; // 默认excel 数据校验成功
+ //   private boolean success = true; // 默认excel 数据校验成功
     private String errorMsg;
     private String errorExcelUrl;
 
@@ -27,14 +27,14 @@ public class ExcelResult {
         return new ExcelResult();
     }
 
-    public boolean isSuccess() {
+  /*  public boolean isSuccess() {
         return success;
     }
 
     public void setSuccess(boolean success) {
         this.success = success;
         return;
-    }
+    }*/
 
     public String getErrorMsg() {
         return errorMsg;
