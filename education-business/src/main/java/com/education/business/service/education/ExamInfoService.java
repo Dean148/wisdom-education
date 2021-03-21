@@ -1,6 +1,7 @@
 package com.education.business.service.education;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.education.business.correct.QuestionCorrect;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.service.BaseService;
 import com.education.business.task.TaskParam;
@@ -70,6 +71,22 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         return selectPage(baseMapper.selectStudentExamList(page, studentExamInfoDto));
     }
 
+  /*  public Integer commit(StudentQuestionRequest studentQuestionRequest) {
+        studentQuestionRequest.setStudentId(getStudentId());
+        QuestionCorrect questionCorrect = null;
+        if (studentQuestionRequest.isTeacherCorrectFlag()) {
+            questionCorrect = new TeacherQuestionCorrect(studentQuestionRequest, null);
+        } else {
+            ExamInfo examInfo = new ExamInfo();
+            examInfo.setAdminId(getAdminUserId());
+            questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, null);
+        }
+        questionCorrect.correctStudentQuestion(studentQuestionRequest.getQuestionAnswerList());
+
+        ExamInfo examInfo = questionCorrect.getExamInfo();
+        return examInfo.getId();
+    } */
+
     @Transactional
     public Integer commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
         Integer studentId = getStudentInfo().getId();
@@ -89,7 +106,6 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         Date now = new Date();
         List<StudentQuestionAnswer> studentQuestionAnswerList = new ArrayList<>();
         int systemMark = 0;
-       // int objectiveQuestionNumber = 0; // 客观题数量
         int subjectiveQuestionNumber = 0; // 主观题数量
         int rightNumber = 0;
         int errorNumber = 0;
@@ -104,7 +120,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             studentQuestionAnswer.setQuestionPoints(item.getQuestionMark());
             String studentAnswer = item.getStudentAnswer();
             // 验证试题是否为客观题 // 教师评分直接跳过客观题
-            if (isObjectiveQuestion(item.getQuestionType()) && !studentQuestionRequest.isTeacherCorrectFlag()) {
+            if (QuestionCorrect.isObjectiveQuestion(item.getQuestionType()) && !studentQuestionRequest.isTeacherCorrectFlag()) {
                 String questionAnswer = item.getAnswer().replaceAll(",", "");
                 String studentAnswerProxy = null;
                 String questionAnswerProxy = ObjectUtils.charSort(questionAnswer);
@@ -122,7 +138,6 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                     errorNumber++;
                     studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.ERROR.getValue());
                 }
-              //  objectiveQuestionNumber++;
             } else {
                 if (studentQuestionRequest.isTeacherCorrectFlag()) {
                     // 答案为空，系统已批改，直接跳过

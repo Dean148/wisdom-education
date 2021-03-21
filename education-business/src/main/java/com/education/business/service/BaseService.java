@@ -1,30 +1,15 @@
 package com.education.business.service;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.education.business.task.TaskManager;
-import com.education.common.annotation.Unique;
 import com.education.common.cache.CacheBean;
 import com.education.common.constants.Constants;
-import com.education.common.constants.EnumConstants;
-import com.education.common.exception.BusinessException;
-import com.education.common.model.PageInfo;
 import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.ResultCode;
 import com.education.model.dto.AdminUserSession;
 import com.education.model.dto.StudentInfoSession;
-import com.education.model.entity.BaseEntity;
 import com.education.model.entity.StudentInfo;
 import com.education.model.entity.SystemAdmin;
-import com.education.model.request.PageParam;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
@@ -33,16 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * service 基类
@@ -62,25 +39,6 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
     @Resource
     protected CacheBean ehcacheBean;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    /**
-     * 判断试题是否客观题
-     * 主观题由系统自动判分
-     * @param questionType
-     * @return
-     */
-    public boolean isObjectiveQuestion(int questionType) {
-        if (questionType == EnumConstants.QuestionType.SINGLE_QUESTION.getValue()
-                || questionType == EnumConstants.QuestionType.MULTIPLE_QUESTION.getValue()
-                || questionType == EnumConstants.QuestionType.JUDGMENT_QUESTION.getValue()) {
-            return true;
-        }
-        return false;
-    }
-
-
-
-
 
     /**
      * 更新shiro 缓存中的用户信息，避免由于redis 缓存导致获取用户信息不一致问题
