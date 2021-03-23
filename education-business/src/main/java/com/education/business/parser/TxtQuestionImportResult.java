@@ -50,6 +50,9 @@ public class TxtQuestionImportResult extends QuestionImportResult {
             Integer questionType = null;
 
             boolean hasData = false; // txt 文档是否有内容
+
+            int readType = 0;
+            int questionInfoIndex = 0; // 记录上道试题的索引下标
             while ((lineContent = reader.readLine()) != null) {
                 if (ObjectUtils.isEmpty(lineContent)) {
                     continue;
@@ -59,11 +62,6 @@ public class TxtQuestionImportResult extends QuestionImportResult {
                     hasData = true;
                 }
 
-                QuestionImportParser excelQuestionParser = null;
-                if (questionType != null) {
-                    excelQuestionParser = QuestionImportParserManager.build()
-                            .createExcelQuestionParser(questionType);
-                }
                 String tokenStart = lineContent.substring(0, TITLE_LENGTH);
                 String content = lineContent.substring(TITLE_LENGTH, lineContent.length());
 
@@ -71,6 +69,7 @@ public class TxtQuestionImportResult extends QuestionImportResult {
                 if (tokenStart.startsWith(QUESTION_CONTENT)) {
                     questionInfo = new QuestionInfo();
                     questionInfo.setContent(content);
+                    readType = 1;
                     // 解析试题类型
                 } else if (tokenStart.startsWith(QUESTION_TYPE_VALUE)) {
                     for (EnumConstants.QuestionType item : EnumConstants.QuestionType.values()) {
@@ -81,19 +80,22 @@ public class TxtQuestionImportResult extends QuestionImportResult {
                             break;
                         }
                     }
+                    readType = 2;
                 } else if (tokenStart.startsWith(QUESTION_ANSWER)) {  // 解析试题答案
-                    String answer = excelQuestionParser.parseAnswerText(content);
-                    questionInfo.setAnswer(answer);
+                    questionInfo.setAnswer(content);
+                    readType = 3;
                 } else if (tokenStart.startsWith(QUESTION_OPTIONS)) { // 解析试题选项
                     String options = null;
                     if (ObjectUtils.isEmpty(content)) {
                         options = null; // 将options 设置为null, 防止选项为空导致插入数据库失败，因为mysql json 类型不支持字符串""
                     } else {
-                        options = excelQuestionParser.parseOptionText(content);
+                        options = content;
                     }
                     questionInfo.setOptions(options);
+                    readType = 4;
                 } else if (tokenStart.startsWith(QUESTION_ANALYSIS)) {
                     questionInfo.setAnalysis(content);
+                    readType = 5;
                     String errorMsg = verificationContent(questionInfo);
                     if (ObjectUtils.isEmpty(errorMsg)) {
                         questionInfoList.add(questionInfo);
@@ -107,6 +109,22 @@ public class TxtQuestionImportResult extends QuestionImportResult {
                         txtQuestionInfo.setQuestionTypeName(questionInfo.getQuestionTypeName());
                         errorTxtQuestionList.add(txtQuestionInfo);
                         failImportQuestionList.add(questionInfo);
+                    }
+                } else { // 出现内容换行情况
+                    switch (readType) { // 判断上一行内容的类型，然后进行内容拼接
+                        case 1:
+                            questionInfo.setContent(questionInfo.getContent() + content);
+                            break;
+                        case 3:
+                            questionInfo.setAnswer(questionInfo.getAnswer() + content);
+                            break;
+                        case 4:
+                            questionInfo.setOptions(questionInfo.getOptions() + content);
+                            break;
+                        case 5:
+                            questionInfoList.remove(questionInfoIndex);
+                            questionInfo.setAnalysis(questionInfo.getAnalysis() + content);
+                            questionInfoList.add(questionInfo);
                     }
                 }
             }
