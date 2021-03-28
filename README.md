@@ -1,3 +1,5 @@
+#### 微服务版本项目地址
+- https://gitee.com/zhuimengshaonian/education-cloud
 #### 后端技术栈
    
 - 基于 SpringBoot + Mybatis Plus+ Shiro + mysql + redis构建的智慧云智能教育平台 
