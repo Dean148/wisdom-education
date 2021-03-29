@@ -1,6 +1,5 @@
 package com.education.business.parser;
 
-import com.education.model.dto.ExcelQuestionData;
 import java.io.InputStream;
 
 /**
@@ -16,7 +15,7 @@ public class WordQuestionImportResult extends QuestionImportResult {
     }
 
     @Override
-    public ExcelQuestionData readTemplate() {
+    public void readTemplate() {
         throw new RuntimeException("Word Template Import is Not Finish");
     }
 }

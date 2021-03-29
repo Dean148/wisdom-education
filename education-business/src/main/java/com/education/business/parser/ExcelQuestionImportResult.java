@@ -8,7 +8,6 @@ import cn.afterturn.easypoi.util.PoiValidationUtil;
 import com.education.common.constants.EnumConstants;
 import com.education.common.model.ExcelResult;
 import com.education.common.utils.*;
-import com.education.model.dto.ExcelQuestionData;
 import com.education.model.entity.QuestionInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,7 +39,7 @@ public class ExcelQuestionImportResult extends QuestionImportResult {
     }
 
     @Override
-    public ExcelQuestionData readTemplate() {
+    public void readTemplate() {
         try {
             ImportParams importParams = new ImportParams();
             importParams.setNeedVerfiy(true); // 设置需要校验
@@ -78,22 +77,20 @@ public class ExcelQuestionImportResult extends QuestionImportResult {
 
             ExcelResult excelResult = ExcelUtils.importExcel(super.getInputStream(),
                     QuestionInfo.class, importParams, "/question/importExcelError/");
-
-            ExcelQuestionData excelQuestionData = new ExcelQuestionData();
-
-            excelQuestionData.setExcelResult(excelResult);
             ExcelImportResult result = excelResult.getExcelImportResult();
             if (ObjectUtils.isEmpty(result) || ObjectUtils.isEmpty(result.getList())) {
-                excelResult.setSuccess(false);
-                excelResult.setErrorMsg("导入excel模板内容为空,请添加数据之后再导入");
+                super.setHasData(false);
+                super.setErrorMsg("导入excel模板内容为空,请添加数据之后再导入");
+            } else {
+                super.setHasData(true);
+                super.setErrorMsg(excelResult.getErrorMsg());
+                super.setErrorFileUrl(excelResult.getErrorExcelUrl());
+                super.setSuccessImportQuestionList(result.getList());
+                super.setFailImportQuestionList(result.getFailList());
             }
-
-            excelQuestionData.setQuestionInfoList(result.getList());
-            return excelQuestionData;
         } catch (Exception e) {
             logger.error("模板数据解析异常", e);
         }
-        return null;
     }
 
 

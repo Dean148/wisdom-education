@@ -51,7 +51,7 @@ public class ExcelUtils {
             FileOutputStream fos = new FileOutputStream(errorExcelPath);
             importResult.getFailWorkbook().write(fos);
 
-            excelResult.setSuccess(false);
+           // excelResult.setSuccess(false);
             excelResult.setErrorMsg(errorMsg.toString() + "行数据错误，" +
                     "请根据表格错误提示进行修改后再导入");
             excelResult.setErrorExcelUrl(errorExcelUrl);
