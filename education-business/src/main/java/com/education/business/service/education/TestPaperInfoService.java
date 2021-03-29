@@ -192,13 +192,17 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
      * @return
      */
     public boolean updateExamNumber(Integer testPaperInfoId) {
+        return baseMapper.updateExamNumberById(testPaperInfoId);
+      /*  // 考试人数加1
+        redisTemplate.boundHashOps(testPaperInfoId).increment(CacheKey.TEST_PAPER_INFO_CACHE, 1);
+
         // 更新考试参考人数
         TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
         int examNumber = testPaperInfo.getExamNumber() + 1;
         LambdaUpdateWrapper updateWrapper = new LambdaUpdateWrapper<>(TestPaperInfo.class)
                 .set(TestPaperInfo::getExamNumber, examNumber)
                 .eq(TestPaperInfo::getId, testPaperInfo.getId());
-        return super.update(updateWrapper);
+        return super.update(updateWrapper);*/
     }
 
     /**
