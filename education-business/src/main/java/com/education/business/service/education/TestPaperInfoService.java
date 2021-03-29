@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.TestPaperInfoMapper;
 import com.education.business.service.BaseService;
+import com.education.common.constants.CacheKey;
 import com.education.common.constants.Constants;
 import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
@@ -192,13 +193,9 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
      * @return
      */
     public boolean updateExamNumber(Integer testPaperInfoId) {
-        // 更新考试参考人数
-        TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
-        int examNumber = testPaperInfo.getExamNumber() + 1;
-        LambdaUpdateWrapper updateWrapper = new LambdaUpdateWrapper<>(TestPaperInfo.class)
-                .set(TestPaperInfo::getExamNumber, examNumber)
-                .eq(TestPaperInfo::getId, testPaperInfo.getId());
-        return super.update(updateWrapper);
+        // 考试人数加1
+        redisTemplate.boundHashOps(CacheKey.PAPER_EXAM_NUMBER).increment(testPaperInfoId, 1);
+        return true;
     }
 
     /**

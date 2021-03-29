@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,6 +41,8 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
     @Resource
     protected CacheBean ehcacheBean;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Resource
+    protected RedisTemplate redisTemplate;
 
     /**
      * 更新shiro 缓存中的用户信息，避免由于redis 缓存导致获取用户信息不一致问题
