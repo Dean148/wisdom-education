@@ -26,8 +26,8 @@ public class ExamCountJob extends BaseJob {
         TestPaperInfoMapper testPaperInfoMapper = SpringBeanManager.getBean(TestPaperInfoMapper.class);
         if (ObjectUtils.isNotEmpty(testPaperIds)) {
             testPaperIds.forEach(id -> {
-                int examNumber = (int) boundHashOperations.get(id);
-                if (examNumber > 0) {
+                Integer examNumber = (Integer) boundHashOperations.get(id);
+                if (examNumber != null && examNumber > 0) {
                     boolean success = testPaperInfoMapper.updateTestPaperExamNumber(id, examNumber);
                     if (success) {
                         boundHashOperations.increment(id, -examNumber); // 缓存中减去去除的数量

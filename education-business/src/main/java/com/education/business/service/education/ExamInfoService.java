@@ -23,6 +23,8 @@ import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
 import com.education.model.response.*;
 import com.jfinal.kit.Kv;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +49,11 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     private TestPaperInfoService testPaperInfoService;
     @Autowired
     private ExamMonitorService examMonitorService;
+    @Autowired
+    private RedissonClient redissonClient;
+
+    private static final String PAPER_INFO_SETTING_LOCK = "paper:setting";
+
     /**
      * 后台考试列表
      * @param pageParam
@@ -89,8 +96,17 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
 
     @Transactional
     public Integer commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
-        Integer studentId = getStudentInfo().getId();
-        return this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentId, new ExamInfo());
+        RLock lock = redissonClient.getLock(PAPER_INFO_SETTING_LOCK);
+
+        try {
+
+        } finally {
+           // lock.r
+        }
+        lock.lock();
+        return null;
+     //   Integer studentId = getStudentInfo().getId();
+     //   return this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentId, new ExamInfo());
     }
 
     /**
