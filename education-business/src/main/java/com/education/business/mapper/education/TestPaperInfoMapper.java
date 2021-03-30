@@ -7,6 +7,8 @@ import com.education.model.dto.TestPaperQuestionDto;
 import com.education.model.entity.QuestionInfo;
 import com.education.model.entity.TestPaperInfo;
 import com.education.model.request.TestPaperQuestionRequest;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 /**
  * @author zengjintao
@@ -30,4 +32,14 @@ public interface TestPaperInfoMapper extends BaseMapper<TestPaperInfo> {
      * @return
      */
     Page<TestPaperQuestionDto> selectPaperQuestionList(Page<TestPaperQuestionDto> page, TestPaperQuestionRequest testPaperQuestionRequest);
+
+
+    /**
+     * 更新试卷考试人数
+     * @param id
+     * @param examNumber
+     * @return
+     */
+    @Update("update test_paper_info set exam_number = exam_number + #{examNumber} where id = #{id}")
+    boolean updateTestPaperExamNumber(@Param("id") Integer id, @Param("examNumber") Integer examNumber);
 }
