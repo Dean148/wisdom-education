@@ -1,11 +1,14 @@
 package com.education.business.service.education;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.correct.QuestionCorrect;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.service.BaseService;
 import com.education.business.task.TaskParam;
 import com.education.business.task.WebSocketMessageTask;
+import com.education.common.constants.CacheKey;
 import com.education.common.constants.Constants;
 import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
@@ -14,10 +17,7 @@ import com.education.common.utils.*;
 import com.education.model.dto.ExamCount;
 import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.dto.StudentExamInfoDto;
-import com.education.model.entity.ExamInfo;
-import com.education.model.entity.StudentQuestionAnswer;
-import com.education.model.entity.StudentWrongBook;
-import com.education.model.entity.TestPaperInfo;
+import com.education.model.entity.*;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
@@ -94,19 +94,40 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         return examInfo.getId();
     } */
 
+  @Autowired
+  private TestPaperInfoSettingService testPaperInfoSettingService;
+
     @Transactional
     public Integer commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
+        TestPaperInfoSetting testPaperInfoSetting = null;
+        Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
+        testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
         RLock lock = redissonClient.getLock(PAPER_INFO_SETTING_LOCK);
-
-        try {
-
-        } finally {
-           // lock.r
+        if (testPaperInfoSetting == null) {
+            try {
+                lock.lock();
+                testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
+                if (ObjectUtils.isEmpty(testPaperInfoSetting)) {
+                    testPaperInfoSetting = testPaperInfoSettingService.selectByTestPaperInfoId(testPaperInfoId);
+                    cacheBean.putValue(CacheKey.PAPER_INFO_SETTING, testPaperInfoId, testPaperInfoSetting);
+                }
+            } finally {
+                lock.unlock();
+            }
         }
-        lock.lock();
+
+      //  testPaperInfoSetting.get
         return null;
-     //   Integer studentId = getStudentInfo().getId();
-     //   return this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentId, new ExamInfo());
+    }
+
+
+    private void countStudentTestPaperMark(TestPaperInfoSetting testPaperInfoSetting) {
+        int commitAfterType = testPaperInfoSetting.getCommitAfterType();
+
+        if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue()) {
+
+        }
+       // if (testPaperInfoSetting.getCommitAfterType())
     }
 
     /**

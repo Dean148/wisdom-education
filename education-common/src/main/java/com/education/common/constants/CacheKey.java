@@ -28,4 +28,6 @@ public interface CacheKey {
     String EXAM_MONITOR_CACHE_KEY = "exam:monitor:cache:";
 
     String PAPER_EXAM_NUMBER = "paper_exam_number";
+
+    String PAPER_INFO_SETTING = "paper:info:setting";
 }
