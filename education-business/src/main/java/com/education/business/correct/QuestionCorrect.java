@@ -36,11 +36,14 @@ public abstract class QuestionCorrect {
 
     private final List<StudentWrongBook> studentWrongBookList = new ArrayList<>(); // 存储学员考试错题
 
+    protected final List<QuestionAnswer> questionAnswerList;
+
     public QuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo) {
         this.studentQuestionRequest = studentQuestionRequest;
         this.questionNumber = studentQuestionRequest.getQuestionAnswerList().size();
         this.studentId = studentQuestionRequest.getStudentId();
         this.examInfo = examInfo;
+        this.questionAnswerList = studentQuestionRequest.getQuestionAnswerList();
     }
 
     public void setTaskManager(TaskManager taskManager) {
@@ -124,9 +127,8 @@ public abstract class QuestionCorrect {
     }
     /**
      * 批改试题
-     * @param questionAnswer
      */
-    public abstract void correctStudentQuestion(List<QuestionAnswer> questionAnswer);
+    public abstract void correctStudentQuestion();
 
     /**
      * 获取考试记录

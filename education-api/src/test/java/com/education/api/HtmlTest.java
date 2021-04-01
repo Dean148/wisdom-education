@@ -1,7 +1,7 @@
 package com.education.api;
 
 import com.education.common.utils.RequestUtils;
-import gui.ava.html.image.generator.HtmlImageGenerator;
+// import gui.ava.html.image.generator.HtmlImageGenerator;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -115,7 +115,7 @@ public class HtmlTest {
      * @return 希望生成的Image Location
      */
     public static String html2Img(String htmText, String saveImageLocation){
-        HtmlImageGenerator imageGenerator = new HtmlImageGenerator();
+       /* HtmlImageGenerator imageGenerator = new HtmlImageGenerator();
         try {
           //  imageGenerator.loadHtml(htmText);
             imageGenerator.loadHtml(htmText);
@@ -132,7 +132,8 @@ public class HtmlTest {
             e.printStackTrace();
             throw new RuntimeException("将HTML文件转换成图片异常");
         }
-        return saveImageLocation;
+        return saveImageLocation;*/
+       return null;
     }
 
 

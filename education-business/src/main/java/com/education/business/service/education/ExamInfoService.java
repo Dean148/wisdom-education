@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.correct.QuestionCorrect;
+import com.education.business.correct.SystemQuestionCorrect;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.service.BaseService;
 import com.education.business.task.TaskParam;
@@ -115,7 +116,13 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                 lock.unlock();
             }
         }
+        QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, new ExamInfo());
+        questionCorrect.correctStudentQuestion();
+        if (testPaperInfoSetting.getCommitAfterType() == 1) {
+            Integer systemMark = questionCorrect.getExamInfo().getSystemMark();
+        }
 
+       // testPaperInfoSetting.getCommitAfterType();
       //  testPaperInfoSetting.get
         return null;
     }

@@ -4,10 +4,8 @@ import com.education.common.constants.EnumConstants;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.ExamInfo;
 import com.education.model.entity.StudentQuestionAnswer;
-import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 试题管理员批改 (处理已作答主观题)
@@ -24,7 +22,7 @@ public class TeacherQuestionCorrect extends QuestionCorrect {
     }
 
     @Override
-    public void correctStudentQuestion(List<QuestionAnswer> questionAnswerList) {
+    public void correctStudentQuestion() {
         questionAnswerList.forEach(questionAnswerItem -> {
             if (!isObjectiveQuestion(questionAnswerItem.getQuestionType()) &&
                     ObjectUtils.isNotEmpty(questionAnswerItem.getStudentAnswer())) {

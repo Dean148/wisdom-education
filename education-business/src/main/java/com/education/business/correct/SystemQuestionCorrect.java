@@ -27,10 +27,10 @@ public class SystemQuestionCorrect extends QuestionCorrect {
 
     /**
      * 批改客观题及答案为空的主观题
-     * @param questionAnswerList
+     * @param
      */
     @Override
-    public void correctStudentQuestion(List<QuestionAnswer> questionAnswerList) {
+    public void correctStudentQuestion() {
         for (QuestionAnswer questionAnswerItem : questionAnswerList) {
             if (isObjectiveQuestion(questionAnswerItem.getQuestionType()) ||
                     ObjectUtils.isEmpty(questionAnswerItem.getStudentAnswer())) {

@@ -2,6 +2,7 @@ package com.education.api;
 
 
 
+import com.alibaba.fastjson.JSON;
 import com.education.business.service.education.QuestionInfoService;
 import com.education.business.service.system.SystemAdminService;
 import com.education.common.cache.CacheBean;
@@ -12,12 +13,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 
 @SpringBootTest
@@ -44,6 +46,31 @@ public class EducationAdminApiApplicationTests {
     @Autowired
     private SystemAdminService systemAdminService;
 
+    static final String SCORE_RANK = "score_rank";
+
+    @Test
+    public void redisSort() {
+        Set<ZSetOperations.TypedTuple<String>> tuples = new HashSet<>();
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100; i++) {
+            DefaultTypedTuple<String> tuple = new DefaultTypedTuple<String>("张三" + i, 1D + i);
+            tuples.add(tuple);
+        }
+        System.out.println("循环时间:" +( System.currentTimeMillis() - start));
+        Long num = redisTemplate.opsForZSet().add(SCORE_RANK, tuples);
+        System.out.println("批量新增时间:" +(System.currentTimeMillis() - start));
+        System.out.println("受影响行数：" + num);
+    }
+
+    @Test
+    public void list() {
+        Set<String> range = redisTemplate.opsForZSet().reverseRange(SCORE_RANK, 0, 10);
+        System.out.println("获取到的排行列表:" + JSON.toJSONString(range));
+        Set<ZSetOperations.TypedTuple<String>> rangeWithScores = redisTemplate.opsForZSet().reverseRangeWithScores(SCORE_RANK, 0, 10);
+        System.out.println("获取到的排行和分数列表:" + JSON.toJSONString(rangeWithScores));
+    }
+
+
 
     @Test
     public void importData() {
@@ -66,12 +93,23 @@ public class EducationAdminApiApplicationTests {
 
     @Test
     public void check() {
+
+
+        redisTemplate.boundHashOps("user_test").increment("id:1", 1);
+      //  redisTemplate.boundHashOps("test").increment(2, 1);
+
+        Set<String> ids = redisTemplate.boundHashOps("user_test").keys();
+
+        ids.forEach(id -> {
+            System.out.println(redisTemplate.boundHashOps("user_test").get(id));
+        });
+
       //  redisTemplate.opsForList().ad
 
-        cacheBean.put("test", "test");
+       // cacheBean.put("test", "test");
 
 
-        System.out.println(cacheBean.getKeys());
+      //  System.out.println(cacheBean.getKeys());
 
        // redisTemplate.boundHashOps("userId").increment("user:1", 1);
 
