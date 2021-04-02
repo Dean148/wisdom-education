@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.correct.QuestionCorrect;
 import com.education.business.correct.SystemQuestionCorrect;
 import com.education.business.mapper.education.ExamInfoMapper;
+import com.education.business.message.QueueManager;
 import com.education.business.service.BaseService;
 import com.education.business.task.TaskParam;
 import com.education.business.task.WebSocketMessageTask;
@@ -53,6 +54,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     private RedissonClient redissonClient;
     @Autowired
     private TestPaperInfoSettingService testPaperInfoSettingService;
+    @Autowired
+    private QueueManager queueManager;
 
 
     /**
@@ -102,10 +105,12 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                 lock.unlock();
             }
         }
-        QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, new ExamInfo());
+        QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, new ExamInfo(), queueManager);
         questionCorrect.correctStudentQuestion();
         int commitAfterType = testPaperInfoSetting.getCommitAfterType();
 
+
+        Integer result = null;
         // 获取系统评分之后立即返回客户端, 然后通过rabbitmq 异步保存学员答题记录及错题信息
         if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_NOW.getValue()) {
             // redis 计算分数排行榜
@@ -118,9 +123,10 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
 
             // 取出排行榜1-10的学员
             // Set<StudentInfo> studentScore = redisTemplate.opsForZSet().reverseRange(CacheKey.EXAM_SORT_KEY, 1, 10);
-            return questionCorrect.getExamInfo().getSystemMark();
+            result = questionCorrect.getExamInfo().getSystemMark();
         }
-        return null;
+        examMonitorService.removeStudent(getStudentId(), testPaperInfoId); // 离开考试监控
+        return result;
     }
 
 

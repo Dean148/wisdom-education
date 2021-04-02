@@ -1,4 +1,4 @@
-package com.education.message;
+package com.education.business.message;
 
 import com.education.model.request.StudentQuestionRequest;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class QueueManager {
     /**
      * 发送考试提交消息通知
      */
-    public void sendExamCommitMessage(StudentQuestionRequest studentQuestionRequest) {
-
+    public void sendExamCommitMessage(ExamMessage examMessage) {
+        // rabbitTemplate.convertAndSend();
     }
 }

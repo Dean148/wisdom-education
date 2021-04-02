@@ -1,5 +1,7 @@
 package com.education.business.correct;
 
+import com.education.business.message.ExamMessage;
+import com.education.business.message.QueueManager;
 import com.education.common.constants.EnumConstants;
 import com.education.common.utils.DateUtils;
 import com.education.common.utils.ObjectUtils;
@@ -21,8 +23,12 @@ public class SystemQuestionCorrect extends QuestionCorrect {
 
     private int systemMark = 0;// 系统判分
 
-    public SystemQuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo) {
+    private QueueManager queueManager;
+
+
+    public SystemQuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo, QueueManager queueManager) {
         super(studentQuestionRequest, examInfo);
+        this.queueManager = queueManager;
     }
 
     /**
@@ -68,6 +74,12 @@ public class SystemQuestionCorrect extends QuestionCorrect {
                 }
             }
         }
+
+        // rabbitmq 发送考试记录消息
+        ExamMessage examMessage = new ExamMessage();
+        examMessage.setQuestionAnswerList(questionAnswerList);
+        examMessage.setStudentWrongBookList(getStudentWrongBookList());
+        queueManager.sendExamCommitMessage(examMessage);
     }
 
 

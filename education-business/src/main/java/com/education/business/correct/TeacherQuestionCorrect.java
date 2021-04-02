@@ -9,6 +9,7 @@ import java.util.Date;
 
 /**
  * 试题管理员批改 (处理已作答主观题)
+ * 教师后台批改试题暂时不考虑并发问题
  * @author zengjintao
  * @version 1.0
  * @create_at 2021/3/20 21:00

@@ -1,4 +1,4 @@
-package com.education.message;
+package com.education.business.message;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

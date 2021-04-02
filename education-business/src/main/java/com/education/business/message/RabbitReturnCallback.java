@@ -1,4 +1,4 @@
-package com.education.message;
+package com.education.business.message;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;

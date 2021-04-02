@@ -2,11 +2,6 @@ server:
   port: 80
   servlet:
     context-path: /
-  tomcat:
-    max-http-header-size: 10240000
-    accesslog:
-      directory: logs
-    basedir: /root/logs
 ## spring jdbc配置
 ## rootPath: /root/jar/education-admin-0.0.1-SNAPSHOT.jar!
 spring:
