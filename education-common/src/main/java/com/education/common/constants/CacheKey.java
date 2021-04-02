@@ -30,4 +30,14 @@ public interface CacheKey {
     String PAPER_EXAM_NUMBER = "paper_exam_number";
 
     String PAPER_INFO_SETTING = "paper:info:setting";
+
+    /**
+     *  考试排行榜key
+     */
+    String EXAM_SORT_KEY = "exam:sort:key:";
+
+    /**
+     *  试卷设置缓存key
+     */
+    String PAPER_INFO_SETTING_LOCK = "paper:setting";
 }

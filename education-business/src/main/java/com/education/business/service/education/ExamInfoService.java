@@ -1,7 +1,5 @@
 package com.education.business.service.education;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.correct.QuestionCorrect;
 import com.education.business.correct.SystemQuestionCorrect;
@@ -27,9 +25,10 @@ import com.jfinal.kit.Kv;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.DefaultTypedTuple;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 
 /**
@@ -52,8 +51,9 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     private ExamMonitorService examMonitorService;
     @Autowired
     private RedissonClient redissonClient;
+    @Autowired
+    private TestPaperInfoSettingService testPaperInfoSettingService;
 
-    private static final String PAPER_INFO_SETTING_LOCK = "paper:setting";
 
     /**
      * 后台考试列表
@@ -79,34 +79,20 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         return selectPage(baseMapper.selectStudentExamList(page, studentExamInfoDto));
     }
 
-  /*  public Integer commit(StudentQuestionRequest studentQuestionRequest) {
-        studentQuestionRequest.setStudentId(getStudentId());
-        QuestionCorrect questionCorrect = null;
-        if (studentQuestionRequest.isTeacherCorrectFlag()) {
-            questionCorrect = new TeacherQuestionCorrect(studentQuestionRequest, null);
-        } else {
-            ExamInfo examInfo = new ExamInfo();
-            examInfo.setAdminId(getAdminUserId());
-            questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, null);
-        }
-        questionCorrect.correctStudentQuestion(studentQuestionRequest.getQuestionAnswerList());
-
-        ExamInfo examInfo = questionCorrect.getExamInfo();
-        return examInfo.getId();
-    } */
-
-  @Autowired
-  private TestPaperInfoSettingService testPaperInfoSettingService;
 
     @Transactional
     public Integer commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
         TestPaperInfoSetting testPaperInfoSetting = null;
         Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
+
+        // 从缓存读取试卷配置，提升并发性能
         testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
-        RLock lock = redissonClient.getLock(PAPER_INFO_SETTING_LOCK);
+        RLock lock = redissonClient.getLock(CacheKey.PAPER_INFO_SETTING_LOCK);
         if (testPaperInfoSetting == null) {
             try {
                 lock.lock();
+
+                // 防止并发读取数据库，提升性能
                 testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
                 if (ObjectUtils.isEmpty(testPaperInfoSetting)) {
                     testPaperInfoSetting = testPaperInfoSettingService.selectByTestPaperInfoId(testPaperInfoId);
@@ -118,24 +104,25 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         }
         QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, new ExamInfo());
         questionCorrect.correctStudentQuestion();
-        if (testPaperInfoSetting.getCommitAfterType() == 1) {
-            Integer systemMark = questionCorrect.getExamInfo().getSystemMark();
-        }
+        int commitAfterType = testPaperInfoSetting.getCommitAfterType();
 
-       // testPaperInfoSetting.getCommitAfterType();
-      //  testPaperInfoSetting.get
+        // 获取系统评分之后立即返回客户端, 然后通过rabbitmq 异步保存学员答题记录及错题信息
+        if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_NOW.getValue()) {
+            // redis 计算分数排行榜
+            Set<ZSetOperations.TypedTuple<String>> tuples = new HashSet<>();
+            Integer systemMark = questionCorrect.getExamInfo().getSystemMark();
+            StudentInfo studentInfo = getStudentInfo();
+            DefaultTypedTuple tuple = new DefaultTypedTuple(studentInfo, systemMark.doubleValue());
+            tuples.add(tuple);
+            redisTemplate.opsForZSet().add(CacheKey.EXAM_SORT_KEY + testPaperInfoId, tuples);
+
+            // 取出排行榜1-10的学员
+            // Set<StudentInfo> studentScore = redisTemplate.opsForZSet().reverseRange(CacheKey.EXAM_SORT_KEY, 1, 10);
+            return questionCorrect.getExamInfo().getSystemMark();
+        }
         return null;
     }
 
-
-    private void countStudentTestPaperMark(TestPaperInfoSetting testPaperInfoSetting) {
-        int commitAfterType = testPaperInfoSetting.getCommitAfterType();
-
-        if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue()) {
-
-        }
-       // if (testPaperInfoSetting.getCommitAfterType())
-    }
 
     /**
      * 批量保存学员试题答案
