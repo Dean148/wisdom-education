@@ -26,4 +26,20 @@ public class JobConfig {
                 .build();
     }
 
+    @Bean
+    public JobDetail rabbitMqMessageJob() {
+        return JobBuilder.newJob(RabbitMqMessageJob.class)
+                .withIdentity(RabbitMqMessageJob.class.getSimpleName(), DEFAULT_GROUP_JOB)
+                .storeDurably().build();
+    }
+
+    @Bean
+    public Trigger rabbitMqMessageTaskTrigger() {
+        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("*/5 * * * * ?");
+        return TriggerBuilder.newTrigger().forJob(rabbitMqMessageJob().getKey())
+                .withIdentity(RabbitMqMessageJob.class.getSimpleName())
+                .withSchedule(scheduleBuilder)
+                .build();
+    }
+
 }
