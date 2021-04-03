@@ -84,17 +84,16 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
 
 
     @Transactional
-    public Integer commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
+    public QuestionCorrectResponse commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
+        QuestionCorrectResponse questionCorrectResponse = new QuestionCorrectResponse();
         TestPaperInfoSetting testPaperInfoSetting = null;
         Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
-
         // 从缓存读取试卷配置，提升并发性能
         testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
         RLock lock = redissonClient.getLock(CacheKey.PAPER_INFO_SETTING_LOCK);
         if (testPaperInfoSetting == null) {
             try {
                 lock.lock();
-
                 // 防止并发读取数据库，提升性能
                 testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
                 if (ObjectUtils.isEmpty(testPaperInfoSetting)) {
@@ -108,8 +107,6 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, new ExamInfo(), queueManager);
         questionCorrect.correctStudentQuestion();
         int commitAfterType = testPaperInfoSetting.getCommitAfterType();
-
-
         Integer result = null;
         // 获取系统评分之后立即返回客户端, 然后通过rabbitmq 异步保存学员答题记录及错题信息
         if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_NOW.getValue()) {
@@ -122,11 +119,13 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             redisTemplate.opsForZSet().add(CacheKey.EXAM_SORT_KEY + testPaperInfoId, tuples);
 
             // 取出排行榜1-10的学员
-            // Set<StudentInfo> studentScore = redisTemplate.opsForZSet().reverseRange(CacheKey.EXAM_SORT_KEY, 1, 10);
+            Set<StudentInfo> studentScore = redisTemplate.opsForZSet().reverseRange(CacheKey.EXAM_SORT_KEY, 1, 10);
             result = questionCorrect.getExamInfo().getSystemMark();
+            questionCorrectResponse.setStudentInfoSet(studentScore);
         }
         examMonitorService.removeStudent(getStudentId(), testPaperInfoId); // 离开考试监控
-        return result;
+        questionCorrectResponse.setStudentMark(result);
+        return questionCorrectResponse;
     }
 
 

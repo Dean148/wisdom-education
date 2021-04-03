@@ -1,9 +1,7 @@
 package com.education.business.message;
 
 import com.education.business.mapper.system.MessageLogMapper;
-import com.education.business.task.RabbitMqMessageListener;
 import com.education.business.task.TaskManager;
-import com.education.business.task.TaskParam;
 import com.education.common.constants.Constants;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.MessageLog;
@@ -46,14 +44,14 @@ public class QueueManager {
             CorrelationData correlationData = new CorrelationData();
             correlationData.setId(id);
             try {
+                // 发消息之前先进行消息落库
                 messageLog.setCorrelationDataId(id);
                 messageLog.setCreateDate(new Date());
                 String content = jackson.toJson(examMessage);
                 messageLog.setContent(content);
                 messageLog.setExchange(RabbitMqConfig.FANOUT_EXCHANGE);
                 messageLog.setRoutingKey(RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY);
-                examMessage.setMessageId(id);
-                // 消息唯一标识
+                examMessage.setMessageId(id); // 消息唯一标识
                 messageLogMapper.insert(messageLog);
                 rabbitTemplate.convertAndSend(RabbitMqConfig.FANOUT_EXCHANGE,
                         RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY ,

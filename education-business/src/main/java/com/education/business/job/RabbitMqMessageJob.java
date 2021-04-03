@@ -24,9 +24,9 @@ public class RabbitMqMessageJob extends BaseJob {
 
     private static final List<Integer> status = new ArrayList() {
         {
-            add(1);
-            add(2);
-            add(5);
+            add(Constants.SEND_RUNNING);
+            add(Constants.SEND_SUCCESS);
+            add(Constants.SEND_FAIL);
         }
     };
 
@@ -40,16 +40,14 @@ public class RabbitMqMessageJob extends BaseJob {
 
         // 失败次数小于3次并且消费不成功的记录 (减少查询的记录数)
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(MessageLog.class)
-                .le(MessageLog::getTryCount, Constants.MAX_SEND_COUNT)
+                // .le(MessageLog::getTryCount, Constants.MAX_SEND_COUNT)
                 .in(MessageLog::getStatus, status);
         MessageLogMapper messageLogMapper = SpringBeanManager.getBean(MessageLogMapper.class);
         List<MessageLog> messageLogList = messageLogMapper.selectList(queryWrapper);
         messageLogList.forEach(item -> {
             String content = item.getContent();
             int tryCount = item.getTryCount();
-
             if (tryCount > Constants.MAX_SEND_COUNT) {
-
                 // 超过三次系统默认消费失败，人工进行处理
                 LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageLog.class)
                         .set(MessageLog::getStatus, Constants.CONSUME_FAIL)
@@ -57,14 +55,12 @@ public class RabbitMqMessageJob extends BaseJob {
                         .eq(MessageLog::getCorrelationDataId, item.getCorrelationDataId());
                 messageLogMapper.update(null, updateWrapper);
             }
-
             else {
                 tryCount++;
                 LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageLog.class)
                         .set(MessageLog::getTryCount, tryCount)
                         .eq(MessageLog::getCorrelationDataId, item.getCorrelationDataId());
                 messageLogMapper.update(null, updateWrapper);
-
                 RabbitTemplate rabbitTemplate = SpringBeanManager.getBean(RabbitTemplate.class);
                 rabbitTemplate.convertAndSend(item.getExchange(),
                         item.getRoutingKey(),

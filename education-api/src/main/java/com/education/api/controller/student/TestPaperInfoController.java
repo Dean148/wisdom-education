@@ -3,6 +3,7 @@ package com.education.api.controller.student;
 import com.education.business.service.education.ExamInfoService;
 import com.education.business.service.education.ExamMonitorService;
 import com.education.business.service.education.TestPaperInfoService;
+import com.education.common.annotation.FormLimit;
 import com.education.common.base.BaseController;
 import com.education.common.constants.CacheKey;
 import com.education.common.utils.Result;
@@ -66,9 +67,10 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("commitPaper")
+    @FormLimit(timeOut = 10)
     public Result commitPaper(@RequestBody StudentQuestionRequest studentQuestionRequest) {
-        Integer examInfoId = examInfoService.commitTestPaperInfoQuestion(studentQuestionRequest);
-        return Result.success(ResultCode.SUCCESS, "提交成功", examInfoId);
+        examInfoService.commitTestPaperInfoQuestion(studentQuestionRequest);
+        return Result.success(ResultCode.SUCCESS, "提交成功");
     }
 
     /**
