@@ -33,15 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
+import org.springframework.data.redis.core.RedisTemplate;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 
 /**
@@ -62,6 +57,8 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
     @Resource
     protected CacheBean ehcacheBean;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Resource
+    protected RedisTemplate redisTemplate;
 
     /**
      * 判断试题是否客观题

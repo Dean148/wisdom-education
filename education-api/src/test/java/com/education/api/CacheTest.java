@@ -5,12 +5,13 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.education.common.cache.CaffeineCacheBean;
 import com.education.common.model.QuestionInfoImport;
-import com.jfinal.kit.HttpKit;
+import lombok.SneakyThrows;
 import org.junit.Test;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -19,41 +20,6 @@ import java.util.Map;
  * @create_at 2020/12/17 10:21
  */
 public class CacheTest {
-
-    public static void main(String[] args) {
-
-        Map headers = new HashMap<>();
-        headers.put("token", "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MTc0Mjc1ODgsInN1YiI6Ijg5IiwiZXhwIjoxNjE3NDM0Nzg4fQ.tmMFkRuVjP4cX3D5nTpl6gkGhq_Qf9js5BF5XDXdyr0");
-        headers.put("Content-type", "application/json");
-        for (int i = 0; i < 1; i++) {
-            new Thread(() -> {
-                String params = "{\n" +
-                        " \"examTime\":5,\n" +
-                        " \"testPaperInfoId\":9,\n" +
-                        " \"questionAnswerList\":\n" +
-                        "  [\n" +
-                        "\t  {\n" +
-                        "\t\t  \"questionInfoId\":1750,\n" +
-                        "\t\t  \"answer\":\"<p>是多少</p>\",\n" +
-                        "\t\t  \"questionType\":3,\n" +
-                        "\t\t  \"questionMark\":50,\n" +
-                        "\t\t  \"studentAnswer\":\"\"\n" +
-                        "\t  },\n" +
-                        "\t  {\n" +
-                        "\t\t  \"questionInfoId\":1748,\n" +
-                        "\t\t  \"answer\":\"B,C\",\n" +
-                        "\t\t  \"questionType\":2,\n" +
-                        "\t\t  \"questionMark\":50,\n" +
-                        "\t\t  \"studentAnswer\":\"A,B\"\n" +
-                        "\t  }\n" +
-                        "  ]\n" +
-                        "}";
-                long start = System.currentTimeMillis();
-                String content = HttpKit.post("http://127.0.0.1/student/testPaperInfo/commitPaper", params, headers);
-                System.err.println("耗时:" + (System.currentTimeMillis() - start));
-            }).start();
-        }
-    }
 
     @Test
     public void readTxt() {
@@ -153,5 +119,62 @@ public class CacheTest {
         caffeineCacheBean.put("test", 11, 6);
         Thread.sleep(6010);
         System.out.println((Object) caffeineCacheBean.get("test"));
+    }
+
+
+    static int dataBase = 0;// 数据库阅读量0
+
+ //   private static ThreadLocal<Integer> map = new ThreadLocal<>();
+    public static void main(String[] args) throws InterruptedException {
+     //   ApplicationContext application = SpringApplication.run(Application11.class, args);
+      //  RedisTemplate redisTemplate = (RedisTemplate) application.getBean("redisTemplate");
+     //   RedisUtil redisUtil = new RedisUtil(redisTemplate);
+     //   redisUtil.del("test");
+     //   redisUtil.set("test", 0);
+
+
+
+    //    map.set(10);
+     //   System.out.println("main" + map.get());
+
+        new Thread(new Runnable() {
+            @SneakyThrows
+            @Override
+            public void run() {
+                while (true) {
+                    // Thread.sleep(100);
+                    int read = 0;// (int) redisUtil.get("test");
+                    if (read > 0) {
+                     //   redisUtil.decr("test", read);
+                        dataBase += read;
+                    }
+                    System.err.println(dataBase);
+                }
+            }
+        }).start();
+
+
+       /* Thread.sleep(2000);
+        for (int i = 0 ; i< 10000; i++) {
+            MyThread myThread = new MyThread(redisUtil, 1);
+            myThread.start();
+        }*/
+    }
+
+    static class MyThread extends Thread {
+
+       /* private int i = 0;
+        private RedisUtil redisUtil;
+        MyThread(RedisUtil redisUtil, int i) {
+            this.i = i;
+            this.redisUtil = redisUtil;
+        }
+
+        @Override
+        public void run() {
+            // System.err.println(Thread.currentThread().getName() + ": " + i);
+            redisUtil.incr("test", i);
+            // redisUtil.set("test", (Integer)redisUtil.get("test") + i);
+        }*/
     }
 }
