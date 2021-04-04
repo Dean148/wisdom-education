@@ -99,11 +99,12 @@ public class LogInterceptor extends BaseInterceptor {
             }
 
         } else {
-          /*  String httpType = request.getMethod();
-            if (!httpType.equalsIgnoreCase("get")) {
+            String httpType = request.getMethod();
+            String header = request.getHeader("Content-type");
+            if (header != null && header.startsWith("application/json")) {
                 String params = readData(request);
                 sb.append(params);
-            }*/
+            }
         }
         sb.append("\n");
         long endTime = System.currentTimeMillis();

@@ -5,9 +5,12 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.education.common.cache.CaffeineCacheBean;
 import com.education.common.model.QuestionInfoImport;
+import com.jfinal.kit.HttpKit;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -16,6 +19,41 @@ import java.io.File;
  * @create_at 2020/12/17 10:21
  */
 public class CacheTest {
+
+    public static void main(String[] args) {
+
+        Map headers = new HashMap<>();
+        headers.put("token", "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MTc0Mjc1ODgsInN1YiI6Ijg5IiwiZXhwIjoxNjE3NDM0Nzg4fQ.tmMFkRuVjP4cX3D5nTpl6gkGhq_Qf9js5BF5XDXdyr0");
+        headers.put("Content-type", "application/json");
+        for (int i = 0; i < 1; i++) {
+            new Thread(() -> {
+                String params = "{\n" +
+                        " \"examTime\":5,\n" +
+                        " \"testPaperInfoId\":9,\n" +
+                        " \"questionAnswerList\":\n" +
+                        "  [\n" +
+                        "\t  {\n" +
+                        "\t\t  \"questionInfoId\":1750,\n" +
+                        "\t\t  \"answer\":\"<p>是多少</p>\",\n" +
+                        "\t\t  \"questionType\":3,\n" +
+                        "\t\t  \"questionMark\":50,\n" +
+                        "\t\t  \"studentAnswer\":\"\"\n" +
+                        "\t  },\n" +
+                        "\t  {\n" +
+                        "\t\t  \"questionInfoId\":1748,\n" +
+                        "\t\t  \"answer\":\"B,C\",\n" +
+                        "\t\t  \"questionType\":2,\n" +
+                        "\t\t  \"questionMark\":50,\n" +
+                        "\t\t  \"studentAnswer\":\"A,B\"\n" +
+                        "\t  }\n" +
+                        "  ]\n" +
+                        "}";
+                long start = System.currentTimeMillis();
+                String content = HttpKit.post("http://127.0.0.1/student/testPaperInfo/commitPaper", params, headers);
+                System.err.println("耗时:" + (System.currentTimeMillis() - start));
+            }).start();
+        }
+    }
 
     @Test
     public void readTxt() {
