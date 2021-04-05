@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 定时任务配置
  */
-@Configuration
+//@Configuration
 public class JobConfig {
 
     private static final String DEFAULT_GROUP_JOB = "default_job";

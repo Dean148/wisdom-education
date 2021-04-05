@@ -118,15 +118,17 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         // 获取系统评分之后立即返回客户端, 然后通过rabbitmq 异步保存学员答题记录及错题信息
         if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue()) {
             // redis 计算分数排行榜
-            Set<ZSetOperations.TypedTuple<String>> tuples = new HashSet<>();
+            Set<ZSetOperations.TypedTuple<StudentInfo>> tuples = new HashSet<>();
             Integer systemMark = examInfo.getSystemMark();
-            StudentInfo studentInfo = getStudentInfo();
+            StudentInfo studentInfo = new StudentInfo();
+            studentInfo.setId(getStudentId());
+            studentInfo.setName(getStudentInfo().getName());
             DefaultTypedTuple tuple = new DefaultTypedTuple(studentInfo, systemMark.doubleValue());
             tuples.add(tuple);
-            redisTemplate.opsForZSet().add(CacheKey.EXAM_SORT_KEY + testPaperInfoId, tuples);
-
+            String sortKey = CacheKey.EXAM_SORT_KEY + testPaperInfoId;
+            redisTemplate.opsForZSet().add(sortKey, tuples);
             // 取出排行榜1-10的学员
-            Set<StudentInfo> studentScore = redisTemplate.opsForZSet().reverseRange(CacheKey.EXAM_SORT_KEY + testPaperInfoId, 1, 10);
+            Set<StudentInfo> studentScore = redisTemplate.opsForZSet().reverseRange(sortKey, 1, 10);
             result = questionCorrect.getExamInfo().getSystemMark();
             questionCorrectResponse.setStudentInfoSet(studentScore);
         }

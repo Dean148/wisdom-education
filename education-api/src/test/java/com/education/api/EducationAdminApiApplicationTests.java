@@ -8,6 +8,7 @@ import com.education.business.service.system.SystemAdminService;
 import com.education.common.cache.CacheBean;
 import com.education.common.cache.EhcacheBean;
 import com.education.common.utils.ObjectUtils;
+import com.education.model.entity.StudentInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,16 +51,22 @@ public class EducationAdminApiApplicationTests {
 
     @Test
     public void redisSort() {
-        Set<ZSetOperations.TypedTuple<String>> tuples = new HashSet<>();
+        Set<ZSetOperations.TypedTuple<StudentInfo>> tuples = new HashSet<>();
         long start = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++) {
-            DefaultTypedTuple<String> tuple = new DefaultTypedTuple<String>("张三" + i, 1D + i);
+        for (int i = 0; i < 1; i++) {
+            StudentInfo studentInfo = new StudentInfo();
+            studentInfo.setId(i);
+           // DefaultTypedTuple<String> tuple = new DefaultTypedTuple<String>("张三" + i, 1D + i);
+
+            DefaultTypedTuple<StudentInfo> tuple = new DefaultTypedTuple(studentInfo, 1D + i);
             tuples.add(tuple);
         }
         System.out.println("循环时间:" +( System.currentTimeMillis() - start));
         Long num = redisTemplate.opsForZSet().add(SCORE_RANK, tuples);
         System.out.println("批量新增时间:" +(System.currentTimeMillis() - start));
         System.out.println("受影响行数：" + num);
+
+        list();
     }
 
     @Test
