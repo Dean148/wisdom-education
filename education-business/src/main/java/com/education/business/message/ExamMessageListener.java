@@ -2,15 +2,9 @@ package com.education.business.message;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.education.business.service.education.ExamInfoService;
-import com.education.business.service.education.StudentQuestionAnswerService;
-import com.education.business.service.education.StudentWrongBookService;
-import com.education.business.service.education.TestPaperInfoService;
 import com.education.business.service.system.SystemMessageLogService;
 import com.education.common.constants.Constants;
-import com.education.model.entity.ExamInfo;
 import com.education.model.entity.MessageLog;
-import com.education.model.entity.StudentQuestionAnswer;
 import com.jfinal.json.Jackson;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +12,8 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
+
 
 /**
  * 考试消息监听器
@@ -32,16 +24,12 @@ public class ExamMessageListener {
 
     private final Jackson jackson = new Jackson();
 
-    @Autowired
-    private StudentWrongBookService studentWrongBookService;
+
     @Autowired
     private SystemMessageLogService systemMessageLogService;
+
     @Autowired
-    private StudentQuestionAnswerService studentQuestionAnswerService;
-    @Autowired
-    private ExamInfoService examInfoService;
-    @Autowired
-    private TestPaperInfoService testPaperInfoService;
+    private ExamMessageListenerService examMessageListenerService;
 
     /**
      * 考试提交消息消费
@@ -52,7 +40,6 @@ public class ExamMessageListener {
      * @param channel
      */
     @RabbitListener(queues = RabbitMqConfig.EXAM_QUEUE)
-    // @Transactional
     public void onExamCommitMessage(Message message, Channel channel) {
         String content = new String(message.getBody());
         ExamMessage examMessage = jackson.parse(content, ExamMessage.class);
@@ -66,26 +53,7 @@ public class ExamMessageListener {
         int tryCount = messageLog.getTryCount();
         try {
             if (status != Constants.CONSUME_SUCCESS) {
-                // 保存考试记录
-                ExamInfo examInfo = examMessage.getExamInfo();
-                examInfo.setCreateDate(new Date());
-                examInfoService.save(examInfo);
-                // 批量保存学员错题
-                if (examMessage.getStudentWrongBookList() != null) {
-                    studentWrongBookService.saveBatch(examMessage.getStudentWrongBookList());
-                }
-                // 保存学员答题记录
-                List<StudentQuestionAnswer> studentQuestionAnswerList = examMessage.getStudentQuestionAnswerList();
-                studentQuestionAnswerList.stream().forEach(item -> item.setExamInfoId(examInfo.getId()));
-
-                studentQuestionAnswerService.saveBatch(studentQuestionAnswerList);
-
-                LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageLog.class)
-                        .set(MessageLog::getStatus, Constants.CONSUME_SUCCESS)
-                        .eq(MessageLog::getCorrelationDataId, messageId);
-                systemMessageLogService.update(null, updateWrapper);
-                // 更新试卷参考人数
-                testPaperInfoService.updateExamNumber(examInfo.getTestPaperInfoId());
+                examMessageListenerService.doExamCommitMessageBiz(examMessage, messageId);
                 channel.basicAck(deliveryTag, true); // 告诉rabbitmq 消息已消费
             }
         } catch (Exception e) {

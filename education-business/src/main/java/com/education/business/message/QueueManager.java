@@ -45,13 +45,13 @@ public class QueueManager {
             correlationData.setId(id);
             try {
                 // 发消息之前先进行消息落库
+                examMessage.setMessageId(id); // 消息唯一标识
                 messageLog.setCorrelationDataId(id);
                 messageLog.setCreateDate(new Date());
-                String content = jackson.toJson(examMessage);
-                messageLog.setContent(content);
                 messageLog.setExchange(RabbitMqConfig.FANOUT_EXCHANGE);
                 messageLog.setRoutingKey(RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY);
-                examMessage.setMessageId(id); // 消息唯一标识
+                String content = jackson.toJson(examMessage);
+                messageLog.setContent(content);
                 messageLogMapper.insert(messageLog);
                 rabbitTemplate.convertAndSend(RabbitMqConfig.FANOUT_EXCHANGE,
                         RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY ,
