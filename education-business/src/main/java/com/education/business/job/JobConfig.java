@@ -4,7 +4,7 @@ import org.quartz.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration
 public class JobConfig {
 
     private static final String DEFAULT_GROUP_JOB = "default_job";

@@ -64,4 +64,6 @@ public final class Constants {
 
     // 消息发送最大次数
     public static final Integer MAX_SEND_COUNT = 3;
+
+    public static final String REDIS_TEMPLATE_BEAN_NAME = "redisTemplate";
 }

@@ -3,6 +3,7 @@ package com.education.business.service.education;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.correct.QuestionCorrect;
 import com.education.business.correct.SystemQuestionCorrect;
+import com.education.business.correct.TeacherQuestionCorrect;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.message.QueueManager;
 import com.education.business.service.BaseService;
@@ -104,27 +105,34 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                 lock.unlock();
             }
         }
-        QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, new ExamInfo(), queueManager);
+        ExamInfo examInfo = new ExamInfo();
+        studentQuestionRequest.setStudentId(getStudentId());
+        QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, examInfo, queueManager);
         questionCorrect.correctStudentQuestion();
-        int commitAfterType = testPaperInfoSetting.getCommitAfterType();
+        int commitAfterType = 1;
+        if (testPaperInfoSetting != null) {
+            testPaperInfoSetting.getCommitAfterType();
+        }
         Integer result = null;
+        examInfo = questionCorrect.getExamInfo();
         // 获取系统评分之后立即返回客户端, 然后通过rabbitmq 异步保存学员答题记录及错题信息
-        if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_NOW.getValue()) {
+        if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue()) {
             // redis 计算分数排行榜
             Set<ZSetOperations.TypedTuple<String>> tuples = new HashSet<>();
-            Integer systemMark = questionCorrect.getExamInfo().getSystemMark();
+            Integer systemMark = examInfo.getSystemMark();
             StudentInfo studentInfo = getStudentInfo();
             DefaultTypedTuple tuple = new DefaultTypedTuple(studentInfo, systemMark.doubleValue());
             tuples.add(tuple);
             redisTemplate.opsForZSet().add(CacheKey.EXAM_SORT_KEY + testPaperInfoId, tuples);
 
             // 取出排行榜1-10的学员
-            Set<StudentInfo> studentScore = redisTemplate.opsForZSet().reverseRange(CacheKey.EXAM_SORT_KEY, 1, 10);
+            Set<StudentInfo> studentScore = redisTemplate.opsForZSet().reverseRange(CacheKey.EXAM_SORT_KEY + testPaperInfoId, 1, 10);
             result = questionCorrect.getExamInfo().getSystemMark();
             questionCorrectResponse.setStudentInfoSet(studentScore);
         }
         examMonitorService.removeStudent(getStudentId(), testPaperInfoId); // 离开考试监控
         questionCorrectResponse.setStudentMark(result);
+        questionCorrectResponse.setExamTime(questionCorrect.getExamInfo().getExamTime());
         return questionCorrectResponse;
     }
 
@@ -234,7 +242,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             examInfo.setCreateDate(now);
             super.save(examInfo);
             // 更新考试参考人数
-            testPaperInfoService.updateExamNumber(examInfo.getTestPaperInfoId());
+            testPaperInfoService.updateCacheExamNumber(examInfo.getTestPaperInfoId());
 
             examMonitorService.removeStudent(studentId, testPaperInfoId); // 离开考试监控
         } else {
@@ -254,12 +262,12 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             super.updateById(examInfo);
 
             // 发送批改消息通知
-            TaskParam taskParam = new TaskParam(WebSocketMessageTask.class);
+        /*    TaskParam taskParam = new TaskParam(WebSocketMessageTask.class);
             taskParam.put("message_type", EnumConstants.MessageType.EXAM_CORRECT.getValue());
             taskParam.put("sessionId", RequestUtils.getCookieValue(Constants.DEFAULT_SESSION_ID));
             taskParam.put("studentId", studentId);
             taskParam.put("testPaperInfoId", examInfo.getTestPaperInfoId());
-            taskManager.pushTask(taskParam);
+            taskManager.pushTask(taskParam);*/
         }
         studentQuestionAnswerList.stream().forEach(item -> item.setExamInfoId(examInfo.getId()));
         // 批量保存学员试题答案
@@ -295,9 +303,28 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             throw new BusinessException(new ResultCode(ResultCode.FAIL, "试卷已被批改"));
         }
         Integer studentId = studentQuestionRequest.getStudentId();
+
+        // 先删除原先的主观题答题记录
         studentQuestionAnswerService.deleteByExamInfoId(studentId, examInfo.getId());
         studentQuestionRequest.setTestPaperInfoId(examInfo.getTestPaperInfoId());
-        this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentQuestionRequest.getStudentId(), examInfo);
+
+        QuestionCorrect questionCorrect = new TeacherQuestionCorrect(studentQuestionRequest, examInfo);
+        questionCorrect.correctStudentQuestion();
+
+
+        examInfo = questionCorrect.getExamInfo();
+        examInfo.setAdminId(getAdminUserId());
+        super.updateById(examInfo);
+
+        // 发送批改消息通知
+        TaskParam taskParam = new TaskParam(WebSocketMessageTask.class);
+        taskParam.put("message_type", EnumConstants.MessageType.EXAM_CORRECT.getValue());
+        taskParam.put("sessionId", RequestUtils.getCookieValue(Constants.DEFAULT_SESSION_ID));
+        taskParam.put("studentId", studentId);
+        taskParam.put("testPaperInfoId", examInfo.getTestPaperInfoId());
+        taskManager.pushTask(taskParam);
+
+        // this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentQuestionRequest.getStudentId(), examInfo);
     }
 
     public PageInfo<TestPaperInfoReport> selectExamReportList(PageParam pageParam, TestPaperInfo testPaperInfo) {

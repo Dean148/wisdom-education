@@ -14,6 +14,16 @@ public class QuestionCorrectResponse {
     private Integer studentMark; // 学员得分
     private Set<StudentInfo> studentInfoSet; // 排行榜
 
+    private String examTime; // 考试耗时
+
+
+    public void setExamTime(String examTime) {
+        this.examTime = examTime;
+    }
+
+    public String getExamTime() {
+        return examTime;
+    }
 
     public Integer getStudentMark() {
         return studentMark;
