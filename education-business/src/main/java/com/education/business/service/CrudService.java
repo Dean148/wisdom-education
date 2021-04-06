@@ -12,6 +12,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.education.common.annotation.Unique;
 import com.education.common.cache.CacheBean;
+import com.education.common.component.ModelUniqueManager;
+import com.education.common.component.UniqueValueInfo;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.ObjectUtils;
@@ -200,7 +202,7 @@ public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceIm
      * @return
      */
     private Map<String, Object> getUniqueField(T entity) {
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(entity.getClass());
+       /* TableInfo tableInfo = TableInfoHelper.getTableInfo(entity.getClass());
         List<TableFieldInfo> fieldList = tableInfo.getFieldList();
         Map uniqueField = new HashMap<>();
         fieldList.forEach(tableFieldInfo -> {
@@ -214,6 +216,18 @@ public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceIm
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
+            }
+        });*/
+
+        List<UniqueValueInfo> fieldList = ModelUniqueManager.getUniqueField(entity.getClass());
+        Map uniqueField = new HashMap<>();
+        fieldList.forEach(item -> {
+            try {
+                Field field = item.getField();
+                field.setAccessible(true);
+                uniqueField.put(item.getUniqueValue(), field.get(entity));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         });
         return uniqueField;
