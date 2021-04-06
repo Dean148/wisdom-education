@@ -22,6 +22,7 @@ public class RabbitMqConfig {
 
     public static final String EXAM_QUEUE = "exam_queue";
     public static final String FANOUT_EXCHANGE = "exam_queue_exchange";
+    public final static String EXAM_QUEUE_ROUTING_KEY = "exam_queue_routing_key";
 
     @Autowired
     private RabbitTemplate.ConfirmCallback confirmCallback;

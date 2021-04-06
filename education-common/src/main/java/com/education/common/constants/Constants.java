@@ -51,4 +51,19 @@ public final class Constants {
     public static final String SESSION_KEY = "user.session.cache";
 
     public static final String PAPER_INFO_TEMPLATE = "/template/paperInfoTemplate.html";
+
+    public static final Integer SEND_RUNNING = 1;
+
+    public static final Integer SEND_SUCCESS = 2;
+
+    public static final Integer CONSUME_SUCCESS = 3;
+
+    public static final Integer CONSUME_FAIL = 4;
+
+    public static final Integer SEND_FAIL = 5;
+
+    // 消息发送最大次数
+    public static final Integer MAX_SEND_COUNT = 3;
+
+    public static final String REDIS_TEMPLATE_BEAN_NAME = "redisTemplate";
 }

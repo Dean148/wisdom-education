@@ -27,6 +27,10 @@ public class TaskManager {
         }
     }
 
+    public void pushTask(Runnable runnable) {
+        threadPoolTaskExecutor.execute(runnable);
+    }
+
     public void pushTaskByNewInstance(TaskParam taskParam) {
         Class<? extends TaskListener> taskListenerClass = taskParam.getTaskListenerClass();
         if (taskListenerClass != null) {

@@ -38,6 +38,10 @@ public abstract class QuestionCorrect {
     private final List<StudentWrongBook> studentWrongBookList = new ArrayList<>(); // 存储学员考试错题
 
     protected final List<QuestionAnswer> questionAnswerList;
+    protected final List<StudentQuestionAnswer> studentQuestionAnswerList = new ArrayList<>();
+
+    // 存储客观题答题记录
+    private final List<StudentQuestionAnswer> objectiveQuestionAnswerList = new ArrayList<>();
 
     public QuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo) {
         this.studentQuestionRequest = studentQuestionRequest;
@@ -101,6 +105,7 @@ public abstract class QuestionCorrect {
                 questionAnswer.getQuestionInfoId(),
                 questionAnswer.getQuestionMark());
         studentWrongBook.setStudentAnswer(questionAnswer.getStudentAnswer());
+        studentWrongBook.setStudentId(getStudentId());
         studentWrongBook.setCorrectStatus(EnumConstants.CorrectStatus.ERROR.getValue());
         this.addErrorNumber(); // 错题数加1
         this.studentWrongBookList.add(studentWrongBook);
@@ -123,8 +128,24 @@ public abstract class QuestionCorrect {
         taskManager.pushTask(taskParam);*/
     }
 
+    public List<StudentQuestionAnswer> getObjectiveQuestionAnswerList() {
+        return objectiveQuestionAnswerList;
+    }
+
+    public void addObjectiveQuestionAnswerList(StudentQuestionAnswer studentQuestionAnswer) {
+        this.objectiveQuestionAnswerList.add(studentQuestionAnswer);
+    }
+
     protected long getExamTime() {
         return studentQuestionRequest.getExamTime();
+    }
+
+    protected Integer getStudentId() {
+        return studentQuestionRequest.getStudentId();
+    }
+
+    protected Integer getTestPaperInfoId() {
+        return studentQuestionRequest.getTestPaperInfoId();
     }
     /**
      * 批改试题

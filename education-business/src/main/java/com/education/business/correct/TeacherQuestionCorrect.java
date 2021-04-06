@@ -38,6 +38,7 @@ public class TeacherQuestionCorrect extends QuestionCorrect {
                 } else {
                     studentQuestionAnswer.setCorrectStatus(EnumConstants.CorrectStatus.CORRECTED.getValue());
                 }
+                super.addObjectiveQuestionAnswerList(studentQuestionAnswer);
             }
         });
     }
@@ -54,12 +55,9 @@ public class TeacherQuestionCorrect extends QuestionCorrect {
             this.examInfo.setCorrectType(EnumConstants.CorrectType.TEACHER.getValue());
         } else {
             this.examInfo.setMark(examInfo.getSystemMark() + teacherMark);
-            int subjectiveQuestionNumber = examInfo.getSubjectiveQuestionNumber()
-                    + this.subjectiveQuestionNumber;
-            this.examInfo.setSubjectiveQuestionNumber(subjectiveQuestionNumber);
             this.examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM_AND_TEACHER.getValue());
         }
-        this.sendStudentMessage(); // 发送消息通知
+     //   this.sendStudentMessage(); // 发送批改完成消息通知
         return this.examInfo;
     }
 }

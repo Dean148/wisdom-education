@@ -188,14 +188,25 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
     }
 
     /**
-     * 更新考试人数
+     * 更新缓存考试人数
+     * @param testPaperInfoId
+     * @return
+     */
+    public boolean updateCacheExamNumber(Integer testPaperInfoId) {
+        // 考试人数加1
+        redisTemplate.boundHashOps(CacheKey.PAPER_EXAM_NUMBER).increment(testPaperInfoId, 1);
+        return true;
+    }
+
+    /**
+     * 更新数据库考试人数
+     * 注意 该操作不适合高并发场景
      * @param testPaperInfoId
      * @return
      */
     public boolean updateExamNumber(Integer testPaperInfoId) {
         // 考试人数加1
-        redisTemplate.boundHashOps(CacheKey.PAPER_EXAM_NUMBER).increment(testPaperInfoId, 1);
-        return true;
+        return baseMapper.updateTestPaperExamNumber(testPaperInfoId, 1);
     }
 
     /**
