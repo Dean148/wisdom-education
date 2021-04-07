@@ -3,7 +3,45 @@
 <mapper namespace="com.education.business.mapper.education.StudentWrongBookMapper">
 
     <select id="selectPageList" resultType="com.education.model.dto.QuestionInfoAnswer">
-       select
+
+        SELECT
+            question.id question_info_id,
+            question.content,
+            question.options,
+            question.analysis,
+            question.answer,
+            question.video_url,
+            question.question_type,
+            wrong_book.student_answer,
+            wrong_book.mark student_mark,
+            wrong_book.create_date,
+            wrong_book.question_mark,
+            wrong_book.correct_status
+        FROM
+           student_wrong_book wrong_book
+        LEFT JOIN (
+            SELECT
+            a.*,
+            b.NAME subject_name
+            FROM
+            question_info a
+            LEFT JOIN subject_info b ON a.subject_id = b.id
+            <where>
+                <if test="wrongBookQuery.subjectId != null">
+                    and a.subject_id = #{wrongBookQuery.subjectId }
+                </if>
+
+                <if test="wrongBookQuery.questionType != null">
+                    and a.question_type = #{wrongBookQuery.questionType }
+                </if>
+            </where>
+        ) c ON wrong_book.question_info_id = c.id
+        WHERE
+           wrong_book.student_id = #{wrongBookQuery.studentId}
+        ORDER BY wrong_book.id DESC;
+
+
+       <!-- select
         question.id question_info_id,
         question.content,
         question.options,
@@ -30,6 +68,6 @@
         <if test="wrongBookQuery.questionType != null">
             and question.question_type = #{wrongBookQuery.questionType }
         </if>
-        order by wrong_book.id desc
+        order by wrong_book.id desc -->
     </select>
 </mapper>
