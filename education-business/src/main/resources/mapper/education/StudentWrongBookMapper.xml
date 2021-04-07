@@ -12,6 +12,8 @@
             question.answer,
             question.video_url,
             question.question_type,
+            question.subject_id,
+            question.subject_name,
             wrong_book.student_answer,
             wrong_book.mark student_mark,
             wrong_book.create_date,
@@ -21,21 +23,21 @@
            student_wrong_book wrong_book
         LEFT JOIN (
             SELECT
-            a.*,
-            b.NAME subject_name
+              a.*,
+              b.NAME subject_name
             FROM
-            question_info a
+              question_info a
             LEFT JOIN subject_info b ON a.subject_id = b.id
             <where>
                 <if test="wrongBookQuery.subjectId != null">
-                    and a.subject_id = #{wrongBookQuery.subjectId }
+                    and a.subject_id = #{wrongBookQuery.subjectId}
                 </if>
 
                 <if test="wrongBookQuery.questionType != null">
-                    and a.question_type = #{wrongBookQuery.questionType }
+                    and a.question_type = #{wrongBookQuery.questionType}
                 </if>
             </where>
-        ) c ON wrong_book.question_info_id = c.id
+        ) question ON wrong_book.question_info_id = question.id
         WHERE
            wrong_book.student_id = #{wrongBookQuery.studentId}
         ORDER BY wrong_book.id DESC;
