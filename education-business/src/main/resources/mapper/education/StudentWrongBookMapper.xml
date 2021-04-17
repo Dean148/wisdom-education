@@ -40,7 +40,7 @@
         ) question ON wrong_book.question_info_id = question.id
         WHERE
            wrong_book.student_id = #{wrongBookQuery.studentId}
-        ORDER BY wrong_book.id DESC;
+        ORDER BY wrong_book.id DESC
 
 
        <!-- select

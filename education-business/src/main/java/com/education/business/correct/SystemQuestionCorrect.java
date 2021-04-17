@@ -9,9 +9,7 @@ import com.education.model.entity.ExamInfo;
 import com.education.model.entity.StudentQuestionAnswer;
 import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
-
 import java.util.Date;
-import java.util.List;
 
 /**
  * 试题系统自动批改 (处理客观题及未作答主观题, 然后保存学员本次考试答题记录)

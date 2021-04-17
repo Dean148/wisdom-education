@@ -109,11 +109,10 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         studentQuestionRequest.setStudentId(getStudentId());
         QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, examInfo, queueManager);
         questionCorrect.correctStudentQuestion();
-        int commitAfterType = 1;
+        int commitAfterType = EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue();
         if (testPaperInfoSetting != null) {
-            testPaperInfoSetting.getCommitAfterType();
+            commitAfterType = testPaperInfoSetting.getCommitAfterType();
         }
-        Integer result = null;
         examInfo = questionCorrect.getExamInfo();
         // 获取系统评分之后立即返回客户端, 然后通过rabbitmq 异步保存学员答题记录及错题信息
         if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue()) {
@@ -129,11 +128,11 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             redisTemplate.opsForZSet().add(sortKey, tuples);
             // 取出排行榜1-10的学员
             Set<StudentInfo> studentScore = redisTemplate.opsForZSet().reverseRange(sortKey, 1, 10);
-            result = questionCorrect.getExamInfo().getSystemMark();
+            Integer result = questionCorrect.getExamInfo().getSystemMark();
             questionCorrectResponse.setStudentInfoSet(studentScore);
+            questionCorrectResponse.setStudentMark(result); // 返回考试分数
         }
         examMonitorService.removeStudent(getStudentId(), testPaperInfoId); // 离开考试监控
-        questionCorrectResponse.setStudentMark(result);
         questionCorrectResponse.setExamTime(questionCorrect.getExamInfo().getExamTime());
         return questionCorrectResponse;
     }
