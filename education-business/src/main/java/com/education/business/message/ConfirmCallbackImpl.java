@@ -1,7 +1,7 @@
 package com.education.business.message;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.education.business.mapper.system.MessageLogMapper;
+import com.education.business.service.system.SystemMessageLogService;
 import com.education.common.constants.Constants;
 import com.education.model.entity.MessageLog;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 public class ConfirmCallbackImpl implements RabbitTemplate.ConfirmCallback {
 
     @Autowired
-    private MessageLogMapper messageLogMapper;
+    private SystemMessageLogService systemMessageLogService;
 
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
@@ -35,7 +35,7 @@ public class ConfirmCallbackImpl implements RabbitTemplate.ConfirmCallback {
             updateWrapper = new LambdaUpdateWrapper<MessageLog>()
                     .set(MessageLog::getStatus,  Constants.SEND_SUCCESS)
                     .eq(MessageLog::getCorrelationDataId, messageId);
-            messageLogMapper.update(null, updateWrapper);
+            systemMessageLogService.update(null, updateWrapper);
         } else {
 
             // 消息发送失败
@@ -44,7 +44,7 @@ public class ConfirmCallbackImpl implements RabbitTemplate.ConfirmCallback {
                     .set(MessageLog::getStatus, Constants.SEND_FAIL)
                     .set(MessageLog::getFailCause, cause)
                     .eq(MessageLog::getCorrelationDataId, messageId);
-            messageLogMapper.update(null, updateWrapper);
+            systemMessageLogService.update(null, updateWrapper);
         }
     }
 }

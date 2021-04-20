@@ -50,10 +50,10 @@ public class TestPaperInfoController extends BaseController {
     /**
      * 获取试卷试题
      * @param id
-     * @return
+     * @return sync = true 目前貌似只针对本地缓存有效 （该方式主要用户高并发下的同步操作，从而减少对数据库的请求）
      */
     @GetMapping("selectPaperQuestionById")
-    @Cacheable(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#id")
+    @Cacheable(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#id", sync = true)
     public Result selectPaperQuestionById(Integer id) {
         PageParam pageParam = new PageParam(); // 设置不分页
         TestPaperQuestionRequest testPaperQuestionRequest = new TestPaperQuestionRequest();
