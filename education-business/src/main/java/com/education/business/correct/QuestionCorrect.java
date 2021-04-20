@@ -14,6 +14,7 @@ import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -44,7 +45,9 @@ public abstract class QuestionCorrect {
     // 存储客观题答题记录
     private final List<StudentQuestionAnswer> objectiveQuestionAnswerList = new ArrayList<>();
 
-    public QuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo) {
+    protected Map<Integer, String> questionAnswerInfo; // 存储试题答案信息 key 为试题id value 为试题答案
+
+    public QuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo, Map<Integer, String> questionAnswerInfo) {
         this.studentQuestionRequest = studentQuestionRequest;
         this.questionNumber = studentQuestionRequest.getQuestionAnswerList().size();
         this.studentId = studentQuestionRequest.getStudentId();

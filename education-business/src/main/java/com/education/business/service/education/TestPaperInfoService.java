@@ -56,6 +56,21 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         return selectPage(baseMapper.selectPageList(page, testPaperInfo));
     }
 
+    public PageInfo<TestPaperQuestionDto> selectPaperQuestionListByCache(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
+        Integer testPaperInfoId = testPaperQuestionRequest.getTestPaperInfoId();
+        PageInfo<TestPaperQuestionDto> pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperQuestionRequest.getTestPaperInfoId());
+        if (pageInfo == null) {
+            synchronized (this) {
+                pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperQuestionRequest.getTestPaperInfoId());
+                if (pageInfo == null) {
+                    pageInfo = this.selectPaperQuestionList(pageParam, testPaperQuestionRequest);
+                    cacheBean.putValue(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId, pageInfo);
+                }
+            }
+        }
+        return pageInfo;
+    }
+
     /**
      * 获取试卷试题列表
      * @param pageParam

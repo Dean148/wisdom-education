@@ -6,6 +6,7 @@ import com.education.model.entity.ExamInfo;
 import com.education.model.entity.StudentQuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 试题管理员批改 (处理已作答主观题)
@@ -18,8 +19,8 @@ public class TeacherQuestionCorrect extends QuestionCorrect {
 
     private int teacherMark = 0;
 
-    public TeacherQuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo) {
-        super(studentQuestionRequest, examInfo);
+    public TeacherQuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo, Map<Integer, String> questionAnswerInfo) {
+        super(studentQuestionRequest, examInfo, questionAnswerInfo);
     }
 
     @Override

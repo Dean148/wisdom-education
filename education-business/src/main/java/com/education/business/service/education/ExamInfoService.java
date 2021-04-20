@@ -18,6 +18,7 @@ import com.education.common.utils.*;
 import com.education.model.dto.ExamCount;
 import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.dto.StudentExamInfoDto;
+import com.education.model.dto.TestPaperQuestionDto;
 import com.education.model.entity.*;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionAnswer;
@@ -91,6 +92,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
         // 从缓存读取试卷配置，提升并发性能
         testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
+
         RLock lock = redissonClient.getLock(CacheKey.PAPER_INFO_SETTING_LOCK);
         if (testPaperInfoSetting == null) {
             try {
@@ -107,7 +109,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         }
         ExamInfo examInfo = new ExamInfo();
         studentQuestionRequest.setStudentId(getStudentId());
-        QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, examInfo, queueManager);
+        QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, examInfo,
+                queueManager, getQuestionAnswerInfoByPaperId(testPaperInfoId));
         questionCorrect.correctStudentQuestion();
         int commitAfterType = EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue();
         if (testPaperInfoSetting != null) {
@@ -138,13 +141,29 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
 
 
     /**
-     * 批量保存学员试题答案
-     * @param studentQuestionRequest
-     * @param studentId
-     * @param examInfo
+     * 从缓存获取试卷试题答案 (开考的时候已经将试卷试题进行缓存)
+     * @param testPaperInfoId
      * @return
      */
-    private Integer batchSaveStudentQuestionAnswer(StudentQuestionRequest studentQuestionRequest,
+    public Map<Integer, String> getQuestionAnswerInfoByPaperId(Integer testPaperInfoId) {
+        PageInfo<TestPaperQuestionDto> pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId);
+        List<TestPaperQuestionDto> testPaperQuestionDtoList = pageInfo.getDataList();
+        Map<Integer, String> questionAnswerInfo = new HashMap<>();
+        testPaperQuestionDtoList.forEach(questionItem -> {
+            questionAnswerInfo.put(questionItem.getQuestionInfoId(), questionItem.getAnswer());
+        });
+        return questionAnswerInfo;
+    }
+
+
+    /**
+     * 批量保存学员试题答案
+     * @param
+     * @param
+     * @param
+     * @return
+     */
+   /* private Integer batchSaveStudentQuestionAnswer(StudentQuestionRequest studentQuestionRequest,
                                                 Integer studentId, ExamInfo examInfo) {
         Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
         Date now = new Date();
@@ -262,18 +281,18 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             super.updateById(examInfo);
 
             // 发送批改消息通知
-        /*    TaskParam taskParam = new TaskParam(WebSocketMessageTask.class);
+        *//*    TaskParam taskParam = new TaskParam(WebSocketMessageTask.class);
             taskParam.put("message_type", EnumConstants.MessageType.EXAM_CORRECT.getValue());
             taskParam.put("sessionId", RequestUtils.getCookieValue(Constants.DEFAULT_SESSION_ID));
             taskParam.put("studentId", studentId);
             taskParam.put("testPaperInfoId", examInfo.getTestPaperInfoId());
-            taskManager.pushTask(taskParam);*/
+            taskManager.pushTask(taskParam);*//*
         }
         studentQuestionAnswerList.stream().forEach(item -> item.setExamInfoId(examInfo.getId()));
         // 批量保存学员试题答案
         studentQuestionAnswerService.saveBatch(studentQuestionAnswerList);
         return examInfo.getId();
-    }
+    }*/
 
 
     public QuestionGroupResponse selectExamQuestionAnswer(Integer studentId, Integer examInfoId) {
@@ -308,7 +327,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         studentQuestionAnswerService.deleteByExamInfoId(studentId, examInfo.getId());
         studentQuestionRequest.setTestPaperInfoId(examInfo.getTestPaperInfoId());
 
-        QuestionCorrect questionCorrect = new TeacherQuestionCorrect(studentQuestionRequest, examInfo);
+        QuestionCorrect questionCorrect = new TeacherQuestionCorrect(studentQuestionRequest, examInfo,
+                getQuestionAnswerInfoByPaperId(studentQuestionRequest.getTestPaperInfoId()));
         questionCorrect.correctStudentQuestion();
 
 
