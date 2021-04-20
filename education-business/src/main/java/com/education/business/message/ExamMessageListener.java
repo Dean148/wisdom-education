@@ -57,14 +57,11 @@ public class ExamMessageListener {
                 channel.basicAck(deliveryTag, true); // 告诉rabbitmq 消息已消费
             }
         } catch (Exception e) {
+            LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageLog.class);
             if (tryCount == Constants.MAX_SEND_COUNT) {
                 try {
                     channel.basicAck(deliveryTag, true); // 告诉rabbitmq 消息已消费, 消息状态更新为失败状态
-                    LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageLog.class)
-                            .set(MessageLog::getStatus, Constants.CONSUME_FAIL)
-                            .set(MessageLog::getConsumeCause, e.getCause())
-                            .eq(MessageLog::getCorrelationDataId, messageId);
-                    systemMessageLogService.update(messageLog, updateWrapper);
+                    updateWrapper.set("status", Constants.CONSUME_FAIL);
                 } catch (IOException ex) {
                     log.error("消息状态更新异常....[" + content + "]", e);
                 }
@@ -75,6 +72,9 @@ public class ExamMessageListener {
                     log.error("消息重回队列异常......[" + content + "]", e);
                 }
             }
+            updateWrapper.set("consume_cause", e.getMessage());
+            updateWrapper.set("correlation_data_id", messageId);
+            systemMessageLogService.update(messageLog, updateWrapper);
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }

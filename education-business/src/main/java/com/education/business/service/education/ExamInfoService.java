@@ -128,9 +128,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             redisTemplate.opsForZSet().add(sortKey, tuples);
             // 取出排行榜1-10的学员
             Set<StudentInfo> studentScore = redisTemplate.opsForZSet().reverseRange(sortKey, 1, 10);
-            Integer result = questionCorrect.getExamInfo().getSystemMark();
             questionCorrectResponse.setStudentInfoSet(studentScore);
-            questionCorrectResponse.setStudentMark(result); // 返回考试分数
+            questionCorrectResponse.setStudentMark(systemMark); // 返回考试分数
         }
         examMonitorService.removeStudent(getStudentId(), testPaperInfoId); // 离开考试监控
         questionCorrectResponse.setExamTime(questionCorrect.getExamInfo().getExamTime());

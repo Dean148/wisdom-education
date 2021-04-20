@@ -15,5 +15,7 @@ public interface Lock {
     /**
      * 释放锁
      */
-    void releaseLock();
+    default void releaseLock() {
+
+    }
 }

@@ -24,7 +24,6 @@ import java.util.List;
 public abstract class QuestionCorrect {
 
     private StudentQuestionRequest studentQuestionRequest;
-    private TaskManager taskManager;
     protected ExamInfo examInfo;
     private Integer studentId;
 
@@ -38,6 +37,8 @@ public abstract class QuestionCorrect {
     private final List<StudentWrongBook> studentWrongBookList = new ArrayList<>(); // 存储学员考试错题
 
     protected final List<QuestionAnswer> questionAnswerList;
+
+    // 存储批改的学员答题记录
     protected final List<StudentQuestionAnswer> studentQuestionAnswerList = new ArrayList<>();
 
     // 存储客观题答题记录
@@ -51,9 +52,6 @@ public abstract class QuestionCorrect {
         this.questionAnswerList = studentQuestionRequest.getQuestionAnswerList();
     }
 
-    public void setTaskManager(TaskManager taskManager) {
-        this.taskManager = taskManager;
-    }
 
     public int getRightQuestionNumber() {
         return rightQuestionNumber;
@@ -117,6 +115,10 @@ public abstract class QuestionCorrect {
         studentQuestionAnswer.setStudentId(this.studentId);
         studentQuestionAnswer.setQuestionPoints(questionAnswer.getQuestionMark());
         return studentQuestionAnswer;
+    }
+
+    public List<StudentQuestionAnswer> getStudentQuestionAnswerList() {
+        return studentQuestionAnswerList;
     }
 
     protected void sendStudentMessage() {

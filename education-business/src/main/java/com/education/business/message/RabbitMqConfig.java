@@ -45,6 +45,10 @@ public class RabbitMqConfig {
         return new FanoutExchange(FANOUT_EXCHANGE);
     }
 
+/*    public DirectExchange directExchange() {
+        return new DirectExchange(FANOUT_EXCHANGE);
+    }*/
+
     /**
      * 将EXAM_QUEUE 绑定到交换机
      * @return
@@ -53,6 +57,13 @@ public class RabbitMqConfig {
     public Binding fanoutBinding() {
         return BindingBuilder.bind(queue()).to(fanoutExchange());
     }
+
+ /*   @Bean
+    public Binding fanoutBinding1() {
+       // return BindingBuilder.bind(queue())
+        return BindingBuilder.bind(queue()).to(directExchange()).with("/a");
+       // return BindingBuilder.bind(queue()).to(directExchange());
+    }*/
 
     @Bean
     public RabbitTemplate createRabbitTemplate(ConnectionFactory connectionFactory){
@@ -63,10 +74,10 @@ public class RabbitMqConfig {
         return rabbitTemplate;
     }
 
-    // @Bean
-    public SimpleRabbitListenerContainerFactory RabbitListenerContainerFactory() {
-        SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory = new SimpleRabbitListenerContainerFactory();
-        simpleRabbitListenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
-        return simpleRabbitListenerContainerFactory;
+    @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
+        SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+        rabbitListenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        return rabbitListenerContainerFactory;
     }
 }
