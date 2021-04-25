@@ -21,7 +21,6 @@ import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.dto.TestPaperQuestionDto;
 import com.education.model.entity.*;
 import com.education.model.request.PageParam;
-import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
 import com.education.model.response.*;
 import com.jfinal.kit.Kv;
@@ -44,8 +43,6 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
 
     @Autowired
     private StudentQuestionAnswerService studentQuestionAnswerService;
-    @Autowired
-    private StudentWrongBookService studentWrongBookService;
     @Autowired
     private QuestionInfoService questionInfoService;
     @Autowired
@@ -101,7 +98,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                 testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
                 if (ObjectUtils.isEmpty(testPaperInfoSetting)) {
                     testPaperInfoSetting = testPaperInfoSettingService.selectByTestPaperInfoId(testPaperInfoId);
-                    cacheBean.putValue(CacheKey.PAPER_INFO_SETTING, testPaperInfoId, testPaperInfoSetting);
+                    cacheBean.put(CacheKey.PAPER_INFO_SETTING, testPaperInfoId, testPaperInfoSetting, Constants.ONE_DAY * 60);
                 }
             } finally {
                 lock.unlock();
@@ -118,7 +115,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         }
         examInfo = questionCorrect.getExamInfo();
         // 获取系统评分之后立即返回客户端, 然后通过rabbitmq 异步保存学员答题记录及错题信息
-        if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue()) {
+        if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_NOW.getValue()) {
             // redis 计算分数排行榜
             Set<ZSetOperations.TypedTuple<StudentInfo>> tuples = new HashSet<>();
             Integer systemMark = examInfo.getSystemMark();

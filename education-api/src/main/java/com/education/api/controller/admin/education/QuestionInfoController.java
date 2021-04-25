@@ -67,6 +67,7 @@ public class QuestionInfoController extends BaseController {
         @Param(name = "content", message = "请输入试题内容"),
         @Param(name = "answer", message = "请输入试题答案")
     }, paramsType = ParamsType.JSON_DATA)
+ //   @CacheEvict(cacheNames = CacheKey.QUESTION_INFO_CACHE, condition = "questionInfoDto.id != null", value = "questionInfoDto.id")
     public Result saveOrUpdate(@RequestBody QuestionInfoDto questionInfoDto) {
         return Result.success(questionInfoService.saveOrUpdateQuestionInfo(questionInfoDto));
     }
@@ -77,6 +78,7 @@ public class QuestionInfoController extends BaseController {
      * @return
      */
     @GetMapping("selectById")
+ //   @Cacheable(cacheNames = CacheKey.QUESTION_INFO_CACHE, value = "#id" )
     public Result selectById(Integer id) {
         return Result.success(questionInfoService.selectById(id));
     }
@@ -88,6 +90,7 @@ public class QuestionInfoController extends BaseController {
      */
     @DeleteMapping("{id}")
     @RequiresPermissions("system:question:deleteById")
+   // @CacheEvict(cacheNames = CacheKey.QUESTION_INFO_CACHE, value = "#id")
     public Result deleteById(@PathVariable Integer id) {
         return Result.success(questionInfoService.deleteById(id));
     }

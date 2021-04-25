@@ -63,7 +63,7 @@ public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceIm
      * @param id
      * @return
      */
-    public boolean deleteById(Serializable id) {
+    public boolean deleteByCacheId(Serializable id) {
         try {
             TableInfo tableInfo = getTable();
             String cacheName = tableInfo.getTableName();

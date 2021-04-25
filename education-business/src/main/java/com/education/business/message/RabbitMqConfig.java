@@ -74,10 +74,10 @@ public class RabbitMqConfig {
         return rabbitTemplate;
     }
 
-    @Bean
+  /*  @Bean
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
         SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         rabbitListenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         return rabbitListenerContainerFactory;
-    }
+    }*/
 }
