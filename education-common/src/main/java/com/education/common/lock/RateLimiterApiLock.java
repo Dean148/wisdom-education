@@ -20,9 +20,4 @@ public class RateLimiterApiLock extends ApiLock {
         }
         return this.locked;
     }
-
-    @Override
-    public void releaseLock() {
-
-    }
 }

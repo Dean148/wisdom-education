@@ -56,6 +56,21 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         return selectPage(baseMapper.selectPageList(page, testPaperInfo));
     }
 
+    public PageInfo<TestPaperQuestionDto> selectPaperQuestionListByCache(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
+        Integer testPaperInfoId = testPaperQuestionRequest.getTestPaperInfoId();
+        PageInfo<TestPaperQuestionDto> pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperQuestionRequest.getTestPaperInfoId());
+        if (pageInfo == null) {
+            synchronized (this) {
+                pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperQuestionRequest.getTestPaperInfoId());
+                if (pageInfo == null) {
+                    pageInfo = this.selectPaperQuestionList(pageParam, testPaperQuestionRequest);
+                    cacheBean.putValue(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId, pageInfo);
+                }
+            }
+        }
+        return pageInfo;
+    }
+
     /**
      * 获取试卷试题列表
      * @param pageParam
@@ -97,6 +112,9 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
                 .set(TestPaperQuestionInfo::getMark, testPaperQuestionDto.getMark())
                 .set(TestPaperQuestionInfo::getSort, testPaperQuestionDto.getSort());
         testPaperQuestionInfoService.update(updateWrapper);
+
+        // 删除试卷试题缓存 (此处不用考虑缓存数据同步问题, 因此修改试题缓存问题不存在并发)
+        this.deleteCacheByPaperId(testPaperQuestionDto.getTestPaperInfoId());
     }
 
     @Override
@@ -160,6 +178,13 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         super.updateById(testPaperInfo);
         // 保存试卷试题
         testPaperQuestionInfoService.saveBatch(testPaperQuestionInfoList);
+        this.deleteCacheByPaperId(testPaperInfoId);
+    }
+
+
+    private void deleteCacheByPaperId(Integer testPaperInfoId) {
+        // 删除试卷试题缓存 (此处不用考虑缓存数据同步问题)
+        cacheBean.remove(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId);
     }
 
     /**
@@ -184,6 +209,9 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
                 .set(TestPaperInfo::getMark, mark)
                 .eq(TestPaperInfo::getId, testPaperInfoId);
         super.update(updateWrapper);
+
+        // 删除试卷试题缓存 (此处不用考虑缓存数据同步问题)
+        deleteCacheByPaperId(testPaperInfo.getId());
         return new ResultCode(ResultCode.SUCCESS, "删除成功");
     }
 

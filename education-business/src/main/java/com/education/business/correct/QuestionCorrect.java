@@ -14,6 +14,7 @@ import com.education.model.request.QuestionAnswer;
 import com.education.model.request.StudentQuestionRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -24,7 +25,6 @@ import java.util.List;
 public abstract class QuestionCorrect {
 
     private StudentQuestionRequest studentQuestionRequest;
-    private TaskManager taskManager;
     protected ExamInfo examInfo;
     private Integer studentId;
 
@@ -38,12 +38,16 @@ public abstract class QuestionCorrect {
     private final List<StudentWrongBook> studentWrongBookList = new ArrayList<>(); // 存储学员考试错题
 
     protected final List<QuestionAnswer> questionAnswerList;
+
+    // 存储批改的学员答题记录
     protected final List<StudentQuestionAnswer> studentQuestionAnswerList = new ArrayList<>();
 
     // 存储客观题答题记录
     private final List<StudentQuestionAnswer> objectiveQuestionAnswerList = new ArrayList<>();
 
-    public QuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo) {
+    protected Map<Integer, String> questionAnswerInfo; // 存储试题答案信息 key 为试题id value 为试题答案
+
+    public QuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo, Map<Integer, String> questionAnswerInfo) {
         this.studentQuestionRequest = studentQuestionRequest;
         this.questionNumber = studentQuestionRequest.getQuestionAnswerList().size();
         this.studentId = studentQuestionRequest.getStudentId();
@@ -51,9 +55,6 @@ public abstract class QuestionCorrect {
         this.questionAnswerList = studentQuestionRequest.getQuestionAnswerList();
     }
 
-    public void setTaskManager(TaskManager taskManager) {
-        this.taskManager = taskManager;
-    }
 
     public int getRightQuestionNumber() {
         return rightQuestionNumber;
@@ -117,6 +118,10 @@ public abstract class QuestionCorrect {
         studentQuestionAnswer.setStudentId(this.studentId);
         studentQuestionAnswer.setQuestionPoints(questionAnswer.getQuestionMark());
         return studentQuestionAnswer;
+    }
+
+    public List<StudentQuestionAnswer> getStudentQuestionAnswerList() {
+        return studentQuestionAnswerList;
     }
 
     protected void sendStudentMessage() {

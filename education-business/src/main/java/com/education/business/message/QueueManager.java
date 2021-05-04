@@ -1,6 +1,6 @@
 package com.education.business.message;
 
-import com.education.business.mapper.system.MessageLogMapper;
+import com.education.business.service.system.SystemMessageLogService;
 import com.education.business.task.TaskManager;
 import com.education.common.constants.Constants;
 import com.education.common.utils.ObjectUtils;
@@ -12,7 +12,6 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 
 /**
@@ -30,7 +29,8 @@ public class QueueManager {
     @Autowired
     private TaskManager taskManager;
     @Autowired
-    private MessageLogMapper messageLogMapper;
+    private SystemMessageLogService systemMessageLogService;
+
     private final Jackson jackson = new Jackson();
 
     /**
@@ -52,7 +52,7 @@ public class QueueManager {
                 messageLog.setRoutingKey(RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY);
                 String content = jackson.toJson(examMessage);
                 messageLog.setContent(content);
-                messageLogMapper.insert(messageLog);
+                systemMessageLogService.save(messageLog);
                 rabbitTemplate.convertAndSend(RabbitMqConfig.FANOUT_EXCHANGE,
                         RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY ,
                         jackson.toJson(examMessage), correlationData);
@@ -60,7 +60,7 @@ public class QueueManager {
                 logger.error("消息发送异常: [" + jackson.toJson(messageLog) + "]", e);
                 messageLog.setStatus(Constants.SEND_FAIL);
                 messageLog.setFailCause(e.getMessage());
-                messageLogMapper.updateById(messageLog);
+                systemMessageLogService.updateById(messageLog);
             }
         });
     }

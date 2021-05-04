@@ -79,7 +79,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("updatePaperQuestionMarkOrSort")
-    @CacheEvict(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionDto.testPaperInfoId")
+  //  @CacheEvict(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionDto.testPaperInfoId")
     public Result updatePaperQuestionMarkOrSort(@RequestBody TestPaperQuestionDto testPaperQuestionDto) {
         testPaperInfoService.updatePaperQuestionMarkOrSort(testPaperQuestionDto);
         return Result.success();
@@ -91,10 +91,10 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("saveTestPaperInfoQuestion")
-    @CacheEvict(
+  /*  @CacheEvict(
         cacheNames = CacheKey.TEST_PAPER_INFO_CACHE,
         key = "#testPaperQuestionInfoList.get(0).testPaperInfoId"
-    )
+    )*/
     public Result saveTestPaperInfoQuestion(@RequestBody List<TestPaperQuestionInfo> testPaperQuestionInfoList) {
         testPaperInfoService.saveTestPaperInfoQuestion(testPaperQuestionInfoList);
         return Result.success();
@@ -141,7 +141,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @DeleteMapping("removePaperQuestion")
-    @CacheEvict(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionInfo.testPaperInfoId")
+  //  @CacheEvict(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionInfo.testPaperInfoId")
     public Result removePaperQuestion(@RequestBody TestPaperQuestionInfo testPaperQuestionInfo) {
         return Result.success(testPaperInfoService.removePaperQuestion(testPaperQuestionInfo));
     }

@@ -3,14 +3,11 @@ package com.education.business.service;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
-import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
-import com.education.common.annotation.Unique;
 import com.education.common.cache.CacheBean;
 import com.education.common.component.ModelUniqueManager;
 import com.education.common.component.UniqueValueInfo;
@@ -22,7 +19,6 @@ import com.education.model.entity.BaseEntity;
 import com.education.model.request.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -62,14 +58,22 @@ public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceIm
         return SqlHelper.table(entityClass);
     }
 
-    public boolean deleteById(Serializable id) {
-        boolean success = super.removeById(id);
-        if (success) {
+    /**
+     * 根基id 删除并删除缓存数据
+     * @param id
+     * @return
+     */
+    public boolean deleteByCacheId(Serializable id) {
+        try {
             TableInfo tableInfo = getTable();
             String cacheName = tableInfo.getTableName();
             cacheBean.remove(cacheName, id);
+            super.removeById(id);
+            return true;
+        } catch (Exception e) {
+            log.error("缓存key:" + id + " 删除异常", e);
+            return false;
         }
-        return success;
     }
 
     public T selectByCache(String cacheName, Object key, QueryWrapper<T> queryWrapper) {

@@ -11,7 +11,7 @@ public class QuestionAnswer {
     private Integer questionInfoId;
     private Integer questionMark; // 试题分数
     private Integer studentMark; // 学员试题得分
-    private String answer; // 试题答案
+  //  private String answer; // 试题答案
     private String studentAnswer; // 学员答案
     private Integer questionType; // 试题类型
     private String comment; // 评语
@@ -74,13 +74,13 @@ public class QuestionAnswer {
         this.questionMark = questionMark;
     }
 
-    public String getAnswer() {
+ /*   public String getAnswer() {
         return answer;
     }
 
     public void setAnswer(String answer) {
         this.answer = answer;
-    }
+    }*/
 
     public String getStudentAnswer() {
         return studentAnswer;
