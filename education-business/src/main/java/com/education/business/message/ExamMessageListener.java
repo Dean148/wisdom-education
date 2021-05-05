@@ -24,7 +24,6 @@ public class ExamMessageListener {
 
     private final Jackson jackson = new Jackson();
 
-
     @Autowired
     private SystemMessageLogService systemMessageLogService;
 

@@ -53,6 +53,7 @@ public abstract class QuestionCorrect {
         this.studentId = studentQuestionRequest.getStudentId();
         this.examInfo = examInfo;
         this.questionAnswerList = studentQuestionRequest.getQuestionAnswerList();
+        this.questionAnswerInfo = questionAnswerInfo;
     }
 
 

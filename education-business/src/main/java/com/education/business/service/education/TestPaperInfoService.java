@@ -58,10 +58,10 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
 
     public PageInfo<TestPaperQuestionDto> selectPaperQuestionListByCache(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
         Integer testPaperInfoId = testPaperQuestionRequest.getTestPaperInfoId();
-        PageInfo<TestPaperQuestionDto> pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperQuestionRequest.getTestPaperInfoId());
+        PageInfo<TestPaperQuestionDto> pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId);
         if (pageInfo == null) {
             synchronized (this) {
-                pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperQuestionRequest.getTestPaperInfoId());
+                pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId);
                 if (pageInfo == null) {
                     pageInfo = this.selectPaperQuestionList(pageParam, testPaperQuestionRequest);
                     cacheBean.putValue(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId, pageInfo);
@@ -70,6 +70,14 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         }
         return pageInfo;
     }
+
+    public PageInfo<TestPaperQuestionDto> selectPaperQuestionListByCache(Integer testPaperInfoId) {
+        TestPaperQuestionRequest paperQuestionRequest = new TestPaperQuestionRequest();
+        paperQuestionRequest.setTestPaperInfoId(testPaperInfoId);
+        paperQuestionRequest.setShowAnswer(true);
+        return selectPaperQuestionListByCache(new PageParam(), paperQuestionRequest);
+    }
+
 
     /**
      * 获取试卷试题列表
