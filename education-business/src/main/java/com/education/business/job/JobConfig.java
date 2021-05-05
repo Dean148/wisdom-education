@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 定时任务配置
  */
-//@Configuration
+@Configuration
 public class JobConfig {
 
     private static final String DEFAULT_GROUP_JOB = "default_job";
@@ -38,7 +38,7 @@ public class JobConfig {
 
     @Bean
     public Trigger rabbitMqMessageTaskTrigger() {
-        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("*/5 * * * * ?");
+        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 */5 * * * ?");
         return TriggerBuilder.newTrigger().forJob(rabbitMqMessageJob().getKey())
                 .withIdentity(RabbitMqMessageJob.class.getSimpleName())
                 .withSchedule(scheduleBuilder)
