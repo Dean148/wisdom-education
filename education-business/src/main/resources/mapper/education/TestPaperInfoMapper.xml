@@ -33,6 +33,10 @@
     <select id="selectPaperQuestionList" resultType="testPaperQuestionDto">
         select
           b.id, a.id question_info_id, a.content, b.sort, b.mark,
+
+          <if test="testPaperQuestionRequest.showAnswer">
+              a.answer,
+          </if>
           b.test_paper_info_id, a.question_type, a.options
           from question_info a inner join test_paper_question_info b
         on a.id = b.question_info_id inner join test_paper_info c

@@ -66,7 +66,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("commitPaper")
-    @FormLimit(timeOut = 10)
+   // @FormLimit(timeOut = 10)
     public Result commitPaper(@RequestBody StudentQuestionRequest studentQuestionRequest) {
         return Result.success(ResultCode.SUCCESS, "提交成功", examInfoService.commitTestPaperInfoQuestion(studentQuestionRequest));
     }

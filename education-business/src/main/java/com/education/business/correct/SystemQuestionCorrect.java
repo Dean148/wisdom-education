@@ -26,7 +26,8 @@ public class SystemQuestionCorrect extends QuestionCorrect {
 
 
     public SystemQuestionCorrect(StudentQuestionRequest studentQuestionRequest,
-                                 ExamInfo examInfo, QueueManager queueManager, Map<Integer, String> questionAnswerInfo) {
+                                 ExamInfo examInfo, QueueManager queueManager,
+                                 Map<Integer, String> questionAnswerInfo) {
         super(studentQuestionRequest, examInfo, questionAnswerInfo);
         this.queueManager = queueManager;
     }

@@ -143,7 +143,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
      * @return
      */
     public Map<Integer, String> getQuestionAnswerInfoByPaperId(Integer testPaperInfoId) {
-        PageInfo<TestPaperQuestionDto> pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId);
+        PageInfo<TestPaperQuestionDto> pageInfo = testPaperInfoService.selectPaperQuestionListByCache(testPaperInfoId); // cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId);
         List<TestPaperQuestionDto> testPaperQuestionDtoList = pageInfo.getDataList();
         Map<Integer, String> questionAnswerInfo = new HashMap<>();
         testPaperQuestionDtoList.forEach(questionItem -> {
