@@ -34,7 +34,6 @@ public class DictValueController extends BaseController {
      * @return
      */
     @GetMapping("selectByDictId")
-    @Cacheable(cacheNames = CacheKey.SYSTEM_DICT_VALUE, key = "#dictId + ':'+ #pageParam.pageNumber + ':'+ #pageParam.pageSize")
     public Result<PageInfo<SystemDictValue>> selectByDictId(PageParam pageParam, Integer dictId) {
         LambdaQueryWrapper<SystemDictValue> queryWrapper = Wrappers.<SystemDictValue>lambdaQuery()
                 .eq(SystemDictValue::getSystemDictId, dictId);
