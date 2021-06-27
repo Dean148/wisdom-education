@@ -53,7 +53,7 @@ public class CourseInfoController extends BaseController {
     }, paramsType = ParamsType.JSON_DATA)
     @RequiresPermissions(value = {"system:course:save", "system:course:update"}, logical = Logical.OR)
     public Result saveOrUpdate(@RequestBody CourseInfo courseInfo) {
-        courseInfoService.saveOrUpdate(courseInfo);
+        courseInfoService.saveOrUpdateCourse(courseInfo);
         return Result.success();
     }
 
@@ -65,7 +65,7 @@ public class CourseInfoController extends BaseController {
     @DeleteMapping("{id}")
     @RequiresPermissions("system:course:deleteById")
     public Result deleteById(@PathVariable Integer id) {
-        courseInfoService.removeById(id);
+        courseInfoService.deleteById(id);
         return Result.success();
     }
 }

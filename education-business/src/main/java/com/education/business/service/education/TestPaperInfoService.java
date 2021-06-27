@@ -12,9 +12,7 @@ import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
 import com.education.common.template.BaseTemplate;
 import com.education.common.template.EnjoyTemplate;
-import com.education.common.utils.FileUtils;
-import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.ResultCode;
+import com.education.common.utils.*;
 import com.education.model.dto.TestPaperInfoDto;
 import com.education.model.dto.TestPaperQuestionDto;
 import com.education.model.entity.StudentInfo;
@@ -253,19 +251,21 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         TestPaperQuestionRequest testPaperQuestionRequest = new TestPaperQuestionRequest();
         testPaperQuestionRequest.setTestPaperInfoId(testPaperInfoId);
         testPaperQuestionRequest.setAddExamMonitor(false);
-        PageInfo<TestPaperQuestionDto> pageInfo = this.selectPaperQuestionList(new PageParam(), testPaperQuestionRequest);
+        PageInfo<TestPaperQuestionDto> pageInfo = this.selectPaperQuestionList(new PageParam(),
+                testPaperQuestionRequest);
+
         List<TestPaperQuestionDto> testPaperQuestionDtoList = pageInfo.getDataList();
 
         TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
         Kv data = Kv.create().set("testPaperQuestionList", this.groupQuestion(testPaperQuestionDtoList))
                 .set("title", testPaperInfo.getName());
-        String htmlName = testPaperInfo + ".html";
-        String outDirPath = "/paper_print/"
-                + testPaperInfoId + "/" + htmlName;
+        String htmlName = SpellUtils.getSpell(testPaperInfo.getName()) + ".html";
+        String outDirPath = "/paperPrint/"
+                + testPaperInfoId;
         String paperTemplateSavePath = FileUtils.getUploadPath() + outDirPath;
         BaseTemplate template = new EnjoyTemplate(Constants.PAPER_INFO_TEMPLATE, paperTemplateSavePath);
         template.generateTemplate(data, htmlName);
-        return outDirPath;
+        return outDirPath + "/" + htmlName;
     }
 
     /**
@@ -275,15 +275,21 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
      */
     public List<Map> groupQuestion(List<TestPaperQuestionDto> testPaperQuestionDtoList) {
         List<Map> testPaperQuestionGroupList = new ArrayList<>();
+        int number = 1;
         for (EnumConstants.QuestionType questionType : EnumConstants.QuestionType.values()) {
             Map item = new HashMap<>();
             int questionTypeValue = questionType.getValue();
             List<TestPaperQuestionDto> groupQuestionList = testPaperQuestionDtoList.stream()
                     .filter(question -> question.getQuestionType().intValue() == questionTypeValue)
                     .collect(Collectors.toList());
-            item.put("groupQuestionTypeTitle", questionType.getName());
-            item.put("groupQuestionList", groupQuestionList);
-            testPaperQuestionGroupList.add(item);
+            if (ObjectUtils.isNotEmpty(groupQuestionList)) {
+                item.put("groupQuestionTypeTitle", questionType.getName());
+                // 答题类型序号
+                item.put("groupQuestionTypeTitleNumber", NumberUtils.numberToChinese(number));
+                item.put("groupQuestionList", groupQuestionList);
+                testPaperQuestionGroupList.add(item);
+                number++;
+            }
         }
         return testPaperQuestionGroupList;
     }

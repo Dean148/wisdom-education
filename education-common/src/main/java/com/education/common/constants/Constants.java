@@ -50,7 +50,7 @@ public final class Constants {
 
     public static final String SESSION_KEY = "user.session.cache";
 
-    public static final String PAPER_INFO_TEMPLATE = "/template/paperInfoTemplate.html";
+    public static final String PAPER_INFO_TEMPLATE = "/template/enjoy/paperInfoTemplate.html";
 
     public static final Integer SEND_RUNNING = 1;
 

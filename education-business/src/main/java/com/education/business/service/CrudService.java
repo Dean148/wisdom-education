@@ -206,34 +206,19 @@ public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceIm
      * @return
      */
     private Map<String, Object> getUniqueField(T entity) {
-       /* TableInfo tableInfo = TableInfoHelper.getTableInfo(entity.getClass());
-        List<TableFieldInfo> fieldList = tableInfo.getFieldList();
+        List<UniqueValueInfo> fieldList = ModelUniqueManager.getUniqueField(entity.getClass());
         Map uniqueField = new HashMap<>();
-        fieldList.forEach(tableFieldInfo -> {
-            Field field = tableFieldInfo.getField();
-            Unique unique = field.getAnnotation(Unique.class);
-            if (ObjectUtils.isNotEmpty(unique)) {
+        if (fieldList != null) {
+            fieldList.forEach(item -> {
                 try {
+                    Field field = item.getField();
                     field.setAccessible(true);
-                    String column = ObjectUtils.isEmpty(unique.value()) ? field.getName() : unique.value();
-                    uniqueField.put(column, field.get(entity));
+                    uniqueField.put(item.getUniqueValue(), field.get(entity));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
-            }
-        });*/
-
-        List<UniqueValueInfo> fieldList = ModelUniqueManager.getUniqueField(entity.getClass());
-        Map uniqueField = new HashMap<>();
-        fieldList.forEach(item -> {
-            try {
-                Field field = item.getField();
-                field.setAccessible(true);
-                uniqueField.put(item.getUniqueValue(), field.get(entity));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        });
+            });
+        }
         return uniqueField;
     }
 }
