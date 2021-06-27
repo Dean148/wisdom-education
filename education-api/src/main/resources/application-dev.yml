@@ -27,17 +27,17 @@ spring:
             threadCount: 10
             threadPriority: 5
             threadsInheritContextClassLoaderOfInitializingThread: true
-  #rabbitmq:
-  #  host: 127.0.0.1
-   # port: 5672
-   # username: rabbitmq
-  #  password: 123456
-  #  virtual-host: /
-  #  publisher-confirms: true
-  #  publisher-returns: true
-  #  listener:
-  #    simple:
-   #     acknowledge-mode: manual #开启手动确认模式
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: rabbitmq
+    password: 123456
+    virtual-host: /
+    publisher-confirms: true
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: manual #开启手动确认模式
   redis:
     jedis:
       pool:
