@@ -66,4 +66,6 @@ public final class Constants {
     public static final Integer MAX_SEND_COUNT = 3;
 
     public static final String REDIS_TEMPLATE_BEAN_NAME = "redisTemplate";
+
+    public static final String DEFAULT_GROUP_JOB = "default_job";
 }
