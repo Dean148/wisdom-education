@@ -54,22 +54,43 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         return selectPage(baseMapper.selectPageList(page, testPaperInfo));
     }
 
-    public PageInfo<TestPaperQuestionDto> selectPaperQuestionListByCache(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
+    /**
+     * 缓存试卷试题
+     * @param pageParam
+     * @param testPaperQuestionRequest
+     * @return
+     */
+    public List<TestPaperQuestionDto> selectPaperQuestionListByCache(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
         Integer testPaperInfoId = testPaperQuestionRequest.getTestPaperInfoId();
         PageInfo<TestPaperQuestionDto> pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId);
         if (pageInfo == null) {
             synchronized (this) {
                 pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId);
                 if (pageInfo == null) {
+                    testPaperQuestionRequest.setShowAnswer(true);
                     pageInfo = this.selectPaperQuestionList(pageParam, testPaperQuestionRequest);
                     cacheBean.putValue(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId, pageInfo);
                 }
             }
         }
-        return pageInfo;
+        if (testPaperQuestionRequest.getShowAnswer()) {
+            return pageInfo.getDataList();
+        }
+        return this.setAnswerNull(pageInfo.getDataList());
     }
 
-    public PageInfo<TestPaperQuestionDto> selectPaperQuestionListByCache(Integer testPaperInfoId) {
+    /**
+     * 设置答案为null (防止将试题答案返回给客户端)
+     * @param dataList
+     */
+    private List<TestPaperQuestionDto> setAnswerNull(List<TestPaperQuestionDto> dataList) {
+        dataList.forEach(item -> {
+            item.setAnswer(null);
+        });
+        return dataList;
+    }
+
+    public List<TestPaperQuestionDto> selectPaperQuestionListByCache(Integer testPaperInfoId) {
         TestPaperQuestionRequest paperQuestionRequest = new TestPaperQuestionRequest();
         paperQuestionRequest.setTestPaperInfoId(testPaperInfoId);
         paperQuestionRequest.setShowAnswer(true);
@@ -96,16 +117,17 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
     @Transactional
     public void updatePaperQuestionMarkOrSort(TestPaperQuestionDto testPaperQuestionDto) {
         // 更新试卷总分
+        Integer testPaperInfoMark = null;
         if (ObjectUtils.isNotEmpty(testPaperQuestionDto.getUpdateType()) &&
                 testPaperQuestionDto.getUpdateType().intValue() == ResultCode.SUCCESS) {
             TestPaperInfo testPaperInfo = this.getById(testPaperQuestionDto.getTestPaperInfoId());
-            int testPaperInfoMark = testPaperInfo.getMark();
+            testPaperInfoMark = testPaperInfo.getMark();
             TestPaperQuestionInfo testPaperQuestionInfo = testPaperQuestionInfoService.getById(testPaperQuestionDto.getId());
             if (testPaperQuestionInfo.getMark() == 0) {
                 testPaperInfo.setMark(testPaperQuestionDto.getMark() + testPaperInfoMark);
             } else {
-                testPaperInfoMark -= testPaperQuestionInfo.getMark();
-                testPaperInfoMark += testPaperQuestionDto.getMark();
+                testPaperInfoMark -= testPaperQuestionInfo.getMark(); // 减去原先设置的分数
+                testPaperInfoMark += testPaperQuestionDto.getMark(); // 加上现在设置的分数
                 testPaperInfo.setMark(testPaperInfoMark);
             }
             this.updateById(testPaperInfo);
@@ -115,7 +137,8 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(TestPaperQuestionInfo.class)
                 .eq(TestPaperQuestionInfo::getQuestionInfoId, testPaperQuestionDto.getQuestionInfoId())
                 .eq(TestPaperQuestionInfo::getTestPaperInfoId, testPaperQuestionDto.getTestPaperInfoId())
-                .set(TestPaperQuestionInfo::getMark, testPaperQuestionDto.getMark())
+                .set(ObjectUtils.isNotEmpty(testPaperInfoMark), TestPaperQuestionInfo::getMark,
+                        testPaperQuestionDto.getMark())
                 .set(TestPaperQuestionInfo::getSort, testPaperQuestionDto.getSort());
         testPaperQuestionInfoService.update(updateWrapper);
 
