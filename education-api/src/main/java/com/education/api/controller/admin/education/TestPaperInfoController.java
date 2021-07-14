@@ -1,6 +1,7 @@
 package com.education.api.controller.admin.education;
 
 import com.education.business.service.education.TestPaperInfoService;
+import com.education.business.service.education.TestPaperInfoSettingService;
 import com.education.common.base.BaseController;
 import com.education.common.constants.CacheKey;
 import com.education.common.utils.Result;
@@ -30,6 +31,8 @@ public class TestPaperInfoController extends BaseController {
 
     @Autowired
     private TestPaperInfoService testPaperInfoService;
+    @Autowired
+    private TestPaperInfoSettingService testPaperInfoSettingService;
 
     /**
      * 试卷列表
@@ -154,5 +157,15 @@ public class TestPaperInfoController extends BaseController {
     @GetMapping("printPaperInfo/{testPaperInfoId}")
     public Result printPaperInfo(@PathVariable Integer testPaperInfoId) {
         return Result.success(testPaperInfoService.printPaperInfo(testPaperInfoId));
+    }
+
+    /**
+     * 获取试卷配置信息
+     * @param testPaperInfoId
+     * @return
+     */
+    @GetMapping("getPaperSettingInfo/{testPaperInfoId}")
+    public Result getPaperSettingInfo(@PathVariable Integer testPaperInfoId) {
+        return Result.success(testPaperInfoSettingService.selectByTestPaperInfoId(testPaperInfoId));
     }
 }
