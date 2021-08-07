@@ -5,7 +5,6 @@ import com.education.business.service.education.ExamMonitorService;
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.common.annotation.FormLimit;
 import com.education.common.base.BaseController;
-import com.education.common.constants.CacheKey;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.ExamMonitor;
@@ -15,7 +14,6 @@ import com.education.model.request.StudentQuestionRequest;
 import com.education.model.request.TestPaperQuestionRequest;
 import com.education.model.response.StudentExamRate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -66,7 +64,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("commitPaper")
-    @FormLimit(timeOut = 10)
+    @FormLimit(message = "请勿重复提交考试")
     public Result commitPaper(@RequestBody StudentQuestionRequest studentQuestionRequest) {
         return Result.success(ResultCode.SUCCESS,
                 "提交成功",
