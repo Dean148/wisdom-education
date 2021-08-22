@@ -5,7 +5,8 @@
 - 基于 SpringBoot + Mybatis Plus+ Shiro + mysql + redis构建的智慧云智能教育平台 
 - 基于数据驱动视图的理念封装 element-ui，即使没有 vue 的使用经验也能快速上手  
 - 提供 lambda 、stream api 、webflux 的生产实践  
-
+- 集成shardingsphere， 支持mysql 数据库读写分离
+- 集成阿里巴巴数据同步中间件Canal，可用于mysql 与其他类型数据库进行数据实时同步
 #### 前端技术
 
 - Vue
@@ -26,6 +27,8 @@ Mysql | 5.7
 Element-UI | 2.13.0
 Shiro | 1.4.0
 Jfinal Weixin | 2.3
+Canal | 1.1.4
+shardingsphere| 3.1.0.M1
 
 ### 系统特色
 
@@ -54,6 +57,7 @@ Jfinal Weixin | 2.3
 - ├── education-api -- 系统api模块
 - └── education-common -- 系统公共模块 
 - └── education-business -- 系统业务模块
+- └── education-canal-- canal数据同步模块
 - └── education-common-api -- 系统公共api模块
 - ├── education-model -- 实体类模块	
 ```
