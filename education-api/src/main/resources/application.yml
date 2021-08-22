@@ -1,6 +1,8 @@
 spring:
   profiles:
-    active: dev
+    active: test
+  cache:
+    type: redis
 mybatis-plus:
   type-aliases-package: com.education.model
   configuration:
