@@ -34,8 +34,6 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
-  main:
-    allow-bean-definition-overriding: true
 lbs:
   key: MYOBZ-OOEW3-KYC3G-YWDXA-DMQJ6-SPBMH
 ## 虚拟文件上传路径
