@@ -53,11 +53,13 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
     private final Map<String, CanalTableListener> canalTableListenerMap = new HashMap();
     private final Map<String, TableInfo> entityMap = new HashMap();
     private final Jackson jackson = (Jackson) JacksonFactory.me().getJson();
+    @Autowired
+    private CanalProperties canalProperties;
 
     private CanalConnector connector;
 
-    @Value("${canal.open}")
-    private boolean canalOpenFlag;
+  //  @Value("${canal.open}")
+   // private boolean canalOpenFlag;
     private final int batchSize = 1000;
 
     @Override
@@ -82,7 +84,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        if (canalOpenFlag) {
+        if (canalProperties.isOpenFlag()) {
             Map<String, CanalTableListener> beansOfType = applicationContext.getBeansOfType(CanalTableListener.class);
             beansOfType.forEach((key, value) -> {
                 CanalTable canalTable = value.getClass().getAnnotation(CanalTable.class);
@@ -190,7 +192,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
 
     private void canalListener() {
         connector = CanalConnectors.newSingleConnector(new InetSocketAddress(AddressUtils.getHostIp(),
-                11111), "example", "", "");
+                canalProperties.getPort()), canalProperties.getDestination(), canalProperties.getUserName(), canalProperties.getPassword());
         connector.connect();
         connector.subscribe(".*\\..*");
         connector.rollback();
