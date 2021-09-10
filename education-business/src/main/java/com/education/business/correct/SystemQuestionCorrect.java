@@ -2,6 +2,7 @@ package com.education.business.correct;
 
 import com.education.business.message.ExamMessage;
 import com.education.business.message.QueueManager;
+import com.education.business.message.RabbitMqConfig;
 import com.education.common.constants.EnumConstants;
 import com.education.common.utils.DateUtils;
 import com.education.common.utils.ObjectUtils;
@@ -97,7 +98,9 @@ public class SystemQuestionCorrect extends QuestionCorrect {
         examMessage.setStudentQuestionAnswerList(studentQuestionAnswerList);
         examMessage.setStudentWrongBookList(getStudentWrongBookList());
         examMessage.setExamInfo(this.getExamInfo());
-        queueManager.sendExamCommitMessage(examMessage);
+        examMessage.setRoutingKey(RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY);
+        examMessage.setExchange(RabbitMqConfig.FANOUT_EXCHANGE);
+        queueManager.sendQueueMessage(examMessage);
     }
 
 

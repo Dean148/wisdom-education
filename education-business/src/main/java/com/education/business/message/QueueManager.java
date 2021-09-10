@@ -36,7 +36,7 @@ public class QueueManager {
     /**
      * 发送考试提交消息通知
      */
-    public void sendExamCommitMessage(ExamMessage examMessage) {
+    public void sendQueueMessage(QueueMessage queueMessage) {
         taskManager.pushTask(() -> {
             // 异步消息日志落库，提升系统性能
             MessageLog messageLog = new MessageLog();
@@ -45,17 +45,17 @@ public class QueueManager {
             correlationData.setId(id);
             try {
                 // 发消息之前先进行消息落库
-                examMessage.setMessageId(id); // 消息唯一标识
+                queueMessage.setMessageId(id); // 消息唯一标识
                 messageLog.setCorrelationDataId(id);
                 messageLog.setCreateDate(new Date());
                 messageLog.setExchange(RabbitMqConfig.FANOUT_EXCHANGE);
                 messageLog.setRoutingKey(RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY);
-                String content = jackson.toJson(examMessage);
+                String content = jackson.toJson(queueMessage);
                 messageLog.setContent(content);
                 systemMessageLogService.save(messageLog);
-                rabbitTemplate.convertAndSend(RabbitMqConfig.FANOUT_EXCHANGE,
-                        RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY ,
-                        jackson.toJson(examMessage), correlationData);
+                rabbitTemplate.convertAndSend(queueMessage.getExchange(),//RabbitMqConfig.FANOUT_EXCHANGE,
+                        queueMessage.getRoutingKey(),
+                        content, correlationData);
             } catch (Exception e) {
                 logger.error("消息发送异常: [" + jackson.toJson(messageLog) + "]", e);
                 messageLog.setStatus(Constants.SEND_FAIL);
