@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.education.business.task.TaskManager;
-import com.education.model.entity.BaseEntity;
 import com.jfinal.core.converter.TypeConverter;
 import com.jfinal.json.Jackson;
 import com.jfinal.json.JacksonFactory;
@@ -13,20 +12,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
-
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.alibaba.otter.canal.client.CanalConnectors;
 import com.alibaba.otter.canal.client.CanalConnector;
 import com.alibaba.otter.canal.common.utils.AddressUtils;
@@ -58,8 +52,6 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
 
     private CanalConnector connector;
 
-  //  @Value("${canal.open}")
-   // private boolean canalOpenFlag;
     private final int batchSize = 1000;
 
     @Override
@@ -86,28 +78,30 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         if (canalProperties.isOpenFlag()) {
             Map<String, CanalTableListener> beansOfType = applicationContext.getBeansOfType(CanalTableListener.class);
-            beansOfType.forEach((key, value) -> {
-                CanalTable canalTable = value.getClass().getAnnotation(CanalTable.class);
-                if (canalTable != null) {
-                    //  String dataBase = canalTable.dataBase();
-                    String table = canalTable.table();
-                    String tableKey = table; // dataBase + ":" + table;
-                    canalTableListenerMap.put(tableKey, value);
-                }
-            });
-
-            List<TableInfo> tableInfoList = TableInfoHelper.getTableInfos();
-            tableInfoList.forEach(tableInfo -> {
-                String tableName = tableInfo.getTableName();
-                // Class<?> tableClass = tableInfo.getEntityType();
-                entityMap.put(tableName, tableInfo);
-            });
-
-            //   System.out.printf(beansOfType.toString());
-            taskManager.pushTask(() -> {
-                this.canalListener();
-            });
+            this.scanCanalListenerBean(beansOfType);
         }
+    }
+
+    private void scanCanalListenerBean(Map<String, CanalTableListener> beansOfType) {
+        beansOfType.forEach((key, value) -> {
+            CanalTable canalTable = value.getClass().getAnnotation(CanalTable.class);
+            if (canalTable != null) {
+                String table = canalTable.table();
+                canalTableListenerMap.put(table, value);
+            }
+        });
+
+        List<TableInfo> tableInfoList = TableInfoHelper.getTableInfos();
+        tableInfoList.forEach(tableInfo -> {
+            String tableName = tableInfo.getTableName();
+            // Class<?> tableClass = tableInfo.getEntityType();
+            entityMap.put(tableName, tableInfo);
+        });
+
+        //   System.out.printf(beansOfType.toString());
+        taskManager.pushTask(() -> {
+            this.canalListener();
+        });
     }
 
 
@@ -146,13 +140,12 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
                 });
 
                 for (RowData rowData : rowChange.getRowDatasList()) {
-
-                    System.out.println(String.format("================&gt; binlog[%s:%s] , name[%s,%s] , eventType : %s",
+                    log.info(String.format("================&gt; binlog[%s:%s] , name[%s,%s] , eventType : %s",
                             entry.getHeader().getLogfileName(), entry.getHeader().getLogfileOffset(),
                             entry.getHeader().getSchemaName(), entry.getHeader().getTableName(),
                             eventType));
 
-                    Map<String, Object> data = null;
+                    Map<String, Object> data;
                     if (eventType == EventType.DELETE) {
                         data = columnToMap(rowData.getBeforeColumnsList(), columnFieldMapping);
                         canalTableListener.onDelete(jackson.parse(jackson.toJson(data), tableInfo.getEntityType()));
@@ -175,12 +168,13 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
         for (Column column : columns) {
             ColumnField columnField = columnFieldMapping.get(column.getName());
             try {
-                Object value = null;
+                Object value;
+                TypeConverter typeConverter = TypeConverter.me();
                 if (column.getName().equals("id")) {
-                    value = TypeConverter.me().convert(Integer.class, column.getValue());
+                    value = typeConverter.convert(Integer.class, column.getValue());
                     columnMap.put(column.getName(), value);
                 } else {
-                    value = TypeConverter.me().convert(columnField.getField().getType(), column.getValue());
+                    value = typeConverter.convert(columnField.getField().getType(), column.getValue());
                     columnMap.put(columnField.getField().getName(), value);
                 }
             } catch (ParseException e) {
