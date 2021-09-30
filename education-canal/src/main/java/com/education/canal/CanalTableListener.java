@@ -23,9 +23,9 @@ public interface CanalTableListener<T> {
 
     /**
      * update 数据监听
-     * @param beforeTableData
-     * @param afterTableData
+     * @param tableData
+     * @param newTableData
      */
-    void onUpdate(T beforeTableData, T afterTableData);
+    void onUpdate(T tableData, T newTableData);
 
 }

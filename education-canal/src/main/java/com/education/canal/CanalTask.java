@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 import java.net.InetSocketAddress;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +50,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
     private CanalProperties canalProperties;
 
     private CanalConnector connector;
-
+    // 批量从 canal 服务器获取数据的最多数目
     private final int batchSize = 1000;
 
     @Override
@@ -105,22 +104,16 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
     }
 
 
-    private void printEntry(List<Entry> entryList) {
+    private void printEntry(List<Entry> entryList) throws Exception {
 
         for (Entry entry : entryList) {
-
 
             if (entry.getEntryType() == EntryType.TRANSACTIONBEGIN || entry.getEntryType() == EntryType.TRANSACTIONEND) {
                 continue;
             }
 
-            RowChange rowChange = null;
-            try {
-                rowChange = RowChange.parseFrom(entry.getStoreValue());
-            } catch (Exception e) {
-                throw new RuntimeException("ERROR ## parser of eromanga-event has an error , data:" + entry.toString(),
-                        e);
-            }
+            RowChange rowChange = RowChange.parseFrom(entry.getStoreValue());
+
 
             EventType eventType = rowChange.getEventType();
           //  String dataBase = entry.getHeader().getSchemaName();
@@ -163,22 +156,18 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
         }
     }
 
-    private Map<String, Object> columnToMap(List<Column> columns, Map<String, ColumnField> columnFieldMapping) {
+    private Map<String, Object> columnToMap(List<Column> columns, Map<String, ColumnField> columnFieldMapping) throws Exception {
         Map<String, Object> columnMap = new HashMap<>();
         for (Column column : columns) {
             ColumnField columnField = columnFieldMapping.get(column.getName());
-            try {
-                Object value;
-                TypeConverter typeConverter = TypeConverter.me();
-                if (column.getName().equals("id")) {
-                    value = typeConverter.convert(Integer.class, column.getValue());
-                    columnMap.put(column.getName(), value);
-                } else {
-                    value = typeConverter.convert(columnField.getField().getType(), column.getValue());
-                    columnMap.put(columnField.getField().getName(), value);
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
+            Object value;
+            TypeConverter typeConverter = TypeConverter.me();
+            if (column.getName().equals("id")) {
+                value = typeConverter.convert(Integer.class, column.getValue());
+                columnMap.put(column.getName(), value);
+            } else {
+                value = typeConverter.convert(columnField.getField().getType(), column.getValue());
+                columnMap.put(columnField.getField().getName(), value);
             }
         }
         return columnMap;
@@ -192,18 +181,19 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
         connector.rollback();
         log.info("------------------------------- canal 数据监听服务连接成功 -------------------------");
         while (true) {
-            Message message = connector.getWithoutAck(batchSize); // 获取指定数量的数据
-            long batchId = message.getId();
-            int size = message.getEntries().size();
+            try {
+                Message message = connector.getWithoutAck(batchSize); // 获取指定数量的数据
+                long batchId = message.getId();
+                int size = message.getEntries().size();
 
-            if (batchId != -1 && size != 0) {
-                printEntry(message.getEntries());
+                if (batchId != -1 && size != 0) {
+                    printEntry(message.getEntries());
+                }
+                connector.ack(batchId); // 提交确认
+            } catch (Exception e) {
+                connector.rollback(); // 处理失败, 回滚数据
+                log.error("canal client listener data error", e);
             }
-            connector.ack(batchId); // 提交确认
-            // connector.rollback(batchId); // 处理失败, 回滚数据
         }
-
     }
-
-
 }
