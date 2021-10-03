@@ -5,23 +5,21 @@
     <parent>
         <artifactId>education</artifactId>
         <groupId>com.education</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.2-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>education-canal</artifactId>
     <groupId>com.education.canal</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${project.version}</version>
 
     <name>education-canal</name>
     <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <service.version>1.0-SNAPSHOT</service.version>
     </properties>
 
     <dependencies>
@@ -35,13 +33,13 @@
         <dependency>
             <groupId>com.education.model</groupId>
             <artifactId>education-model</artifactId>
-            <version>${service.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <artifactId>education-common-api</artifactId>
             <groupId>com.education.common.api</groupId>
-            <version>${service.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
