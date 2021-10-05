@@ -45,7 +45,7 @@ public class ExamMessageListenerService {
      * @throws Exception
      */
     @Transactional
-    public void doExamCommitMessageBiz(ExamMessage examMessage, String messageId) throws Exception {
+    public void doExamCommitMessageBiz(ExamMessage examMessage, String messageId) {
         // 保存考试记录
         ExamInfo examInfo = examMessage.getExamInfo();
         examInfo.setCreateDate(new Date());
