@@ -14,6 +14,7 @@ CREATE TABLE `system_menu`  (
     `create_type` tinyint(2) NULL DEFAULT 1 COMMENT '创建类型（1 系统内置 2. 管理员创建)',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统菜单表' ROW_FORMAT = Dynamic;
 
 
 INSERT INTO `system_menu` VALUES (1, '系统设置', '', 0, '', 'system', '2019-03-23 14:57:58', NULL, 4, 1, 1);
@@ -98,4 +99,6 @@ INSERT INTO `system_menu` VALUES (96, '发布', NULL, 87, 'system:testPaperInfo:
 INSERT INTO `system_menu` VALUES (97, '撤回', NULL, 87, 'system:testPaperInfo:cancel', NULL, NULL, NULL, 0, 3, 1);
 INSERT INTO `system_menu` VALUES (98, '试题导入', '/questionImport', 81, NULL, 'importQuestion', NULL, NULL, 0, 2, 1);
 INSERT INTO `system_menu` VALUES (99, '测试菜单222', '', 8, '', '', '2021-10-02 13:35:24', NULL, 0, 3, 2);
+
+
 

@@ -10,6 +10,7 @@ CREATE TABLE `system_dict_value`  (
   `update_date` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型值表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of system_dict_value
@@ -43,3 +44,4 @@ INSERT INTO `system_dict_value` VALUES (28, 0, '辅导费', 4, 0, 0, '2020-11-28
 INSERT INTO `system_dict_value` VALUES (29, 0, '多岁的', 3, 0, 0, '2020-11-28 20:52:24', NULL);
 INSERT INTO `system_dict_value` VALUES (30, 0, '多岁的', 4, 0, 0, '2020-11-28 20:52:56', NULL);
 INSERT INTO `system_dict_value` VALUES (31, 0, '多岁的', 34, 0, 0, '2020-11-28 20:53:55', NULL);
+
