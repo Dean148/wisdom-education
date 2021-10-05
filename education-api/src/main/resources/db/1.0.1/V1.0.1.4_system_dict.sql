@@ -8,7 +8,7 @@ CREATE TABLE `system_dict`  (
     `sort` int(11) NOT NULL DEFAULT 0,
     `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 INSERT INTO `system_dict` VALUES (1, '阶段类型', 'school_type', '2020-05-21 15:50:43', '2021-09-14 10:31:29', 1, NULL);
 INSERT INTO `system_dict` VALUES (2, '年级类型', 'grade_type', '2020-05-21 15:51:03', '2020-05-21 15:51:04', 0, NULL);

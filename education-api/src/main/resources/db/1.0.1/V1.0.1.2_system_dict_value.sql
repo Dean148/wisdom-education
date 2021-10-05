@@ -9,7 +9,7 @@ CREATE TABLE `system_dict_value`  (
   `create_date` datetime(0) NULL DEFAULT NULL,
   `update_date` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型值表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of system_dict_value
@@ -35,3 +35,11 @@ INSERT INTO `system_dict_value` VALUES (18, 3, '单选', 1, 0, 0, NULL, NULL);
 INSERT INTO `system_dict_value` VALUES (20, 3, '不定项', 5, 0, 0, NULL, NULL);
 INSERT INTO `system_dict_value` VALUES (21, 3, '判断题', 6, 0, 0, NULL, NULL);
 INSERT INTO `system_dict_value` VALUES (22, 3, '计算题', 7, 0, 0, NULL, NULL);
+INSERT INTO `system_dict_value` VALUES (23, 1, 'dff', 2, 1, 0, '2020-06-28 11:42:55', NULL);
+INSERT INTO `system_dict_value` VALUES (24, 1, '大学', 4, 0, 0, '2020-07-02 11:31:22', NULL);
+INSERT INTO `system_dict_value` VALUES (25, 3, '多选题', 2, 0, 0, NULL, NULL);
+INSERT INTO `system_dict_value` VALUES (27, 0, '多岁的', 2, 0, 0, '2020-11-28 20:51:04', NULL);
+INSERT INTO `system_dict_value` VALUES (28, 0, '辅导费', 4, 0, 0, '2020-11-28 20:52:04', NULL);
+INSERT INTO `system_dict_value` VALUES (29, 0, '多岁的', 3, 0, 0, '2020-11-28 20:52:24', NULL);
+INSERT INTO `system_dict_value` VALUES (30, 0, '多岁的', 4, 0, 0, '2020-11-28 20:52:56', NULL);
+INSERT INTO `system_dict_value` VALUES (31, 0, '多岁的', 34, 0, 0, '2020-11-28 20:53:55', NULL);
