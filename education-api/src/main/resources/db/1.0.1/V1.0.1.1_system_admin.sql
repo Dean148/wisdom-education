@@ -20,7 +20,6 @@ CREATE TABLE `system_admin`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统管理员表' ROW_FORMAT = Dynamic;
 
 INSERT INTO `system_admin` VALUES (1, 'admin', '94a0cf41db339d8248ee3da1c232d326', 'af2244dbc451f1007a7ba8408e45b16f2939bdc3', '2020-04-25 09:32:14', 0, '223.84.238.44', 2248, '王军', '2021-10-02 13:34:47', 1, '12123123123', 1, '2021-09-01 15:01:42', '未知地址');
-INSERT INTO `system_admin` VALUES (1, 'admin', '94a0cf41db339d8248ee3da1c232d326', 'af2244dbc451f1007a7ba8408e45b16f2939bdc3', '2020-04-25 09:32:14', 0, '223.84.238.44', 2248, 'admin', '2021-10-02 13:34:47', 1, '12123123123', 1, '2021-09-01 15:01:42', '未知地址');
 
 
 
