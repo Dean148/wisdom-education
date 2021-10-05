@@ -8,4 +8,4 @@ CREATE TABLE `message_info`  (
      `read_flag` tinyint(2) NOT NULL DEFAULT 0 COMMENT '是否已读',
      `message_type` tinyint(2) NOT NULL DEFAULT 1 COMMENT '消息类型（1 试卷批改通知)',
      PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;

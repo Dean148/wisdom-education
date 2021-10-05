@@ -13,7 +13,6 @@ CREATE TABLE `system_menu`  (
     `type` tinyint(2) NOT NULL DEFAULT 1 COMMENT '类型（1菜单 2. 目录 3 按钮)',
     `create_type` tinyint(2) NULL DEFAULT 1 COMMENT '创建类型（1 系统内置 2. 管理员创建)',
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统菜单表' ROW_FORMAT = Dynamic;
 
 

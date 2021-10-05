@@ -1,5 +1,5 @@
 server:
-  port: 8001
+  port: 80
 canal:
   open: true
 ## spring jdbc配置
@@ -40,7 +40,7 @@ lbs:
 file:
   uploadPath: /root/uploads/
 ueditor:
-  configFileName: config.json
+  configFileName: config-dev.json
 # 微信公众号配置
 weChat:
   appId: wxc5d3bf3c1fbf6d25
@@ -56,13 +56,13 @@ sharding:
       names: educationmaster,educationslave
       educationmaster:
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://127.0.0.1:3306/education_final?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://120.79.144.34:3306/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
         password: 123456
       educationslave:
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://127.0.0.1:3307/education_final?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://120.79.144.34:3307/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
         password: 123456
