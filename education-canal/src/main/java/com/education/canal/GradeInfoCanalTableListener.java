@@ -23,8 +23,8 @@ public class GradeInfoCanalTableListener implements CanalTableListener<GradeInfo
     }
 
     @Override
-    public void onUpdate(GradeInfo beforeTableData, GradeInfo newTableData) {
+    public void onUpdate(GradeInfo beforeTableData, GradeInfo afterTableData) {
         System.out.println(beforeTableData);
-        System.out.println(newTableData);
+        System.out.println(afterTableData);
     }
 }

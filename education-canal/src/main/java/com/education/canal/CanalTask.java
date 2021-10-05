@@ -173,30 +173,13 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
         return columnMap;
     }
 
-
-    private void retryConnectionCanal() {
-        long sleep = 3000; // 休眠三秒
-        try {
-            log.info("Start Connection Canal Server....................");
-            connector = CanalConnectors.newSingleConnector(new InetSocketAddress(AddressUtils.getHostIp(),
-                    11111), "example", "", "");
-            connector.connect();
-        } catch (Exception e) {
-            log.error("Canal Client Connection Error", e);
-            try {
-                Thread.sleep(sleep);
-                this.retryConnectionCanal();
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-
     private void canalListener() {
-        this.retryConnectionCanal();
+        connector = CanalConnectors.newSingleConnector(new InetSocketAddress(AddressUtils.getHostIp(),
+                canalProperties.getPort()), canalProperties.getDestination(), canalProperties.getUserName(), canalProperties.getPassword());
+        connector.connect();
         connector.subscribe(".*\\..*");
-        log.info("Canal Client 数据监听服务连接成功........................");
+        connector.rollback();
+        log.info("------------------------------- canal 数据监听服务连接成功 -------------------------");
         while (true) {
             try {
                 Message message = connector.getWithoutAck(batchSize); // 获取指定数量的数据
@@ -209,7 +192,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
                 connector.ack(batchId); // 提交确认
             } catch (Exception e) {
                 connector.rollback(); // 处理失败, 回滚数据
-                log.error("Canal Client Listener Data Error", e);
+                log.error("canal client listener data error", e);
             }
         }
     }
