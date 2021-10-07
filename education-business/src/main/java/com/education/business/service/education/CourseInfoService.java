@@ -11,6 +11,7 @@ import com.education.common.utils.ResultCode;
 import com.education.model.dto.CourseInfoDto;
 import com.education.model.entity.CourseInfo;
 import com.education.model.request.PageParam;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Service;
 
 /**
@@ -51,5 +52,21 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
             throw new BusinessException(new ResultCode(ResultCode.FAIL, "非草稿状态课程无法删除"));
         }
         super.removeById(courseId);
+    }
+
+    public void increaseSectionNumber(Integer id) {
+        baseMapper.increaseSectionNumber(id);
+    }
+
+    public void decreaseSectionNumber(Integer id) {
+        baseMapper.decreaseSectionNumber(id);
+    }
+
+    public void increaseSectionNodeNumber(Integer id) {
+        baseMapper.increaseSectionNodeNumber(id);
+    }
+
+    public void decreaseSectionNodeNumber(Integer id) {
+        baseMapper.decreaseSectionNodeNumber(id);
     }
 }

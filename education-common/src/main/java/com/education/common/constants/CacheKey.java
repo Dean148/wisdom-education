@@ -40,4 +40,6 @@ public interface CacheKey {
      *  试卷设置缓存key
      */
     String PAPER_INFO_SETTING_LOCK = "paper:setting";
+
+    String COURSE_SECTION = "course:section";
 }

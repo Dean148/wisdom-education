@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.model.dto.CourseInfoDto;
 import com.education.model.entity.CourseInfo;
+import org.apache.ibatis.annotations.Update;
+
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * @author zengjintao
@@ -19,4 +22,37 @@ public interface CourseInfoMapper extends BaseMapper<CourseInfo> {
      * @return
      */
     Page<CourseInfoDto> selectPageList(Page<CourseInfoDto> page, CourseInfo courseInfo);
+
+    /**
+     * 课程章数量加一
+     * @param id
+     */
+    @Update("update course_info set section_number = section_number + 1 where id = #{id}")
+    void increaseSectionNumber(Integer id);
+
+
+    /**
+     * 课程章数量减一
+     * @param id
+     */
+    @Update("update course_info set section_number = section_number - 1 where id = #{id}")
+    void decreaseSectionNumber(Integer id);
+
+    /**
+     * 课程课时数量加一
+     * @param id
+     */
+    @Update("update course_info set section_node_number = section_node_number + 1 where id = #{id}")
+    void increaseSectionNodeNumber(Integer id);
+
+    /**
+     * 课程课时数量加一
+     * @param id
+     */
+    @Update("update course_info set section_node_number = section_node_number - 1 where id = #{id}")
+    void decreaseSectionNodeNumber(Integer id);
+
+
+
+
 }

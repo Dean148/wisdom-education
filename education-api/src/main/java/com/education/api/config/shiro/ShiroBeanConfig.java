@@ -82,10 +82,10 @@ public class ShiroBeanConfig {
 
     @Bean
     public SecurityManager securityManager(SessionManager sessionManager, Realm systemRealm,
-                                           CacheManager redisCacheManager) {
+                                           CacheManager shiroRedisCacheManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(systemRealm);
-        securityManager.setCacheManager(redisCacheManager);
+        securityManager.setCacheManager(shiroRedisCacheManager);
         securityManager.setSessionManager(sessionManager);
         return securityManager;
     }
@@ -96,8 +96,8 @@ public class ShiroBeanConfig {
     }
 
     @Bean
-    public RedisCacheManager redisCacheManager(CacheBean redisCacheBean) {
-        return new RedisCacheManager(redisCacheBean);
+    public ShiroRedisCacheManager shiroRedisCacheManager(CacheBean redisCacheBean) {
+        return new ShiroRedisCacheManager(redisCacheBean);
     }
 
 
