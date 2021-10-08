@@ -1,6 +1,7 @@
 package com.education.api.config.shiro;
 
 import com.education.common.cache.CacheBean;
+import com.education.common.constants.CacheTime;
 import com.education.common.constants.Constants;
 import com.education.common.utils.ObjectUtils;
 import org.apache.shiro.session.Session;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author zengjintao
@@ -22,12 +22,10 @@ import java.util.concurrent.TimeUnit;
 public class DistributeShiroSession extends AbstractSessionDAO {
 
     private CacheBean redisCacheBean;
-
     private static final String SESSION_KEY = Constants.SESSION_KEY;
+    private static final int ONE_HOUR = CacheTime.ONE_HOUR; // session 默认有效期1小时
 
-    private static final int ONE_DAY = 24 * 60 * 60; //默认失效时间为1天
-
-    private long expire = ONE_DAY;
+    private long expire = ONE_HOUR;
 
     /**
      * 设置session失效时间
@@ -56,7 +54,7 @@ public class DistributeShiroSession extends AbstractSessionDAO {
             throw new NullPointerException("id argument cannot be null.");
         }
         // 设置session时间为24小时
-        redisCacheBean.put(SESSION_KEY, sessionId, session, ONE_DAY);
+        redisCacheBean.put(SESSION_KEY, sessionId, session, ONE_HOUR);
     }
 
     /**
