@@ -23,6 +23,8 @@ public interface CacheBean {
 
     void putValue(String cacheName, Object key, Object value);
 
+    void expire(String cacheName, Object key, int liveSeconds);
+
   //  void put(String cacheName, Object key, Object value);
 
  //   void put(String cacheName, Object key, Object value, int liveSeconds, TimeUnit timeUnit);

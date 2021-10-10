@@ -1,5 +1,6 @@
 package com.education.canal;
 
+import com.alibaba.otter.canal.protocol.exception.CanalClientException;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
@@ -99,6 +100,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
 
         //   System.out.printf(beansOfType.toString());
         taskManager.pushTask(() -> {
+           // Thread.currentThread().setName("Canal Connection Task");
             this.canalListener();
         });
     }
@@ -175,7 +177,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
 
 
     private void retryConnectionCanal() {
-        long sleep = 3000; // 休眠三秒
+        long sleep = 10000; // 休眠10秒
         try {
             log.info("Start Connection Canal Server....................");
             connector = CanalConnectors.newSingleConnector(new InetSocketAddress(AddressUtils.getHostIp(),
@@ -208,8 +210,12 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
                 }
                 connector.ack(batchId); // 提交确认
             } catch (Exception e) {
-                connector.rollback(); // 处理失败, 回滚数据
-                log.error("Canal Client Listener Data Error", e);
+                if (e instanceof CanalClientException) {
+                    this.retryConnectionCanal();
+                } else {
+                    connector.rollback(); // 处理失败, 回滚数据
+                    log.error("Canal Client Listener Data Error", e);
+                }
             }
         }
     }
