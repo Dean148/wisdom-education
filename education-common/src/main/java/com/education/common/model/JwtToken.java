@@ -95,6 +95,12 @@ public class JwtToken {
         return parseToken(token, HashMap.class);
     }
 
+    public Date getTokenValidDate(String token) {
+        SecretKey secretKey = this.generalKey(secret);
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        return claims.getExpiration();
+    }
+
     /**
      * 获取解析后的字符串
      * @param token

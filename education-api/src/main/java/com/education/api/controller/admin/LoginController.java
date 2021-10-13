@@ -7,8 +7,12 @@ import com.education.business.task.TaskParam;
 import com.education.business.task.UserLoginSuccessListener;
 import com.education.common.annotation.*;
 import com.education.common.base.BaseController;
+import com.education.common.constants.AuthConstants;
+import com.education.common.constants.CacheKey;
+import com.education.common.constants.CacheTime;
 import com.education.common.constants.Constants;
 import com.education.common.model.JwtToken;
+import com.education.common.utils.DateUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
 import com.education.common.utils.Result;
@@ -20,6 +24,7 @@ import com.jfinal.kit.Kv;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +58,8 @@ public class LoginController extends BaseController {
     private WebSocketMessageService webSocketMessageService;
     @Autowired
     private OnlineUserManager onlineUserManager;
+    @Autowired
+    private DefaultSessionManager sessionManager;
 
 
     /**
@@ -78,9 +86,26 @@ public class LoginController extends BaseController {
         }
         Result result = systemAdminService.login(userLoginRequest.getUserName(), userLoginRequest.getPassword());
 
+        String token;
         if (result.isSuccess()) {
             Integer adminUserId = systemAdminService.getAdminUserId();
-            String token = adminJwtToken.createToken(adminUserId, Constants.SESSION_TIME_OUT_MILLISECONDS); // 默认缓存5天
+
+            // 是否记住密码登录
+            boolean rememberMe = userLoginRequest.isChecked();
+            if (rememberMe) {
+                // 先删除JSESSIONID
+                Cookie cookie = RequestUtils.getCookie(Constants.DEFAULT_SESSION_ID);
+                if (ObjectUtils.isNotEmpty(cookie)) {
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                }
+                RequestUtils.createCookie(Constants.DEFAULT_SESSION_ID, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
+                token = adminJwtToken.createToken(adminUserId, CacheTime.ONE_WEEK_MILLIS); // 默认缓存7天
+                sessionManager.setGlobalSessionTimeout(CacheTime.ONE_WEEK_MILLIS);
+            } else {
+                token = adminJwtToken.createToken(adminUserId, CacheTime.ONE_HOUR_MILLIS); // 默认缓存1小时
+                sessionManager.setGlobalSessionTimeout(CacheTime.ONE_HOUR_MILLIS);
+            }
             AdminUserSession userSession = systemAdminService.getAdminUserSession();
             systemAdminService.loadUserMenuAndPermission(userSession);
             String sessionId = request.getSession().getId();
@@ -93,20 +118,8 @@ public class LoginController extends BaseController {
                         new Long(Constants.SESSION_TIME_OUT).intValue());
             }
 
-            // 是否记住密码登录
-            boolean rememberMe = userLoginRequest.isChecked();
-            if (rememberMe) {
-                // 先删除JSESSIONID
-                Cookie cookie = RequestUtils.getCookie(Constants.DEFAULT_SESSION_ID);
-                if (ObjectUtils.isNotEmpty(cookie)) {
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
-                }
-                // 重新创建JSESSIONID 并设置过期时间, 默认过期时间为5天
-                RequestUtils.createCookie(Constants.DEFAULT_SESSION_ID, request.getSession().getId(), Constants.SESSION_TIME_OUT);
-            }
-
-            Kv userInfo = Kv.create().set("token", token).set("id", userSession.getAdminId())
+            response.addHeader(AuthConstants.AUTHORIZATION, token);
+            Kv userInfo = Kv.create().set("id", userSession.getAdminId())
                     .set("permissionList", userSession.getPermissionList())
                     .set("menuList", userSession.getMenuTreeList())
                     .set("login_name", userSession.getSystemAdmin().getLoginName());
@@ -123,8 +136,6 @@ public class LoginController extends BaseController {
         }
         return result;
     }
-
-
 
     /**
      * 系统退出
