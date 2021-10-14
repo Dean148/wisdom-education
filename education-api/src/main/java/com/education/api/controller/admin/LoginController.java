@@ -86,10 +86,9 @@ public class LoginController extends BaseController {
         }
         Result result = systemAdminService.login(userLoginRequest.getUserName(), userLoginRequest.getPassword());
 
-        String token;
         if (result.isSuccess()) {
             Integer adminUserId = systemAdminService.getAdminUserId();
-
+            String token;
             // 是否记住密码登录
             boolean rememberMe = userLoginRequest.isChecked();
             if (rememberMe) {
