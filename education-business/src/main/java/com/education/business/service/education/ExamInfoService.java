@@ -8,7 +8,7 @@ import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.message.QueueManager;
 import com.education.business.service.BaseService;
 import com.education.business.task.TaskParam;
-import com.education.business.task.WebSocketMessageTask;
+import com.education.business.task.WebSocketMessageListener;
 import com.education.common.constants.CacheKey;
 import com.education.common.constants.Constants;
 import com.education.common.constants.EnumConstants;
@@ -333,7 +333,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         super.updateById(examInfo);
 
         // 发送批改消息通知
-        TaskParam taskParam = new TaskParam(WebSocketMessageTask.class);
+        TaskParam taskParam = new TaskParam(WebSocketMessageListener.class);
         taskParam.put("message_type", EnumConstants.MessageType.EXAM_CORRECT.getValue());
         taskParam.put("sessionId", RequestUtils.getCookieValue(Constants.DEFAULT_SESSION_ID));
         taskParam.put("studentId", studentId);
