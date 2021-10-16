@@ -118,11 +118,11 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         }
 
         boolean rememberMe = userLoginRequest.isChecked(); // 是否记住密码
-        long sessionTime = CacheTime.ONE_HOUR; // 默认session 会话为2小时 (单位秒)
+        long sessionTime = CacheTime.ONE_HOUR_MILLIS; // 默认session 会话为2小时 (单位秒)
         if (rememberMe) {
-            sessionTime = CacheTime.ONE_WEEK_SECOND;
+            sessionTime = CacheTime.ONE_WEEK_MILLIS;
         }
-        String token = jwtToken.createToken(studentInfo.getId(), sessionTime * 1000);
+        String token = jwtToken.createToken(studentInfo.getId(), sessionTime);
         GradeInfo gradeInfo = gradeInfoService.getById(studentInfo.getGradeInfoId());
         this.cacheStudentInfoSession(studentInfo, token, sessionTime);
         Kv kv = Kv.create().set("name", studentInfo.getName())
