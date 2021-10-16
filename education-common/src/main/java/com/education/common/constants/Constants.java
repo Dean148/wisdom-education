@@ -1,6 +1,5 @@
 package com.education.common.constants;
 
-import java.util.concurrent.TimeUnit;
 
 /**
  * 系统常量类
@@ -50,4 +49,6 @@ public final class Constants {
     public static final double NICE_MARK_RATE = 0.8; // 优秀比例
 
     public static final String SESSION_KEY = "user.session.cache";
+
+    public static final String PAPER_INFO_TEMPLATE = "/template/paperInfoTemplate.html";
 }

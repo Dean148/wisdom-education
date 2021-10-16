@@ -13,6 +13,16 @@ public class TestPaperQuestionRequest {
     private String content;
     private List<Integer> questionInfoIds;
 
+    private boolean addExamMonitor = true; // 是否加入考试监考中心
+
+    public void setAddExamMonitor(boolean addExamMonitor) {
+        this.addExamMonitor = addExamMonitor;
+    }
+
+    public boolean isAddExamMonitor() {
+        return addExamMonitor;
+    }
+
     public Integer getQuestionType() {
         return questionType;
     }

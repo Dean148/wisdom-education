@@ -33,14 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
+import org.springframework.data.redis.core.RedisTemplate;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 
 /**
@@ -61,6 +57,8 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
     @Resource
     protected CacheBean ehcacheBean;
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Resource
+    protected RedisTemplate redisTemplate;
 
     /**
      * 判断试题是否客观题
@@ -76,6 +74,7 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
         }
         return false;
     }
+
 
 
 
@@ -123,63 +122,7 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
         return null;
     }
 
-    @Override
-    public boolean saveOrUpdate(T entity) {
-        if (entity instanceof BaseEntity) {
-            Date now = new Date();
-            BaseEntity baseEntity = (BaseEntity) entity;
-            Map uniqueFieldMap = this.getUniqueField(entity);
-            BaseEntity result = null;
-            if (uniqueFieldMap.size() > 0) {
-                QueryWrapper queryWrapper = Wrappers.<T>query()
-                        .select("id")
-                        .allEq(uniqueFieldMap);
-                result = (BaseEntity) super.getOne(queryWrapper);
-            }
-            if (ObjectUtils.isNotEmpty(result)) {
-                ResultCode resultCode = new ResultCode(ResultCode.FAIL, "该数据已存在,请勿重复添加");
-                if (baseEntity.getId() != null) {
-                    // 修改的数据id 不一样，存在相同数据
-                    if (baseEntity.getId().intValue() != result.getId().intValue()) {
-                        throw new BusinessException(resultCode);
-                    }
-                } else {
-                    throw new BusinessException(resultCode);
-                }
-            }
 
-            if (baseEntity.getId() == null) {
-                baseEntity.setCreateDate(now);
-            } else {
-                baseEntity.setUpdateDate(now);
-            }
-        }
-        return super.saveOrUpdate(entity);
-    }
-
-    /**
-     * 获取需要进行唯一约束校验的字段
-     * @return
-     */
-    private Map<String, Object> getUniqueField(T entity) {
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(entity.getClass());
-        List<TableFieldInfo> fieldList = tableInfo.getFieldList();
-        Map uniqueField = new HashMap<>();
-        fieldList.forEach(tableFieldInfo -> {
-            Field field = tableFieldInfo.getField();
-            Unique unique = field.getAnnotation(Unique.class);
-            if (ObjectUtils.isNotEmpty(unique)) {
-                try {
-                    field.setAccessible(true);
-                    String column = ObjectUtils.isEmpty(unique.value()) ? field.getName() : unique.value();
-                    uniqueField.put(column, field.get(entity));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        return uniqueField;
-    }
 
     public StudentInfoSession getStudentInfoSession() {
         String token = request.getHeader("token");

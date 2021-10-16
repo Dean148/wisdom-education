@@ -13,6 +13,8 @@ public class ResultCode {
 	public static final int SUCCESS = 1; //响应成功
 	public static final int FAIL = 0; //响应失败
 	public static final int CODE_ERROR = 2; //验证码错误
+
+	public static final int EXCEL_VERFIY_FAIL = 3; // excel 表格数据校验异常
 	
 	public int code = SUCCESS;
 	public String message = "操作成功";

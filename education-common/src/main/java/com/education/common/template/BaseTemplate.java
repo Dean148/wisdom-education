@@ -1,5 +1,7 @@
 package com.education.common.template;
 
+import com.education.common.utils.RequestUtils;
+
 import java.io.File;
 import java.util.Map;
 
@@ -20,6 +22,8 @@ public abstract class BaseTemplate {
         }
         String target = outputDir + File.separator + fileName;
         File file = new File(target);
+        String serverUrl = RequestUtils.getDomain();
+        data.put("serverUrl", serverUrl);
         this.writeToFile(data, file);
     }
 

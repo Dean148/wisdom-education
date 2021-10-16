@@ -2,6 +2,7 @@ package com.education.api.controller.admin.education;
 
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.common.base.BaseController;
+import com.education.common.constants.CacheKey;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.TestPaperInfoDto;
@@ -13,6 +14,7 @@ import com.education.model.request.TestPaperQuestionRequest;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -66,6 +68,7 @@ public class TestPaperInfoController extends BaseController {
      */
     @GetMapping("getPaperQuestionList")
     @RequiresPermissions("system:testPaperInfo:relevanceQuestion")
+  //  @Cacheable(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionRequest.testPaperInfoId")
     public Result selectPaperQuestionList(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
         return Result.success(testPaperInfoService.selectPaperQuestionList(pageParam, testPaperQuestionRequest));
     }
@@ -76,6 +79,7 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("updatePaperQuestionMarkOrSort")
+    @CacheEvict(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionDto.testPaperInfoId")
     public Result updatePaperQuestionMarkOrSort(@RequestBody TestPaperQuestionDto testPaperQuestionDto) {
         testPaperInfoService.updatePaperQuestionMarkOrSort(testPaperQuestionDto);
         return Result.success();
@@ -87,6 +91,10 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("saveTestPaperInfoQuestion")
+    @CacheEvict(
+        cacheNames = CacheKey.TEST_PAPER_INFO_CACHE,
+        key = "#testPaperQuestionInfoList.get(0).testPaperInfoId"
+    )
     public Result saveTestPaperInfoQuestion(@RequestBody List<TestPaperQuestionInfo> testPaperQuestionInfoList) {
         testPaperInfoService.saveTestPaperInfoQuestion(testPaperQuestionInfoList);
         return Result.success();
@@ -122,6 +130,7 @@ public class TestPaperInfoController extends BaseController {
      */
     @DeleteMapping("{id}")
     @RequiresPermissions("system:testPaperInfo:deleteById")
+    @CacheEvict(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#id")
     public Result deleteById(@PathVariable Integer id) {
         return Result.success(testPaperInfoService.deleteById(id));
     }
@@ -132,7 +141,18 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @DeleteMapping("removePaperQuestion")
+    @CacheEvict(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionInfo.testPaperInfoId")
     public Result removePaperQuestion(@RequestBody TestPaperQuestionInfo testPaperQuestionInfo) {
         return Result.success(testPaperInfoService.removePaperQuestion(testPaperQuestionInfo));
+    }
+
+    /**
+     * 试卷打印
+     * @param testPaperInfoId
+     * @return
+     */
+    @GetMapping("printPaperInfo/{testPaperInfoId}")
+    public Result printPaperInfo(@PathVariable Integer testPaperInfoId) {
+        return Result.success(testPaperInfoService.printPaperInfo(testPaperInfoId));
     }
 }

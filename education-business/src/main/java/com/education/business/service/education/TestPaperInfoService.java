@@ -5,8 +5,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.TestPaperInfoMapper;
 import com.education.business.service.BaseService;
+import com.education.common.constants.Constants;
+import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
+import com.education.common.template.BaseTemplate;
+import com.education.common.template.EnjoyTemplate;
+import com.education.common.utils.FileUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.TestPaperInfoDto;
@@ -16,11 +21,13 @@ import com.education.model.entity.TestPaperInfo;
 import com.education.model.entity.TestPaperQuestionInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.TestPaperQuestionRequest;
+import com.jfinal.kit.Kv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author zengjintao
@@ -49,7 +56,7 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
     }
 
     /**
-     * 试卷试题列表
+     * 获取试卷试题列表
      * @param pageParam
      * @param testPaperQuestionRequest
      * @return
@@ -59,6 +66,11 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         return selectPage(baseMapper.selectPaperQuestionList(page, testPaperQuestionRequest));
     }
 
+
+    /**
+     * 修改试卷试题分数或者排序
+     * @param testPaperQuestionDto
+     */
     @Transactional
     public void updatePaperQuestionMarkOrSort(TestPaperQuestionDto testPaperQuestionDto) {
         // 更新试卷总分
@@ -149,6 +161,11 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         testPaperQuestionInfoService.saveBatch(testPaperQuestionInfoList);
     }
 
+    /**
+     * 删除试卷试题
+     * @param testPaperQuestionInfo
+     * @return
+     */
     @Transactional
     public ResultCode removePaperQuestion(TestPaperQuestionInfo testPaperQuestionInfo) {
         TestPaperInfo testPaperInfo = super.getById(testPaperQuestionInfo.getTestPaperInfoId());
@@ -175,12 +192,59 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
      * @return
      */
     public boolean updateExamNumber(Integer testPaperInfoId) {
+        return baseMapper.updateExamNumberById(testPaperInfoId);
+      /*  // 考试人数加1
+        redisTemplate.boundHashOps(testPaperInfoId).increment(CacheKey.TEST_PAPER_INFO_CACHE, 1);
+
         // 更新考试参考人数
         TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
         int examNumber = testPaperInfo.getExamNumber() + 1;
         LambdaUpdateWrapper updateWrapper = new LambdaUpdateWrapper<>(TestPaperInfo.class)
                 .set(TestPaperInfo::getExamNumber, examNumber)
                 .eq(TestPaperInfo::getId, testPaperInfo.getId());
-        return super.update(updateWrapper);
+        return super.update(updateWrapper);*/
+    }
+
+    /**
+     * 打印试卷
+     * @param testPaperInfoId
+     */
+    public String printPaperInfo(Integer testPaperInfoId) {
+        TestPaperQuestionRequest testPaperQuestionRequest = new TestPaperQuestionRequest();
+        testPaperQuestionRequest.setTestPaperInfoId(testPaperInfoId);
+        testPaperQuestionRequest.setAddExamMonitor(false);
+        PageInfo<TestPaperQuestionDto> pageInfo = this.selectPaperQuestionList(new PageParam(), testPaperQuestionRequest);
+        List<TestPaperQuestionDto> testPaperQuestionDtoList = pageInfo.getDataList();
+
+        TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
+        Kv data = Kv.create().set("testPaperQuestionList", this.groupQuestion(testPaperQuestionDtoList))
+                .set("title", testPaperInfo.getName());
+        String htmlName = testPaperInfo + ".html";
+        String outDirPath = "/paper_print/"
+                + testPaperInfoId + "/" + htmlName;
+        String paperTemplateSavePath = FileUtils.getUploadPath() + outDirPath;
+        BaseTemplate template = new EnjoyTemplate(Constants.PAPER_INFO_TEMPLATE, paperTemplateSavePath);
+        template.generateTemplate(data, htmlName);
+        return outDirPath;
+    }
+
+    /**
+     * 对试卷试题进行分组
+     * @param testPaperQuestionDtoList
+     * @return
+     */
+    public List<Map> groupQuestion(List<TestPaperQuestionDto> testPaperQuestionDtoList) {
+        List<Map> testPaperQuestionGroupList = new ArrayList<>();
+        for (EnumConstants.QuestionType questionType : EnumConstants.QuestionType.values()) {
+            Map item = new HashMap<>();
+            int questionTypeValue = questionType.getValue();
+            List<TestPaperQuestionDto> groupQuestionList = testPaperQuestionDtoList.stream()
+                    .filter(question -> question.getQuestionType().intValue() == questionTypeValue)
+                    .collect(Collectors.toList());
+            item.put("groupQuestionTypeTitle", questionType.getName());
+            item.put("groupQuestionList", groupQuestionList);
+            testPaperQuestionGroupList.add(item);
+        }
+        return testPaperQuestionGroupList;
     }
 }

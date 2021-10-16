@@ -1,9 +1,12 @@
+#### 微服务版本项目地址
+- https://gitee.com/zhuimengshaonian/education-cloud
 #### 后端技术栈
    
 - 基于 SpringBoot + Mybatis Plus+ Shiro + mysql + redis构建的智慧云智能教育平台 
 - 基于数据驱动视图的理念封装 element-ui，即使没有 vue 的使用经验也能快速上手  
 - 提供 lambda 、stream api 、webflux 的生产实践  
-
+- 集成shardingsphere， 支持mysql 数据库读写分离（详情请见V1.0.2升级版）
+- 集成阿里巴巴数据同步中间件Canal，可用于mysql 与其他类型数据库进行数据实时同步
 #### 前端技术
 
 - Vue
@@ -24,6 +27,8 @@ Mysql | 5.7
 Element-UI | 2.13.0
 Shiro | 1.4.0
 Jfinal Weixin | 2.3
+Canal | 1.1.4
+shardingsphere| 3.1.0.M1
 
 ### 系统特色
 
@@ -40,9 +45,9 @@ Jfinal Weixin | 2.3
 - 完整项目实战教程 （https://www.51zxw.net/list.aspx?cid=830）
 ### 项目演示地址
 
-- 管理后台  http://111.229.169.170:8002 （admin 123456）
-- 学生端   http://111.229.169.170 （student 123456）
-- h5、小程序、app预览  http://111.229.169.170:8003
+- 管理后台  http://120.79.144.34:8002/ （admin 123456）
+- 学生端  http://120.79.144.34 （student 123456）
+- h5、小程序、app预览  http://120.79.144.34:8002:8003
 
 ###  模块说明
 
@@ -52,6 +57,7 @@ Jfinal Weixin | 2.3
 - ├── education-api -- 系统api模块
 - └── education-common -- 系统公共模块 
 - └── education-business -- 系统业务模块
+- └── education-canal-- canal数据同步模块
 - └── education-common-api -- 系统公共api模块
 - ├── education-model -- 实体类模块	
 ```
@@ -76,7 +82,8 @@ Jfinal Weixin | 2.3
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/1221/154850_46395ade_1526010.jpeg "QQ图片20201221154729.jpg")
 ### 智慧云智能教育系统交流群（加群获取项目正式部署教程和免费视频教程）
 
- -  **QQ交流群 1072042422** 
+ -  **QQ交流群1 1072042422（已满勿加）** (加群请备注码云，否则拒绝入群）
+ -  **QQ交流群2 930422806** (加群请备注码云，否则拒绝入群）
  -  **作者QQ 1913188966** 
 
 ### 参与贡献
@@ -91,6 +98,8 @@ Jfinal Weixin | 2.3
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0311/194825_34662cb0_1526010.png "]06ZXGQ[2~7S3_28H5XZD}9.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0311/194921_bd7bc565_1526010.png "_QG(`5{@F690KF[O$ECXBVU.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0311/194934_9d82c452_1526010.png "0UX7[[}L@8`9QVG~1JZRJ73.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2021/1010/162505_4581a9d0_1526010.png "ASEONO$}5B[68SXN]{B%Z{B.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2021/1010/162619_667dd144_1526010.png "LSS82AI~@~0}5H~_H_VX8NG.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0311/194945_3b2ed607_1526010.png "P67Y6%0X}FR~2$KSG7RZXBO.png")![输入图片说明](https://images.gitee.com/uploads/images/2020/0602/171042_d498a547_1526010.jpeg "1591088933(1).jpg")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/1210/200612_cbd7f027_1526010.png "I2O]CD)]]5ATJ170~PODL]N.png")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/1210/200737_335b320c_1526010.png "6$O6RPZ5U(OWZ~MFE42GAKF.png")

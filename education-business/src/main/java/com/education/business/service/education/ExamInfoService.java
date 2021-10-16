@@ -3,7 +3,6 @@ package com.education.business.service.education;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.service.BaseService;
-import com.education.business.service.WebSocketMessageService;
 import com.education.business.task.TaskParam;
 import com.education.business.task.WebSocketMessageTask;
 import com.education.common.constants.Constants;
@@ -11,6 +10,7 @@ import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.*;
+import com.education.model.dto.ExamCount;
 import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.ExamInfo;
@@ -25,9 +25,8 @@ import com.jfinal.kit.Kv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
 
 /**
  * @author zengjintao
@@ -45,7 +44,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     private QuestionInfoService questionInfoService;
     @Autowired
     private TestPaperInfoService testPaperInfoService;
-
+    @Autowired
+    private ExamMonitorService examMonitorService;
     /**
      * 后台考试列表
      * @param pageParam
@@ -76,6 +76,13 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         return this.batchSaveStudentQuestionAnswer(studentQuestionRequest, studentId, new ExamInfo());
     }
 
+    /**
+     * 批量保存学员试题答案
+     * @param studentQuestionRequest
+     * @param studentId
+     * @param examInfo
+     * @return
+     */
     private Integer batchSaveStudentQuestionAnswer(StudentQuestionRequest studentQuestionRequest,
                                                 Integer studentId, ExamInfo examInfo) {
         Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
@@ -177,6 +184,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             super.save(examInfo);
             // 更新考试参考人数
             testPaperInfoService.updateExamNumber(examInfo.getTestPaperInfoId());
+
+            examMonitorService.removeStudent(studentId, testPaperInfoId); // 离开考试监控
         } else {
             // 主观题数量为0， 设置为教师评分
             if (examInfo.getSubjectiveQuestionNumber() == 0) {
@@ -263,5 +272,40 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     public PageInfo<ExamInfoReport> getExamRankingList(PageParam pageParam, Integer testPaperInfoId) {
         Page<ExamInfoReport> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
         return selectPage(baseMapper.selectExamListByTestPaperInfoId(page, testPaperInfoId));
+    }
+
+    /**
+     * 获取近七天考试记录统计
+     * @return
+     */
+    public List<ExamCount> selectExamInfoData() {
+        Date now = new Date();
+        String startTime = DateUtils.getDayBefore(DateUtils.getSecondDate(now), 7);
+        String endTime = DateUtils.getDayBefore(DateUtils.getSecondDate(now), 1);
+        Map params = new HashMap<>();
+        // 获取近七天的开始时间和结束时间
+        params.put("startTime", startTime + " 00:00:00");
+        params.put("endTime", endTime + " 23:59:59");
+
+        List<ExamCount> dataList = baseMapper.countByDateTime(startTime, endTime);
+        Map<String, Integer> dataTimeMap = new HashMap<>();
+        dataList.forEach(data -> {
+            String day = data.getDayGroup();
+            Integer examNumber = data.getExamNumber();
+            dataTimeMap.put(day, examNumber);
+        });
+
+        List<String> weekDateList = DateUtils.getSectionByOneDay(8);
+        // 近七天日期集合
+        weekDateList.remove(weekDateList.size() - 1); // 移除最后一天，也就是当天的日期
+        List<ExamCount> resultDataList = new ArrayList<>();
+        weekDateList.forEach(day -> {
+            ExamCount item = new ExamCount();
+            item.setDayGroup(day);
+            item.setExamNumber(ObjectUtils.isNotEmpty(dataTimeMap.get(day)) ? dataTimeMap.get(day) : 0);
+            resultDataList.add(item);
+        });
+
+        return resultDataList;
     }
 }

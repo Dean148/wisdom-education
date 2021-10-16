@@ -100,7 +100,8 @@ public class LogInterceptor extends BaseInterceptor {
 
         } else {
             String httpType = request.getMethod();
-            if (!httpType.equalsIgnoreCase("get")) {
+            String header = request.getHeader("Content-type");
+            if (header != null && header.startsWith("application/json")) {
                 String params = readData(request);
                 sb.append(params);
             }

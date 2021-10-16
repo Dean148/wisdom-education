@@ -24,11 +24,13 @@
             <groupId>com.education.common.api</groupId>
             <version>${service.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>com.education.business</groupId>
-            <artifactId>education-business</artifactId>
-            <version>${service.version}</version>
+            <groupId>com.github.xuwei-k</groupId>
+            <artifactId>html2image</artifactId>
+            <version>0.1.0</version>
         </dependency>
+
     </dependencies>
 
     <build>

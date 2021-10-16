@@ -1,9 +1,6 @@
 package com.education.business.parser;
 
-import com.education.model.entity.QuestionInfo;
-
 import java.io.InputStream;
-import java.util.List;
 
 /**
  * word 模板试题导入
@@ -18,7 +15,7 @@ public class WordQuestionImportResult extends QuestionImportResult {
     }
 
     @Override
-    public List<QuestionInfo> readTemplate() {
+    public void readTemplate() {
         throw new RuntimeException("Word Template Import is Not Finish");
     }
 }
