@@ -9,8 +9,11 @@ import com.jfinal.json.Jackson;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 
@@ -30,6 +33,8 @@ public class ExamMessageListener {
     @Autowired
     private ExamMessageListenerService examMessageListenerService;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     /**
      * 考试提交消息消费
      *  1. 生成考试记录
@@ -77,5 +82,12 @@ public class ExamMessageListener {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
+    }
+
+    @RabbitListener(queues = RabbitMqConfig.TEST_QUEUE)
+    public void onTestCommitMessage(Message message, Channel channel) throws IOException {
+        jdbcTemplate.update("update exam_info set mark = mark + 1 where id = 1");
+        long deliveryTag = message.getMessageProperties().getDeliveryTag();
+        channel.basicAck(deliveryTag, true);
     }
 }

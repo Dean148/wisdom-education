@@ -32,19 +32,18 @@ public class ConfirmCallbackImpl implements RabbitTemplate.ConfirmCallback {
         String messageId = correlationData.getId();
         LambdaUpdateWrapper updateWrapper = null;
         if (ack) {
-            updateWrapper = new LambdaUpdateWrapper<MessageLog>()
+          /*  updateWrapper = new LambdaUpdateWrapper<MessageLog>()
                     .set(MessageLog::getStatus,  Constants.SEND_SUCCESS)
-                    .eq(MessageLog::getCorrelationDataId, messageId);
-            systemMessageLogService.update(null, updateWrapper);
+                    .eq(MessageLog::getCorrelationDataId, messageId);*/
         } else {
 
             // 消息发送失败
             log.error("造成原因: {}", cause);
-            updateWrapper = new LambdaUpdateWrapper<MessageLog>()
+          /*  updateWrapper = new LambdaUpdateWrapper<MessageLog>()
                     .set(MessageLog::getStatus, Constants.SEND_FAIL)
                     .set(MessageLog::getFailCause, cause)
-                    .eq(MessageLog::getCorrelationDataId, messageId);
-            systemMessageLogService.update(null, updateWrapper);
+                    .eq(MessageLog::getCorrelationDataId, messageId);*/
         }
+      //  systemMessageLogService.update(null, updateWrapper);
     }
 }

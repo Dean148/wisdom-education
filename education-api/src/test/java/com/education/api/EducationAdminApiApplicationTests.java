@@ -44,6 +44,16 @@ public class EducationAdminApiApplicationTests {
     static final String SCORE_RANK = "score_rank";
 
     @Test
+    public void testRedis() {
+       // redisTemplate.opsForList().rightPop("test_token");
+
+        redisTemplate.boundHashOps("token_teste").increment("id:1", 1);
+
+        System.out.println(redisTemplate.boundHashOps("token_teste").get("id:1"));
+     //   System.out.println(redisTemplate.hasKey("test_token"));
+    }
+
+    @Test
     public void redisSort() {
         Set<ZSetOperations.TypedTuple<StudentInfo>> tuples = new HashSet<>();
         long start = System.currentTimeMillis();

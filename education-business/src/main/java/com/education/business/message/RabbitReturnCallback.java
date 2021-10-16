@@ -35,12 +35,12 @@ public class RabbitReturnCallback implements RabbitTemplate.ReturnCallback {
         log.info("交换器: {}", exchange);
         log.info("路由键: {}", routingKey);
 
-        Map result = new Jackson().parse(new String(message.getBody()), Map.class);
+    /*    Map result = new Jackson().parse(new String(message.getBody()), Map.class);
         String cause = "{回复编码:" + replyCode + ", 回复内容: " + replyText;
         LambdaUpdateWrapper updateWrapper = new LambdaUpdateWrapper<MessageLog>()
                 .set(MessageLog::getStatus,  Constants.CONSUME_FAIL)
                 .set(MessageLog::getConsumeCause, cause)
                 .eq(MessageLog::getCorrelationDataId, result.get("messageId"));
-        messageLogMapper.update(null, updateWrapper);
+        messageLogMapper.update(null, updateWrapper);*/
     }
 }

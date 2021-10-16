@@ -44,6 +44,6 @@ public class SystemLogListener implements TaskListener {
         systemLog.setMethod(taskParam.getStr("method"));
         systemLog.setParams(taskParam.getStr("params"));
         systemLog.setOperationDesc(taskParam.getStr("operation_desc"));
-        systemLogService.save(systemLog);
+        // systemLogService.save(systemLog);
     }
 }

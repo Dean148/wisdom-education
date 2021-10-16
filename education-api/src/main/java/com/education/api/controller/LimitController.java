@@ -1,9 +1,12 @@
 package com.education.api.controller;
 
+import com.education.business.message.RabbitMqConfig;
 import com.education.common.cache.CacheBean;
 import com.education.common.disabled.RateLimitLock;
 import com.education.common.utils.Result;
 import com.jfinal.kit.HttpKit;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -55,7 +58,7 @@ public class LimitController {
     }
 
 
-    public static void main(String[] args) {
+  /*  public static void main(String[] args) {
         for (int i = 0; i < 100000; i++) {
             new Thread(new Runnable() {
                 @Override
@@ -64,7 +67,7 @@ public class LimitController {
                 }
             }).start();
         }
-    }
+    }*/
 
     @GetMapping("jdbcTestCache")
     public Result jdbcTestCache() {
@@ -96,7 +99,14 @@ public class LimitController {
      */
     @GetMapping("mysql")
     public void mysql() {
-        jdbcTemplate.update("update test set read_number = read_number + 1 where id = 1");
+        jdbcTemplate.update("update exam_info set mark = mark + 1 where id = 1");
+    }
+
+    @GetMapping("syncMysql")
+    public void syncMysql() {
+        synchronized (this) {
+            jdbcTemplate.update("update exam_info set mark = mark + 1 where id = 1");
+        }
     }
 
     /**
@@ -105,7 +115,7 @@ public class LimitController {
     @GetMapping("threadPool")
     public void threadPool() {
         threadPoolTaskExecutor.execute(() -> {
-            jdbcTemplate.update("update test set read_number = read_number + 1 where id = 1");
+            jdbcTemplate.update("update exam_info set mark = mark + 1 where id = 1");
         });
     }
 
@@ -114,6 +124,21 @@ public class LimitController {
      */
     @GetMapping("mq")
     public void mq() {
-        rabbitTemplate.send(null);
+        rabbitTemplate.convertAndSend(RabbitMqConfig.TEST_FANOUT_EXCHANGE, RabbitMqConfig.TEST_QUEUE_ROUTING_KEY, "test", new CorrelationData());
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        int number = 0;
+        while (true && number < 3) {
+            for (int i = 0; i < 1000; i++) {
+                new Thread(() -> {
+                    String content = HttpKit.get("http://127.0.0.1:8001/limit/threadPool");
+                    System.out.println(content);
+                }).start();
+            }
+            Thread.sleep(3000);
+            number++;
+        }
+
     }
 }

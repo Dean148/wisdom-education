@@ -21,7 +21,7 @@ public class JobConfig {
 
     @Bean
     public Trigger uploadTaskTrigger() {
-        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("*/5 * * * * ?");
+        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("*/1 * * * * ?");
         return TriggerBuilder.newTrigger().forJob(examCountJob().getKey())
                 // .startAt(new Date(System.currentTimeMillis() + 1000 * 60))
                 .withIdentity(ExamCountJob.class.getSimpleName())
