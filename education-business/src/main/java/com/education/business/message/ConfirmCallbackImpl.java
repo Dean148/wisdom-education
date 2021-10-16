@@ -2,8 +2,6 @@ package com.education.business.message;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.education.business.service.system.SystemMessageLogService;
-import com.education.common.constants.Constants;
-import com.education.model.entity.MessageLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

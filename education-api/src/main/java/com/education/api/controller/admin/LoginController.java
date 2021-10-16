@@ -8,11 +8,9 @@ import com.education.business.task.UserLoginSuccessListener;
 import com.education.common.annotation.*;
 import com.education.common.base.BaseController;
 import com.education.common.constants.AuthConstants;
-import com.education.common.constants.CacheKey;
 import com.education.common.constants.CacheTime;
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.common.model.JwtToken;
-import com.education.common.utils.DateUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
 import com.education.common.utils.Result;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,12 +90,12 @@ public class LoginController extends BaseController {
             boolean rememberMe = userLoginRequest.isChecked();
             if (rememberMe) {
                 // 先删除JSESSIONID
-                Cookie cookie = RequestUtils.getCookie(Constants.DEFAULT_SESSION_ID);
+                Cookie cookie = RequestUtils.getCookie(SystemConstants.DEFAULT_SESSION_ID);
                 if (ObjectUtils.isNotEmpty(cookie)) {
                     cookie.setMaxAge(0);
                     response.addCookie(cookie);
                 }
-                RequestUtils.createCookie(Constants.DEFAULT_SESSION_ID, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
+                RequestUtils.createCookie(SystemConstants.DEFAULT_SESSION_ID, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
                 token = adminJwtToken.createToken(adminUserId, CacheTime.ONE_WEEK_MILLIS); // 默认缓存7天
                 sessionManager.setGlobalSessionTimeout(CacheTime.ONE_WEEK_MILLIS);
             } else {
@@ -114,7 +111,7 @@ public class LoginController extends BaseController {
                 // 分布式情况下建议使用redission分布式锁
                 webSocketMessageService.checkOnlineUser(adminUserId);
                 onlineUserManager.addOnlineUser(sessionId, userSession,
-                        new Long(Constants.SESSION_TIME_OUT).intValue());
+                        new Long(SystemConstants.SESSION_TIME_OUT).intValue());
             }
 
             response.addHeader(AuthConstants.AUTHORIZATION, token);

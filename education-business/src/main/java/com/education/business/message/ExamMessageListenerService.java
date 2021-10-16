@@ -7,7 +7,7 @@ import com.education.business.service.education.StudentQuestionAnswerService;
 import com.education.business.service.education.StudentWrongBookService;
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.business.service.system.SystemMessageLogService;
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.model.entity.ExamInfo;
 import com.education.model.entity.MessageLog;
 import com.education.model.entity.StudentQuestionAnswer;
@@ -61,7 +61,7 @@ public class ExamMessageListenerService {
         studentQuestionAnswerService.saveBatch(studentQuestionAnswerList);
 
         LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageLog.class)
-                .set(MessageLog::getStatus, Constants.CONSUME_SUCCESS)
+                .set(MessageLog::getStatus, SystemConstants.CONSUME_SUCCESS)
                 .eq(MessageLog::getCorrelationDataId, messageId);
         systemMessageLogService.update(null, updateWrapper);
         // 更新试卷参考人数

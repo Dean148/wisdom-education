@@ -4,7 +4,7 @@ import com.education.business.task.TaskManager;
 import com.education.business.task.TaskParam;
 import com.education.business.task.WebSocketMessageListener;
 import com.education.common.cache.CacheBean;
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.common.constants.EnumConstants;
 import com.education.common.utils.IpUtils;
 import com.education.common.utils.ObjectUtils;
@@ -40,7 +40,7 @@ public class WebSocketMessageService {
         if (ObjectUtils.isNotEmpty(onlineUser)) {
             String sessionId = onlineUser.getSessionId();
             onlineUserManager.removeOnlineUser(sessionId); // 移除在线用户
-            redisCacheBean.remove(Constants.SESSION_KEY, sessionId); // 移除shiro session 会话
+            redisCacheBean.remove(SystemConstants.SESSION_KEY, sessionId); // 移除shiro session 会话
             TaskParam taskParam = new TaskParam(WebSocketMessageListener.class);
             taskParam.put("sessionId", sessionId);
             taskParam.put("message_type", EnumConstants.MessageType.STUDENT_LOGIN.getValue());

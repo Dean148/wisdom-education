@@ -1,16 +1,11 @@
 package com.education.business.message;
 
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.education.business.mapper.system.MessageLogMapper;
-import com.education.common.constants.Constants;
-import com.education.model.entity.MessageLog;
-import com.jfinal.json.Jackson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import java.util.Map;
 
 
 /**

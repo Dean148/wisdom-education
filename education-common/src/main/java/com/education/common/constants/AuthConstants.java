@@ -7,6 +7,18 @@ package com.education.common.constants;
  */
 public interface AuthConstants {
 
+    /**
+     * 请求头：鉴权token
+     */
     String AUTHORIZATION = "Authorization";
-    String TOKEN = "token";
+
+    /**
+     * 平台类型
+     */
+    String PLATFORM = "Platform";
+
+    /**
+     * jwt token秘钥
+     */
+    String EDUCATION_SECRET_KEY = "education";
 }
