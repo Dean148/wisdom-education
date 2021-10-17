@@ -1,6 +1,5 @@
 package com.education.business.service.education;
 
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.CourseInfoMapper;
 import com.education.business.service.BaseService;
@@ -11,7 +10,6 @@ import com.education.common.utils.ResultCode;
 import com.education.model.dto.CourseInfoDto;
 import com.education.model.entity.CourseInfo;
 import com.education.model.request.PageParam;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Service;
 
 /**

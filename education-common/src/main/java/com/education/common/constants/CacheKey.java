@@ -42,4 +42,6 @@ public interface CacheKey {
     String PAPER_INFO_SETTING_LOCK = "paper:setting";
 
     String COURSE_SECTION = "course:section";
+
+    String COURSE_INFO = "course:info";
 }

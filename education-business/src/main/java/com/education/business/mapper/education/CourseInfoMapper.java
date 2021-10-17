@@ -51,8 +51,4 @@ public interface CourseInfoMapper extends BaseMapper<CourseInfo> {
      */
     @Update("update course_info set section_node_number = section_node_number - 1 where id = #{id}")
     void decreaseSectionNodeNumber(Integer id);
-
-
-
-
 }

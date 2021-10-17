@@ -25,7 +25,7 @@
 
   <groupId>com.education</groupId>
   <artifactId>education</artifactId>
-  <version>${project.version}</version>
+  <version>1.0.3-RELEASE</version>
 
   <name>education</name>
 
