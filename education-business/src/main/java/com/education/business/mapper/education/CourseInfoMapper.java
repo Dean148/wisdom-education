@@ -51,4 +51,15 @@ public interface CourseInfoMapper extends BaseMapper<CourseInfo> {
      */
     @Update("update course_info set section_node_number = section_node_number - 1 where id = #{id}")
     void decreaseSectionNodeNumber(Integer id);
+
+
+   // @Update("update course_info set valuate_mark = valuate_mark + #{} where id = #{id}")
+    void updatCommentNumberAndValuateMark(Integer courseId);
+
+    /**
+     * 课程评论数量加1
+     * @param courseId
+     */
+    @Update("update course_info set comment_number = comment_number + 1 where id = #{id}")
+    void increaseCommentNumber(Integer courseId);
 }

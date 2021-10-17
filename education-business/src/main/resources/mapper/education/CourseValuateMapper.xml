@@ -4,9 +4,17 @@
 
     <select id="listPage" resultType="com.education.model.dto.CourseValuateDto">
         SELECT
-            course.*
+            course.*,
+            student.login_name,
+            student.head_img
         FROM
             course_valuate course
             LEFT JOIN student_info student ON course.student_id = student.id
+        <where>
+            <if test="courseValuate.courseId != null">
+                AND course.course_id = #{courseValuate.courseId}
+            </if>
+        </where>
+        ORDER BY course.id DESC
     </select>
 </mapper>

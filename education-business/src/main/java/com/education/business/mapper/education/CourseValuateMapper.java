@@ -17,5 +17,5 @@ public interface CourseValuateMapper extends BaseMapper<CourseValuate> {
      * @param page
      * @return
      */
-    Page<CourseValuateDto> listPage(Page<CourseValuateDto> page);
+    Page<CourseValuateDto> listPage(Page<CourseValuateDto> page, CourseValuate courseValuate);
 }

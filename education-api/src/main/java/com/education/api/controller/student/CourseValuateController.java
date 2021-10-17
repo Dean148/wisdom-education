@@ -23,9 +23,8 @@ public class CourseValuateController extends BaseController {
     private CourseValuateService courseValuateService;
 
     @GetMapping
-    public Result listPage(PageParam pageParam) {
-
-        return Result.success();
+    public Result listPage(PageParam pageParam, CourseValuate courseValuate) {
+        return Result.success(courseValuateService.listPage(pageParam, courseValuate));
     }
 
     @PostMapping

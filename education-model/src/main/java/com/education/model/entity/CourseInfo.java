@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.education.common.annotation.Unique;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @TableName("course_info")
@@ -48,6 +49,28 @@ public class CourseInfo extends BaseEntity<CourseInfo> {
 	@TableField("push_time")
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	private Date pushTime;
+
+	@TableField("valuate_Mark")
+	private BigDecimal valuateMark;
+
+	@TableField("comment_number")
+	private Integer commentNumber;
+
+	public void setCommentNumber(Integer commentNumber) {
+		this.commentNumber = commentNumber;
+	}
+
+	public Integer getCommentNumber() {
+		return commentNumber;
+	}
+
+	public void setValuateMark(BigDecimal valuateMark) {
+		this.valuateMark = valuateMark;
+	}
+
+	public BigDecimal getValuateMark() {
+		return valuateMark;
+	}
 
 	public Integer getSectionNodeNumber() {
 		return sectionNodeNumber;

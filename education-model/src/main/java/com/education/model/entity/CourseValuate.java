@@ -29,7 +29,7 @@ public class CourseValuate extends BaseEntity<CourseValuate> {
     private Integer valuateType;
 
     @NotNull(message = "请评价课程分数")
-    private Integer level;
+    private Integer valuateMark;
 
 
     public Integer getCourseId() {
@@ -64,11 +64,11 @@ public class CourseValuate extends BaseEntity<CourseValuate> {
         this.valuateType = valuateType;
     }
 
-    public Integer getLevel() {
-        return level;
+    public void setValuateMark(Integer valuateMark) {
+        this.valuateMark = valuateMark;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public Integer getValuateMark() {
+        return valuateMark;
     }
 }
