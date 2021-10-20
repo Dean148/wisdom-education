@@ -64,8 +64,7 @@ public class LoginController extends BaseController {
     @ParamsValidate(params = {
         @Param(name = "userName", message = "请输入用户名"),
         @Param(name = "password", message = "请输入密码"),
-        @Param(name = "key", message = "请传递一个验证码时间戳"),
-        @Param(name = "password", message = "请输入密码"),
+        @Param(name = "key", message = "请传递一个验证码时间戳")
     }, paramsType = ParamsType.JSON_DATA)
     @FormLimit
     public Result<Map> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response,
