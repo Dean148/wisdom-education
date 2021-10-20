@@ -1,6 +1,6 @@
 #### 后端技术栈
    
-- 基于 SpringBoot + Mybatis Plus+ Shiro + mysql + redis构建的智慧云智能教育平台 
+- 基于 SpringBoot + Mybatis Plus+ Shiro + mysql + redis + sharding-jdbc + canal构建的智慧云智能教育平台 
 - 基于数据驱动视图的理念封装 element-ui，即使没有 vue 的使用经验也能快速上手  
 - 提供 lambda 、stream api 、webflux 的生产实践  
 
@@ -24,9 +24,14 @@ Mysql | 5.7
 Element-UI | 2.13.0
 Shiro | 1.4.0
 Jfinal Weixin | 2.3
+sharding-jdbc | 3.1.0.M1
+canal | 1.1.4
 
 ### 系统特色
-
+- 集成开源框架sharding-jdbc，目前系统已支持mysql的读写分离
+- 集成阿里开源框架canal,支持mysql与其它主菲关系型数据库数据的异步同步
+- 集成数据库管理框架flywaydb，项目启动自动创建数据库表结构
+- 支持服务集群(系统已集成分布式session与Jwt token 机制)
 - 支持填空题、综合题、选择题等多种试题类型的录入
 - 支持数学公式的插入同时也支持通过excel 导入试题
 - 支持系统自动评分、教师后台批阅学员试卷
@@ -52,9 +57,15 @@ Jfinal Weixin | 2.3
 - ├── education-api -- 系统api模块
 - └── education-common -- 系统公共模块 
 - └── education-business -- 系统业务模块
+- └── education-canal -- mysql数据监听同步模块
 - └── education-common-api -- 系统公共api模块
 - ├── education-model -- 实体类模块	
 ```
+### 安装部署
+ 1.开发环境支持：JDK1.8、mysql5.7、Rabbitmq、Redis
+ 2.配置两台mysql服务器用来做数据库读写分离(注意：该配置非系统必须，如不使用读写分离，在系统配置文件中将读库配置成写库地址即可)
+ 3.启动education-api模块下面的EducationApiApplication即可启动服务(本项目属于创业初期,所以将学生端接口与后台管理接口集成到一个服务器中，节省服务器成本)
+
 ### 智慧云智能教育系统管理平台
 - 项目源码地址：  https://gitee.com/zhuimengshaonian/wisdom-education-admin-front
 - 功能模块：系统首页、教育教学模块、考试管理模块、统计分析模块、系统设置模块
