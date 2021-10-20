@@ -1,24 +1,27 @@
 package com.education.common.lock;
 
 import com.education.common.disabled.RateLimitLock;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Semaphore 限流
  */
 public class SemaphoreApiLock extends ApiLock {
 
+    private Semaphore semaphore;
+
     public SemaphoreApiLock(RateLimitLock rateLimitLock) {
         super(rateLimitLock);
+    }
+
+    public void setSemaphore(Semaphore semaphore) {
+        this.semaphore = semaphore;
     }
 
     @Override
     public boolean tryLock() throws Exception {
         Semaphore semaphore = getOrCreateSemaphore(rateLimitLock.urlKey(), rateLimitLock.limit());
+        this.setSemaphore(semaphore);
         if (semaphore.tryAcquire(rateLimitLock.sec())) {
             this.locked = true;
         }
@@ -27,9 +30,8 @@ public class SemaphoreApiLock extends ApiLock {
 
     @Override
     public void releaseLock() {
-        Semaphore semaphore = getOrCreateSemaphore(rateLimitLock.urlKey(), rateLimitLock.limit());
         if (this.locked) {
-            semaphore.release(rateLimitLock.sec());
+            this.semaphore.release(rateLimitLock.sec());
         }
     }
 }

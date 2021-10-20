@@ -60,7 +60,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         super.updateById(studentInfoDto);
     }
 
-    public void importStudentFromExcel(List<StudentInfoImport> studentList) throws Exception {
+    public int importStudentFromExcel(List<StudentInfoImport> studentList) throws Exception {
         List<GradeInfo> gradeInfoList = gradeInfoService.list();
         Map<String, Integer> gradeInfoMap = new HashMap<>();
         gradeInfoList.forEach(gradeInfo -> {
@@ -74,6 +74,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
             if (ObjectUtils.isEmpty(gradeInfoId)) {
                 continue;
             }
+            studentInfo.setMobile(studentInfoImport.getMobile());
             studentInfo.setGradeInfoId(gradeInfoId);
             studentInfo.setSex("男".equals(studentInfo.getSex()) ? ResultCode.SUCCESS : ResultCode.FAIL);
             String name = studentInfoImport.getName();
@@ -92,6 +93,8 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
             studentInfoList.add(studentInfo);
         }
         super.saveBatch(studentInfoList);
+
+        return studentInfoList.size();
     }
 
     public Result doLogin(UserLoginRequest userLoginRequest) {

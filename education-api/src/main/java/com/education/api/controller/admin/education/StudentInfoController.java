@@ -5,11 +5,9 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.education.business.service.education.StudentInfoService;
 import com.education.common.base.BaseController;
+import com.education.common.model.ExcelResult;
 import com.education.common.model.StudentInfoImport;
-import com.education.common.utils.Md5Utils;
-import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.Result;
-import com.education.common.utils.ResultCode;
+import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.entity.StudentInfo;
 import com.education.model.request.PageParam;
@@ -18,8 +16,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 学员管理
@@ -112,9 +110,25 @@ public class StudentInfoController extends BaseController {
 
         InputStream inputStream = file.getInputStream();
         ImportParams importParams = new ImportParams();
+        importParams.setNeedVerfiy(true);
         importParams.setSaveUrl(baseUploadPath + "/image"); // 设置头像上传路径
-        ExcelImportResult importResult = ExcelImportUtil.importExcelMore(inputStream, StudentInfoImport.class, importParams);
-        studentInfoService.importStudentFromExcel(importResult.getList());
-        return Result.success();
+
+        ExcelResult excelResult = ExcelUtils.importExcel(inputStream,
+                StudentInfoImport.class, importParams, "/student/importExcelError/");
+        int successCount = studentInfoService.importStudentFromExcel(excelResult.getExcelImportResult().getList());
+
+        List<StudentInfoImport> studentInfoImportList = excelResult.getExcelImportResult().getFailList();
+
+        int failCount = 0;
+        if (studentInfoImportList != null) {
+            failCount = studentInfoImportList.size();
+        }
+
+        String msg = successCount + "名学员数据导入成功";
+        if (failCount > 0) {
+            msg += failCount + "名学员数据导入失败(分别为)" + excelResult.getErrorMsg();
+            return Result.success(ResultCode.EXCEL_VERFIY_FAIL, msg, excelResult.getErrorExcelUrl());
+        }
+        return Result.success(ResultCode.SUCCESS, msg);
     }
 }

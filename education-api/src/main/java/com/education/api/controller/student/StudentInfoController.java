@@ -1,7 +1,6 @@
 package com.education.api.controller.student;
 
 import com.education.business.service.education.StudentInfoService;
-import com.education.common.annotation.FormLimit;
 import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;

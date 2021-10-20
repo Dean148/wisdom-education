@@ -1,6 +1,8 @@
 package com.education.business.parser;
 
 import com.education.common.utils.NumberUtils;
+import com.education.common.utils.ObjectUtils;
+
 import java.util.*;
 
 /**
@@ -19,6 +21,9 @@ public class SelectQuestionParser extends AbstractExcelQuestionParser {
 
     @Override
     public String parseOptionText(String option) {
+        if (ObjectUtils.isEmpty(option)) {
+            return option;
+        }
         String[] optionArray = super.parserToken(option);
         if (optionArray == null) {
             return super.parseOptionText(option);

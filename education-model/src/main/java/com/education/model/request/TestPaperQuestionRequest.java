@@ -13,6 +13,18 @@ public class TestPaperQuestionRequest {
     private String content;
     private List<Integer> questionInfoIds;
 
+    private Boolean showAnswer = false; // 是否查询试题答案字段
+
+    private boolean addExamMonitor = true; // 是否加入考试监考中心
+
+    public void setAddExamMonitor(boolean addExamMonitor) {
+        this.addExamMonitor = addExamMonitor;
+    }
+
+    public boolean isAddExamMonitor() {
+        return addExamMonitor;
+    }
+
     public Integer getQuestionType() {
         return questionType;
     }
@@ -23,6 +35,14 @@ public class TestPaperQuestionRequest {
 
     public String getContent() {
         return content;
+    }
+
+    public Boolean getShowAnswer() {
+        return showAnswer;
+    }
+
+    public void setShowAnswer(Boolean showAnswer) {
+        this.showAnswer = showAnswer;
     }
 
     public void setContent(String content) {

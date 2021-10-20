@@ -55,7 +55,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
             try {
                 webSocketSession.sendMessage(new TextMessage(message));
             } catch (IOException e) {
-                log.error("webSocket 消息发送异常");
+                log.error("webSocket 消息发送异常", e);
             }
         }
     }
@@ -68,7 +68,10 @@ public class SystemWebSocketHandler implements WebSocketHandler {
      */
     @Override
     public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) throws Exception {
-        log.error("webSocket连接异常");
+        if (webSocketSession != null) {
+            webSocketSession.close();
+        }
+        log.error("webSocket连接异常", throwable);
     }
 
     /**
@@ -79,6 +82,8 @@ public class SystemWebSocketHandler implements WebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
+        webSocketSession.close();
+        webSocketSessionMap.remove(webSocketSession.getId());
         log.warn("webSocket成功关闭");
     }
 

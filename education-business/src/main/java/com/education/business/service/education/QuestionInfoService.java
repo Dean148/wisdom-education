@@ -143,7 +143,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
         return true;
     }
 
-    public void importQuestion(Integer schoolType, Integer gradeInfoId, Integer subjectId, List<QuestionInfo> questionInfoList) {
+    public int importQuestion(Integer schoolType, Integer gradeInfoId, Integer subjectId, List<QuestionInfo> questionInfoList) {
         questionInfoList.forEach(questionInfo -> {
             for (EnumConstants.QuestionType item : EnumConstants.QuestionType.values()) {
                 if (item.getName().equals(questionInfo.getQuestionTypeName())) {
@@ -161,5 +161,6 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
             questionInfo.setSubjectId(subjectId);
         });
         super.saveBatch(questionInfoList);
+        return questionInfoList.size();
     }
 }

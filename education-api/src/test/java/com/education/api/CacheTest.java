@@ -5,9 +5,11 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.education.common.cache.CaffeineCacheBean;
 import com.education.common.model.QuestionInfoImport;
+import io.swagger.models.auth.In;
 import org.junit.Test;
 
-import java.io.File;
+import java.io.*;
+import java.nio.charset.Charset;
 
 
 /**
@@ -85,6 +87,25 @@ public class CacheTest {
         System.out.println(value);
         System.out.println();
       //  System.out.println(new DefaultQuestionParser().parserToken("${十点多}, ${{十点多4554}}, ${十点sdsds多4554}") );
+    }
+
+    @Test
+    public void testCo() throws IOException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command("ping", "127.0.0.1");
+        Process process = processBuilder.start();
+        InputStream inputStream = process.getInputStream();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("GBK")));
+
+        FileWriter fileWriter = new FileWriter(new File("C:\\Users\\Administrator\\Desktop\\1.txt"));
+        BufferedWriter writer = new BufferedWriter(fileWriter);
+        String content = null;
+        while ((content = bufferedReader.readLine()) != null) {
+            writer.write(content, 0, content.length());
+        }
+
+        bufferedReader.close();
+        fileWriter.close();
     }
 
     @Test

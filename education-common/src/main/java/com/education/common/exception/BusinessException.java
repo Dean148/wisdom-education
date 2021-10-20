@@ -1,6 +1,7 @@
 package com.education.common.exception;
 
 
+import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 
 /**
@@ -13,8 +14,22 @@ public class BusinessException extends RuntimeException {
 
     private ResultCode resultCode;
 
+    private Result result;
+
     public BusinessException(ResultCode resultCode){
         this.resultCode = resultCode;
+    }
+
+    public BusinessException(Result result){
+        this.result = result;
+    }
+
+    public Result getResult() {
+        return result;
+    }
+
+    public void setResult(Result result) {
+        this.result = result;
     }
 
     public BusinessException(String message){

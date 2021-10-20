@@ -5,30 +5,38 @@
     <parent>
         <groupId>com.education</groupId>
         <artifactId>education</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.2-RELEASE</version>
     </parent>
     <groupId>com.education.api</groupId>
     <artifactId>education-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${project.version}</version>
     <name>education-admin-api</name>
     <description>基于Spring Boot构建的智能教育平台</description>
 
     <properties>
         <java.version>1.8</java.version>
-        <service.version>1.0-SNAPSHOT</service.version>
+        <service.version>1.0.2-RELEASE</service.version>
     </properties>
 
     <dependencies>
         <dependency>
             <artifactId>education-common-api</artifactId>
             <groupId>com.education.common.api</groupId>
-            <version>${service.version}</version>
+            <version>${project.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>com.education.business</groupId>
-            <artifactId>education-business</artifactId>
-            <version>${service.version}</version>
+            <artifactId>education-canal</artifactId>
+            <groupId>com.education.canal</groupId>
+            <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.xuwei-k</groupId>
+            <artifactId>html2image</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
