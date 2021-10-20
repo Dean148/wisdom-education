@@ -86,6 +86,11 @@ public class CaffeineCacheBean implements CacheBean {
     }
 
     @Override
+    public void expire(String cacheName, Object key, int liveSeconds) {
+
+    }
+
+    @Override
     public Collection getKeys(String cacheName) {
         Cache cache = getCache(cacheName);
         return cache.asMap().keySet();

@@ -8,6 +8,7 @@ import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
+import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.QuestionInfoDto;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -65,6 +67,7 @@ public class QuestionInfoController extends BaseController {
         @Param(name = "content", message = "请输入试题内容"),
         @Param(name = "answer", message = "请输入试题答案")
     }, paramsType = ParamsType.JSON_DATA)
+ //   @CacheEvict(cacheNames = CacheKey.QUESTION_INFO_CACHE, condition = "questionInfoDto.id != null", value = "questionInfoDto.id")
     public Result saveOrUpdate(@RequestBody QuestionInfoDto questionInfoDto) {
         return Result.success(questionInfoService.saveOrUpdateQuestionInfo(questionInfoDto));
     }
@@ -75,6 +78,7 @@ public class QuestionInfoController extends BaseController {
      * @return
      */
     @GetMapping("selectById")
+ //   @Cacheable(cacheNames = CacheKey.QUESTION_INFO_CACHE, value = "#id" )
     public Result selectById(Integer id) {
         return Result.success(questionInfoService.selectById(id));
     }
@@ -86,6 +90,7 @@ public class QuestionInfoController extends BaseController {
      */
     @DeleteMapping("{id}")
     @RequiresPermissions("system:question:deleteById")
+   // @CacheEvict(cacheNames = CacheKey.QUESTION_INFO_CACHE, value = "#id")
     public Result deleteById(@PathVariable Integer id) {
         return Result.success(questionInfoService.deleteById(id));
     }
@@ -104,6 +109,7 @@ public class QuestionInfoController extends BaseController {
         @Param(name = "subjectId", message = "请选择导入所属科目")
     })
     public Result importQuestion(
+                                 HttpServletResponse response,
                                  @RequestParam Integer schoolType,
                                  @RequestParam Integer gradeInfoId,
                                  @RequestParam Integer subjectId,
@@ -115,13 +121,38 @@ public class QuestionInfoController extends BaseController {
         try {
             QuestionImportResult questionImportResult = null;
             if (excelTypes.contains(contentType)) {
-                questionImportResult = new ExcelQuestionImportResult(file);
+                questionImportResult = new ExcelQuestionImportResult(file, response);
             } else {
                 questionImportResult = new TxtQuestionImportResult(file);
             }
-            List<QuestionInfo> questionInfoList = questionImportResult.readTemplate();
-            questionInfoService.importQuestion(schoolType, gradeInfoId, subjectId, questionInfoList);
-            return Result.success(ResultCode.SUCCESS, questionInfoList.size() + "道试题导入成功");
+
+            questionImportResult.readTemplate();
+
+            if (!questionImportResult.isHasData()) {
+                return Result.success(ResultCode.FAIL, questionImportResult.getErrorMsg());
+            }
+
+            List<QuestionInfo> questionInfoList = questionImportResult.getSuccessImportQuestionList();
+            int successCount = questionInfoService.importQuestion(schoolType, gradeInfoId,
+                    subjectId, questionInfoList);
+
+            int failCount = 0;
+            List<QuestionInfo> failQuestionList = questionImportResult.getFailImportQuestionList();
+
+            if (failQuestionList != null) {
+                failCount = failQuestionList.size();
+            }
+
+            // excel 数据校验失败
+            String msg = successCount + "道试题导入成功";
+            if (ObjectUtils.isNotEmpty(questionImportResult.getErrorMsg())) {
+                if (failCount > 0) {
+                    msg += "," + failCount + "道试题导入失败(分别为)" + questionImportResult.getErrorMsg();
+                }
+                return Result.success(ResultCode.EXCEL_VERFIY_FAIL,
+                       msg, questionImportResult.getErrorFileUrl());
+            }
+            return Result.success(ResultCode.SUCCESS, msg);
         } catch (Exception e) {
             logger.error("数据导入失败", e);
         }

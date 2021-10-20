@@ -87,6 +87,7 @@ public class LoginController extends BaseController {
             userSession.setSessionId(sessionId);
             userSession.setToken(token);
             synchronized (this) { // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
+                // 分布式情况下建议使用redission分布式锁
                 webSocketMessageService.checkOnlineUser(adminUserId);
                 onlineUserManager.addOnlineUser(sessionId, userSession,
                         new Long(Constants.SESSION_TIME_OUT).intValue());

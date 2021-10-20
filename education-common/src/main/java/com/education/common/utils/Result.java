@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 
 /**
  * @descript: 返回结果类
@@ -13,7 +14,7 @@ import java.io.PrintWriter;
  * @Date: 2019/12/31 13:46
  * @Version:2.1.0
  */
-public final class Result<T> {
+public final class Result<T> implements Serializable {
 
     private T data;
     private int code;

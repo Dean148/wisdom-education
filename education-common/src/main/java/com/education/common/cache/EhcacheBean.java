@@ -71,6 +71,11 @@ public class EhcacheBean implements CacheBean {
         this.put(cacheName, key, value);
     }
 
+    @Override
+    public void expire(String cacheName, Object key, int liveSeconds) {
+
+    }
+
     public void put(Object key, Object value) {
         put(DEFAULT_CACHE, key, value);
     }

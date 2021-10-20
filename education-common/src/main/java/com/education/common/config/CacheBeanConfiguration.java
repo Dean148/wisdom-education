@@ -1,12 +1,10 @@
 package com.education.common.config;
 
 import com.education.common.cache.*;
-
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -30,6 +28,20 @@ public class CacheBeanConfiguration {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
+
+ /*   @Bean
+    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        ObjectMapper om = new ObjectMapper();
+        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        jackson2JsonRedisSerializer.setObjectMapper(om);
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer));
+
+        return new ExpireRedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory), redisCacheConfiguration);
+    }
+*/
 
 
     @Bean

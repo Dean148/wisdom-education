@@ -189,4 +189,14 @@ public class ObjectUtils {
 		Arrays.sort(c);//对数组进行排序
 		return new String(c); //返回数组。注
 	}
+
+
+	public static Class<?> getClass(String className) {
+		try {
+			return Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

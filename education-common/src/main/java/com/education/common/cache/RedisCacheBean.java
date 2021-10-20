@@ -63,6 +63,11 @@ public class RedisCacheBean implements CacheBean {
     }
 
     @Override
+    public void expire(String cacheName, Object key, int liveSeconds) {
+        redisTemplate.expire(this.createNewKey(cacheName, key), liveSeconds, TimeUnit.SECONDS);
+    }
+
+    @Override
     public Collection getKeys(String cacheName) {
         return this.redisTemplate.keys(cacheName + "*");
     }

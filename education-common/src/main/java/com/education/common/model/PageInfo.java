@@ -1,5 +1,6 @@
 package com.education.common.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  * @version 1.0
  * @create_at 2020/11/15 14:24
  */
-public class PageInfo<T> {
+public class PageInfo<T> implements Serializable {
 
     public PageInfo(List<T> dataList, int totalPage, long total) {
         this.dataList = dataList;

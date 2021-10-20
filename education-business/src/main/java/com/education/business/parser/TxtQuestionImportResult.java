@@ -1,6 +1,9 @@
 package com.education.business.parser;
 
+import cn.afterturn.easypoi.util.PoiValidationUtil;
 import com.education.common.constants.EnumConstants;
+import com.education.common.utils.ObjectUtils;
+import com.education.model.dto.TxtQuestionInfo;
 import com.education.model.entity.QuestionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +21,12 @@ import java.util.List;
  */
 public class TxtQuestionImportResult extends QuestionImportResult {
 
-    private final String QUESTION_CONTENT = "[题干]";
-    private final String QUESTION_TYPE_VALUE = "[类型]";
-    private final String QUESTION_ANSWER = "[答案]";
-    private final String QUESTION_ANALYSIS = "[解析]";
-    private final int TITLE_LENGTH = "[题干]".length();
+    private static final String QUESTION_CONTENT = "[题干]";
+    private static final String QUESTION_TYPE_VALUE = "[类型]";
+    private static final String QUESTION_ANSWER = "[答案]";
+    private static final String QUESTION_ANALYSIS = "[解析]";
+    private static final String QUESTION_OPTIONS = "[选项]";
+    private static final int TITLE_LENGTH = "[题干]".length();
 
     private final Logger logger = LoggerFactory.getLogger(TxtQuestionImportResult.class);
 
@@ -35,19 +39,29 @@ public class TxtQuestionImportResult extends QuestionImportResult {
     }
 
     @Override
-    public List<QuestionInfo> readTemplate() {
+    public void readTemplate() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(super.getInputStream()));
         String lineContent = null;
         List<QuestionInfo> questionInfoList = new ArrayList();
+        List<QuestionInfo> failImportQuestionList = new ArrayList<>();
+        List<TxtQuestionInfo> errorTxtQuestionList = new ArrayList<>();
         try {
             QuestionInfo questionInfo = null;
             Integer questionType = null;
-            while ((lineContent = reader.readLine()) != null ) {
-                QuestionImportParser excelQuestionParser = null;
-                if (questionType != null) {
-                    excelQuestionParser = QuestionImportParserManager.build()
-                            .createExcelQuestionParser(questionType);
+
+            boolean hasData = false; // txt 文档是否有内容
+
+            int readType = 0;
+            int questionInfoIndex = 0; // 记录上道试题的索引下标
+            while ((lineContent = reader.readLine()) != null) {
+                if (ObjectUtils.isEmpty(lineContent)) {
+                    continue;
                 }
+
+                if (!hasData) {
+                    hasData = true;
+                }
+
                 String tokenStart = lineContent.substring(0, TITLE_LENGTH);
                 String content = lineContent.substring(TITLE_LENGTH, lineContent.length());
 
@@ -55,27 +69,91 @@ public class TxtQuestionImportResult extends QuestionImportResult {
                 if (tokenStart.startsWith(QUESTION_CONTENT)) {
                     questionInfo = new QuestionInfo();
                     questionInfo.setContent(content);
+                    readType = 1;
                     // 解析试题类型
                 } else if (tokenStart.startsWith(QUESTION_TYPE_VALUE)) {
                     for (EnumConstants.QuestionType item : EnumConstants.QuestionType.values()) {
                         if (item.getName().equals(content)) {
                             questionType = item.getValue();
+                            questionInfo.setQuestionType(questionType);
+                            questionInfo.setQuestionTypeName(item.getName());
                             break;
                         }
                     }
-                    questionInfo.setQuestionType(questionType);
+                    readType = 2;
                 } else if (tokenStart.startsWith(QUESTION_ANSWER)) {  // 解析试题答案
-                    String answer = excelQuestionParser.parseAnswerText(content);
-                    questionInfo.setAnswer(answer);
-                } else if (tokenStart.startsWith(QUESTION_ANALYSIS)) { // 解析试题选项
-                    String optionText = excelQuestionParser.parseOptionText(content);
-                    questionInfo.setAnalysis(optionText);
-                    questionInfoList.add(questionInfo);
+                    questionInfo.setAnswer(content);
+                    readType = 3;
+                } else if (tokenStart.startsWith(QUESTION_OPTIONS)) { // 解析试题选项
+                    String options = null;
+                    if (ObjectUtils.isEmpty(content)) {
+                        options = null; // 将options 设置为null, 防止选项为空导致插入数据库失败，因为mysql json 类型不支持字符串""
+                    } else {
+                        options = content;
+                    }
+                    questionInfo.setOptions(options);
+                    readType = 4;
+                } else if (tokenStart.startsWith(QUESTION_ANALYSIS)) {
+                    questionInfo.setAnalysis(content);
+                    readType = 5;
+                    String errorMsg = verificationContent(questionInfo);
+                    if (ObjectUtils.isEmpty(errorMsg)) {
+                        questionInfoList.add(questionInfo);
+                    }
+                    else {
+                        TxtQuestionInfo txtQuestionInfo = new TxtQuestionInfo();
+                        txtQuestionInfo.setContent(questionInfo.getContent());
+                        txtQuestionInfo.setAnalysis(questionInfo.getAnalysis());
+                        txtQuestionInfo.setErrorMsg(errorMsg);
+                        txtQuestionInfo.setAnswer(questionInfo.getAnswer());
+                        txtQuestionInfo.setQuestionTypeName(questionInfo.getQuestionTypeName());
+                        errorTxtQuestionList.add(txtQuestionInfo);
+                        failImportQuestionList.add(questionInfo);
+                    }
+                } else { // 出现内容换行情况
+                    switch (readType) { // 判断上一行内容的类型，然后进行内容拼接
+                        case 1:
+                            questionInfo.setContent(questionInfo.getContent() + content);
+                            break;
+                        case 3:
+                            questionInfo.setAnswer(questionInfo.getAnswer() + content);
+                            break;
+                        case 4:
+                            questionInfo.setOptions(questionInfo.getOptions() + content);
+                            break;
+                        case 5:
+                            questionInfoList.remove(questionInfoIndex);
+                            questionInfo.setAnalysis(questionInfo.getAnalysis() + content);
+                            questionInfoList.add(questionInfo);
+                    }
+                }
+            }
+
+            if (!hasData) {
+                setErrorMsg("txt 文件内容为空，请先添加试题");
+                setHasData(false);
+            } else {
+                super.setSuccessImportQuestionList(questionInfoList);
+                super.setFailImportQuestionList(failImportQuestionList);
+                if (failImportQuestionList.size() > 0) {
+                    this.createErrorTxtFile(errorTxtQuestionList);
                 }
             }
         } catch (Exception e) {
-            logger.error("试题导入异常", e);
+            logger.error("试题导入异常, 请检查txt 内容数据是否有换行", e);
         }
-        return questionInfoList;
+    }
+
+    private String verificationContent(QuestionInfo questionInfo) {
+        return PoiValidationUtil.validation(questionInfo, null);
+    }
+
+    /**
+     * 创建错误文件提示
+     * @param failImportQuestionList
+     */
+    private String createErrorTxtFile(List<TxtQuestionInfo> failImportQuestionList) {
+       // StringBuilder txtContent = new StringBuilder();
+        return null;
     }
 }

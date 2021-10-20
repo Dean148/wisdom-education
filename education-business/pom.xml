@@ -5,12 +5,12 @@
     <parent>
         <artifactId>education</artifactId>
         <groupId>com.education</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.2-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.education.business</groupId>
     <artifactId>education-business</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${project.version}</version>
     <name>education-business</name>
     <!-- FIXME change it to the project's website -->
     <url>核心业务模块</url>
@@ -25,13 +25,13 @@
         <dependency>
             <groupId>com.education.common</groupId>
             <artifactId>education-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.education.model</groupId>
             <artifactId>education-model</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

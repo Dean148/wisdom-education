@@ -11,6 +11,7 @@ import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +53,7 @@ public class ExamInfoController extends BaseController {
      */
     @PostMapping("correctExamQuestion")
     @RequiresPermissions("system:exam:correct")
+    @CacheEvict(cacheNames = CacheKey.EXAM_CACHE, key = "#studentQuestionRequest.examInfoId")
     public Result correctExamQuestion(@RequestBody StudentQuestionRequest studentQuestionRequest) {
         examInfoService.correctStudentExam(studentQuestionRequest);
         return Result.success(ResultCode.SUCCESS, "批改成功");

@@ -1,7 +1,12 @@
 package com.education.model.dto;
 
 import com.education.common.constants.EnumConstants;
+import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.TestPaperQuestionInfo;
+import com.jfinal.json.JacksonFactory;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author zengjintao
@@ -17,6 +22,9 @@ public class TestPaperQuestionDto extends TestPaperQuestionInfo {
     private Integer updateType; // 更新字段
     private String questionTypeName;
 
+    // 选项数组
+    private List<Map> optionsList;
+
     public String getQuestionTypeName() {
         if (questionType != null) {
             return EnumConstants.QuestionType.getName(this.questionType);
@@ -24,8 +32,19 @@ public class TestPaperQuestionDto extends TestPaperQuestionInfo {
         return questionTypeName;
     }
 
+    public void setOptionsList(List<Map> optionsList) {
+        this.optionsList = optionsList;
+    }
+
+    public List<Map> getOptionsList() {
+        return optionsList;
+    }
+
     public void setOptions(String options) {
         this.options = options;
+        if (ObjectUtils.isNotEmpty(options)) {
+            setOptionsList(JacksonFactory.me().getJson().parse(options, List.class));
+        }
     }
 
     public String getOptions() {

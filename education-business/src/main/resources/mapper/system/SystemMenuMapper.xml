@@ -27,7 +27,7 @@
     </select>
 
     <select id="getMenuListByRoles" resultType="com.education.model.entity.SystemMenu">
-        select * from system_menu where id in(
+        select * from system_menu where id in (
            select menu_id from system_role_menu where role_id in
            <foreach collection="roleIds" separator="," open="(" close=")" item="roleId">
                #{roleId}
@@ -37,7 +37,7 @@
 
 
     <select id="selectTreeMenuListByRoleId" resultType="com.education.model.dto.MenuTree">
-        select * from system_menu where id in(select menu_id from system_role_menu where role_id = #{roleId})
+        select * from system_menu where id in (select menu_id from system_role_menu where role_id = #{roleId})
         order by sort asc
     </select>
 </mapper>

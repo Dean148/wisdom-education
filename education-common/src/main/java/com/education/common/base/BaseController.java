@@ -1,10 +1,7 @@
 package com.education.common.base;
 
 import com.education.common.cache.CacheBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-
 import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
