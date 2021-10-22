@@ -14,6 +14,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudService<M, T> {
 
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     protected TaskManager taskManager;
     @Autowired
@@ -39,10 +41,9 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
     @Autowired
     protected HttpServletRequest request;
     @Resource
-    protected CacheBean ehcacheBean;
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Resource
     protected RedisTemplate redisTemplate;
+    @Resource
+    protected RedissonClient redissonClient;
 
     /**
      * 更新shiro 缓存中的用户信息，避免由于redis 缓存导致获取用户信息不一致问题

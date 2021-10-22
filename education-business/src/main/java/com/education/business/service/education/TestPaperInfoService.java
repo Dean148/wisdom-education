@@ -21,6 +21,7 @@ import com.education.model.entity.TestPaperQuestionInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.TestPaperQuestionRequest;
 import com.jfinal.kit.Kv;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,13 +65,17 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         Integer testPaperInfoId = testPaperQuestionRequest.getTestPaperInfoId();
         PageInfo<TestPaperQuestionDto> pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId);
         if (pageInfo == null) {
-            synchronized (this) {
+            RLock lock = redissonClient.getLock(CacheKey.TEST_PAPER_INFO_CACHE + testPaperInfoId);
+            try {
+                lock.lock();
                 pageInfo = cacheBean.get(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId);
                 if (pageInfo == null) {
                     testPaperQuestionRequest.setShowAnswer(true);
                     pageInfo = this.selectPaperQuestionList(pageParam, testPaperQuestionRequest);
                     cacheBean.putValue(CacheKey.TEST_PAPER_INFO_CACHE, testPaperInfoId, pageInfo);
                 }
+            } finally {
+                lock.unlock();
             }
         }
         if (testPaperQuestionRequest.getShowAnswer()) {

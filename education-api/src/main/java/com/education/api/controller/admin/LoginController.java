@@ -7,6 +7,7 @@ import com.education.business.task.TaskParam;
 import com.education.business.task.UserLoginSuccessListener;
 import com.education.common.annotation.*;
 import com.education.common.base.BaseController;
+import com.education.common.constants.CacheKey;
 import com.education.common.constants.Constants;
 import com.education.common.model.JwtToken;
 import com.education.common.utils.ObjectUtils;
@@ -21,9 +22,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,6 +56,8 @@ public class LoginController extends BaseController {
     private WebSocketMessageService webSocketMessageService;
     @Autowired
     private OnlineUserManager onlineUserManager;
+    @Autowired
+    private RedissonClient redissonClient;
 
 
     /**
@@ -85,11 +91,15 @@ public class LoginController extends BaseController {
             String sessionId = request.getSession().getId();
             userSession.setSessionId(sessionId);
             userSession.setToken(token);
-            synchronized (this) { // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
+            RLock lock = redissonClient.getLock(CacheKey.USER_SYNC_LONGIN + adminUserId);
+            try {
+                lock.lock(); // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
                 // 分布式情况下建议使用redission分布式锁
                 webSocketMessageService.checkOnlineUser(adminUserId);
                 onlineUserManager.addOnlineUser(sessionId, userSession,
                         new Long(Constants.SESSION_TIME_OUT).intValue());
+            } finally {
+                lock.unlock();
             }
 
             // 是否记住密码登录
