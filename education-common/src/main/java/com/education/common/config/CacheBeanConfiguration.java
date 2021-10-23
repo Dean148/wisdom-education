@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -77,25 +75,4 @@ public class CacheBeanConfiguration {
     public CacheBean redisCacheBean(RedisTemplate redisTemplate) {
         return new RedisCacheBean(redisTemplate);
     }
-
-  /*  @Bean
-    public CacheManager ehCacheManager(net.sf.ehcache.CacheManager educationCacheManager) {
-        EhCacheManager ehCacheManager = new EhCacheManager();
-        ehCacheManager.setCacheManager(educationCacheManager);
-        return ehCacheManager;
-    }
-
-    @Bean
-    public net.sf.ehcache.CacheManager educationCacheManager() {
-        return net.sf.ehcache.CacheManager.create(this.getClass()
-                .getClassLoader()
-                .getResourceAsStream("ehcache.xml"));
-    }
-
-
-    @Bean
-    public CacheBean ehcacheBean(net.sf.ehcache.CacheManager cacheManager) {
-        return new EhcacheBean(cacheManager);
-    }
-*/
 }
