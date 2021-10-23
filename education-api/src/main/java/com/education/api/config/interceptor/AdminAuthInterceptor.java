@@ -37,6 +37,6 @@ public class AdminAuthInterceptor extends BaseInterceptor {
 			}*/
             return true;
 		}
-		return checkToken(adminJwtToken, request, response);
+		return checkHeader(request, response);
 	}
 }

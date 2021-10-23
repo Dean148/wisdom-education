@@ -76,6 +76,11 @@ public class EhcacheBean implements CacheBean {
 
     }
 
+    @Override
+    public Long getExpire(String cacheName, Object key) {
+        return null;
+    }
+
     public void put(Object key, Object value) {
         put(DEFAULT_CACHE, key, value);
     }

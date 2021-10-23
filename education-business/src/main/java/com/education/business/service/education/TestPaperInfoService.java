@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.TestPaperInfoMapper;
 import com.education.business.service.BaseService;
 import com.education.common.constants.CacheKey;
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
@@ -291,7 +291,7 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         String outDirPath = "/paperPrint/"
                 + testPaperInfoId;
         String paperTemplateSavePath = FileUtils.getUploadPath() + outDirPath;
-        BaseTemplate template = new EnjoyTemplate(Constants.PAPER_INFO_TEMPLATE, paperTemplateSavePath);
+        BaseTemplate template = new EnjoyTemplate(SystemConstants.PAPER_INFO_TEMPLATE, paperTemplateSavePath);
         template.generateTemplate(data, htmlName);
         return outDirPath + "/" + htmlName;
     }

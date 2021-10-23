@@ -8,9 +8,10 @@ import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.message.QueueManager;
 import com.education.business.service.BaseService;
 import com.education.business.task.TaskParam;
-import com.education.business.task.WebSocketMessageTask;
+import com.education.business.task.WebSocketMessageListener;
 import com.education.common.constants.CacheKey;
-import com.education.common.constants.Constants;
+import com.education.common.constants.CacheTime;
+import com.education.common.constants.SystemConstants;
 import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
@@ -98,7 +99,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                 testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
                 if (ObjectUtils.isEmpty(testPaperInfoSetting)) {
                     testPaperInfoSetting = testPaperInfoSettingService.selectByTestPaperInfoId(testPaperInfoId);
-                    cacheBean.put(CacheKey.PAPER_INFO_SETTING, testPaperInfoId, testPaperInfoSetting, Constants.ONE_DAY * 60);
+                    cacheBean.put(CacheKey.PAPER_INFO_SETTING, testPaperInfoId, testPaperInfoSetting, CacheTime.ONE_DAY_SECOND);
                 }
             } finally {
                 lock.unlock();
@@ -333,9 +334,9 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         super.updateById(examInfo);
 
         // 发送批改消息通知
-        TaskParam taskParam = new TaskParam(WebSocketMessageTask.class);
+        TaskParam taskParam = new TaskParam(WebSocketMessageListener.class);
         taskParam.put("message_type", EnumConstants.MessageType.EXAM_CORRECT.getValue());
-        taskParam.put("sessionId", RequestUtils.getCookieValue(Constants.DEFAULT_SESSION_ID));
+        taskParam.put("sessionId", RequestUtils.getCookieValue(SystemConstants.DEFAULT_SESSION_ID));
         taskParam.put("studentId", studentId);
         taskParam.put("testPaperInfoId", examInfo.getTestPaperInfoId());
         taskManager.pushTask(taskParam);
@@ -351,8 +352,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     public ExamInfoDetail examDetailReport(Integer testPaperInfoId) {
         TestPaperInfo testPaperInfo = testPaperInfoService.getById(testPaperInfoId);
         Integer mark = testPaperInfo.getMark();
-        double passMark = NumberUtils.doubleToBigDecimal(mark * Constants.PASS_MARK_RATE);
-        double niceMark = NumberUtils.doubleToBigDecimal(mark * Constants.NICE_MARK_RATE);
+        double passMark = NumberUtils.doubleToBigDecimal(mark * SystemConstants.PASS_MARK_RATE);
+        double niceMark = NumberUtils.doubleToBigDecimal(mark * SystemConstants.NICE_MARK_RATE);
         Kv params = Kv.create().set("testPaperInfoId", testPaperInfoId).set("passMark", passMark)
                 .set("niceMark", niceMark);
         ExamInfoDetail examInfoDetail = baseMapper.selectExamInfoDetail(params);

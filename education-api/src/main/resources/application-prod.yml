@@ -1,3 +1,4 @@
+host: 120.79.144.34
 server:
   port: 8001
 canal:
@@ -11,20 +12,20 @@ spring:
         max-wait: 30
         max-idle: 8
         min-idle: 0
-    host: 120.79.144.34
+    host: ${host}
     port: 6379
     password: taoge
   rabbitmq:
-    host: 120.79.144.34
+    host: ${host}
     port: 5672
     username: rabbitmq
     password: 123456
     virtual-host: /
-    publisher-confirms: true
     publisher-returns: true
     listener:
       simple:
         acknowledge-mode: manual #开启手动确认模式
+    publisher-confirm-type: correlated
   freemarker:
     template-loader-path: classpath:/template/
     suffix: .ftl
@@ -36,18 +37,25 @@ spring:
       max-request-size: 500MB
 lbs:
   key: MYOBZ-OOEW3-KYC3G-YWDXA-DMQJ6-SPBMH
+
 ## 虚拟文件上传路径
 file:
   uploadPath: /root/uploads/
+
 ueditor:
   configFileName: config.json
+
 # 微信公众号配置
 weChat:
   appId: wxc5d3bf3c1fbf6d25
   token: education
   appSecret: cf05150f801935391f29d73695f04300
+
+# 配置日志文件输出目录及文件
 logging:
-  file:  /root/jar/education.log
+  file:
+    path: /root/jar
+    name: education.log
 
 # sharding jdbc 读写分离配置
 sharding:
@@ -56,7 +64,7 @@ sharding:
       names: educationmaster,educationslave
       educationmaster:
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://120.79.144.34:3306/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://${host}:3306/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         idle-timeout: 60000
         #数据库连接超时时间
@@ -71,7 +79,7 @@ sharding:
         password: 123456
       educationslave:
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://120.79.144.34:3307/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://${host}:3307/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         idle-timeout: 60000
         #数据库连接超时时间

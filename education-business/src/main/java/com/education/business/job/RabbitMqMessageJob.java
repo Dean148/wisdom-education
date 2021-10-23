@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.system.MessageLogMapper;
 import com.education.common.component.SpringBeanManager;
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.model.entity.MessageLog;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -24,9 +24,9 @@ public class RabbitMqMessageJob extends BaseJob {
 
     private static final List<Integer> status = new ArrayList() {
         {
-            add(Constants.SEND_RUNNING);
-            add(Constants.SEND_SUCCESS);
-            add(Constants.SEND_FAIL);
+            add(SystemConstants.SEND_RUNNING);
+            add(SystemConstants.SEND_SUCCESS);
+            add(SystemConstants.SEND_FAIL);
         }
     };
 
@@ -47,10 +47,10 @@ public class RabbitMqMessageJob extends BaseJob {
         messageLogList.forEach(item -> {
             String content = item.getContent();
             int tryCount = item.getTryCount();
-            if (tryCount > Constants.MAX_SEND_COUNT) {
+            if (tryCount > SystemConstants.MAX_SEND_COUNT) {
                 // 超过三次系统默认消费失败，人工进行处理
                 LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageLog.class)
-                        .set(MessageLog::getStatus, Constants.CONSUME_FAIL)
+                        .set(MessageLog::getStatus, SystemConstants.CONSUME_FAIL)
                         //   .set(MessageLog::getConsumeCause, e.getCause())
                         .eq(MessageLog::getCorrelationDataId, item.getCorrelationDataId());
                 messageLogMapper.update(null, updateWrapper);

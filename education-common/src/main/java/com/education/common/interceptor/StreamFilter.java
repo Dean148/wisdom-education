@@ -26,11 +26,11 @@ public class StreamFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        ServletRequest requestWrapper = null;
+        ServletRequest requestWrapper;
         if (request instanceof HttpServletRequest) {
             HttpServletRequest servletRequest = (HttpServletRequest) request;
             String contentType = servletRequest.getHeader("Content-Type");
-            if (contentType.startsWith("multipart/form-data;")) {
+            if (contentType != null && contentType.startsWith("multipart/form-data;")) {
                 chain.doFilter(request, response);
             } else {
                 requestWrapper = new BodyReaderHttpServletRequestWrapper((HttpServletRequest) request);

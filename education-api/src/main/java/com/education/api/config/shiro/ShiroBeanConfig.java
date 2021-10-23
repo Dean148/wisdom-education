@@ -31,8 +31,6 @@ import java.util.Map;
 @AutoConfigureAfter(ShiroLifecycleBeanPostProcessorConfig.class)
 public class ShiroBeanConfig {
 
-    private static final long INVALID_TIME = 3600 * 6 * 1000;
-
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -74,8 +72,6 @@ public class ShiroBeanConfig {
     @Bean
     public SessionManager sessionManager(SessionDAO distributeShiroSession) {
         DefaultSessionManager sessionManager = new DefaultWebSessionManager();
-        // 设置session
-        sessionManager.setGlobalSessionTimeout(INVALID_TIME);
         sessionManager.setSessionDAO(distributeShiroSession);
         return sessionManager;
     }

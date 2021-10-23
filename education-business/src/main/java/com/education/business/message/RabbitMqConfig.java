@@ -22,6 +22,10 @@ public class RabbitMqConfig {
     public static final String FANOUT_EXCHANGE = "exam_queue_exchange";
     public final static String EXAM_QUEUE_ROUTING_KEY = "exam_queue_routing_key";
 
+    public static final String TEST_QUEUE = "test_queue";
+    public final static String TEST_FANOUT_EXCHANGE = "test_queue_exchange";
+    public final static String TEST_QUEUE_ROUTING_KEY = "test_queue_routing_key";
+
     @Autowired
     private RabbitTemplate.ConfirmCallback confirmCallback;
     @Autowired
@@ -36,6 +40,11 @@ public class RabbitMqConfig {
         return new Queue(EXAM_QUEUE);
     }
 
+    @Bean
+    public Queue testQueue() {
+        return new Queue(TEST_QUEUE);
+    }
+
     /**
      * 创建交换机
      * @return
@@ -43,6 +52,12 @@ public class RabbitMqConfig {
     @Bean
     public FanoutExchange fanoutExchange() {
         return new FanoutExchange(FANOUT_EXCHANGE);
+    }
+
+
+    @Bean
+    public FanoutExchange testFanoutExchange() {
+        return new FanoutExchange(TEST_FANOUT_EXCHANGE);
     }
 
 /*    public DirectExchange directExchange() {
@@ -54,8 +69,13 @@ public class RabbitMqConfig {
      * @return
      */
     @Bean
-    public Binding fanoutBinding() {
-        return BindingBuilder.bind(queue()).to(fanoutExchange());
+    public Binding fanoutBinding(FanoutExchange fanoutExchange) {
+        return BindingBuilder.bind(queue()).to(fanoutExchange);
+    }
+
+    @Bean
+    public Binding testFanoutBinding() {
+        return BindingBuilder.bind(testQueue()).to(testFanoutExchange());
     }
 
  /*   @Bean
