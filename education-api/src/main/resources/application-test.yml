@@ -20,11 +20,11 @@ spring:
     username: rabbitmq
     password: 123456
     virtual-host: /
-    publisher-confirms: true
     publisher-returns: true
     listener:
       simple:
         acknowledge-mode: manual #开启手动确认模式
+    publisher-confirm-type: correlated
   freemarker:
     template-loader-path: classpath:/template/
     suffix: .ftl
@@ -47,7 +47,9 @@ weChat:
   token: education
   appSecret: cf05150f801935391f29d73695f04300
 logging:
-  file:  /root/jar/education.log
+  file:
+    path: /root/jar
+    name: education.log
 
 # sharding jdbc 读写分离配置
 sharding:

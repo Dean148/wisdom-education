@@ -10,6 +10,7 @@ import com.education.business.service.BaseService;
 import com.education.business.task.TaskParam;
 import com.education.business.task.WebSocketMessageListener;
 import com.education.common.constants.CacheKey;
+import com.education.common.constants.CacheTime;
 import com.education.common.constants.SystemConstants;
 import com.education.common.constants.EnumConstants;
 import com.education.common.exception.BusinessException;
@@ -98,7 +99,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
                 testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
                 if (ObjectUtils.isEmpty(testPaperInfoSetting)) {
                     testPaperInfoSetting = testPaperInfoSettingService.selectByTestPaperInfoId(testPaperInfoId);
-                    cacheBean.put(CacheKey.PAPER_INFO_SETTING, testPaperInfoId, testPaperInfoSetting, SystemConstants.ONE_DAY * 60);
+                    cacheBean.put(CacheKey.PAPER_INFO_SETTING, testPaperInfoId, testPaperInfoSetting, CacheTime.ONE_DAY_SECOND);
                 }
             } finally {
                 lock.unlock();

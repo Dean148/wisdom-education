@@ -48,7 +48,7 @@ public class LoginController extends BaseController {
     @Autowired
     private SystemAdminService systemAdminService;
     @Autowired
-    private JwtToken adminJwtToken;
+    private JwtToken jwtToken;
     @Autowired
     private TaskManager taskManager;
     @Autowired
@@ -88,6 +88,7 @@ public class LoginController extends BaseController {
             String token;
             // 是否记住密码登录
             boolean rememberMe = userLoginRequest.isChecked();
+            Integer timeOut;
             if (rememberMe) {
                 // 先删除JSESSIONID
                 Cookie cookie = RequestUtils.getCookie(SystemConstants.DEFAULT_SESSION_ID);
@@ -96,11 +97,13 @@ public class LoginController extends BaseController {
                     response.addCookie(cookie);
                 }
                 RequestUtils.createCookie(SystemConstants.DEFAULT_SESSION_ID, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
-                token = adminJwtToken.createToken(adminUserId, CacheTime.ONE_WEEK_MILLIS); // 默认缓存7天
+                token = jwtToken.createToken(adminUserId, CacheTime.ONE_WEEK_MILLIS); // 默认缓存7天
                 sessionManager.setGlobalSessionTimeout(CacheTime.ONE_WEEK_MILLIS);
+                timeOut = CacheTime.ONE_WEEK_MILLIS;
             } else {
-                token = adminJwtToken.createToken(adminUserId, CacheTime.ONE_HOUR_MILLIS); // 默认缓存1小时
+                token = jwtToken.createToken(adminUserId, CacheTime.ONE_HOUR_MILLIS); // 默认缓存1小时
                 sessionManager.setGlobalSessionTimeout(CacheTime.ONE_HOUR_MILLIS);
+                timeOut = CacheTime.ONE_HOUR_MILLIS;
             }
             AdminUserSession userSession = systemAdminService.getAdminUserSession();
             systemAdminService.loadUserMenuAndPermission(userSession);
@@ -111,7 +114,7 @@ public class LoginController extends BaseController {
                 // 分布式情况下建议使用redission分布式锁
                 webSocketMessageService.checkOnlineUser(adminUserId);
                 onlineUserManager.addOnlineUser(sessionId, userSession,
-                        new Long(SystemConstants.SESSION_TIME_OUT).intValue());
+                        new Long(timeOut / 1000).intValue());
             }
 
             response.addHeader(AuthConstants.AUTHORIZATION, token);
