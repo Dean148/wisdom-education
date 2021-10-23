@@ -47,7 +47,7 @@ public class TxtQuestionImportResult extends QuestionImportResult {
         List<TxtQuestionInfo> errorTxtQuestionList = new ArrayList<>();
         try {
             QuestionInfo questionInfo = null;
-            Integer questionType = null;
+            Integer questionType;
 
             boolean hasData = false; // txt 文档是否有内容
 
@@ -85,7 +85,7 @@ public class TxtQuestionImportResult extends QuestionImportResult {
                     questionInfo.setAnswer(content);
                     readType = 3;
                 } else if (tokenStart.startsWith(QUESTION_OPTIONS)) { // 解析试题选项
-                    String options = null;
+                    String options;
                     if (ObjectUtils.isEmpty(content)) {
                         options = null; // 将options 设置为null, 防止选项为空导致插入数据库失败，因为mysql json 类型不支持字符串""
                     } else {

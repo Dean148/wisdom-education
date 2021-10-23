@@ -12,9 +12,23 @@ public class TaskParam extends ModelBeanMap {
 
     private Class<? extends TaskListener> taskListenerClass;
     private final long timestamp;
+    private String queueName;
+
+    public void setQueueName(String queueName) {
+        this.queueName = queueName;
+    }
+
+    public String getQueueName() {
+        return queueName;
+    }
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public TaskParam(String queueName) {
+        this.queueName = queueName;
+        this.timestamp = System.currentTimeMillis();
     }
 
 

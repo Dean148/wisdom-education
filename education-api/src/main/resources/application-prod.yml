@@ -56,7 +56,7 @@ sharding:
       names: educationmaster,educationslave
       educationmaster:
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://120.79.144.34:3306/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://120.79.144.34:3307/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         idle-timeout: 60000
         #数据库连接超时时间
