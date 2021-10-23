@@ -93,6 +93,7 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
         this.increaseCommentNumber(courseId);
         RLock lock = redissonClient.getLock(LockKey.COURSE_INFO + courseId);
         try {
+            lock.lock();
             // 重新计算课程分数
             CourseInfo courseInfo = super.getById(courseId);
             BigDecimal valuateMark = courseInfo.getValuateMark();
