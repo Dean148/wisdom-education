@@ -72,8 +72,6 @@ public class ShiroBeanConfig {
     @Bean
     public SessionManager sessionManager(SessionDAO distributeShiroSession) {
         DefaultSessionManager sessionManager = new DefaultWebSessionManager();
-        // 设置session
-      //  sessionManager.setGlobalSessionTimeout(C);
         sessionManager.setSessionDAO(distributeShiroSession);
         return sessionManager;
     }

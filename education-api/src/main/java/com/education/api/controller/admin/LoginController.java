@@ -90,6 +90,7 @@ public class LoginController extends BaseController {
             boolean rememberMe = userLoginRequest.isChecked();
             Integer timeOut;
             if (rememberMe) {
+                timeOut = CacheTime.ONE_WEEK_MILLIS;
                 // 先删除JSESSIONID
                 Cookie cookie = RequestUtils.getCookie(SystemConstants.DEFAULT_SESSION_ID);
                 if (ObjectUtils.isNotEmpty(cookie)) {
@@ -97,12 +98,13 @@ public class LoginController extends BaseController {
                     response.addCookie(cookie);
                 }
                 RequestUtils.createCookie(SystemConstants.DEFAULT_SESSION_ID, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
-                token = jwtToken.createToken(adminUserId, CacheTime.ONE_WEEK_MILLIS); // 默认缓存7天
-                sessionManager.setGlobalSessionTimeout(CacheTime.ONE_WEEK_MILLIS);
+                token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存7天
+                sessionManager.setGlobalSessionTimeout(timeOut);
                 timeOut = CacheTime.ONE_WEEK_MILLIS;
             } else {
-                token = jwtToken.createToken(adminUserId, CacheTime.ONE_HOUR_MILLIS); // 默认缓存1小时
-                sessionManager.setGlobalSessionTimeout(CacheTime.ONE_HOUR_MILLIS);
+                timeOut = CacheTime.ONE_HOUR_MILLIS;
+                token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存1小时
+                sessionManager.setGlobalSessionTimeout(timeOut);
                 timeOut = CacheTime.ONE_HOUR_MILLIS;
             }
             AdminUserSession userSession = systemAdminService.getAdminUserSession();
