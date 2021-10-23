@@ -7,9 +7,7 @@ import com.education.business.task.TaskParam;
 import com.education.business.task.UserLoginSuccessListener;
 import com.education.common.annotation.*;
 import com.education.common.base.BaseController;
-import com.education.common.constants.AuthConstants;
-import com.education.common.constants.CacheTime;
-import com.education.common.constants.SystemConstants;
+import com.education.common.constants.*;
 import com.education.common.model.JwtToken;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
@@ -24,6 +22,8 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.subject.Subject;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,6 +57,8 @@ public class LoginController extends BaseController {
     private OnlineUserManager onlineUserManager;
     @Autowired
     private DefaultSessionManager sessionManager;
+    @Autowired
+    private RedissonClient redissonClient;
 
 
     /**
@@ -112,11 +114,16 @@ public class LoginController extends BaseController {
             String sessionId = request.getSession().getId();
             userSession.setSessionId(sessionId);
             userSession.setToken(token);
-            synchronized (this) { // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
+
+            RLock lock = redissonClient.getLock(CacheKey.USER_SYNC_LONGIN + adminUserId);
+            try {
+                lock.lock(); // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
                 // 分布式情况下建议使用redission分布式锁
                 webSocketMessageService.checkOnlineUser(adminUserId);
                 onlineUserManager.addOnlineUser(sessionId, userSession,
                         new Long(timeOut / 1000).intValue());
+            } finally {
+                lock.unlock();
             }
 
             response.addHeader(AuthConstants.AUTHORIZATION, token);
