@@ -18,7 +18,7 @@
 
 依赖 | 版本
 ---|---
-Spring Boot |  2.2.5.RELEASE  
+Spring Boot |  2.5.0.RELEASE  
 Mybatis Plus | 3.4.0  
 Mysql | 5.7
 Element-UI | 2.13.0
