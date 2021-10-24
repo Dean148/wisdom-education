@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.StudentInfoMapper;
 import com.education.business.service.BaseService;
+import com.education.common.constants.AuthConstants;
 import com.education.common.constants.CacheTime;
 import com.education.common.constants.SystemConstants;
 import com.education.common.model.JwtToken;
@@ -21,6 +22,8 @@ import com.education.model.request.UserLoginRequest;
 import com.jfinal.kit.Kv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -98,7 +101,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         return studentInfoList.size();
     }
 
-    public Result doLogin(UserLoginRequest userLoginRequest) {
+    public Result doLogin(UserLoginRequest userLoginRequest, HttpServletResponse response) {
         LambdaQueryWrapper queryWrapper = Wrappers.<StudentInfo>lambdaQuery()
                 .eq(StudentInfo::getLoginName, userLoginRequest.getUserName());
         StudentInfo studentInfo = baseMapper.selectOne(queryWrapper);
@@ -123,10 +126,10 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
             sessionTime = CacheTime.ONE_WEEK_MILLIS;
         }
         String token = jwtToken.createToken(studentInfo.getId(), sessionTime);
+        response.addHeader(AuthConstants.AUTHORIZATION, token);
         GradeInfo gradeInfo = gradeInfoService.getById(studentInfo.getGradeInfoId());
         this.cacheStudentInfoSession(studentInfo, token, sessionTime);
         Kv kv = Kv.create().set("name", studentInfo.getName())
-                .set("token", token)
                 .set("gradeInfoId", gradeInfo.getId())
                 .set("headImg", studentInfo.getHeadImg())
                 .set("sex", studentInfo.getSex())

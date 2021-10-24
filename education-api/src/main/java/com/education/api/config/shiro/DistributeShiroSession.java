@@ -1,6 +1,7 @@
 package com.education.api.config.shiro;
 
 import com.education.common.cache.CacheBean;
+import com.education.common.constants.CacheTime;
 import com.education.common.constants.SystemConstants;
 import com.education.common.utils.ObjectUtils;
 import org.apache.shiro.session.Session;
@@ -21,15 +22,17 @@ public class DistributeShiroSession extends AbstractSessionDAO {
 
     private CacheBean redisCacheBean;
     private static final String SESSION_KEY = SystemConstants.SESSION_KEY;
-    private long expire;
+    private Integer expire = CacheTime.ONE_WEEK_SECOND; // 默认缓存7天
+
 
     /**
      * 设置session失效时间
      * @param expire
      */
-    public void setExpire(long expire) {
+    public void setExpire(Integer expire) {
         this.expire = expire;
     }
+
 
     public DistributeShiroSession (CacheBean redisCacheBean) {
         this.redisCacheBean = redisCacheBean;
@@ -49,7 +52,7 @@ public class DistributeShiroSession extends AbstractSessionDAO {
         if (ObjectUtils.isEmpty(sessionId)) {
             throw new NullPointerException("id argument cannot be null.");
         }
-        redisCacheBean.putValue(SESSION_KEY, sessionId, session);
+        redisCacheBean.put(SESSION_KEY, sessionId, session, expire);
     }
 
     /**

@@ -9,7 +9,7 @@ public interface CacheTime {
 
     Integer ONE_HOUR = 3600;
 
-    Integer ONE_HOUR_MILLIS = 60 * 2 * 1000;
+    Integer ONE_HOUR_MILLIS = 3600 * 1000;
     Integer ONE_WEEK_SECOND = 7 * 24 * 60 * 60;
     Integer ONE_WEEK_MILLIS = ONE_WEEK_SECOND * 1000;
 

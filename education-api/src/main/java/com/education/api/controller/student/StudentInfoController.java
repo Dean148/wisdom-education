@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 学员登录接口
  * @author zengjintao
@@ -36,8 +38,8 @@ public class StudentInfoController extends BaseController {
      * @return
      */
     @PostMapping("login")
-    public Result login(@RequestBody UserLoginRequest userLoginRequest) {
-        return studentInfoService.doLogin(userLoginRequest);
+    public Result login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
+        return studentInfoService.doLogin(userLoginRequest, response);
     }
 
     @PostMapping("logout")

@@ -3,9 +3,7 @@
  */
 package com.education.api.config.interceptor;
 import com.education.common.interceptor.BaseInterceptor;
-import com.education.common.model.JwtToken;
 import com.education.common.utils.RequestUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class AdminAuthInterceptor extends BaseInterceptor {
 
-	@Autowired
-	private JwtToken adminJwtToken;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object)
