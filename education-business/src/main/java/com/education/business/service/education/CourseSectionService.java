@@ -29,11 +29,10 @@ public class CourseSectionService extends BaseService<CourseSectionMapper, Cours
     @Transactional
     @CacheEvict(cacheNames = CacheKey.COURSE_SECTION, key = "#courseSection.courseId")
     public boolean saveOrUpdate(CourseSection courseSection) {
-        boolean flag = super.saveOrUpdate(courseSection);
         if (courseSection.getId() == null) {
             courseInfoService.increaseSectionNumber(courseSection.getCourseId());
         }
-        return flag;
+        return super.saveOrUpdate(courseSection);
     }
 
     @Cacheable(cacheNames = CacheKey.COURSE_SECTION + "#3600", key = "#courseId")

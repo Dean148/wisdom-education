@@ -21,10 +21,9 @@ public class CourseSectionNodeService extends BaseService<CourseSectionNodeMappe
     @Override
     @Transactional
     public boolean saveOrUpdate(CourseSectionNode courseSectionNode) {
-        boolean flag = super.saveOrUpdate(courseSectionNode);
         if (courseSectionNode.getId() == null) {
             courseInfoService.increaseSectionNodeNumber(courseSectionNode.getId());
         }
-        return flag;
+        return super.saveOrUpdate(courseSectionNode);
     }
 }

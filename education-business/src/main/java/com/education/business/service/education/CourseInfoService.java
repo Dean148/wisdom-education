@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author zengjintao
@@ -48,6 +49,9 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
             if (course.getStatus() != EnumConstants.CourseStatus.DRAUGHT.getValue()) {
                 throw new BusinessException(new ResultCode(ResultCode.FAIL, "非草稿状态课程无法修改"));
             }
+        }
+        if (courseInfo.getStatus() == EnumConstants.CourseStatus.GROUNDING.getValue()) {
+            courseInfo.setPushTime(new Date());
         }
         super.saveOrUpdate(courseInfo);
     }
