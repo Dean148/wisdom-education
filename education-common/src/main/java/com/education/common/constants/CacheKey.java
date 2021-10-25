@@ -49,4 +49,6 @@ public interface CacheKey {
 
 
     String STUDENT_USER_INFO_CACHE = "student:user:cache:";
+
+    String USER_ON_LINE_KEY = "user:on:line";
 }
