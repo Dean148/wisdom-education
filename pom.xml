@@ -20,7 +20,7 @@
     <shiro.version>1.4.0</shiro.version>
     <easypoi.version>3.2.0</easypoi.version>
     <swagger2.version>2.9.2</swagger2.version>
-    <project.version>1.0.2-RELEASE</project.version>
+    <project.version>1.0.3-RELEASE</project.version>
   </properties>
 
   <groupId>com.education</groupId>
