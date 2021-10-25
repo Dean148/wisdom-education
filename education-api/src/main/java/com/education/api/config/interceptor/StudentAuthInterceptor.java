@@ -2,11 +2,10 @@ package com.education.api.config.interceptor;
 
 import com.education.business.service.education.StudentInfoService;
 import com.education.common.interceptor.BaseInterceptor;
-import com.education.common.model.JwtToken;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
-import com.education.model.dto.StudentInfoSession;
+import com.education.model.entity.StudentInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +25,8 @@ public class StudentAuthInterceptor extends BaseInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        StudentInfoSession studentInfoSession = studentInfoService.getStudentInfoSession();
-        if (ObjectUtils.isEmpty(studentInfoSession)) {
+        StudentInfo studentInfo = studentInfoService.getStudentInfo();
+        if (ObjectUtils.isEmpty(studentInfo)) {
             Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE));
             return false;
         }

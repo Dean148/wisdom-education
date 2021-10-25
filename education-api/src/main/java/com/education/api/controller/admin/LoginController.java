@@ -56,8 +56,6 @@ public class LoginController extends BaseController {
     @Autowired
     private OnlineUserManager onlineUserManager;
     @Autowired
-    private DefaultSessionManager sessionManager;
-    @Autowired
     private RedissonClient redissonClient;
 
 
@@ -101,12 +99,10 @@ public class LoginController extends BaseController {
                 }
                 RequestUtils.createCookie(SystemConstants.DEFAULT_SESSION_COOKIE_NAME, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
                 token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存7天
-                sessionManager.setGlobalSessionTimeout(timeOut);
                 timeOut = CacheTime.ONE_WEEK_MILLIS;
             } else {
                 timeOut = CacheTime.ONE_HOUR_MILLIS;
                 token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存1小时
-                sessionManager.setGlobalSessionTimeout(timeOut);
                 timeOut = CacheTime.ONE_HOUR_MILLIS;
             }
             AdminUserSession userSession = systemAdminService.getAdminUserSession();

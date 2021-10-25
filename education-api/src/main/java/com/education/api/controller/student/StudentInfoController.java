@@ -8,7 +8,6 @@ import com.education.common.base.BaseController;
 import com.education.common.constants.CacheKey;
 import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
-import com.education.model.dto.StudentInfoSession;
 import com.education.model.entity.StudentInfo;
 import com.education.model.request.UserLoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +43,11 @@ public class StudentInfoController extends BaseController {
 
     @PostMapping("logout")
     public Result logout() {
-        StudentInfoSession userInfoSession = studentInfoService.getStudentInfoSession();
-        if (ObjectUtils.isEmpty(userInfoSession)) {
+        StudentInfo studentInfo = studentInfoService.getStudentInfo();
+        if (ObjectUtils.isEmpty(studentInfo)) {
             return Result.success(ResultCode.SUCCESS, "退出成功");
         }
-        cacheBean.remove(CacheKey.STUDENT_USER_INFO_CACHE, userInfoSession.getToken()); // 删除用户缓存
+        cacheBean.remove(CacheKey.STUDENT_USER_INFO_CACHE, studentInfo.getId()); // 删除用户缓存
         return Result.success(ResultCode.SUCCESS, "退出成功");
     }
 
