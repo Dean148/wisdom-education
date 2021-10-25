@@ -59,15 +59,15 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
     /**
      * 刷新token
      */
-    private void refreshTokenIfNeed(String token, String value, HttpServletResponse response) {
+    private void refreshTokenIfNeed(String token, String studentId, HttpServletResponse response) {
         long validTime = jwtToken.getTokenValidDate(token).getTime();
         long now = new Date().getTime();
         Object studentInfo = redisCacheBean.get(CacheKey.STUDENT_USER_INFO_CACHE, token);
         // 失效时间小于2分钟，重新刷新token和shiro session
         if (validTime > now && validTime - now < CacheTime.TWO_SECOND_MILLIS) {
-            token = jwtToken.createToken(value, CacheTime.ONE_HOUR_MILLIS);
+            token = jwtToken.createToken(studentId, CacheTime.ONE_HOUR_MILLIS);
             // 将学员信息重新放入缓存
-            redisCacheBean.put(CacheKey.STUDENT_USER_INFO_CACHE, value, studentInfo, CacheTime.ONE_HOUR);
+            redisCacheBean.put(CacheKey.STUDENT_USER_INFO_CACHE, studentId, studentInfo, CacheTime.ONE_HOUR);
             response.addHeader(AuthConstants.AUTHORIZATION, token);
         }
     }
