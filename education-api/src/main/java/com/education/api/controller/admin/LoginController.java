@@ -94,12 +94,12 @@ public class LoginController extends BaseController {
             if (rememberMe) {
                 timeOut = CacheTime.ONE_WEEK_MILLIS;
                 // 先删除JSESSIONID
-                Cookie cookie = RequestUtils.getCookie(SystemConstants.DEFAULT_SESSION_ID);
+                Cookie cookie = RequestUtils.getCookie(SystemConstants.DEFAULT_SESSION_COOKIE_NAME);
                 if (ObjectUtils.isNotEmpty(cookie)) {
                     cookie.setMaxAge(0);
                     response.addCookie(cookie);
                 }
-                RequestUtils.createCookie(SystemConstants.DEFAULT_SESSION_ID, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
+                RequestUtils.createCookie(SystemConstants.DEFAULT_SESSION_COOKIE_NAME, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
                 token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存7天
                 sessionManager.setGlobalSessionTimeout(timeOut);
                 timeOut = CacheTime.ONE_WEEK_MILLIS;

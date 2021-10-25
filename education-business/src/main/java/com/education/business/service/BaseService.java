@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.education.business.task.TaskManager;
 import com.education.common.cache.CacheBean;
 import com.education.common.constants.AuthConstants;
+import com.education.common.constants.CacheKey;
 import com.education.common.constants.SystemConstants;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.dto.AdminUserSession;
@@ -93,7 +94,7 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
 
     public StudentInfoSession getStudentInfoSession() {
         String token = request.getHeader(AuthConstants.AUTHORIZATION);
-        return cacheBean.get(SystemConstants.SESSION_NAME, token);
+        return cacheBean.get(CacheKey.STUDENT_USER_INFO_CACHE, token);
     }
 
     public StudentInfo getStudentInfo() {

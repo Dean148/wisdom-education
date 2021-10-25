@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.StudentInfoMapper;
 import com.education.business.service.BaseService;
 import com.education.common.constants.AuthConstants;
+import com.education.common.constants.CacheKey;
 import com.education.common.constants.CacheTime;
-import com.education.common.constants.SystemConstants;
 import com.education.common.model.JwtToken;
 import com.education.common.model.PageInfo;
 import com.education.common.model.StudentInfoImport;
@@ -156,7 +156,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         int loginCount = studentInfo.getLoginCount();
         studentInfo.setLoginCount(++loginCount);
         studentInfo.setUpdateDate(now);
-        cacheBean.put(SystemConstants.SESSION_NAME, token, studentInfoSession, new Long(sessionTime).intValue());
+        cacheBean.put(CacheKey.STUDENT_USER_INFO_CACHE, token, studentInfoSession, new Long(sessionTime).intValue());
         super.updateById(studentInfo);
     }
 

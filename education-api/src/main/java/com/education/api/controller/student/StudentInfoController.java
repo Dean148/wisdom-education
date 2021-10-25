@@ -5,7 +5,7 @@ import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
-import com.education.common.constants.SystemConstants;
+import com.education.common.constants.CacheKey;
 import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.dto.StudentInfoSession;
@@ -48,7 +48,7 @@ public class StudentInfoController extends BaseController {
         if (ObjectUtils.isEmpty(userInfoSession)) {
             return Result.success(ResultCode.SUCCESS, "退出成功");
         }
-        cacheBean.remove(SystemConstants.USER_INFO_CACHE, userInfoSession.getToken()); // 删除用户缓存
+        cacheBean.remove(CacheKey.STUDENT_USER_INFO_CACHE, userInfoSession.getToken()); // 删除用户缓存
         return Result.success(ResultCode.SUCCESS, "退出成功");
     }
 

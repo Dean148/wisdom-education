@@ -9,11 +9,8 @@ package com.education.common.constants;
  */
 public final class SystemConstants {
 
-
-    public static final String USER_INFO_CACHE = "user.cache";
-    public static final String SESSION_NAME = "u_id_key";
-    public static final String DEFAULT_SESSION_ID = "JSESSIONID";
-
+    public static final String SESSION_COOKIE_NAME = "u_id_key"; // session 会话cookie名称
+    public static final String DEFAULT_SESSION_COOKIE_NAME = "JSESSIONID";// session 会话默认cookie名称
 
     public static final String[] IMAGE_ALIAS = new String[] {"head_img", "image"};
 
@@ -21,7 +18,7 @@ public final class SystemConstants {
     public static final double PASS_MARK_RATE = 0.6; // 及格比例
     public static final double NICE_MARK_RATE = 0.8; // 优秀比例
 
-    public static final String SESSION_KEY = "user.session.cache";
+    public static final String SESSION_KEY = "user:session:cache";
 
     public static final String PAPER_INFO_TEMPLATE = "/template/enjoy/paperInfoTemplate.html";
 
@@ -41,4 +38,6 @@ public final class SystemConstants {
     public static final String REDIS_TEMPLATE_BEAN_NAME = "redisTemplate";
 
     public static final String DEFAULT_GROUP_JOB = "default_job";
+
+    public static final Integer COURSE_VALUATE_MARK = 10;
 }

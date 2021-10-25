@@ -1,5 +1,6 @@
 package com.education.business.webSocket;
 
+import com.education.common.constants.AuthConstants;
 import com.education.common.constants.SystemConstants;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
@@ -38,7 +39,7 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         if (serverHttpRequest instanceof ServletServerHttpRequest) {
             ServletServerHttpRequest servletServerHttpRequest = (ServletServerHttpRequest)serverHttpRequest;
             HttpServletRequest request = servletServerHttpRequest.getServletRequest();
-            String sessionId = RequestUtils.getCookieValue(SystemConstants.SESSION_NAME);
+            String sessionId = RequestUtils.getCookieValue(SystemConstants.SESSION_COOKIE_NAME);
             attributes.put("sessionId", request.getSession().getId());
             if (ObjectUtils.isNotEmpty(sessionId)) {
                 attributes.put("sessionId", sessionId);

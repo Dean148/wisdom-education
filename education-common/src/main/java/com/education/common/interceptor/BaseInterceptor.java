@@ -2,8 +2,8 @@ package com.education.common.interceptor;
 
 import com.education.common.cache.CacheBean;
 import com.education.common.constants.AuthConstants;
+import com.education.common.constants.CacheKey;
 import com.education.common.constants.CacheTime;
-import com.education.common.constants.SystemConstants;
 import com.education.common.enums.PlatformEnum;
 import com.education.common.model.JwtToken;
 import com.education.common.utils.*;
@@ -77,9 +77,9 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
                 long time = sessionManager.getGlobalSessionTimeout();
                 sessionManager.setGlobalSessionTimeout(time + CacheTime.ONE_HOUR_MILLIS);
             } else if (PlatformEnum.SYSTEM_STUDENT.getHeaderValue().equals(platform)) {
-                Long expireTime = redisCacheBean.getExpire(SystemConstants.SESSION_NAME, token);
+                Long expireTime = redisCacheBean.getExpire(CacheKey.STUDENT_USER_INFO_CACHE, token);
                 // 延迟有效期1小时
-                redisCacheBean.expire(SystemConstants.SESSION_NAME, token, (int) (expireTime + CacheTime.ONE_HOUR));
+                redisCacheBean.expire(CacheKey.STUDENT_USER_INFO_CACHE, token, (int) (expireTime + CacheTime.ONE_HOUR));
             }
         }
     }

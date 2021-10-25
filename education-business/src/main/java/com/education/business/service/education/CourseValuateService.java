@@ -5,7 +5,7 @@ import com.education.business.mapper.education.CourseValuateMapper;
 import com.education.business.service.BaseService;
 import com.education.business.task.CourseValuateMessageListener;
 import com.education.business.task.TaskParam;
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.common.enums.ValuateTypeEnum;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
@@ -34,7 +34,7 @@ public class CourseValuateService extends BaseService<CourseValuateMapper, Cours
             courseValuate.setValuateType(ValuateTypeEnum.NEGATIVE.getValue());
         } else if (valuateMark >= 5 && valuateMark < 8) {
             courseValuate.setValuateType(ValuateTypeEnum.NEUTRAL.getValue());
-        } else if (valuateMark >= 8 && valuateMark <= Constants.COURSE_VALUATE_MARK) {
+        } else if (valuateMark >= 8 && valuateMark <= SystemConstants.COURSE_VALUATE_MARK) {
             courseValuate.setValuateType(ValuateTypeEnum.GOOD.getValue());
         } else {
             throw new BusinessException("评价分数不能超过10分");
