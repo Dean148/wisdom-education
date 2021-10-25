@@ -6,7 +6,7 @@ package com.education.business.task;
  * @version 1.0
  * @create_at 2020/4/13 14:35
  */
-public interface TaskListener {
+public interface TaskListener<T extends TaskParam> {
 
-    void onMessage(TaskParam taskParam);
+    void onMessage(T taskParam);
 }

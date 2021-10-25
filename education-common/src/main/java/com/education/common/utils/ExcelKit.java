@@ -1,6 +1,6 @@
 package com.education.common.utils;
 
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.common.model.ExcelModel;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -76,7 +76,7 @@ public class ExcelKit {
                     value = DateUtils.getIntervalTime((Integer)value * 1000);
                 }
                 // 导出图片
-                if (Arrays.asList(Constants.IMAGE_ALIAS).contains(columnName) && ObjectUtils.isNotEmpty(value)) {
+                if (Arrays.asList(SystemConstants.IMAGE_ALIAS).contains(columnName) && ObjectUtils.isNotEmpty(value)) {
                     String imageUrl = RequestUtils.getUploadDomain() + (String)value;
                     InputStream inputStream = RequestUtils.getInputStreamFromUrl(imageUrl);
                     HSSFPatriarch hssfPatriarch = sheet.createDrawingPatriarch();

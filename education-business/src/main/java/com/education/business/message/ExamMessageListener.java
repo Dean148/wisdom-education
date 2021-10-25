@@ -3,7 +3,7 @@ package com.education.business.message;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.system.SystemMessageLogService;
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.model.entity.MessageLog;
 import com.jfinal.json.Jackson;
 import com.rabbitmq.client.Channel;
@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 
@@ -30,6 +31,8 @@ public class ExamMessageListener {
     @Autowired
     private ExamMessageListenerService examMessageListenerService;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     /**
      * 考试提交消息消费
      *  1. 生成考试记录
@@ -51,16 +54,16 @@ public class ExamMessageListener {
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
         int tryCount = messageLog.getTryCount();
         try {
-            if (status != Constants.CONSUME_SUCCESS) {
+            if (status != SystemConstants.CONSUME_SUCCESS) {
                 examMessageListenerService.doExamCommitMessageBiz(examMessage, messageId);
                 channel.basicAck(deliveryTag, true); // 告诉rabbitmq 消息已消费
             }
         } catch (Exception e) {
             LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageLog.class);
-            if (tryCount == Constants.MAX_SEND_COUNT) {
+            if (tryCount == SystemConstants.MAX_SEND_COUNT) {
                 try {
                     channel.basicAck(deliveryTag, true); // 告诉rabbitmq 消息已消费, 消息状态更新为失败状态
-                    updateWrapper.set("status", Constants.CONSUME_FAIL);
+                    updateWrapper.set("status", SystemConstants.CONSUME_FAIL);
                 } catch (IOException ex) {
                     log.error("消息状态更新异常....[" + content + "]", e);
                 }
@@ -77,5 +80,12 @@ public class ExamMessageListener {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
+    }
+
+    @RabbitListener(queues = RabbitMqConfig.TEST_QUEUE)
+    public void onTestCommitMessage(Message message, Channel channel) throws IOException {
+        jdbcTemplate.update("update exam_info set mark = mark + 1 where id = 1");
+        long deliveryTag = message.getMessageProperties().getDeliveryTag();
+        channel.basicAck(deliveryTag, true);
     }
 }

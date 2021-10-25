@@ -1,43 +1,32 @@
+host: 127.0.0.1
 server:
   port: 80
 ## spring jdbc配置
 spring:
-#  quartz:
-#    job-store-type: jdbc
-#    initialize-schema: embedded
-#    #设置自动启动，默认为 true
-#    auto-startup: true
-#    #启动时更新己存在的Job
-#    overwrite-existing-jobs: true
-#    properties:
-#      org:
-#        quartz:
-#          scheduler:
-#            instanceName: MyScheduler
-#            instanceId: AUTO
-#          jobStore:
-#            class: org.quartz.impl.jdbcjobstore.JobStoreTX
-#            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-#            tablePrefix: qrtz_
-#            isClustered: true
-#            misfireThreshold: 60000
-#            clusterCheckinInterval: 10000
-#          threadPool:
-#            class: org.quartz.simpl.SimpleThreadPool
-#            threadCount: 10
-#            threadPriority: 5
-#            threadsInheritContextClassLoaderOfInitializingThread: true
+  # flyway 数据库管理工具
+  flyway:
+    sql-migration-separator: _ #分隔符
+    clean-disabled: true #禁用clean操作
+    enabled: false #使flyway生效
+    baseline-on-migrate: true #初始化时如果不存在迁移记录表，默认新建一个
+    out-of-order: true #防止开发环境下漏掉没来得及apply的文件，产品环境最好设为false
+    ignore-ignored-migrations: true
+    locations: classpath:/db
+    url: jdbc:mysql://${host}:3306/education_final?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
+    user: root
+    password: 123456
+
   rabbitmq:
-    host: 127.0.0.1
+    host: ${host}
     port: 5672
     username: rabbitmq
     password: 123456
     virtual-host: /
-    publisher-confirms: true
     publisher-returns: true
     listener:
       simple:
         acknowledge-mode: manual #开启手动确认模式
+    publisher-confirm-type: correlated
   redis:
     jedis:
       pool:
@@ -45,23 +34,9 @@ spring:
         max-wait: 30
         max-idle: 8
         min-idle: 0
-    host: 127.0.0.1
+    host: ${host}
     password: 123456
     port: 6379
-  datasource:
-    url: jdbc:mysql://127.0.0.1:3306/education_final?serverTimezone=GMT%2B8&useSSL=true&useUnicode=true&characterEncoding=utf8
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      #数据库连接超时时间
-      connection-timeout: 30000
-      #连接池最大连接数，默认是10
-      maximum-pool-size: 30
-      #最小空闲连接数量
-      minimum-idle: 10
-      # 此属性控制池中连接的最长生命周期，值0表示无限生命周期
-      max-lifetime: 6000
   ## 文件上传大小限制
   servlet:
     multipart:
@@ -74,27 +49,31 @@ weChat:
   appId: wx7874d0c23d07e2aa
   token: education
   appSecret: e03f5ab03906d4d943675c233d4c3cb3
+
 ## 文件上传根路径
 file:
   uploadPath: F:\\uploads\\
+
 # 是否开启  canal 数据同步
 canal:
-  openFlag: true
+  openFlag: false
 # sharding jdbc 读写分离配置
-
 sharding:
   jdbc:
     datasource:
       names: educationmaster,educationslave
       educationmaster:
+        maximum-pool-size: 50
+          #最小空闲连接数量
+        minimum-idle: 10
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://127.0.0.1:3306/education_final?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://${host}:3306/education_final?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
         password: 123456
       educationslave:
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://127.0.0.1:3307/education_final?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://${host}:3307/education_final?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
         password: 123456
@@ -107,3 +86,7 @@ sharding:
       props:
         sql:
           show: true
+logging:
+  file:
+    path: F:\\upoads\\logs
+    name: education.log

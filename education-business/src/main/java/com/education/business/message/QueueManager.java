@@ -2,7 +2,7 @@ package com.education.business.message;
 
 import com.education.business.service.system.SystemMessageLogService;
 import com.education.business.task.TaskManager;
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.MessageLog;
 import com.jfinal.json.Jackson;
@@ -58,7 +58,7 @@ public class QueueManager {
                         content, correlationData);
             } catch (Exception e) {
                 logger.error("消息发送异常: [" + jackson.toJson(messageLog) + "]", e);
-                messageLog.setStatus(Constants.SEND_FAIL);
+                messageLog.setStatus(SystemConstants.SEND_FAIL);
                 messageLog.setFailCause(e.getMessage());
                 systemMessageLogService.updateById(messageLog);
             }

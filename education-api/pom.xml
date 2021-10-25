@@ -2,14 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.education</groupId>
         <artifactId>education</artifactId>
-        <version>1.0.2-RELEASE</version>
+        <version>1.0.3-RELEASE</version>
     </parent>
+
     <groupId>com.education.api</groupId>
     <artifactId>education-api</artifactId>
-    <version>${project.version}</version>
+    <version>1.0.3-RELEASE</version>
     <name>education-admin-api</name>
     <description>基于Spring Boot构建的智能教育平台</description>
 

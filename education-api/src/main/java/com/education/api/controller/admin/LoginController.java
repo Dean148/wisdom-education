@@ -7,7 +7,7 @@ import com.education.business.task.TaskParam;
 import com.education.business.task.UserLoginSuccessListener;
 import com.education.common.annotation.*;
 import com.education.common.base.BaseController;
-import com.education.common.constants.Constants;
+import com.education.common.constants.*;
 import com.education.common.model.JwtToken;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
@@ -20,7 +20,10 @@ import com.jfinal.kit.Kv;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.subject.Subject;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,13 +48,17 @@ public class LoginController extends BaseController {
     @Autowired
     private SystemAdminService systemAdminService;
     @Autowired
-    private JwtToken adminJwtToken;
+    private JwtToken jwtToken;
     @Autowired
     private TaskManager taskManager;
     @Autowired
     private WebSocketMessageService webSocketMessageService;
     @Autowired
     private OnlineUserManager onlineUserManager;
+    @Autowired
+    private DefaultSessionManager sessionManager;
+    @Autowired
+    private RedissonClient redissonClient;
 
 
     /**
@@ -80,33 +87,47 @@ public class LoginController extends BaseController {
 
         if (result.isSuccess()) {
             Integer adminUserId = systemAdminService.getAdminUserId();
-            String token = adminJwtToken.createToken(adminUserId, Constants.SESSION_TIME_OUT_MILLISECONDS); // 默认缓存5天
+            String token;
+            // 是否记住密码登录
+            boolean rememberMe = userLoginRequest.isChecked();
+            Integer timeOut;
+            if (rememberMe) {
+                timeOut = CacheTime.ONE_WEEK_MILLIS;
+                // 先删除JSESSIONID
+                Cookie cookie = RequestUtils.getCookie(SystemConstants.DEFAULT_SESSION_COOKIE_NAME);
+                if (ObjectUtils.isNotEmpty(cookie)) {
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                }
+                RequestUtils.createCookie(SystemConstants.DEFAULT_SESSION_COOKIE_NAME, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
+                token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存7天
+                sessionManager.setGlobalSessionTimeout(timeOut);
+                timeOut = CacheTime.ONE_WEEK_MILLIS;
+            } else {
+                timeOut = CacheTime.ONE_HOUR_MILLIS;
+                token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存1小时
+                sessionManager.setGlobalSessionTimeout(timeOut);
+                timeOut = CacheTime.ONE_HOUR_MILLIS;
+            }
             AdminUserSession userSession = systemAdminService.getAdminUserSession();
             systemAdminService.loadUserMenuAndPermission(userSession);
             String sessionId = request.getSession().getId();
             userSession.setSessionId(sessionId);
             userSession.setToken(token);
-            synchronized (this) { // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
+
+            RLock lock = redissonClient.getLock(CacheKey.USER_SYNC_LONGIN + adminUserId);
+            try {
+                lock.lock(); // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
                 // 分布式情况下建议使用redission分布式锁
                 webSocketMessageService.checkOnlineUser(adminUserId);
                 onlineUserManager.addOnlineUser(sessionId, userSession,
-                        new Long(Constants.SESSION_TIME_OUT).intValue());
+                        new Long(timeOut / 1000).intValue());
+            } finally {
+                lock.unlock();
             }
 
-            // 是否记住密码登录
-            boolean rememberMe = userLoginRequest.isChecked();
-            if (rememberMe) {
-                // 先删除JSESSIONID
-                Cookie cookie = RequestUtils.getCookie(Constants.DEFAULT_SESSION_ID);
-                if (ObjectUtils.isNotEmpty(cookie)) {
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
-                }
-                // 重新创建JSESSIONID 并设置过期时间, 默认过期时间为5天
-                RequestUtils.createCookie(Constants.DEFAULT_SESSION_ID, request.getSession().getId(), Constants.SESSION_TIME_OUT);
-            }
-
-            Kv userInfo = Kv.create().set("token", token).set("id", userSession.getAdminId())
+            response.addHeader(AuthConstants.AUTHORIZATION, token);
+            Kv userInfo = Kv.create().set("id", userSession.getAdminId())
                     .set("permissionList", userSession.getPermissionList())
                     .set("menuList", userSession.getMenuTreeList())
                     .set("login_name", userSession.getSystemAdmin().getLoginName());
@@ -123,8 +144,6 @@ public class LoginController extends BaseController {
         }
         return result;
     }
-
-
 
     /**
      * 系统退出

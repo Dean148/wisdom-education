@@ -25,6 +25,7 @@ public interface CacheBean {
 
     void expire(String cacheName, Object key, int liveSeconds);
 
+    Long getExpire(String cacheName, Object key);
   //  void put(String cacheName, Object key, Object value);
 
  //   void put(String cacheName, Object key, Object value, int liveSeconds, TimeUnit timeUnit);

@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 public class StudentAuthInterceptor extends BaseInterceptor {
 
     @Autowired
-    private JwtToken studentJwtToken;
-    @Autowired
     private StudentInfoService studentInfoService;
 
     @Override
@@ -33,6 +31,6 @@ public class StudentAuthInterceptor extends BaseInterceptor {
             Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE));
             return false;
         }
-         return checkToken(studentJwtToken, request, response);
+         return checkHeader(request, response);
     }
 }

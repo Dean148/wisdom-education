@@ -3,7 +3,7 @@ package com.education.business.job;
 import com.education.business.mapper.education.TestPaperInfoMapper;
 import com.education.common.component.SpringBeanManager;
 import com.education.common.constants.CacheKey;
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.common.utils.ObjectUtils;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -25,7 +25,7 @@ public class ExamCountJob extends BaseJob {
      */
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        RedisTemplate redisTemplate = SpringBeanManager.getBean(Constants.REDIS_TEMPLATE_BEAN_NAME);
+        RedisTemplate redisTemplate = SpringBeanManager.getBean(SystemConstants.REDIS_TEMPLATE_BEAN_NAME);
         BoundHashOperations boundHashOperations = redisTemplate.boundHashOps(CacheKey.EXAM_MONITOR_CACHE_KEY);
         Set<Integer> testPaperIds = boundHashOperations.keys();
         TestPaperInfoMapper testPaperInfoMapper = SpringBeanManager.getBean(TestPaperInfoMapper.class);

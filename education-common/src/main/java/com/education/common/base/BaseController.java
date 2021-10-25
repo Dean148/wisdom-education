@@ -16,8 +16,6 @@ public abstract class BaseController {
 
     @Resource(name = "redisCacheBean")
     protected CacheBean cacheBean;
-    @Resource
-    protected CacheBean ehcacheBean;
     @Value("file.uploadPath")
     protected String baseUploadPath;
 

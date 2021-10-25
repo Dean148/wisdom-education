@@ -35,7 +35,7 @@ import java.util.Map;
 public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceImpl<M, T> {
 
     @Autowired
-    @Qualifier("ehcacheBean")
+    @Qualifier("redisCacheBean")
     protected CacheBean cacheBean;
 
     public T selectFirst(QueryWrapper<T> queryWrapper) {
