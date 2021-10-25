@@ -1,5 +1,6 @@
 package com.education.api.controller.admin;
 
+import com.education.api.config.shiro.DistributeShiroSession;
 import com.education.business.service.WebSocketMessageService;
 import com.education.business.service.system.SystemAdminService;
 import com.education.business.task.TaskManager;
@@ -9,6 +10,7 @@ import com.education.common.annotation.*;
 import com.education.common.base.BaseController;
 import com.education.common.constants.*;
 import com.education.common.model.JwtToken;
+import com.education.common.model.UserHold;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
 import com.education.common.utils.Result;
@@ -88,6 +90,7 @@ public class LoginController extends BaseController {
             String token;
             // 是否记住密码登录
             boolean rememberMe = userLoginRequest.isChecked();
+            UserHold.putRememberMe(rememberMe);
             Integer timeOut;
             if (rememberMe) {
                 timeOut = CacheTime.ONE_WEEK_MILLIS;
