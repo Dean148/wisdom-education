@@ -3,6 +3,7 @@ package com.education.api.config.shiro;
 import com.education.common.cache.CacheBean;
 import com.education.common.constants.CacheTime;
 import com.education.common.constants.SystemConstants;
+import com.education.common.model.UserHold;
 import com.education.common.utils.ObjectUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.UnknownSessionException;
@@ -52,7 +53,11 @@ public class DistributeShiroSession extends AbstractSessionDAO {
         if (ObjectUtils.isEmpty(sessionId)) {
             throw new NullPointerException("id argument cannot be null.");
         }
-        redisCacheBean.put(SESSION_KEY, sessionId, session, expire);
+        boolean rememberMe = UserHold.getRememberMe();
+        if (rememberMe) {
+            redisCacheBean.put(SESSION_KEY, sessionId, session, expire);
+        }
+        redisCacheBean.put(SESSION_KEY, sessionId, session, CacheTime.ONE_HOUR);
     }
 
     /**

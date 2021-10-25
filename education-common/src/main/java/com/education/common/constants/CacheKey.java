@@ -48,5 +48,7 @@ public interface CacheKey {
     String USER_SYNC_LONGIN = "user:sync:login:";
 
 
-    String STUDENT_USER_INFO_CACHE = "student:user:cache";
+    String STUDENT_USER_INFO_CACHE = "student:user:cache:";
+
+    String USER_ON_LINE_KEY = "user:on:line";
 }

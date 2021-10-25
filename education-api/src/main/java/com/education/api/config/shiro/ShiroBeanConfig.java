@@ -1,6 +1,8 @@
 package com.education.api.config.shiro;
 
 import com.education.common.cache.CacheBean;
+import com.education.common.constants.CacheKey;
+import com.education.common.constants.CacheTime;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -73,6 +75,7 @@ public class ShiroBeanConfig {
     public SessionManager sessionManager(SessionDAO distributeShiroSession) {
         DefaultSessionManager sessionManager = new DefaultWebSessionManager();
         sessionManager.setSessionDAO(distributeShiroSession);
+        sessionManager.setGlobalSessionTimeout(CacheTime.ONE_WEEK_MILLIS);
         return sessionManager;
     }
 
