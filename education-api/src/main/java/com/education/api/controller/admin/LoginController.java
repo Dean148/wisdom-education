@@ -69,19 +69,19 @@ public class LoginController extends BaseController {
     @PostMapping("/login")
     @SystemLog(describe = "登录管理系统")
     @ParamsValidate(params = {
-        @Param(name = "userName", message = "请输入用户名"),
-        @Param(name = "password", message = "请输入密码"),
-    //    @Param(name = "key", message = "请传递一个验证码时间戳")
+            @Param(name = "userName", message = "请输入用户名"),
+            @Param(name = "password", message = "请输入密码"),
+            @Param(name = "key", message = "请传递一个验证码时间戳")
     }, paramsType = ParamsType.JSON_DATA)
     @FormLimit
     public Result<Map> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response,
-                        HttpServletRequest request) {
+                             HttpServletRequest request) {
         String codeKey = userLoginRequest.getKey();
         String imageCode = userLoginRequest.getCode();
-      //  String cacheCode = cacheBean.get(codeKey);
-      //  if (!imageCode.equalsIgnoreCase(cacheCode)) {
-       //     return Result.fail(ResultCode.CODE_ERROR, "验证码输入错误");
-       // }
+        String cacheCode = cacheBean.get(codeKey);
+        if (!imageCode.equalsIgnoreCase(cacheCode)) {
+            return Result.fail(ResultCode.CODE_ERROR, "验证码输入错误");
+        }
         Result result = systemAdminService.login(userLoginRequest.getUserName(), userLoginRequest.getPassword());
 
         if (result.isSuccess()) {
