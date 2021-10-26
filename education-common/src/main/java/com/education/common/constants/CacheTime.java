@@ -7,13 +7,12 @@ package com.education.common.constants;
  */
 public interface CacheTime {
 
-    Integer ONE_HOUR = 3600;
+    Integer ONE_HOUR_SECOND = 3600;
 
     Integer ONE_HOUR_MILLIS = 3600 * 1000;
     Integer ONE_WEEK_SECOND = 7 * 24 * 60 * 60;
     Integer ONE_WEEK_MILLIS = ONE_WEEK_SECOND * 1000;
 
-    Integer FIVE_SECOND_MILLIS = 5 * 60 * 1000;
     Integer TWO_SECOND_MILLIS = 2 * 60 * 1000;
     Integer ONE_DAY_SECOND = 24 * 60 * 60;
 }
