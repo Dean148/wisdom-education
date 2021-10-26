@@ -31,6 +31,8 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
     @Autowired
     private CacheBean redisCacheBean;
     private final Set<String> platformSet = new HashSet();
+    private static final String PLATFORM = AuthConstants.PLATFORM;
+    private static final String AUTHORIZATION = AuthConstants.AUTHORIZATION;
 
     protected boolean checkHeader(HttpServletRequest request, HttpServletResponse response) {
         if (platformSet.size() == 0) {
@@ -38,15 +40,15 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
             platformSet.add(PlatformEnum.SYSTEM_STUDENT.getHeaderValue());
         }
 
-        String platform = request.getHeader(AuthConstants.PLATFORM);
+        String platform = request.getHeader(PLATFORM);
         if (ObjectUtils.isEmpty(platform)) {
-            logger.warn("请求头未携带:{}", AuthConstants.PLATFORM);
-            Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE, "请求头未携带:" + AuthConstants.PLATFORM));
+            logger.warn("请求头未携带:{}", PLATFORM);
+            Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE, "请求头未携带:" + PLATFORM));
             return false;
         }
 
         if (!platformSet.contains(platform)) {
-            Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE, AuthConstants.PLATFORM + ":请求头错误!"));
+            Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE, PLATFORM + ":请求头错误!"));
         }
 
         return checkToken(request, response);
@@ -60,7 +62,7 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
      */
     protected boolean checkToken(HttpServletRequest request, HttpServletResponse response) {
         //获取token
-        String token = request.getHeader(AuthConstants.AUTHORIZATION);
+        String token = request.getHeader(AUTHORIZATION);
         String userId = jwtToken.parseTokenToString(token);
         if (ObjectUtils.isEmpty(userId)) { //token不存在 或者token失效
             logger.warn("token 不存在或者token: {}已失效", token);
@@ -77,21 +79,20 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
     private void refreshTokenIfNeed(String token, String userId, HttpServletRequest request, HttpServletResponse response) {
         long validTime = jwtToken.getTokenValidDate(token).getTime();
         long now = new Date().getTime();
-        Object sessionCache;
         // 失效时间小于2分钟，重新创建token
         if (validTime > now && validTime - now < CacheTime.TWO_SECOND_MILLIS) {
             token = jwtToken.createToken(userId, CacheTime.ONE_HOUR_MILLIS);
-            response.addHeader(AuthConstants.AUTHORIZATION, token);
-            String platform = request.getHeader(AuthConstants.PLATFORM);
+            response.addHeader(AUTHORIZATION, token);
+            String platform = request.getHeader(PLATFORM);
+            String key;
             if (PlatformEnum.SYSTEM_ADMIN.getHeaderValue().equals(platform)) {
                 String sessionId = request.getSession().getId();
-                sessionCache = redisCacheBean.get(SystemConstants.SESSION_KEY, sessionId);
+                key = SystemConstants.SESSION_KEY;
                 // 刷新shiro session
-                redisCacheBean.put(SystemConstants.SESSION_KEY, sessionId, sessionCache, CacheTime.ONE_WEEK_SECOND);
+                redisCacheBean.expire(key, sessionId, CacheTime.ONE_WEEK_SECOND);
             } else if (PlatformEnum.SYSTEM_STUDENT.getHeaderValue().equals(platform)) {
-                sessionCache = redisCacheBean.get(CacheKey.STUDENT_USER_INFO_CACHE, token);
-                // 将学员信息重新放入缓存
-                redisCacheBean.put(CacheKey.STUDENT_USER_INFO_CACHE, userId, sessionCache, CacheTime.ONE_WEEK_SECOND);
+                key = CacheKey.STUDENT_USER_INFO_CACHE;
+                redisCacheBean.expire(key, userId, CacheTime.ONE_WEEK_SECOND);
             }
         }
     }
