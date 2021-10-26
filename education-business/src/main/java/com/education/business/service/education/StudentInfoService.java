@@ -14,7 +14,6 @@ import com.education.common.model.PageInfo;
 import com.education.common.model.StudentInfoImport;
 import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
-import com.education.model.dto.StudentInfoSession;
 import com.education.model.entity.GradeInfo;
 import com.education.model.entity.StudentInfo;
 import com.education.model.request.PageParam;
@@ -128,7 +127,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         String token = jwtToken.createToken(studentInfo.getId(), sessionTime);
         response.addHeader(AuthConstants.AUTHORIZATION, token);
         GradeInfo gradeInfo = gradeInfoService.getById(studentInfo.getGradeInfoId());
-        this.cacheStudentInfoSession(studentInfo, token, sessionTime);
+        this.cacheStudentInfoSession(studentInfo, sessionTime);
         Kv kv = Kv.create().set("name", studentInfo.getName())
                 .set("gradeInfoId", gradeInfo.getId())
                 .set("headImg", studentInfo.getHeadImg())
@@ -144,19 +143,15 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
     /**
      * 缓存学员登录信息
      * @param studentInfo
-     * @param token
      */
-    private void cacheStudentInfoSession(StudentInfo studentInfo, String token, long sessionTime) {
-        StudentInfoSession studentInfoSession = new StudentInfoSession();
-        studentInfoSession.setToken(token);
-        studentInfoSession.setStudentInfo(studentInfo);
+    private void cacheStudentInfoSession(StudentInfo studentInfo, long sessionTime) {
         Date now = new Date();
         studentInfo.setLastLoginTime(now);
         studentInfo.setLoginIp(IpUtils.getAddressIp(RequestUtils.getRequest()));
         int loginCount = studentInfo.getLoginCount();
         studentInfo.setLoginCount(++loginCount);
         studentInfo.setUpdateDate(now);
-        cacheBean.put(CacheKey.STUDENT_USER_INFO_CACHE, token, studentInfoSession, new Long(sessionTime).intValue());
+        cacheBean.put(CacheKey.STUDENT_USER_INFO_CACHE, studentInfo.getId(), studentInfo, new Long(sessionTime).intValue());
         super.updateById(studentInfo);
     }
 

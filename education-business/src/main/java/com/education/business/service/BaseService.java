@@ -6,10 +6,9 @@ import com.education.business.task.TaskManager;
 import com.education.common.cache.CacheBean;
 import com.education.common.constants.AuthConstants;
 import com.education.common.constants.CacheKey;
-import com.education.common.constants.SystemConstants;
+import com.education.common.model.JwtToken;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.dto.AdminUserSession;
-import com.education.model.dto.StudentInfoSession;
 import com.education.model.entity.StudentInfo;
 import com.education.model.entity.SystemAdmin;
 import org.apache.shiro.SecurityUtils;
@@ -46,6 +45,8 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
     protected RedisTemplate redisTemplate;
     @Resource
     protected RedissonClient redissonClient;
+    @Resource
+    private JwtToken jwtToken;
 
     /**
      * 更新shiro 缓存中的用户信息，避免由于redis 缓存导致获取用户信息不一致问题
@@ -90,20 +91,11 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
         return null;
     }
 
-
-
-    public StudentInfoSession getStudentInfoSession() {
-        String token = request.getHeader(AuthConstants.AUTHORIZATION);
-        return cacheBean.get(CacheKey.STUDENT_USER_INFO_CACHE, token);
-    }
-
     public StudentInfo getStudentInfo() {
-        StudentInfoSession studentInfoSession = getStudentInfoSession();
-       if (ObjectUtils.isNotEmpty(studentInfoSession)) {
-           return studentInfoSession.getStudentInfo();
-       }
-       return null;
+        String token = request.getHeader(AuthConstants.AUTHORIZATION);
+        return cacheBean.get(CacheKey.STUDENT_USER_INFO_CACHE, jwtToken.parseTokenToString(token));
     }
+
 
     public Integer getStudentId() {
         if (this.getStudentInfo() != null) {

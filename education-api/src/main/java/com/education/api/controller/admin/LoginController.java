@@ -1,5 +1,6 @@
 package com.education.api.controller.admin;
 
+import com.education.api.config.shiro.DistributeShiroSession;
 import com.education.business.service.WebSocketMessageService;
 import com.education.business.service.system.SystemAdminService;
 import com.education.business.task.TaskManager;
@@ -9,6 +10,7 @@ import com.education.common.annotation.*;
 import com.education.common.base.BaseController;
 import com.education.common.constants.*;
 import com.education.common.model.JwtToken;
+import com.education.common.model.UserHold;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RequestUtils;
 import com.education.common.utils.Result;
@@ -56,8 +58,6 @@ public class LoginController extends BaseController {
     @Autowired
     private OnlineUserManager onlineUserManager;
     @Autowired
-    private DefaultSessionManager sessionManager;
-    @Autowired
     private RedissonClient redissonClient;
 
 
@@ -71,8 +71,7 @@ public class LoginController extends BaseController {
     @ParamsValidate(params = {
         @Param(name = "userName", message = "请输入用户名"),
         @Param(name = "password", message = "请输入密码"),
-        @Param(name = "key", message = "请传递一个验证码时间戳"),
-        @Param(name = "password", message = "请输入密码"),
+        @Param(name = "key", message = "请传递一个验证码时间戳")
     }, paramsType = ParamsType.JSON_DATA)
     @FormLimit
     public Result<Map> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response,
@@ -90,6 +89,7 @@ public class LoginController extends BaseController {
             String token;
             // 是否记住密码登录
             boolean rememberMe = userLoginRequest.isChecked();
+            UserHold.putRememberMe(rememberMe);
             Integer timeOut;
             if (rememberMe) {
                 timeOut = CacheTime.ONE_WEEK_MILLIS;
@@ -101,12 +101,10 @@ public class LoginController extends BaseController {
                 }
                 RequestUtils.createCookie(SystemConstants.DEFAULT_SESSION_COOKIE_NAME, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
                 token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存7天
-                sessionManager.setGlobalSessionTimeout(timeOut);
                 timeOut = CacheTime.ONE_WEEK_MILLIS;
             } else {
                 timeOut = CacheTime.ONE_HOUR_MILLIS;
                 token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存1小时
-                sessionManager.setGlobalSessionTimeout(timeOut);
                 timeOut = CacheTime.ONE_HOUR_MILLIS;
             }
             AdminUserSession userSession = systemAdminService.getAdminUserSession();
