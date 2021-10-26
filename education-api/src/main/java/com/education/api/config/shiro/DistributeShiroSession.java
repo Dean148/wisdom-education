@@ -57,7 +57,7 @@ public class DistributeShiroSession extends AbstractSessionDAO {
         if (rememberMe) {
             redisCacheBean.put(SESSION_KEY, sessionId, session, expire);
         }
-        redisCacheBean.put(SESSION_KEY, sessionId, session, CacheTime.ONE_HOUR);
+        redisCacheBean.put(SESSION_KEY, sessionId, session, CacheTime.ONE_HOUR_SECOND);
     }
 
     /**
