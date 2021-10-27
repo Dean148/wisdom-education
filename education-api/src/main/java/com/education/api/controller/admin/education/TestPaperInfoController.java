@@ -71,7 +71,6 @@ public class TestPaperInfoController extends BaseController {
      */
     @GetMapping("getPaperQuestionList")
     @RequiresPermissions("system:testPaperInfo:relevanceQuestion")
-  //  @Cacheable(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionRequest.testPaperInfoId")
     public Result selectPaperQuestionList(PageParam pageParam, TestPaperQuestionRequest testPaperQuestionRequest) {
         return Result.success(testPaperInfoService.selectPaperQuestionList(pageParam, testPaperQuestionRequest));
     }
@@ -82,7 +81,6 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @PostMapping("updatePaperQuestionMarkOrSort")
-  //  @CacheEvict(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionDto.testPaperInfoId")
     public Result updatePaperQuestionMarkOrSort(@RequestBody TestPaperQuestionDto testPaperQuestionDto) {
         testPaperInfoService.updatePaperQuestionMarkOrSort(testPaperQuestionDto);
         return Result.success();
@@ -144,7 +142,6 @@ public class TestPaperInfoController extends BaseController {
      * @return
      */
     @DeleteMapping("removePaperQuestion")
-  //  @CacheEvict(cacheNames = CacheKey.TEST_PAPER_INFO_CACHE, key = "#testPaperQuestionInfo.testPaperInfoId")
     public Result removePaperQuestion(@RequestBody TestPaperQuestionInfo testPaperQuestionInfo) {
         return Result.success(testPaperInfoService.removePaperQuestion(testPaperQuestionInfo));
     }
