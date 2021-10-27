@@ -17,22 +17,17 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class AdminAuthInterceptor extends BaseInterceptor {
 
-
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object)
 			throws Exception {
+		super.checkHeader(request);
 		String targetUrl = RequestUtils.getRequestUrl(request);
 		if (targetUrl.startsWith("/api/dict")) {
 			return true;
 		}
-
 		else if (targetUrl.startsWith("/api/upload")) {
-			/*String header = request.getHeader("httpType");
-			if ("student-product".equals(header)) {
-				return true;
-			}*/
-            return true;
+			return true;
 		}
-		return checkHeader(request, response);
+		return checkToken(request, response);
 	}
 }

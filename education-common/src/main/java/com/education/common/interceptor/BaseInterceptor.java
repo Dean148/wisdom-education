@@ -6,6 +6,7 @@ import com.education.common.constants.CacheKey;
 import com.education.common.constants.CacheTime;
 import com.education.common.constants.SystemConstants;
 import com.education.common.enums.PlatformEnum;
+import com.education.common.exception.BusinessException;
 import com.education.common.model.JwtToken;
 import com.education.common.utils.*;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
     private static final String PLATFORM = AuthConstants.PLATFORM;
     private static final String AUTHORIZATION = AuthConstants.AUTHORIZATION;
 
-    protected boolean checkHeader(HttpServletRequest request, HttpServletResponse response) {
+    protected void checkHeader(HttpServletRequest request) {
         if (platformSet.size() == 0) {
             platformSet.add(PlatformEnum.SYSTEM_ADMIN.getHeaderValue());
             platformSet.add(PlatformEnum.SYSTEM_STUDENT.getHeaderValue());
@@ -43,15 +44,13 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
         String platform = request.getHeader(PLATFORM);
         if (ObjectUtils.isEmpty(platform)) {
             logger.warn("请求头未携带:{}", PLATFORM);
-            Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE, "请求头未携带:" + PLATFORM));
-            return false;
+            throw new BusinessException(new ResultCode(ResultCode.UN_AUTH_ERROR_CODE, "请求头未携带:" + PLATFORM));
         }
 
         if (!platformSet.contains(platform)) {
-            Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE, PLATFORM + ":请求头错误!"));
+            logger.warn("{}:错误请求头:{}", PLATFORM, platform);
+            throw new BusinessException(new ResultCode(ResultCode.UN_AUTH_ERROR_CODE, PLATFORM + "请求头错误!"));
         }
-
-        return checkToken(request, response);
     }
 
     /**
@@ -66,8 +65,7 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
         String userId = jwtToken.parseTokenToString(token);
         if (ObjectUtils.isEmpty(userId)) { //token不存在 或者token失效
             logger.warn("token 不存在或者token: {}已失效", token);
-            Result.renderJson(response, Result.fail(ResultCode.UN_AUTH_ERROR_CODE, "会话已过期,请重新登录"));
-            return false;
+            throw new BusinessException(new ResultCode(ResultCode.UN_AUTH_ERROR_CODE, "会话已过期,请重新登录"));
         }
         this.refreshTokenIfNeed(token, userId, request, response);
         return true;
