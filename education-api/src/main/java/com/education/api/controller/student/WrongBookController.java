@@ -33,7 +33,7 @@ public class WrongBookController extends BaseController {
      */
     @GetMapping
     public Result<PageInfo<QuestionInfoAnswer>> list(PageParam pageParam, WrongBookQuery wrongBookQuery) {
-        wrongBookQuery.setStudentId(studentWrongBookService.getStudentInfo().getId());
+        wrongBookQuery.setStudentId(studentWrongBookService.getStudentId());
         return Result.success(studentWrongBookService.selectPageList(pageParam, wrongBookQuery));
     }
 }
