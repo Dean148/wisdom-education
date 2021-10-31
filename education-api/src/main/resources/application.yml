@@ -1,3 +1,9 @@
+oss:
+  upload:
+    secretId: AKIDSjlW1GEvLUs3xax4tRijX4LL5XioiNmw
+    secretKey: wc3D8oEPKzPZVBblfKjtnTt3xc1A3oJY
+    platform: tencent
+    region: ap-nanjing
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -5,6 +11,8 @@ spring:
     active: prod
   cache:
     type: redis
+  application:
+    name: education
 mybatis-plus:
   type-aliases-package: com.education.model
   configuration:
