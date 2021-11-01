@@ -14,13 +14,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0
  * @create_at 2020/7/1 20:53
  */
-public class RedisCacheManager implements CacheManager {
+public class ShiroRedisCacheManager implements CacheManager {
 
     private CacheBean redisCacheBean;
 
     private final Map<String, Cache> caches = new ConcurrentHashMap();
 
-    public RedisCacheManager(CacheBean redisCacheBean) {
+    public ShiroRedisCacheManager(CacheBean redisCacheBean) {
         this.redisCacheBean = redisCacheBean;
     }
 

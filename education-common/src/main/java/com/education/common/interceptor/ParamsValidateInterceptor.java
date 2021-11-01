@@ -4,9 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
-import com.education.common.annotation.Property;
-import com.education.common.interceptor.validate.Validate;
-import com.education.common.interceptor.validate.ValidateManager;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.RegexUtils;
 import com.education.common.utils.Result;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,7 +47,7 @@ public class ParamsValidateInterceptor extends BaseInterceptor {
             dataMap = JSONObject.parseObject(data);
             isJsonData = true;
         }
-        //ValidateManager validateManager = ValidateManager.build();
+
         for (Param param : params) {
             String name = param.name();
             Object value = null;
@@ -60,14 +56,6 @@ public class ParamsValidateInterceptor extends BaseInterceptor {
             } else if (isJsonData && dataMap != null) {
                 value = dataMap.get(name);
             }
-          /*  List<Validate> validateList = validateManager.getValidateList();
-            for (Validate validate: validateList) {
-                if (validate.supportParamType(value)) {
-                    validate.setParam(param);
-                    validate.validateParam(request, response, param.errorCode(), param.message(), value);
-                }
-            }*/
-
 
             if (ObjectUtils.isEmpty(value)) {
                 Result.renderJson(response, Result.fail(param.errorCode(), param.message()));

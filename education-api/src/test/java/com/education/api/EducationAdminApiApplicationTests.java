@@ -5,6 +5,8 @@ package com.education.api;
 import com.alibaba.fastjson.JSON;
 import com.education.business.service.education.QuestionInfoService;
 import com.education.business.service.system.SystemAdminService;
+import com.education.business.task.TaskManager;
+import com.education.business.task.TaskParam;
 import com.education.common.cache.CacheBean;
 import com.education.common.cache.EhcacheBean;
 import com.education.common.utils.ObjectUtils;
@@ -42,6 +44,16 @@ public class EducationAdminApiApplicationTests {
     private SystemAdminService systemAdminService;
 
     static final String SCORE_RANK = "score_rank";
+
+    @Test
+    public void testRedis() {
+       // redisTemplate.opsForList().rightPop("test_token");
+
+        redisTemplate.boundHashOps("token_teste").increment("id:1", 1);
+
+        System.out.println(redisTemplate.boundHashOps("token_teste").get("id:1"));
+     //   System.out.println(redisTemplate.hasKey("test_token"));
+    }
 
     @Test
     public void redisSort() {

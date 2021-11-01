@@ -69,9 +69,6 @@ public final class LogAspect {
             if (requestUrl.startsWith("/system")) {
                 AdminUserSession adminUserSession = systemLogService.getAdminUserSession();
                 taskParam.put("adminUserSession", adminUserSession);
-            } else {
-              //  FrontUserInfoSession frontUserInfoSession = systemLogService.getFrontUserInfoSession();
-              //  taskParam.put("frontUserInfoSession", frontUserInfoSession);
             }
             String methodName = request.getMethod();
             String contentType = request.getHeader("Content-Type");

@@ -5,12 +5,12 @@
     <parent>
         <artifactId>education</artifactId>
         <groupId>com.education</groupId>
-        <version>1.0.2-RELEASE</version>
+        <version>1.0.3-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.education.business</groupId>
     <artifactId>education-business</artifactId>
-    <version>${project.version}</version>
+    <version>1.0.3-RELEASE</version>
     <name>education-business</name>
     <!-- FIXME change it to the project's website -->
     <url>核心业务模块</url>

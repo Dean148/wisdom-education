@@ -1,6 +1,8 @@
 package com.education.api.config.shiro;
 
 import com.education.common.cache.CacheBean;
+import com.education.common.constants.CacheKey;
+import com.education.common.constants.CacheTime;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
@@ -30,8 +32,6 @@ import java.util.Map;
 @Configuration
 @AutoConfigureAfter(ShiroLifecycleBeanPostProcessorConfig.class)
 public class ShiroBeanConfig {
-
-    private static final long INVALID_TIME = 3600 * 6 * 1000;
 
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
@@ -74,18 +74,17 @@ public class ShiroBeanConfig {
     @Bean
     public SessionManager sessionManager(SessionDAO distributeShiroSession) {
         DefaultSessionManager sessionManager = new DefaultWebSessionManager();
-        // 设置session
-        sessionManager.setGlobalSessionTimeout(INVALID_TIME);
         sessionManager.setSessionDAO(distributeShiroSession);
+        sessionManager.setGlobalSessionTimeout(CacheTime.ONE_WEEK_MILLIS);
         return sessionManager;
     }
 
     @Bean
     public SecurityManager securityManager(SessionManager sessionManager, Realm systemRealm,
-                                           CacheManager redisCacheManager) {
+                                           CacheManager shiroRedisCacheManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(systemRealm);
-        securityManager.setCacheManager(redisCacheManager);
+        securityManager.setCacheManager(shiroRedisCacheManager);
         securityManager.setSessionManager(sessionManager);
         return securityManager;
     }
@@ -96,8 +95,8 @@ public class ShiroBeanConfig {
     }
 
     @Bean
-    public RedisCacheManager redisCacheManager(CacheBean redisCacheBean) {
-        return new RedisCacheManager(redisCacheBean);
+    public ShiroRedisCacheManager shiroRedisCacheManager(CacheBean redisCacheBean) {
+        return new ShiroRedisCacheManager(redisCacheBean);
     }
 
 
