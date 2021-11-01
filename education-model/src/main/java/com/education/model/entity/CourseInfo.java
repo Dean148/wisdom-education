@@ -4,6 +4,10 @@ package com.education.model.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.education.common.annotation.Unique;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 @TableName("course_info")
 public class CourseInfo extends BaseEntity<CourseInfo> {
@@ -36,7 +40,61 @@ public class CourseInfo extends BaseEntity<CourseInfo> {
 	@TableField("head_img")
 	private String headImg;
 
+	@TableField("section_node_number")
+	private Integer sectionNodeNumber;
 
+	@TableField("section_number")
+	private Integer sectionNumber;
+
+	@TableField("push_time")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+	private Date pushTime;
+
+	@TableField("valuate_Mark")
+	private BigDecimal valuateMark;
+
+	@TableField("comment_number")
+	private Integer commentNumber;
+
+	public void setCommentNumber(Integer commentNumber) {
+		this.commentNumber = commentNumber;
+	}
+
+	public Integer getCommentNumber() {
+		return commentNumber;
+	}
+
+	public void setValuateMark(BigDecimal valuateMark) {
+		this.valuateMark = valuateMark;
+	}
+
+	public BigDecimal getValuateMark() {
+		return valuateMark;
+	}
+
+	public Integer getSectionNodeNumber() {
+		return sectionNodeNumber;
+	}
+
+	public void setSectionNodeNumber(Integer sectionNodeNumber) {
+		this.sectionNodeNumber = sectionNodeNumber;
+	}
+
+	public Integer getSectionNumber() {
+		return sectionNumber;
+	}
+
+	public Date getPushTime() {
+		return pushTime;
+	}
+
+	public void setPushTime(Date pushTime) {
+		this.pushTime = pushTime;
+	}
+
+	public void setSectionNumber(Integer sectionNumber) {
+		this.sectionNumber = sectionNumber;
+	}
 
 	public String getRepresent() {
 		return represent;

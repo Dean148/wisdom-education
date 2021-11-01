@@ -2,7 +2,7 @@ package com.education.business.service.system;
 
 import com.education.business.mapper.system.SystemQuartzJobMapper;
 import com.education.business.service.BaseService;
-import com.education.common.constants.Constants;
+import com.education.common.constants.SystemConstants;
 import com.education.common.exception.BusinessException;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
@@ -25,16 +25,16 @@ public class SystemQuartzJobService extends BaseService<SystemQuartzJobMapper, S
         try {
             CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(systemQuartzJob.getCronExpression());
             //根据name 和group获取当前trgger 的身份
-            TriggerKey triggerKey = TriggerKey.triggerKey(systemQuartzJob.getJobClassName(), Constants.DEFAULT_GROUP_JOB);
+            TriggerKey triggerKey = TriggerKey.triggerKey(systemQuartzJob.getJobClassName(), SystemConstants.DEFAULT_GROUP_JOB);
             //获取 触发器的信息
             CronTrigger triggerOld = (CronTrigger) scheduler.getTrigger(triggerKey);
 
             if (triggerOld == null) {
                 //将job加入到jobDetail中
                 JobDetail jobDetail = JobBuilder.newJob((Class<? extends Job>) ObjectUtils.getClass(systemQuartzJob.getJobClassName()))
-                        .withIdentity(systemQuartzJob.getJobClassName(), Constants.DEFAULT_GROUP_JOB).build();
+                        .withIdentity(systemQuartzJob.getJobClassName(), SystemConstants.DEFAULT_GROUP_JOB).build();
 
-                Trigger trigger = TriggerBuilder.newTrigger().withIdentity(systemQuartzJob.getJobClassName(), Constants.DEFAULT_GROUP_JOB)
+                Trigger trigger = TriggerBuilder.newTrigger().withIdentity(systemQuartzJob.getJobClassName(), SystemConstants.DEFAULT_GROUP_JOB)
                         .withSchedule(cronScheduleBuilder).build();
                 //执行任务
                 scheduler.scheduleJob(jobDetail, trigger);

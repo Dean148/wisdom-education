@@ -91,6 +91,11 @@ public class CaffeineCacheBean implements CacheBean {
     }
 
     @Override
+    public Long getExpire(String cacheName, Object key) {
+        return null;
+    }
+
+    @Override
     public Collection getKeys(String cacheName) {
         Cache cache = getCache(cacheName);
         return cache.asMap().keySet();

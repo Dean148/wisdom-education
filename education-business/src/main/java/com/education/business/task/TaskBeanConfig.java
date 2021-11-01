@@ -23,6 +23,7 @@ public class TaskBeanConfig {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(COUR_SIZE);
         threadPoolTaskExecutor.setMaxPoolSize(MAX_COUR_SIZE);
+        threadPoolTaskExecutor.setThreadNamePrefix("education-thread-pool");
         threadPoolTaskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         return threadPoolTaskExecutor;
     }

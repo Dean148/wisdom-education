@@ -62,10 +62,7 @@ public class StudentInfoController extends BaseController {
     private boolean checkPassword(StudentInfoDto studentInfoDto) {
         String password = studentInfoDto.getPassword();
         String confirmPassword = studentInfoDto.getConfirmPassword();
-        if (!password.equals(confirmPassword)) {
-            return false;
-        }
-        return true;
+        return password.equals(confirmPassword);
     }
 
     /**

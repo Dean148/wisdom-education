@@ -63,7 +63,7 @@ public class UploadController {
      * @throws IOException
      */
     @RequestMapping(value = "{uploadFileType}", method = {RequestMethod.GET, RequestMethod.POST})
-    public Map uploadFile(@RequestParam MultipartFile file, @PathVariable int uploadFileType) throws IOException {
+    public Map uploadFile(@RequestParam("file") MultipartFile file, @PathVariable int uploadFileType) throws IOException {
         String result = null;
         String contentType = file.getContentType();
         String fileName = file.getOriginalFilename();

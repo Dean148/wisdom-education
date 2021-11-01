@@ -21,9 +21,9 @@ public interface CacheKey {
      */
     String EXAM_CACHE = "exam:cache";
 
-    String TEST_PAPER_INFO_CACHE = "test:paper:info:cache";
+    String TEST_PAPER_INFO_CACHE = "test:paper:info:cache:";
 
-    String QUESTION_INFO_CACHE = "question:info:cache";
+    String QUESTION_INFO_CACHE = "question:info:cache:";
 
     String EXAM_MONITOR_CACHE_KEY = "exam:monitor:cache:";
 
@@ -40,4 +40,15 @@ public interface CacheKey {
      *  试卷设置缓存key
      */
     String PAPER_INFO_SETTING_LOCK = "paper:setting";
+
+    String COURSE_SECTION = "course:section";
+
+    String COURSE_INFO = "course:info";
+
+    String USER_SYNC_LONGIN = "user:sync:login:";
+
+
+    String STUDENT_USER_INFO_CACHE = "student:user:cache:";
+
+    String USER_ON_LINE_KEY = "user:on:line";
 }

@@ -137,10 +137,7 @@ public class QuestionInfoService extends BaseService<QuestionInfoMapper, Questio
         }
 
         StudentQuestionAnswer studentQuestionAnswer = studentQuestionAnswerService.selectByQuestionInfoId(questionInfoId);
-        if (ObjectUtils.isNotEmpty(studentQuestionAnswer)) {
-            return false;
-        }
-        return true;
+        return ObjectUtils.isEmpty(studentQuestionAnswer);
     }
 
     public int importQuestion(Integer schoolType, Integer gradeInfoId, Integer subjectId, List<QuestionInfo> questionInfoList) {

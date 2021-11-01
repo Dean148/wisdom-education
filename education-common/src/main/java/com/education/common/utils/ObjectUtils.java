@@ -105,7 +105,7 @@ public class ObjectUtils {
 	 */
 	public static String generateFileByTime() {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		return format.format(new Date()).replaceAll("-", "/");
+		return format.format(new Date()).replaceAll("-", "/") + "/";
 	}
 
 	/**

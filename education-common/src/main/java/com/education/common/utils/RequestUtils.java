@@ -40,7 +40,7 @@ public class RequestUtils {
     }
 
     public static String readData(HttpServletRequest request) {
-        BufferedReader br = null;
+        BufferedReader br;
         try {
             StringBuilder ret;
             br = request.getReader();

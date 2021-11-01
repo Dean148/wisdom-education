@@ -5,10 +5,9 @@ import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
-import com.education.common.constants.Constants;
+import com.education.common.constants.CacheKey;
 import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
-import com.education.model.dto.StudentInfoSession;
 import com.education.model.entity.StudentInfo;
 import com.education.model.request.UserLoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 学员登录接口
@@ -36,18 +37,17 @@ public class StudentInfoController extends BaseController {
      * @return
      */
     @PostMapping("login")
-    public Result login(@RequestBody UserLoginRequest userLoginRequest) {
-        return studentInfoService.doLogin(userLoginRequest);
+    public Result login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
+        return studentInfoService.doLogin(userLoginRequest, response);
     }
 
     @PostMapping("logout")
     public Result logout() {
-        StudentInfoSession userInfoSession = studentInfoService.getStudentInfoSession();
-        if (ObjectUtils.isEmpty(userInfoSession)) {
+        StudentInfo studentInfo = studentInfoService.getStudentInfo();
+        if (ObjectUtils.isEmpty(studentInfo)) {
             return Result.success(ResultCode.SUCCESS, "退出成功");
         }
-        RequestUtils.clearCookie(Constants.SESSION_NAME);
-        cacheBean.remove(Constants.USER_INFO_CACHE, userInfoSession.getToken()); // 删除用户缓存
+        cacheBean.remove(CacheKey.STUDENT_USER_INFO_CACHE, studentInfo.getId()); // 删除用户缓存
         return Result.success(ResultCode.SUCCESS, "退出成功");
     }
 

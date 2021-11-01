@@ -26,7 +26,7 @@ import java.util.Date;
  */
 @Component
 @Slf4j
-public class WebSocketMessageTask implements TaskListener {
+public class WebSocketMessageListener implements TaskListener {
 
     @Autowired
     private SystemWebSocketHandler systemWebSocketHandler;
