@@ -1,5 +1,7 @@
 package com.education.business.upload;
 
+import java.util.List;
+
 /**
  * @author zengjintao
  * @create_at 2021/10/31 14:51
@@ -13,4 +15,8 @@ public interface FileUpload {
      * @return
      */
     UploadResult createBucket(String name);
+
+    UploadResult putObject(String filePath, String fileName);
+
+    UploadResult putObject(String bucket, String filePath, String fileName);
 }

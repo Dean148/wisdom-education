@@ -1,6 +1,16 @@
 package com.education.business.upload;
 import cn.hutool.core.util.StrUtil;
 import com.education.common.config.OssProperties;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.http.HttpMethodName;
+import com.qcloud.cos.model.GeneratePresignedUrlRequest;
+import com.qcloud.cos.region.Region;
+
+import java.net.URL;
+import java.util.Date;
 
 
 /**
@@ -15,12 +25,21 @@ public abstract class BaseFileUpload implements FileUpload {
     protected OssProperties ossProperties;
     protected String parentBucketName;
 
-    public BaseFileUpload(OssProperties ossProperties, String env, String applicationName) {
+    public BaseFileUpload(OssProperties ossProperties, String applicationName) {
         this.ossProperties = ossProperties;
-        this.env = env;
         this.applicationName = applicationName;
+        this.parentBucketName = applicationName + StrUtil.DASHED + ossProperties.getAppId();
+    }
+
+    public BaseFileUpload(OssProperties ossProperties, String env, String applicationName) {
+        this(ossProperties, applicationName);
+        this.env = env;
         this.parentBucketName = applicationName + StrUtil.DASHED +
                 env + StrUtil.DASHED + ossProperties.getAppId();
+    }
+
+    public void setParentBucketName(String parentBucketName) {
+        this.parentBucketName = parentBucketName;
     }
 
     @Override
