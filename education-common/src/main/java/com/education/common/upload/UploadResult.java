@@ -1,6 +1,7 @@
-package com.education.business.upload;
+package com.education.common.upload;
 
 import lombok.Data;
+
 import java.util.Date;
 
 /**

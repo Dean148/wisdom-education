@@ -1,20 +1,13 @@
-package com.education.business.upload;
+package com.education.common.upload;
 
 import com.education.common.config.OssProperties;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.COSCredentials;
-import com.qcloud.cos.exception.CosClientException;
-import com.qcloud.cos.exception.CosServiceException;
-import com.qcloud.cos.http.HttpProtocol;
-import com.qcloud.cos.model.Bucket;
 import com.qcloud.cos.model.CannedAccessControlList;
 import com.qcloud.cos.model.CreateBucketRequest;
 import com.qcloud.cos.region.Region;
-
-import java.io.File;
-import java.util.List;
 
 
 /**
@@ -46,10 +39,21 @@ public class TencentOssFileUpload extends BaseFileUpload {
     }
 
     @Override
-    void doCreateBucket(String name) {
-        CreateBucketRequest createBucketRequest = new CreateBucketRequest(name);
-        createBucketRequest.setCannedAcl(CannedAccessControlList.Private);
-        cosClient.createBucket(createBucketRequest);
+    UploadResult doCreateBucket(String name) {
+        try {
+            CreateBucketRequest createBucketRequest = new CreateBucketRequest(name);
+            createBucketRequest.setCannedAcl(CannedAccessControlList.Private);
+            cosClient.createBucket(createBucketRequest);
+            return new UploadResult();
+        } finally {
+            closeClient();
+        }
+    }
+
+    private void closeClient() {
+        if (cosClient != null) {
+            cosClient.shutdown();
+        }
     }
 
     @Override

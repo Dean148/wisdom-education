@@ -1,16 +1,8 @@
-package com.education.business.upload;
+package com.education.common.upload;
 import cn.hutool.core.util.StrUtil;
 import com.education.common.config.OssProperties;
-import com.qcloud.cos.COSClient;
-import com.qcloud.cos.ClientConfig;
-import com.qcloud.cos.auth.BasicCOSCredentials;
-import com.qcloud.cos.auth.COSCredentials;
-import com.qcloud.cos.http.HttpMethodName;
-import com.qcloud.cos.model.GeneratePresignedUrlRequest;
-import com.qcloud.cos.region.Region;
-
-import java.net.URL;
-import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -24,6 +16,7 @@ public abstract class BaseFileUpload implements FileUpload {
     protected String applicationName;
     protected OssProperties ossProperties;
     protected String parentBucketName;
+    private final Logger logger = LoggerFactory.getLogger(BaseFileUpload.class);
 
     public BaseFileUpload(OssProperties ossProperties, String applicationName) {
         this.ossProperties = ossProperties;
@@ -47,12 +40,12 @@ public abstract class BaseFileUpload implements FileUpload {
         try {
             this.parentBucketName = name + StrUtil.DASHED +
                     env + StrUtil.DASHED + ossProperties.getAppId();
-            this.doCreateBucket(parentBucketName);
-            return null;
+            return this.doCreateBucket(parentBucketName);
         } catch (Exception e) {
+            logger.error(name + " 存储桶创建失败", e);
             return null;
         }
     }
 
-    abstract void doCreateBucket(String name);
+    abstract UploadResult doCreateBucket(String name);
 }
