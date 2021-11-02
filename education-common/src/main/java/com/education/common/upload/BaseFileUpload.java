@@ -17,11 +17,17 @@ public abstract class BaseFileUpload implements FileUpload {
     protected OssProperties ossProperties;
     protected String parentBucketName;
     private final Logger logger = LoggerFactory.getLogger(BaseFileUpload.class);
+    private String ossHost;
+
+    public String getOssHost() {
+        return ossHost;
+    }
 
     public BaseFileUpload(OssProperties ossProperties, String applicationName) {
         this.ossProperties = ossProperties;
         this.applicationName = applicationName;
         this.parentBucketName = applicationName + StrUtil.DASHED + ossProperties.getAppId();
+        this.ossHost = "https://" + parentBucketName;
     }
 
     public BaseFileUpload(OssProperties ossProperties, String env, String applicationName) {
@@ -29,6 +35,7 @@ public abstract class BaseFileUpload implements FileUpload {
         this.env = env;
         this.parentBucketName = applicationName + StrUtil.DASHED +
                 env + StrUtil.DASHED + ossProperties.getAppId();
+        this.ossHost = "https://" + parentBucketName;
     }
 
     public void setParentBucketName(String parentBucketName) {

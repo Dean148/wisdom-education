@@ -41,7 +41,6 @@ public class TencentOssFileUpload extends BaseFileUpload {
         if (!flag) {
             this.createBucket(parentBucketName);
         }
-        this.ossHost = "https://" + parentBucketName;
     }
 
     @Override
