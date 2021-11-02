@@ -1,5 +1,6 @@
 package com.education.business.service.system;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.education.business.mapper.system.WebsiteConfigMapper;
 import com.education.business.service.BaseService;
 import com.education.model.entity.WebsiteConfig;
@@ -13,4 +14,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class WebsiteConfigService extends BaseService<WebsiteConfigMapper, WebsiteConfig> {
+
+    public Object getWebSiteConfig() {
+        return super.selectFirst(new QueryWrapper<>());
+    }
 }
