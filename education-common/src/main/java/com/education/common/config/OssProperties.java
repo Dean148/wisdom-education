@@ -20,5 +20,4 @@ public class OssProperties {
     private String platform;
     private String appId;
     private String region;
-    private String prefix;
 }
