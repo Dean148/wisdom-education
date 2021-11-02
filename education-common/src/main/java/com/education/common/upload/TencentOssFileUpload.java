@@ -23,6 +23,8 @@ public class TencentOssFileUpload extends BaseFileUpload {
 
     private COSClient cosClient;
 
+    private String ossHost;
+
     public TencentOssFileUpload(OssProperties ossProperties, String env, String applicationName) {
         super(ossProperties, env, applicationName);
         this.initCOSClient();
@@ -39,6 +41,7 @@ public class TencentOssFileUpload extends BaseFileUpload {
         if (!flag) {
             this.createBucket(parentBucketName);
         }
+        this.ossHost = "https://" + parentBucketName;
     }
 
     @Override
@@ -67,8 +70,10 @@ public class TencentOssFileUpload extends BaseFileUpload {
     @Override
     public UploadResult putObject(String bucket, String filePath, String fileName, File file) {
         try {
-            this.cosClient.putObject(bucket, super.generateFileKey(filePath) + fileName, file);
-            return new UploadResult();
+            String fileKey = super.generateFileKey(filePath) + fileName;
+            this.cosClient.putObject(bucket, fileKey, file);
+            String fileUrl = ossHost + fileKey;
+            return new UploadResult(fileUrl);
         } finally {
             this.closeClient();
         }
@@ -82,24 +87,26 @@ public class TencentOssFileUpload extends BaseFileUpload {
     @Override
     public UploadResult putObject(String bucket, String filePath, String fileName, InputStream inputStream) {
         try {
+            String fileKey = super.generateFileKey(filePath) + fileName;
             ObjectMetadata objectMetadata = new ObjectMetadata();
-            this.cosClient.putObject(bucket, super.generateFileKey(filePath) + fileName, inputStream, objectMetadata);
-            return new UploadResult();
+            this.cosClient.putObject(bucket, fileKey, inputStream, objectMetadata);
+            String fileUrl = ossHost + fileKey;
+            return new UploadResult(fileUrl);
         } finally {
             closeClient();
         }
     }
 
+
     @Override
-    public UploadResult deleteObject(String filePath) {
-        return this.deleteObject(parentBucketName, filePath);
+    public void deleteObject(String filePath) {
+        this.deleteObject(parentBucketName, filePath);
     }
 
     @Override
-    public UploadResult deleteObject(String bucket, String filePath) {
+    public void deleteObject(String bucket, String filePath) {
         try {
             this.cosClient.deleteObject(bucket, filePath);
-            return new UploadResult();
         } finally {
             closeClient();
         }

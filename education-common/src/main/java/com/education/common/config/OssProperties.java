@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 @Data
 public class OssProperties {
 
+    private String host;
     private String secretId;
     private String secretKey;
     private String platform;

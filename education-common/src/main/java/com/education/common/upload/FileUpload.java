@@ -25,7 +25,7 @@ public interface FileUpload {
 
     UploadResult putObject(String bucket, String filePath, String fileName, InputStream inputStream);
 
-    UploadResult deleteObject(String filePath);
+    void deleteObject(String filePath);
 
-    UploadResult deleteObject(String bucket, String filePath);
+    void deleteObject(String bucket, String filePath);
 }

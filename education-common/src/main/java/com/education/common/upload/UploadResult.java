@@ -12,7 +12,15 @@ import java.util.Date;
 @Data
 public class UploadResult {
 
-    private String name;
     private Date creationDate;
-    private String location;
+    private String fileUrl;
+
+    public UploadResult(String fileUrl) {
+        this.fileUrl = fileUrl;
+        this.creationDate = new Date();
+    }
+
+    public UploadResult() {
+
+    }
 }
