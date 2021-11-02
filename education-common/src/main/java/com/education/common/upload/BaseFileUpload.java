@@ -47,5 +47,12 @@ public abstract class BaseFileUpload implements FileUpload {
         }
     }
 
+    protected String generateFileKey(String path) {
+        if (path.endsWith(StrUtil.SLASH)) {
+            return path;
+        }
+        return path + StrUtil.SLASH;
+    }
+
     abstract UploadResult doCreateBucket(String name);
 }

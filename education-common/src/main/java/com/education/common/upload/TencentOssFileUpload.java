@@ -7,7 +7,10 @@ import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.COSCredentials;
 import com.qcloud.cos.model.CannedAccessControlList;
 import com.qcloud.cos.model.CreateBucketRequest;
+import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.region.Region;
+import java.io.File;
+import java.io.InputStream;
 
 
 /**
@@ -57,13 +60,48 @@ public class TencentOssFileUpload extends BaseFileUpload {
     }
 
     @Override
-    public UploadResult putObject(String filePath, String fileName) {
-        cosClient.shutdown();
-        return null;
+    public UploadResult putObject(String filePath, String fileName, File file) {
+        return this.putObject(parentBucketName, filePath, fileName, file);
     }
 
     @Override
-    public UploadResult putObject(String bucket, String filePath, String fileName) {
-        return null;
+    public UploadResult putObject(String bucket, String filePath, String fileName, File file) {
+        try {
+            this.cosClient.putObject(bucket, super.generateFileKey(filePath) + fileName, file);
+            return new UploadResult();
+        } finally {
+            this.closeClient();
+        }
+    }
+
+    @Override
+    public UploadResult putObject(String filePath, String fileName, InputStream inputStream) {
+        return this.putObject(parentBucketName, filePath, fileName, inputStream);
+    }
+
+    @Override
+    public UploadResult putObject(String bucket, String filePath, String fileName, InputStream inputStream) {
+        try {
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            this.cosClient.putObject(bucket, super.generateFileKey(filePath) + fileName, inputStream, objectMetadata);
+            return new UploadResult();
+        } finally {
+            closeClient();
+        }
+    }
+
+    @Override
+    public UploadResult deleteObject(String filePath) {
+        return this.deleteObject(parentBucketName, filePath);
+    }
+
+    @Override
+    public UploadResult deleteObject(String bucket, String filePath) {
+        try {
+            this.cosClient.deleteObject(bucket, filePath);
+            return new UploadResult();
+        } finally {
+            closeClient();
+        }
     }
 }
