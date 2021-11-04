@@ -53,10 +53,10 @@ public class DistributeShiroSession extends AbstractSessionDAO {
         if (ObjectUtils.isEmpty(sessionId)) {
             throw new NullPointerException("id argument cannot be null.");
         }
-        boolean rememberMe = UserHold.getRememberMe();
+      /*  boolean rememberMe = UserHold.getRememberMe();
         if (rememberMe) {
             redisCacheBean.put(SESSION_KEY, sessionId, session, expire);
-        }
+        } */
         redisCacheBean.put(SESSION_KEY, sessionId, session, CacheTime.ONE_HOUR_SECOND);
     }
 
