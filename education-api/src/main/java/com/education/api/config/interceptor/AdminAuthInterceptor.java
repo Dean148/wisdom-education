@@ -28,6 +28,9 @@ public class AdminAuthInterceptor extends BaseInterceptor {
 		else if (targetUrl.startsWith("/api/upload")) {
 			return true;
 		}
+		else if (targetUrl.startsWith("/uploads")) {
+			return true;
+		}
 		return checkToken(request, response);
 	}
 }

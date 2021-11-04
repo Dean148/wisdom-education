@@ -47,7 +47,7 @@ public class CourseInfo extends BaseEntity<CourseInfo> {
 	private Integer sectionNumber;
 
 	@TableField("push_time")
-	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+	@JsonFormat(pattern = "yyyy年MM月dd日", timezone = "GMT+8")
 	private Date pushTime;
 
 	@TableField("valuate_Mark")

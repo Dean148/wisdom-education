@@ -2,7 +2,6 @@ package com.education.common.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
-import com.jfinal.weixin.sdk.utils.HttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

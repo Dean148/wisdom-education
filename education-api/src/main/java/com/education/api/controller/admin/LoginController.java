@@ -89,7 +89,7 @@ public class LoginController extends BaseController {
             String token;
             // 是否记住密码登录
             boolean rememberMe = userLoginRequest.isChecked();
-            UserHold.putRememberMe(rememberMe);
+          //  UserHold.putRememberMe(rememberMe);
             Integer timeOut;
             if (rememberMe) {
                 timeOut = CacheTime.ONE_WEEK_MILLIS;
