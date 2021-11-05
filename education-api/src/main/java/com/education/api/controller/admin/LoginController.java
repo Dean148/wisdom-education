@@ -1,6 +1,5 @@
 package com.education.api.controller.admin;
 
-import com.education.api.config.shiro.DistributeShiroSession;
 import com.education.business.service.WebSocketMessageService;
 import com.education.business.service.system.SystemAdminService;
 import com.education.business.task.TaskManager;
@@ -22,13 +21,12 @@ import com.jfinal.kit.Kv;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.mgt.DefaultSessionManager;
 import org.apache.shiro.subject.Subject;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,13 +66,8 @@ public class LoginController extends BaseController {
      */
     @PostMapping("/login")
     @SystemLog(describe = "登录管理系统")
-    @ParamsValidate(params = {
-            @Param(name = "userName", message = "请输入用户名"),
-            @Param(name = "password", message = "请输入密码"),
-            @Param(name = "key", message = "请传递一个验证码时间戳")
-    }, paramsType = ParamsType.JSON_DATA)
     @FormLimit
-    public Result<Map> login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response,
+    public Result<Map> login(@RequestBody @Validated UserLoginRequest userLoginRequest, HttpServletResponse response,
                              HttpServletRequest request) {
         String codeKey = userLoginRequest.getKey();
         String imageCode = userLoginRequest.getCode();
@@ -82,65 +75,61 @@ public class LoginController extends BaseController {
         if (!imageCode.equalsIgnoreCase(cacheCode)) {
             return Result.fail(ResultCode.CODE_ERROR, "验证码输入错误");
         }
-        Result result = systemAdminService.login(userLoginRequest.getUserName(), userLoginRequest.getPassword());
-
-        if (result.isSuccess()) {
-            Integer adminUserId = systemAdminService.getAdminUserId();
-            String token;
-            // 是否记住密码登录
-            boolean rememberMe = userLoginRequest.isChecked();
-            UserHold.putRememberMe(rememberMe);
-            Integer timeOut;
-            if (rememberMe) {
-                timeOut = CacheTime.ONE_WEEK_MILLIS;
-                // 先删除JSESSIONID
-                Cookie cookie = RequestUtils.getCookie(SystemConstants.DEFAULT_SESSION_COOKIE_NAME);
-                if (ObjectUtils.isNotEmpty(cookie)) {
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
-                }
-                RequestUtils.createCookie(SystemConstants.DEFAULT_SESSION_COOKIE_NAME, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
-                token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存7天
-                timeOut = CacheTime.ONE_WEEK_MILLIS;
-            } else {
-                timeOut = CacheTime.ONE_HOUR_MILLIS;
-                token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存1小时
-                timeOut = CacheTime.ONE_HOUR_MILLIS;
+        systemAdminService.login(userLoginRequest.getUserName(), userLoginRequest.getPassword());
+        Integer adminUserId = systemAdminService.getAdminUserId();
+        String token;
+        // 是否记住密码登录
+        boolean rememberMe = userLoginRequest.isChecked();
+        UserHold.putRememberMe(rememberMe);
+        Integer timeOut;
+        if (rememberMe) {
+            timeOut = CacheTime.ONE_WEEK_MILLIS;
+            // 先删除JSESSIONID
+            Cookie cookie = RequestUtils.getCookie(SystemConstants.DEFAULT_SESSION_COOKIE_NAME);
+            if (ObjectUtils.isNotEmpty(cookie)) {
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
             }
-            AdminUserSession userSession = systemAdminService.getAdminUserSession();
-            systemAdminService.loadUserMenuAndPermission(userSession);
-            String sessionId = request.getSession().getId();
-            userSession.setSessionId(sessionId);
-            userSession.setToken(token);
-
-            RLock lock = redissonClient.getLock(CacheKey.USER_SYNC_LONGIN + adminUserId);
-            try {
-                lock.lock(); // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
-                // 分布式情况下建议使用redission分布式锁
-                webSocketMessageService.checkOnlineUser(adminUserId);
-                onlineUserManager.addOnlineUser(sessionId, userSession,
-                        new Long(timeOut / 1000).intValue());
-            } finally {
-                lock.unlock();
-            }
-
-            response.addHeader(AuthConstants.AUTHORIZATION, token);
-            Kv userInfo = Kv.create().set("id", userSession.getAdminId())
-                    .set("permissionList", userSession.getPermissionList())
-                    .set("menuList", userSession.getMenuTreeList())
-                    .set("login_name", userSession.getSystemAdmin().getLoginName());
-            Map resultMap = new HashMap<>();
-            resultMap.put("userInfo", userInfo);
-            // 异步更新用户相关信息
-            TaskParam taskParam = new TaskParam(UserLoginSuccessListener.class);
-            taskParam.put("userSession", userSession);
-            taskParam.put("request", RequestUtils.getRequest());
-            taskManager.pushTask(taskParam);
-            // 更新shiro 用户信息，避免与redis 缓存中用户信息不一致问题
-            systemAdminService.updateShiroCacheUserInfo(userSession);
-            result.setData(resultMap);
+            RequestUtils.createCookie(SystemConstants.DEFAULT_SESSION_COOKIE_NAME, request.getSession().getId(), CacheTime.ONE_WEEK_SECOND);
+            token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存7天
+            timeOut = CacheTime.ONE_WEEK_MILLIS;
+        } else {
+            timeOut = CacheTime.ONE_HOUR_MILLIS;
+            token = jwtToken.createToken(adminUserId, timeOut); // 默认缓存1小时
+            timeOut = CacheTime.ONE_HOUR_MILLIS;
         }
-        return result;
+        AdminUserSession userSession = systemAdminService.getAdminUserSession();
+        systemAdminService.loadUserMenuAndPermission(userSession);
+        String sessionId = request.getSession().getId();
+        userSession.setSessionId(sessionId);
+        userSession.setToken(token);
+
+        RLock lock = redissonClient.getLock(CacheKey.USER_SYNC_LONGIN + adminUserId);
+        try {
+            lock.lock(); // 防止相同账号并发登录, 并发登录情况可能造成相同账号同时在线
+            // 分布式情况下建议使用redission分布式锁
+            webSocketMessageService.checkOnlineUser(adminUserId);
+            onlineUserManager.addOnlineUser(sessionId, userSession,
+                    new Long(timeOut / 1000).intValue());
+        } finally {
+            lock.unlock();
+        }
+
+        response.addHeader(AuthConstants.AUTHORIZATION, token);
+        Kv userInfo = Kv.create().set("id", userSession.getAdminId())
+                .set("permissionList", userSession.getPermissionList())
+                .set("menuList", userSession.getMenuTreeList())
+                .set("login_name", userSession.getSystemAdmin().getLoginName());
+        Map resultMap = new HashMap<>();
+        resultMap.put("userInfo", userInfo);
+        // 异步更新用户相关信息
+        TaskParam taskParam = new TaskParam(UserLoginSuccessListener.class);
+        taskParam.put("userSession", userSession);
+        taskParam.put("request", RequestUtils.getRequest());
+        taskManager.pushTask(taskParam);
+        // 更新shiro 用户信息，避免与redis 缓存中用户信息不一致问题
+        systemAdminService.updateShiroCacheUserInfo(userSession);
+        return Result.success(resultMap);
     }
 
     /**
