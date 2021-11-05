@@ -3,7 +3,8 @@ package com.education.api.controller.admin.system;
 import com.education.business.service.system.WebsiteConfigService;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
-import com.education.model.entity.WebsiteConfig;
+import com.education.model.dto.WebsiteConfigDto;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
@@ -25,8 +26,8 @@ public class WebSiteConfigController extends BaseController {
     }
 
     @PostMapping
-    public Result saveOrUpdate(@RequestBody WebsiteConfig websiteConfig) {
-        websiteConfigService.saveOrUpdate(websiteConfig);
+    public Result saveOrUpdate(@RequestBody @Validated WebsiteConfigDto websiteConfigDto) {
+        websiteConfigService.saveOrUpdate(websiteConfigDto);
         return Result.success();
     }
 }
