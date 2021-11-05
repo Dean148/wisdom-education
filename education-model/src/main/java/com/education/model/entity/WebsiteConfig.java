@@ -1,13 +1,8 @@
 package com.education.model.entity;
 
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.education.common.utils.ObjectUtils;
-
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 /**
  * @author zengjintao
@@ -24,20 +19,6 @@ public class WebsiteConfig extends BaseEntity<WebsiteConfig> {
     @NotBlank(message = "请上传网站轮播图")
     @TableField("carousel_image")
     private String carouselImage;
-
-    @TableField(exist = false)
-    private List<String> carouselImageList;
-
-    public void setCarouselImageList(List<String> carouselImageList) {
-        this.carouselImageList = carouselImageList;
-    }
-
-    public List<String> getCarouselImageList() {
-        if (StrUtil.isNotBlank(carouselImage)) {
-            return ObjectUtils.spiltToList(carouselImage);
-        }
-        return carouselImageList;
-    }
 
     public String getLogoUrl() {
         return logoUrl;
