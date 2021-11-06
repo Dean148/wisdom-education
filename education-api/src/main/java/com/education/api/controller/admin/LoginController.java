@@ -129,7 +129,7 @@ public class LoginController extends BaseController {
         taskManager.pushTask(taskParam);
         // 更新shiro 用户信息，避免与redis 缓存中用户信息不一致问题
         systemAdminService.updateShiroCacheUserInfo(userSession);
-        return Result.success(resultMap);
+        return Result.success(ResultCode.SUCCESS, "登录成功", resultMap);
     }
 
     /**
