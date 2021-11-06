@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WebsiteConfigService extends BaseService<WebsiteConfigMapper, WebsiteConfig> {
 
-    public Object getWebSiteConfig() {
+    public WebsiteConfig getWebSiteConfig() {
         return super.selectFirst(new QueryWrapper<>());
     }
 }
