@@ -91,24 +91,19 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         }
     }
 
-    public Result login(String loginName, String password) {
-        Result result = new Result();
+    public void login(String loginName, String password) {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(loginName, password);
         try {
             subject.login(token);
-            result.setCode(ResultCode.SUCCESS);
-            result.setMessage("登录成功");
         } catch (Exception e) {
             log.error("登录失败", e);
-            result.setCode(ResultCode.FAIL);
             if (e instanceof UnknownAccountException) {
-                result.setMessage("用户不存在");
+                throw new BusinessException("用户不存在");
             } else {
-                result.setMessage("用户名或密码错误");
+                throw new BusinessException("用户名或密码错误");
             }
         }
-        return result;
     }
 
     @Transactional
