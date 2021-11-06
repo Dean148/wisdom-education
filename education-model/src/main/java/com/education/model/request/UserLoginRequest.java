@@ -1,5 +1,7 @@
 package com.education.model.request;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author zengjintao
  * @version 1.0
@@ -7,9 +9,13 @@ package com.education.model.request;
  */
 public class UserLoginRequest {
 
+    @NotBlank(message = "请输入用户名")
     private String userName;
+    @NotBlank(message = "请输入密码")
     private String password;
+    @NotBlank(message = "请传递一个验证码时间戳")
     private String key;
+    @NotBlank(message = "请输入验证码")
     private String code;
     private boolean checked = false;
 

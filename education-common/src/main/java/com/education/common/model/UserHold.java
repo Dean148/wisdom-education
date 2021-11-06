@@ -13,7 +13,7 @@ public class UserHold {
         REMEMBER_ME.set(value);
     }
 
-    public static boolean getRememberMe() {
+    public static Boolean getRememberMe() {
         return REMEMBER_ME.get();
     }
 }
