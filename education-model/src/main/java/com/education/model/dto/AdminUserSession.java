@@ -96,7 +96,7 @@ public class AdminUserSession extends BaseDto {
         if (ObjectUtils.isEmpty(systemAdmin)) {
             return false;
         }
-        return systemAdmin.getSuperFlag() == EnumConstants.Flag.YES.getValue();
+        return EnumConstants.Flag.YES.getValue().equals(systemAdmin.getSuperFlag());
     }
 
 }

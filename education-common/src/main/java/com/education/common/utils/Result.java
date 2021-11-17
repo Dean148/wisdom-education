@@ -17,18 +17,18 @@ import java.io.Serializable;
 public final class Result<T> implements Serializable {
 
     private T data;
-    private int code;
+    private Integer code;
     private static final String DEFAULT_SUCCESS_MESSAGE = "操作成功";
     private static final String DEFAULT_FAIL_MESSAGE = "操作失败";
     private String message = DEFAULT_SUCCESS_MESSAGE;
 
-    public Result(int code, String message) {
+    public Result(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
 
     public boolean isSuccess() {
-        return this.code == ResultCode.SUCCESS;
+        return ResultCode.SUCCESS.equals(this.code);
     }
 
     public Result() {
@@ -36,11 +36,11 @@ public final class Result<T> implements Serializable {
         this.message = DEFAULT_SUCCESS_MESSAGE;
     }
 
-    public Result(int code) {
+    public Result(Integer code) {
         this.code = code;
     }
 
-    public Result(int code, T data) {
+    public Result(Integer code, T data) {
         this.code = code;
         this.data = data;
     }
@@ -56,11 +56,11 @@ public final class Result<T> implements Serializable {
         this.data = data;
     }
 
-    public static <T> Result success(int code, String message, T data) {
+    public static <T> Result success(Integer code, String message, T data) {
         return new Result(code, message, data);
     }
 
-    public static <T> Result success(int code, T data) {
+    public static <T> Result success(Integer code, T data) {
         return new Result(code, DEFAULT_SUCCESS_MESSAGE, data);
     }
 
@@ -68,11 +68,11 @@ public final class Result<T> implements Serializable {
         return new Result(ResultCode.SUCCESS, DEFAULT_SUCCESS_MESSAGE);
     }
 
-    public static <T> Result success(int code, String message) {
+    public static <T> Result success(Integer code, String message) {
         return new Result(code, message);
     }
 
-    public Result(int code, String message, T data) {
+    public Result(Integer code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
@@ -86,11 +86,11 @@ public final class Result<T> implements Serializable {
         return new Result(resultCode.getCode(), resultCode.getMessage());
     }
 
-    public static Result fail(int code) {
+    public static Result fail(Integer code) {
         return new Result(code, DEFAULT_FAIL_MESSAGE);
     }
 
-    public static Result fail(int code, String message) {
+    public static Result fail(Integer code, String message) {
         return new Result(code, message);
     }
 
@@ -106,7 +106,7 @@ public final class Result<T> implements Serializable {
         this.data = data;
     }
 
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 
@@ -130,7 +130,7 @@ public final class Result<T> implements Serializable {
 
     public static void renderJson(HttpServletResponse response, Result result) {
         String dataJson = JSONObject.toJSONString(result);
-        PrintWriter writer = null;
+        PrintWriter writer;
         try {
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Cache-Control", "no-cache");
@@ -144,6 +144,4 @@ public final class Result<T> implements Serializable {
             throw new RuntimeException(e);
         }
     }
-
-
 }
