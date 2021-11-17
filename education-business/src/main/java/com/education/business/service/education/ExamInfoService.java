@@ -110,13 +110,13 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         QuestionCorrect questionCorrect = new SystemQuestionCorrect(studentQuestionRequest, examInfo,
                 queueManager, getQuestionAnswerInfoByPaperId(testPaperInfoId));
         questionCorrect.correctStudentQuestion();
-        int commitAfterType = EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue();
+        Integer commitAfterType = EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue();
         if (testPaperInfoSetting != null) {
             commitAfterType = testPaperInfoSetting.getCommitAfterType();
         }
         examInfo = questionCorrect.getExamInfo();
         // 获取系统评分之后立即返回客户端, 然后通过rabbitmq 异步保存学员答题记录及错题信息
-        if (commitAfterType == EnumConstants.CommitAfterType.SHOW_MARK_NOW.getValue()) {
+        if (EnumConstants.CommitAfterType.SHOW_MARK_NOW.getValue().equals(commitAfterType)) {
             // redis 计算分数排行榜
             Set<ZSetOperations.TypedTuple<StudentInfo>> tuples = new HashSet<>();
             Integer systemMark = examInfo.getSystemMark();
@@ -315,7 +315,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     @Transactional
     public void correctStudentExam(StudentQuestionRequest studentQuestionRequest) {
         ExamInfo examInfo = super.getById(studentQuestionRequest.getExamInfoId());
-        if (examInfo.getCorrectFlag().intValue() == ResultCode.SUCCESS) {
+        if (ResultCode.SUCCESS.equals(examInfo.getCorrectFlag())) {
             throw new BusinessException(new ResultCode(ResultCode.FAIL, "试卷已被批改"));
         }
         Integer studentId = studentQuestionRequest.getStudentId();

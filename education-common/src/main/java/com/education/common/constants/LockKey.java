@@ -9,4 +9,5 @@ package com.education.common.constants;
 public interface LockKey {
 
     String COURSE_INFO = "courseInfo:";
+    String COURSE_INFO_VALUATE = "courseInfoValuate:";
 }

@@ -1,8 +1,6 @@
 package com.education.api.controller.admin.education;
 
-import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
-import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.education.business.service.education.StudentInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.model.ExcelResult;
@@ -124,7 +122,7 @@ public class StudentInfoController extends BaseController {
         String msg = successCount + "名学员数据导入成功";
         if (failCount > 0) {
             msg += failCount + "名学员数据导入失败(分别为)" + excelResult.getErrorMsg();
-            return Result.success(ResultCode.EXCEL_VERFIY_FAIL, msg, excelResult.getErrorExcelUrl());
+            return Result.success(ResultCode.EXCEL_VERIFICATION_FAIL, msg, excelResult.getErrorExcelUrl());
         }
         return Result.success(ResultCode.SUCCESS, msg);
     }
