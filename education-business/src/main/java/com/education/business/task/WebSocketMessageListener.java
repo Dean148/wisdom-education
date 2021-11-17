@@ -41,12 +41,12 @@ public class WebSocketMessageListener implements TaskListener {
             Thread.sleep(5000); // 休眠5秒后在发送消息到前端
             Integer messageType = taskParam.getInt("message_type");
             String content = "";
-            if (messageType == EnumConstants.MessageType.STUDENT_LOGIN.getValue()) {
+            if (EnumConstants.MessageType.STUDENT_LOGIN.getValue().equals(messageType)) {
                 String ip = taskParam.getStr("ip");
                 String address = IpUtils.getIpAddress(ip);
                 content = "您的账号已在" + address + "登录，" +
                         "5秒后将自动下线，如非本人操作请重新登录并及时修改密码";
-            } else if (messageType == EnumConstants.MessageType.EXAM_CORRECT.getValue()) {
+            } else if (EnumConstants.MessageType.EXAM_CORRECT.getValue().equals(messageType)) {
                this.publishExamMessage(taskParam);
             }
 

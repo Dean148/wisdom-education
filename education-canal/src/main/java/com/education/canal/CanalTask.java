@@ -1,5 +1,6 @@
 package com.education.canal;
 
+import cn.hutool.json.JSONUtil;
 import com.alibaba.otter.canal.protocol.exception.CanalClientException;
 import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
@@ -100,7 +101,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
 
         //   System.out.printf(beansOfType.toString());
         taskManager.pushTask(() -> {
-           // Thread.currentThread().setName("Canal Connection Task");
+            // Thread.currentThread().setName("Canal Connection Task");
             this.canalListener();
         });
     }
@@ -110,6 +111,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
 
         for (Entry entry : entryList) {
 
+            log.info("canal监听到数据: " + JSONUtil.toJsonStr(entry));
             if (entry.getEntryType() == EntryType.TRANSACTIONBEGIN || entry.getEntryType() == EntryType.TRANSACTIONEND) {
                 continue;
             }
@@ -125,6 +127,9 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
             CanalTableListener canalTableListener = canalTableListenerMap.get(table);
             if (tableInfo != null && canalTableListener != null) {
                 List<TableFieldInfo> tableFieldInfoList = tableInfo.getFieldList();
+
+                String primaryKey = tableInfo.getKeyColumn();
+                Class<?> primaryKeyClazz = tableInfo.getKeyType();
 
                 Map<String, ColumnField> columnFieldMapping = new HashMap<>();
                 tableFieldInfoList.forEach(item -> {
@@ -142,14 +147,14 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
 
                     Map<String, Object> data;
                     if (eventType == EventType.DELETE) {
-                        data = columnToMap(rowData.getBeforeColumnsList(), columnFieldMapping);
+                        data = columnToMap(rowData.getBeforeColumnsList(), primaryKey, primaryKeyClazz, columnFieldMapping);
                         canalTableListener.onDelete(jackson.parse(jackson.toJson(data), tableInfo.getEntityType()));
                     } else if (eventType == EventType.INSERT) {
-                        data = columnToMap(rowData.getAfterColumnsList(), columnFieldMapping);
+                        data = columnToMap(rowData.getAfterColumnsList(), primaryKey, primaryKeyClazz, columnFieldMapping);
                         canalTableListener.onInsert(jackson.parse(jackson.toJson(data), tableInfo.getEntityType()));
                     } else {
-                        Map<String, Object> beforeData = columnToMap(rowData.getBeforeColumnsList(), columnFieldMapping);
-                        Map<String, Object> afterData = columnToMap(rowData.getAfterColumnsList(), columnFieldMapping);
+                        Map<String, Object> beforeData = columnToMap(rowData.getBeforeColumnsList(), primaryKey, primaryKeyClazz, columnFieldMapping);
+                        Map<String, Object> afterData = columnToMap(rowData.getAfterColumnsList(), primaryKey, primaryKeyClazz, columnFieldMapping);
                         canalTableListener.onUpdate(jackson.parse(jackson.toJson(beforeData), tableInfo.getEntityType()),
                                 jackson.parse(jackson.toJson(afterData), tableInfo.getEntityType()));
                     }
@@ -158,14 +163,14 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
         }
     }
 
-    private Map<String, Object> columnToMap(List<Column> columns, Map<String, ColumnField> columnFieldMapping) throws Exception {
+    private Map<String, Object> columnToMap(List<Column> columns, String primaryKey, Class<?> primaryKeyClazz, Map<String, ColumnField> columnFieldMapping) throws Exception {
         Map<String, Object> columnMap = new HashMap<>();
         for (Column column : columns) {
             ColumnField columnField = columnFieldMapping.get(column.getName());
             Object value;
             TypeConverter typeConverter = TypeConverter.me();
-            if (column.getName().equals("id")) {
-                value = typeConverter.convert(Integer.class, column.getValue());
+            if (column.getName().equals(primaryKey)) {
+                value = typeConverter.convert(primaryKeyClazz, column.getValue());
                 columnMap.put(column.getName(), value);
             } else {
                 value = typeConverter.convert(columnField.getField().getType(), column.getValue());
@@ -180,8 +185,8 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
         long sleep = 10000; // 休眠10秒
         try {
             log.info("Start Connection Canal Server....................");
-            connector = CanalConnectors.newSingleConnector(new InetSocketAddress(AddressUtils.getHostIp(),
-                    11111), "example", "", "");
+            connector = CanalConnectors.newSingleConnector(new InetSocketAddress(canalProperties.getHost(),
+                    canalProperties.getPort()), canalProperties.getDestination(), canalProperties.getUserName(), canalProperties.getPassword());
             connector.connect();
         } catch (Exception e) {
             log.error("Canal Client Connection Error", e);
