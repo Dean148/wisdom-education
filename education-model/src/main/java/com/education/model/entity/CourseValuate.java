@@ -29,6 +29,7 @@ public class CourseValuate extends BaseEntity<CourseValuate> {
     private Integer valuateType;
 
     @NotNull(message = "请评价课程分数")
+    @TableField("valuate_mark")
     private Integer valuateMark;
 
 
