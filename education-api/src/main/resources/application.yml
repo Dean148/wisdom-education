@@ -5,6 +5,7 @@ oss:
     platform: tencent
     region: ap-nanjing
 spring:
+
   main:
     allow-bean-definition-overriding: true
   profiles:
@@ -18,3 +19,6 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: mapper/**/*.xml
+nacos:
+  config:
+    server-addr: 127.0.0.1:8848

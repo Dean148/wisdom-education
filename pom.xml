@@ -21,6 +21,7 @@
     <easypoi.version>3.2.0</easypoi.version>
     <swagger2.version>2.9.2</swagger2.version>
     <project.version>1.0.3-RELEASE</project.version>
+    <nacos-config-spring-boot.version>0.2.1</nacos-config-spring-boot.version>
   </properties>
 
   <groupId>com.education</groupId>
@@ -39,6 +40,18 @@
   </modules>
 
   <dependencies>
+
+    <dependency>
+      <groupId>com.alibaba.boot</groupId>
+      <artifactId>nacos-config-spring-boot-starter</artifactId>
+      <version>${nacos-config-spring-boot.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.alibaba.boot</groupId>
+      <artifactId>nacos-config-spring-boot-actuator</artifactId>
+      <version>${nacos-config-spring-boot.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>com.sun.mail</groupId>
