@@ -47,6 +47,15 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
+  mail:
+    host: smtp.163.com
+    port: 25
+    username: 18296640717@163.com
+    password: KIZMPBYPLMWTIZGP
+    properties:
+      mail:
+        #表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+        debug: true
 lbs:
   key: MYOBZ-OOEW3-KYC3G-YWDXA-DMQJ6-SPBMH
 
