@@ -1,5 +1,7 @@
 package com.education.common.upload;
 
+import com.education.common.enums.OssPlatformEnum;
+
 import java.io.File;
 import java.io.InputStream;
 
@@ -28,4 +30,8 @@ public interface FileUpload {
     void deleteObject(String filePath);
 
     void deleteObject(String bucket, String filePath);
+
+    default String getName() {
+        return OssPlatformEnum.LOCAL.getValue();
+    }
 }

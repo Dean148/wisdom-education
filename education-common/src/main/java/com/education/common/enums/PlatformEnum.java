@@ -5,7 +5,7 @@ package com.education.common.enums;
  * @create_at 2021/10/23 11:30
  * @since version 1.0.3
  */
-public enum  PlatformEnum {
+public enum PlatformEnum {
 
     SYSTEM_ADMIN("educationAdmin", "管理后台"),
     SYSTEM_STUDENT("educationStudent", "学生端");

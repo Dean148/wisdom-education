@@ -1,10 +1,12 @@
 package com.baidu.ueditor.upload;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.baidu.ueditor.PathFormat;
 import com.baidu.ueditor.define.AppInfo;
 import com.baidu.ueditor.define.BaseState;
 import com.baidu.ueditor.define.FileType;
 import com.baidu.ueditor.define.State;
+import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -40,7 +42,8 @@ public class BinaryUploader {
 				return new BaseState(false, AppInfo.NOT_ALLOW_FILE_TYPE);
 			}
 			savePath = PathFormat.parse(savePath, originFileName);
-			String physicalPath = (String)conf.get("basePath") + savePath;
+			String physicalPath = null; // (String)conf.get("basePath") + savePath;
+			//SpringUtil.getProperty()
 			InputStream is = multipartFile.getInputStream();
 			State storageState = StorageManager.saveFileByInputStream(is,
 					physicalPath, maxSize);
@@ -55,6 +58,11 @@ public class BinaryUploader {
 			e.printStackTrace();
 		}
 		return new BaseState(false, AppInfo.IO_ERROR);
+	}
+
+	private static void uploadOssFile() {
+		FileUpload fileUpload = SpringUtil.getBean(FileUpload.class);
+
 	}
 
 	private static boolean validType(String type, String[] allowTypes) {

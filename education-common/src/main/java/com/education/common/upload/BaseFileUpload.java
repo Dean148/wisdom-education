@@ -55,4 +55,5 @@ public abstract class BaseFileUpload implements FileUpload {
     }
 
     abstract UploadResult doCreateBucket(String name);
+
 }

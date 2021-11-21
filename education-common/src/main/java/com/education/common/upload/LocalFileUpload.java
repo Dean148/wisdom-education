@@ -3,7 +3,6 @@ package com.education.common.upload;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.education.common.config.OssProperties;
-import com.education.common.utils.FileUtils;
 import com.jfinal.kit.FileKit;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +17,7 @@ import java.io.InputStream;
 public class LocalFileUpload extends BaseFileUpload {
 
     private final String uploadPath;
-    private MultipartFile file;
+    private ThreadLocal<MultipartFile> multipartFileThreadLocal = new ThreadLocal<>();
 
     public LocalFileUpload(OssProperties ossProperties, String applicationName, String uploadPath) {
         super(ossProperties, applicationName);
@@ -31,7 +30,11 @@ public class LocalFileUpload extends BaseFileUpload {
     }
 
     public void setFile(MultipartFile file) {
-        this.file = file;
+        multipartFileThreadLocal.set(file);
+    }
+
+    public MultipartFile getFile() {
+        return multipartFileThreadLocal.get();
     }
 
     @Override
@@ -55,7 +58,8 @@ public class LocalFileUpload extends BaseFileUpload {
 
     @Override
     public UploadResult putObject(String filePath, String fileName, InputStream inputStream) {
-        return null;
+        FileUtil.writeFromStream(inputStream, new File(uploadPath + filePath + fileName));
+        return new UploadResult();
     }
 
     @Override
