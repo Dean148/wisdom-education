@@ -48,8 +48,7 @@ public class BinaryUploader {
 			if (!flag) {
 				String physicalPath = conf.get("basePath") + savePath;
 				InputStream is = multipartFile.getInputStream();
-				storageState = StorageManager.saveFileByInputStream(is,
-						physicalPath, maxSize);
+				storageState = StorageManager.saveFileByInputStream(is, physicalPath, maxSize);
 				is.close();
 			} else {
 				storageState = new BaseState();

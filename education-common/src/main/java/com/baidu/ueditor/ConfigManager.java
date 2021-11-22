@@ -68,7 +68,7 @@ public final class ConfigManager {
 		try {
 			return new ConfigManager(rootPath, contextPath, uri);
 		} catch ( Exception e ) {
-			log.error("can not init the bean" + ConfigManager.class, e);
+			log.error("can not init the bean " + ConfigManager.class, e);
 		}
 		return null;
 	}
