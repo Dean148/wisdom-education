@@ -59,13 +59,10 @@ weChat:
   token: education
   appSecret: e03f5ab03906d4d943675c233d4c3cb3
 
-## 文件上传根路径
-file:
-  uploadPath: F:\\uploads\\
-
 # 是否开启  canal 数据同步
 canal:
   openFlag: false
+
 # sharding jdbc 读写分离配置
 sharding:
   jdbc:

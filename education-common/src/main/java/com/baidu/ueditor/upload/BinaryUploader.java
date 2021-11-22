@@ -8,6 +8,7 @@ import com.baidu.ueditor.define.FileType;
 import com.baidu.ueditor.define.State;
 import com.education.common.enums.OssPlatformEnum;
 import com.education.common.upload.FileUpload;
+import com.education.common.utils.FileUtils;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -42,9 +43,9 @@ public class BinaryUploader {
 				return new BaseState(false, AppInfo.NOT_ALLOW_FILE_TYPE);
 			}
 			savePath = PathFormat.parse(savePath, originFileName);
-			String platform = SpringUtil.getProperty("oss.upload.platform");
+			boolean flag = FileUtils.isOpenOssUpload();
 			State storageState;
-			if (OssPlatformEnum.LOCAL.getValue().equals(platform)) {
+			if (!flag) {
 				String physicalPath = conf.get("basePath") + savePath;
 				InputStream is = multipartFile.getInputStream();
 				storageState = StorageManager.saveFileByInputStream(is,
