@@ -9,6 +9,9 @@ import com.qcloud.cos.model.CannedAccessControlList;
 import com.qcloud.cos.model.CreateBucketRequest;
 import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.region.Region;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.InputStream;
 
@@ -25,8 +28,11 @@ public class TencentOssFileUpload extends BaseFileUpload {
 
     private String ossHost;
 
+    private final Logger logger = LoggerFactory.getLogger(TencentOssFileUpload.class);
+
     public TencentOssFileUpload(OssProperties ossProperties, String env, String applicationName) {
         super(ossProperties, env, applicationName);
+        super.checkOssProperty();
         this.initCOSClient();
     }
 
@@ -45,12 +51,15 @@ public class TencentOssFileUpload extends BaseFileUpload {
     }
 
     @Override
-    UploadResult doCreateBucket(String name) {
+    public UploadResult createBucket(String name) {
         try {
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(name);
             createBucketRequest.setCannedAcl(CannedAccessControlList.Private);
             cosClient.createBucket(createBucketRequest);
             return new UploadResult();
+        } catch (Exception e) {
+            logger.error("{}:桶创建失败...", name, e);
+            return null;
         } finally {
             closeClient();
         }
@@ -59,6 +68,18 @@ public class TencentOssFileUpload extends BaseFileUpload {
     private void closeClient() {
         if (cosClient != null) {
             cosClient.shutdown();
+        }
+    }
+
+    @Override
+    public UploadResult putObject(String file, InputStream inputStream) {
+        try {
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            this.cosClient.putObject(parentBucketName, file, inputStream, objectMetadata);
+            String fileUrl = ossHost + file;
+            return new UploadResult(fileUrl);
+        } finally {
+            closeClient();
         }
     }
 

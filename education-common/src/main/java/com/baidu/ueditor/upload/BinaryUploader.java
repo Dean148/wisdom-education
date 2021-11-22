@@ -6,11 +6,11 @@ import com.baidu.ueditor.define.AppInfo;
 import com.baidu.ueditor.define.BaseState;
 import com.baidu.ueditor.define.FileType;
 import com.baidu.ueditor.define.State;
-import org.apache.commons.fileupload.FileUpload;
+import com.education.common.enums.OssPlatformEnum;
+import com.education.common.upload.FileUpload;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,12 +42,19 @@ public class BinaryUploader {
 				return new BaseState(false, AppInfo.NOT_ALLOW_FILE_TYPE);
 			}
 			savePath = PathFormat.parse(savePath, originFileName);
-			String physicalPath = null; // (String)conf.get("basePath") + savePath;
-			//SpringUtil.getProperty()
-			InputStream is = multipartFile.getInputStream();
-			State storageState = StorageManager.saveFileByInputStream(is,
-					physicalPath, maxSize);
-			is.close();
+			String platform = SpringUtil.getProperty("oss.upload.platform");
+			State storageState;
+			if (OssPlatformEnum.LOCAL.getValue().equals(platform)) {
+				String physicalPath = conf.get("basePath") + savePath;
+				InputStream is = multipartFile.getInputStream();
+				storageState = StorageManager.saveFileByInputStream(is,
+						physicalPath, maxSize);
+				is.close();
+			} else {
+				storageState = new BaseState();
+				uploadOssFile(savePath, multipartFile);
+			}
+
 			if (storageState.isSuccess()) {
 				storageState.putInfo("url", PathFormat.format(savePath));
 				storageState.putInfo("type", suffix);
@@ -60,9 +67,9 @@ public class BinaryUploader {
 		return new BaseState(false, AppInfo.IO_ERROR);
 	}
 
-	private static void uploadOssFile() {
+	private static void uploadOssFile(String file, MultipartFile multipartFile) throws IOException {
 		FileUpload fileUpload = SpringUtil.getBean(FileUpload.class);
-
+		fileUpload.putObject(file, multipartFile.getInputStream());
 	}
 
 	private static boolean validType(String type, String[] allowTypes) {

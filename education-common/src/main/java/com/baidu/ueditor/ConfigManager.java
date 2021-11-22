@@ -1,5 +1,7 @@
 package com.baidu.ueditor;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.baidu.ueditor.define.ActionMap;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -168,6 +170,9 @@ public final class ConfigManager {
 	}
 	
 	private InputStream getConfigPath () throws Exception {
+		if (StrUtil.isBlank(configFileName)) {
+			configFileName = SpringUtil.getProperty("ueditor.configFileName");
+		}
 		return this.getClass().getClassLoader().getResourceAsStream(configFileName);
 	}
 

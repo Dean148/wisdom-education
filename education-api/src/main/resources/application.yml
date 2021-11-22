@@ -2,7 +2,8 @@ oss:
   upload:
     secretId: AKIDSjlW1GEvLUs3xax4tRijX4LL5XioiNmw
     secretKey: wc3D8oEPKzPZVBblfKjtnTt3xc1A3oJY
-    platform: tencent
+    platform: local
+    bucketName: D:\\home\\
     region: ap-nanjing
 spring:
 

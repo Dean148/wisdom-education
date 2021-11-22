@@ -1,7 +1,5 @@
 package com.education.common.upload;
 
-import com.education.common.enums.OssPlatformEnum;
-
 import java.io.File;
 import java.io.InputStream;
 
@@ -17,7 +15,9 @@ public interface FileUpload {
      * @param name
      * @return
      */
-    UploadResult createBucket(String name) throws Exception;
+    UploadResult createBucket(String name);
+
+    UploadResult putObject(String filePath, InputStream inputStream);
 
     UploadResult putObject(String filePath, String fileName, File file);
 
@@ -30,8 +30,4 @@ public interface FileUpload {
     void deleteObject(String filePath);
 
     void deleteObject(String bucket, String filePath);
-
-    default String getName() {
-        return OssPlatformEnum.LOCAL.getValue();
-    }
 }

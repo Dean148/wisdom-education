@@ -1,8 +1,8 @@
 package com.education.common.upload;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.education.common.config.OssProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -16,35 +16,34 @@ public abstract class BaseFileUpload implements FileUpload {
     protected String applicationName;
     protected OssProperties ossProperties;
     protected String parentBucketName;
-    private final Logger logger = LoggerFactory.getLogger(BaseFileUpload.class);
+
 
     public BaseFileUpload(OssProperties ossProperties, String applicationName) {
-        this.ossProperties = ossProperties;
-        this.applicationName = applicationName;
-        this.parentBucketName = applicationName + StrUtil.DASHED + ossProperties.getAppId();
+        this(ossProperties, StrUtil.EMPTY, applicationName);
     }
 
     public BaseFileUpload(OssProperties ossProperties, String env, String applicationName) {
-        this(ossProperties, applicationName);
+        Assert.notBlank(ossProperties.getPlatform(), () -> new RuntimeException("platform can not be null or empty!"));
         this.env = env;
-        this.parentBucketName = applicationName + StrUtil.DASHED +
-                env + StrUtil.DASHED + ossProperties.getAppId();
-    }
-
-    public void setParentBucketName(String parentBucketName) {
-        this.parentBucketName = parentBucketName;
-    }
-
-    @Override
-    public UploadResult createBucket(String name) {
-        try {
-            this.parentBucketName = name + StrUtil.DASHED +
+        this.ossProperties = ossProperties;
+        this.applicationName = applicationName;
+        String bucketName = ossProperties.getBucketName();
+        if (StrUtil.isBlank(bucketName)) {
+            this.parentBucketName = applicationName + StrUtil.DASHED +
                     env + StrUtil.DASHED + ossProperties.getAppId();
-            return this.doCreateBucket(parentBucketName);
-        } catch (Exception e) {
-            logger.error(name + " 存储桶创建失败", e);
-            return null;
+        } else {
+            this.parentBucketName = bucketName;
         }
+    }
+
+
+    protected void checkOssProperty() {
+        Assert.notBlank(ossProperties.getAppId(), () -> new RuntimeException("appId can not be null or empty!"));
+        Assert.notBlank(ossProperties.getSecretKey(), () -> new RuntimeException("secretKey can not be null or empty!"));
+    }
+
+    public String getParentBucketName() {
+        return parentBucketName;
     }
 
     protected String generateFileKey(String path) {
@@ -53,7 +52,4 @@ public abstract class BaseFileUpload implements FileUpload {
         }
         return path + StrUtil.SLASH;
     }
-
-    abstract UploadResult doCreateBucket(String name);
-
 }
