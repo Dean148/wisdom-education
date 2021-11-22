@@ -1,10 +1,12 @@
 package com.education.core.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.education.common.upload.FileUpload;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -75,7 +77,7 @@ public class UploadController {
                 break;
             case IMAGE_FILE :
                 result = beforeUploadImage();
-                fileName = ObjectUtils.generateUuId() + suffix;
+                fileName = ObjectUtils.generateFileBySecond() + StrUtil.DASHED + ObjectUtils.generateUuId() + suffix;
                 message = "图片";
                 break;
             case OTHER_FILE :
