@@ -1,6 +1,12 @@
 host: 127.0.0.1
 server:
   port: 80
+# oss 文件上传配置
+oss:
+  upload:
+    host: ${host}/uploads
+    platform: local #配置使用本地文件存储
+    bucketName: D:\\home\\
 ## spring jdbc配置
 spring:
   # flyway 数据库管理工具
