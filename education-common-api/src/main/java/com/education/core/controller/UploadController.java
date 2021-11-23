@@ -2,6 +2,7 @@ package com.education.core.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.education.common.config.OssProperties;
 import com.education.common.upload.FileUpload;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
@@ -32,6 +33,8 @@ public class UploadController {
 
     @Resource
     private FileUpload fileUpload;
+    @Resource
+    private OssProperties ossProperties;
 
     // 上传文件类型
     private static final int VIDEO_FILE = 1;
@@ -90,7 +93,7 @@ public class UploadController {
                 fileUpload.putObject(result, fileName, file.getInputStream());
                 resultMap.put("code", ResultCode.SUCCESS);
                 resultMap.put("message", message + "上传成功");
-                resultMap.put("url", result + fileName);
+                resultMap.put("url", ossProperties.getHost() + result + fileName);
             } catch (Exception e) {
                 resultMap.put("code", ResultCode.FAIL);
                 resultMap.put("message", message + "文件上传失败");

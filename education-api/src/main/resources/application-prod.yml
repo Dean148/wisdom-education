@@ -1,4 +1,10 @@
 host: 120.79.144.34
+oss:
+  upload:
+    secretId: AKIDSjlW1GEvLUs3xax4tRijX4LL5XioiNmw
+    secretKey: wc3D8oEPKzPZVBblfKjtnTt3xc1A3oJY
+    platform: tencent
+    region: ap-nanjing
 server:
   port: 8001
 canal:
