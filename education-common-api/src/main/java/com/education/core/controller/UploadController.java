@@ -93,7 +93,7 @@ public class UploadController {
                 fileUpload.putObject(result, fileName, file.getInputStream());
                 resultMap.put("code", ResultCode.SUCCESS);
                 resultMap.put("message", message + "上传成功");
-                resultMap.put("url", ossProperties.getHost() + result + fileName);
+                resultMap.put("url", result + fileName);
             } catch (Exception e) {
                 resultMap.put("code", ResultCode.FAIL);
                 resultMap.put("message", message + "文件上传失败");
