@@ -51,7 +51,7 @@ public class LocalFileUpload extends BaseFileUpload {
     @Override
     public UploadResult putObject(String filePath, InputStream inputStream) {
         FileUtil.writeFromStream(inputStream, new File(uploadPath + filePath));
-        return new UploadResult();
+        return new UploadResult(host + filePath);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class LocalFileUpload extends BaseFileUpload {
     @Override
     public UploadResult putObject(String filePath, String fileName, InputStream inputStream) {
         FileUtil.writeFromStream(inputStream, new File(uploadPath + filePath + fileName));
-        return new UploadResult();
+        return new UploadResult(host + filePath);
     }
 
     @Override

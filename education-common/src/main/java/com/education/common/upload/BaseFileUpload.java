@@ -16,7 +16,7 @@ public abstract class BaseFileUpload implements FileUpload {
     protected String applicationName;
     protected OssProperties ossProperties;
     protected String parentBucketName;
-
+    protected String host;
 
     public BaseFileUpload(OssProperties ossProperties, String applicationName) {
         this(ossProperties, StrUtil.EMPTY, applicationName);
@@ -27,6 +27,7 @@ public abstract class BaseFileUpload implements FileUpload {
         this.env = env;
         this.ossProperties = ossProperties;
         this.applicationName = applicationName;
+        this.host = ossProperties.getHost();;
         String bucketName = ossProperties.getBucketName();
         if (StrUtil.isBlank(bucketName)) {
             this.parentBucketName = applicationName + StrUtil.DASHED +
