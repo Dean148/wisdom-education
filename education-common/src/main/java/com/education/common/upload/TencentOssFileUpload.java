@@ -1,5 +1,6 @@
 package com.education.common.upload;
 
+import cn.hutool.core.util.StrUtil;
 import com.education.common.config.OssProperties;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
@@ -24,34 +25,33 @@ import java.io.InputStream;
  */
 public class TencentOssFileUpload extends BaseFileUpload {
 
-    private COSClient cosClient;
-
-    private String ossHost;
-
     private final Logger logger = LoggerFactory.getLogger(TencentOssFileUpload.class);
 
     public TencentOssFileUpload(OssProperties ossProperties, String env, String applicationName) {
         super(ossProperties, env, applicationName);
         super.checkOssProperty();
-        this.initCOSClient();
+        String host = getHost();
+        if (StrUtil.isBlank(host)) {
+           super.setHost("https://" + parentBucketName);
+        }
+        boolean flag = getCOSClient().doesBucketExist(this.parentBucketName);
+        if (!flag) {
+            this.createBucket(parentBucketName);
+        }
     }
 
-    private void initCOSClient() {
+    private COSClient getCOSClient() {
         String secretId = ossProperties.getSecretId();
         String secretKey = ossProperties.getSecretKey();
         COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
         Region region = new Region(ossProperties.getRegion());
         ClientConfig clientConfig = new ClientConfig(region);
-        this.cosClient = new COSClient(cred, clientConfig);
-        boolean flag = cosClient.doesBucketExist(this.parentBucketName);
-        if (!flag) {
-            this.createBucket(parentBucketName);
-        }
-        this.ossHost = "https://" + parentBucketName;
+        return new COSClient(cred, clientConfig);
     }
 
     @Override
     public UploadResult createBucket(String name) {
+        COSClient cosClient = getCOSClient();
         try {
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(name);
             createBucketRequest.setCannedAcl(CannedAccessControlList.Private);
@@ -61,11 +61,11 @@ public class TencentOssFileUpload extends BaseFileUpload {
             logger.error("{}:桶创建失败...", name, e);
             return null;
         } finally {
-            closeClient();
+            closeClient(cosClient);
         }
     }
 
-    private void closeClient() {
+    private void closeClient(COSClient cosClient) {
         if (cosClient != null) {
             cosClient.shutdown();
         }
@@ -73,13 +73,14 @@ public class TencentOssFileUpload extends BaseFileUpload {
 
     @Override
     public UploadResult putObject(String file, InputStream inputStream) {
+        COSClient cosClient = getCOSClient();
         try {
             ObjectMetadata objectMetadata = new ObjectMetadata();
-            this.cosClient.putObject(parentBucketName, file, inputStream, objectMetadata);
-            String fileUrl = ossHost + file;
+            cosClient.putObject(parentBucketName, file, inputStream, objectMetadata);
+            String fileUrl = getHost() + file;
             return new UploadResult(fileUrl);
         } finally {
-            closeClient();
+            closeClient(cosClient);
         }
     }
 
@@ -90,13 +91,14 @@ public class TencentOssFileUpload extends BaseFileUpload {
 
     @Override
     public UploadResult putObject(String bucket, String filePath, String fileName, File file) {
+        COSClient cosClient = getCOSClient();
         try {
             String fileKey = super.generateFileKey(filePath) + fileName;
-            this.cosClient.putObject(bucket, fileKey, file);
-            String fileUrl = ossHost + fileKey;
+            cosClient.putObject(bucket, fileKey, file);
+            String fileUrl = getHost() + fileKey;
             return new UploadResult(fileUrl);
         } finally {
-            this.closeClient();
+            this.closeClient(cosClient);
         }
     }
 
@@ -107,14 +109,15 @@ public class TencentOssFileUpload extends BaseFileUpload {
 
     @Override
     public UploadResult putObject(String bucket, String filePath, String fileName, InputStream inputStream) {
+        COSClient cosClient = getCOSClient();
         try {
             String fileKey = super.generateFileKey(filePath) + fileName;
             ObjectMetadata objectMetadata = new ObjectMetadata();
-            this.cosClient.putObject(bucket, fileKey, inputStream, objectMetadata);
-            String fileUrl = ossHost + fileKey;
+            cosClient.putObject(bucket, fileKey, inputStream, objectMetadata);
+            String fileUrl = super.getHost() + fileKey;
             return new UploadResult(fileUrl);
         } finally {
-            closeClient();
+            closeClient(cosClient);
         }
     }
 
@@ -126,10 +129,11 @@ public class TencentOssFileUpload extends BaseFileUpload {
 
     @Override
     public void deleteObject(String bucket, String filePath) {
+        COSClient cosClient = getCOSClient();
         try {
-            this.cosClient.deleteObject(bucket, filePath);
+            cosClient.deleteObject(bucket, filePath);
         } finally {
-            closeClient();
+            closeClient(cosClient);
         }
     }
 }

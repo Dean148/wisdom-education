@@ -27,7 +27,6 @@ public abstract class BaseFileUpload implements FileUpload {
         this.env = env;
         this.ossProperties = ossProperties;
         this.applicationName = applicationName;
-        this.host = ossProperties.getHost();;
         String bucketName = ossProperties.getBucketName();
         if (StrUtil.isBlank(bucketName)) {
             this.parentBucketName = applicationName + StrUtil.DASHED +
@@ -36,7 +35,6 @@ public abstract class BaseFileUpload implements FileUpload {
             this.parentBucketName = bucketName;
         }
     }
-
 
     protected void checkOssProperty() {
         Assert.notBlank(ossProperties.getAppId(), () -> new RuntimeException("appId can not be null or empty!"));
@@ -52,5 +50,13 @@ public abstract class BaseFileUpload implements FileUpload {
             return path;
         }
         return path + StrUtil.SLASH;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 }
