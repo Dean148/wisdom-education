@@ -2,44 +2,64 @@ package com.education.auth;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
-import com.education.auth.exception.AuthException;
 import com.education.auth.session.SessionStorage;
 import com.education.auth.session.UserSession;
 import com.education.auth.token.TokenFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
  * @author zengjintao
  * @create_at 2021年11月25日 0025 16:42
- * @since version 1.0.4
+ * @since version 1.6.7
  */
-public class AuthUtil implements ApplicationContextAware {
+public class AuthUtil {
 
     private static AuthRealmManager authRealmManager;
 
-    public static void login(LoginToken loginToken) throws AuthException {
+    private static final Map<String, ReentrantLock> lockMap = new ConcurrentHashMap<>();
+
+    public static <T> T login(LoginToken loginToken) {
         String loginType = loginToken.getLoginType();
         LoginAuthRealm loginAuthRealm = authRealmManager.getByLoginType(loginType);
         UserSession userSession = loginAuthRealm.doLogin(loginToken);
         AuthConfig authConfig = getAuthConfig();
         boolean flag = authConfig.isAllowMoreOnline();
-        synchronized (Object.class) {
-            // 禁止账号同时在线
-            if (!flag) {
+        SessionStorage sessionStorage = authRealmManager.getSessionStorage();
+        if (!flag) {
+            ReentrantLock lock = getLock(userSession.getUserId());
+            lock.lock();
+            try {
                 checkUserIsOnline(userSession.getUserId(), loginAuthRealm);
+                loginAuthRealm.beforeSaveSession(userSession, loginToken.isRemember(), sessionStorage);
+                createUserSession(userSession, sessionStorage);
+            } finally {
+                lock.unlock();
             }
-            createUserSession(userSession, loginAuthRealm);
-            loginAuthRealm.loadPermission(userSession);
-            loginAuthRealm.onLoginSuccess(userSession);
+        } else {
+            loginAuthRealm.beforeSaveSession(userSession, loginToken.isRemember(), sessionStorage);
+            createUserSession(userSession, sessionStorage);
         }
+        loginAuthRealm.loadPermission(userSession);
+        loginAuthRealm.onLoginSuccess(userSession);
+        return (T) userSession;
+    }
+
+    public static ReentrantLock getLock(String userId) {
+        ReentrantLock lock = lockMap.get(userId);
+        if (lock == null) {
+            synchronized (Object.class) {
+                lock = new ReentrantLock();
+                lockMap.putIfAbsent(userId, lock);
+            }
+        }
+        return lock;
     }
 
     public static UserSession getSessionByToken(String token) {
@@ -68,19 +88,25 @@ public class AuthUtil implements ApplicationContextAware {
         return authRealmManager.getAuthConfig();
     }
 
+
     public static void setAuthRealmManager(AuthRealmManager authRealmManager) {
         AuthUtil.authRealmManager = authRealmManager;
     }
 
-    private static void createUserSession(UserSession userSession, LoginAuthRealm loginAuthRealm) {
+    private static void createUserSession(UserSession userSession, SessionStorage sessionStorage) {
         TokenFactory tokenFactory = authRealmManager.getTokenFactory();
-        String token = tokenFactory.createToken();
+        String token = tokenFactory.createToken(userSession.getUserId(), sessionStorage.getSessionTimeOut());
         userSession.setToken(token);
-        SessionStorage sessionStorage = authRealmManager.getSessionStorage();
-        sessionStorage.setSessionTimeOut(tokenFactory.getTokenExpirationTime());
         sessionStorage.saveSession(userSession);
-        loginAuthRealm.onLoginSuccess(userSession);
-        System.out.println(JSONUtil.toJsonStr(getSessionByToken(token)));
+    }
+
+    /**
+     * 刷新session 会话
+     * @param userSession
+     * @param sessionTimeOut
+     */
+    public static void refreshSession(UserSession userSession, long sessionTimeOut) {
+        getSessionStorage().refreshSessionTimeOut(userSession, sessionTimeOut);
     }
 
     public static UserSession getSession() {
@@ -110,14 +136,6 @@ public class AuthUtil implements ApplicationContextAware {
     public static String getTokenValue(){
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = servletRequestAttributes.getRequest();
-        return request.getHeader("Authorization");
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        authRealmManager = applicationContext.getBean(AuthRealmManager.class);
-        if (authRealmManager == null) {
-            throw new RuntimeException("Can Not Find Bean " + AuthRealmManager.class);
-        }
+        return request.getHeader(getAuthConfig().getHeaders());
     }
 }

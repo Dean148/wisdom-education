@@ -1,5 +1,6 @@
 package com.education.api.controller.admin.education;
 
+import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.service.education.ExamInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.constants.CacheKey;
@@ -9,7 +10,6 @@ import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.TestPaperInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

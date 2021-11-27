@@ -4,6 +4,7 @@
 package com.education.api.config.interceptor;
 
 
+import com.education.auth.PermissionInterceptor;
 import com.education.common.interceptor.FormLimitInterceptor;
 import com.education.common.interceptor.LogInterceptor;
 import com.education.common.interceptor.ParamsValidateInterceptor;
@@ -40,6 +41,7 @@ public class WebAppConfig implements WebMvcConfigurer {
 	@Autowired
 	private StudentAuthInterceptor studentAuthInterceptor;
 
+
 	@Value("${file.uploadPath}")
 	private String uploadPath;
 
@@ -48,6 +50,7 @@ public class WebAppConfig implements WebMvcConfigurer {
 		{
 			add("/system/unAuth");
 			add("/system/login");
+			add("/auth/**");
 			add("/api/image");
 		}
 	};
@@ -56,10 +59,12 @@ public class WebAppConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(logInterceptor).addPathPatterns("/**");
 		registry.addInterceptor(formLimitInterceptor).addPathPatterns("/**");
+		registry.addInterceptor(new PermissionInterceptor()).addPathPatterns("/**").excludePathPatterns("/auth");
 		registry.addInterceptor(studentAuthInterceptor)
 				.excludePathPatterns("/student/login")
 				.addPathPatterns("/student/**");
 		registry.addInterceptor(authInterceptor)
+				.addPathPatterns("/auth")
 				.excludePathPatterns(noInterceptorUrl)
 				.addPathPatterns("/api/**")
 				.addPathPatterns("/system/**");

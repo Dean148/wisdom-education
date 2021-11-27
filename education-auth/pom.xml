@@ -4,7 +4,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.education</groupId>
+  <parent>
+    <groupId>com.education</groupId>
+    <artifactId>education</artifactId>
+    <version>1.0.3-RELEASE</version>
+  </parent>
+
+  <groupId>com.education.auth</groupId>
   <artifactId>education-auth</artifactId>
   <version>1.0.3-RELEASE</version>
 

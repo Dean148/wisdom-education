@@ -1,5 +1,7 @@
 package com.education.api.controller.admin.education;
 
+import com.education.auth.annotation.Logical;
+import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.parser.ExcelQuestionImportResult;
 import com.education.business.parser.QuestionImportResult;
 import com.education.business.parser.TxtQuestionImportResult;
@@ -15,8 +17,6 @@ import com.education.model.dto.QuestionInfoDto;
 import com.education.model.entity.QuestionInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.QuestionInfoQuery;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

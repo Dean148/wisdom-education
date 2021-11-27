@@ -14,9 +14,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Permission {
+public @interface RequiresPermissions {
 
     String[] value();
 
-    Mode mode() default Mode.AND;
+    Logical logical() default Logical.AND;
 }

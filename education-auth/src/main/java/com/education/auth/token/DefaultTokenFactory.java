@@ -11,7 +11,17 @@ import cn.hutool.core.util.IdUtil;
 public class DefaultTokenFactory extends TokenFactory {
 
     @Override
+    public String createToken(Object value, long expirationTime) {
+        return null;
+    }
+
+    @Override
     public String createToken() {
         return IdUtil.simpleUUID();
+    }
+
+    @Override
+    public Object parseToken(String token) {
+        return null;
     }
 }

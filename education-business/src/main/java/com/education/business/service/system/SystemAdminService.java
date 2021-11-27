@@ -6,23 +6,21 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.system.SystemAdminMapper;
 import com.education.business.service.BaseService;
+import com.education.business.session.AdminUserSession;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.Md5Utils;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
-import com.education.model.dto.*;
+import com.education.model.dto.AdminRoleDto;
+import com.education.model.dto.MenuTree;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.entity.SystemAdminRole;
 import com.education.model.entity.SystemMenu;
 import com.education.model.entity.SystemRole;
 import com.education.model.request.PageParam;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,12 +65,12 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
      * @param userSession
      */
     public void loadUserMenuAndPermission(AdminUserSession userSession) {
-        List<SystemMenu> menuList = null;
+        List<SystemMenu> menuList;
         if (userSession.isSuperAdmin()) {
             menuList = systemMenuService.list(Wrappers.lambdaQuery(SystemMenu.class)
                     .orderByAsc(SystemMenu::getSort));
         } else {
-            Integer adminId = userSession.getAdminId();
+            Integer adminId = userSession.getId();
             List<SystemRole> systemRoleList = systemRoleService.findRoleListByAdminId(adminId);
             userSession.setRoleList(systemRoleList);
             List<Integer> roleIds = systemRoleList.stream()
@@ -86,23 +84,8 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
                     .map(SystemMenu::getPermission)
                     .collect(Collectors.toSet());
             List<MenuTree> menuTreeList = systemMenuService.getTreeMenuList(menuList);
-            userSession.setPermissionList(permissionList);
             userSession.setMenuTreeList(menuTreeList);
-        }
-    }
-
-    public void login(String loginName, String password) {
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(loginName, password);
-        try {
-            subject.login(token);
-        } catch (Exception e) {
-            log.error("登录失败", e);
-            if (e instanceof UnknownAccountException) {
-                throw new BusinessException("用户不存在");
-            } else {
-                throw new BusinessException("用户名或密码错误");
-            }
+            userSession.addPermission(permissionList);
         }
     }
 
@@ -190,21 +173,6 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
      * @return
      */
     public PageInfo<SystemAdmin> getOnlineUserList(PageParam pageParam) {
-        List<AdminUserSession> adminUserSessionList = new ArrayList<>();
-        Collection userIds = cacheBean.getKeys(OnlineUserManager.USER_ID_CACHE);
-        userIds.forEach(userId -> {
-            AdminUserSession onlineUser = cacheBean.get(userId);
-            if (onlineUser != null) {
-                adminUserSessionList.add(onlineUser);
-            }
-        });
-
-        if (ObjectUtils.isNotEmpty(adminUserSessionList)) {
-            List<SystemAdmin> systemAdminList = adminUserSessionList.stream()
-                    .map(AdminUserSession::getSystemAdmin)
-                    .collect(Collectors.toList());
-            return ObjectUtils.selectPageList(pageParam.getPageNumber(), pageParam.getPageSize(), systemAdminList);
-        }
         return new PageInfo();
     }
 }

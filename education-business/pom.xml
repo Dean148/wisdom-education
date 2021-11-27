@@ -33,6 +33,12 @@
             <artifactId>education-model</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <artifactId>education-auth</artifactId>
+            <groupId>com.education.auth</groupId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

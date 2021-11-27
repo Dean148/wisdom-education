@@ -47,7 +47,6 @@ public class AuthRealmManager {
         this.sessionStorage = new LocalSessionStorage();
         this.tokenFactory = new DefaultTokenFactory();
         this.authConfig = new AuthConfig();
-        sessionStorage.setSessionTimeOut(tokenFactory.getTokenExpirationTime());
     }
 
     public AuthConfig getAuthConfig() {

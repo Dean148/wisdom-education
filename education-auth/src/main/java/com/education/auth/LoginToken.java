@@ -12,8 +12,16 @@ public class LoginToken {
     private String loginType;
     private final boolean remember;
 
+    public LoginToken(String username, String password) {
+        this(username, password, null,false);
+    }
+
     public LoginToken(String username, String password, String loginType) {
         this(username, password, loginType, false);
+    }
+
+    public LoginToken(String username, String password, boolean remember) {
+        this(username, password, null, remember);
     }
 
     public LoginToken(String username, String password, String loginType, boolean remember) {

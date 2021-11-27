@@ -1,7 +1,8 @@
 package com.education.auth;
 
-import com.education.auth.annotation.Mode;
-import com.education.auth.annotation.Permission;
+import com.education.auth.annotation.Logical;
+import com.education.auth.annotation.RequiresPermissions;
+import com.education.auth.exception.PermissionException;
 
 import java.lang.reflect.Method;
 import java.util.function.Consumer;
@@ -20,15 +21,22 @@ public class PermissionStrategy {
 
 
     public static void validatePermission(Method method) {
-        Permission permission = method.getAnnotation(Permission.class);
+        RequiresPermissions permission = method.getAnnotation(RequiresPermissions.class);
+        if (permission == null) {
+            return;
+        }
         String[] values = permission.value();
-        Mode mode = permission.mode();
+        Logical mode = permission.logical();
+        boolean hasPermission = true;
         switch (mode) {
             case AND:
-                checkPermissionAnd(values);
+                hasPermission = checkPermissionAnd(values);
                 break;
             case OR:
-                checkPermissionOr(values);
+                hasPermission = checkPermissionOr(values);
+        }
+        if (!hasPermission) {
+            throw new PermissionException();
         }
     }
 

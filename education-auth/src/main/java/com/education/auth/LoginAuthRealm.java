@@ -1,5 +1,6 @@
 package com.education.auth;
 
+import com.education.auth.session.SessionStorage;
 import com.education.auth.session.UserSession;
 
 /**
@@ -7,14 +8,14 @@ import com.education.auth.session.UserSession;
  * @create_at 2021年11月25日 0025 16:25
  * @since version 1.0.4
  */
-public interface LoginAuthRealm {
+public interface LoginAuthRealm<T extends UserSession> {
 
     /**
      * 用户登陆
      * @param loginToken
      * @return
      */
-    UserSession doLogin(LoginToken loginToken);
+    T doLogin(LoginToken loginToken);
 
     /**
      * 获取登陆类型
@@ -28,7 +29,7 @@ public interface LoginAuthRealm {
      * 登录成功回调方法
      * @param userSession
      */
-    default void onLoginSuccess(UserSession userSession) {
+    default void onLoginSuccess(T userSession) {
         System.out.println("账号:【" + userSession.getUserId() + "】登录成功");
     }
 
@@ -36,7 +37,7 @@ public interface LoginAuthRealm {
      * 退出成功回调事件
      * @param userSession
      */
-    default void onLogoutSuccess(UserSession userSession) {
+    default void onLogoutSuccess(T userSession) {
         System.out.println("账号:【" + userSession.getUserId() + "】注销成功");
     }
 
@@ -44,7 +45,7 @@ public interface LoginAuthRealm {
      * 用户账号被顶下线事件回调
      * @param userSession
      */
-    default void onRejectSession(UserSession userSession) {
+    default void onRejectSession(T userSession) {
         System.out.println("剔除会话id:【" + userSession.getToken() + "】成功");
     }
 
@@ -62,7 +63,16 @@ public interface LoginAuthRealm {
      * 加载账号权限
      * @param userSession
      */
-    default void loadPermission(UserSession userSession) {
+    default void loadPermission(T userSession) {
         System.out.println("加载权限方法");
+    }
+
+    /**
+     * 系统保存session之前回调事件
+     * @param userSession
+     * @param rememberMe
+     */
+    default void beforeSaveSession(T userSession, boolean rememberMe, SessionStorage sessionStorage) {
+
     }
 }

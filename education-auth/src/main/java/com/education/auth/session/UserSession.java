@@ -1,6 +1,7 @@
 package com.education.auth.session;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -58,6 +59,10 @@ public abstract class UserSession {
 
     public void addPermission(String permission) {
         permissionList.add(permission);
+    }
+
+    public void addPermission(Collection<String> permissionList) {
+        permissionList.addAll(permissionList);
     }
 
     public String getSessionId() {

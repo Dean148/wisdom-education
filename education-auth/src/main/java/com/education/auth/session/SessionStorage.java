@@ -52,9 +52,24 @@ public interface SessionStorage {
      */
     void setSessionTimeOut(long sessionTimeOut);
 
+    /**
+     * 获取session 有效期
+     * @return
+     */
     default long getSessionTimeOut() {
         return 0;
     }
 
+    /**
+     * 删除session 会话
+     * @param sessionId
+     */
     void deleteSession(String sessionId);
+
+    /**
+     * 刷新 session会话有效期
+     * @param userSession
+     * @param sessionTimeOut
+     */
+    void refreshSessionTimeOut(UserSession userSession, long sessionTimeOut);
 }
