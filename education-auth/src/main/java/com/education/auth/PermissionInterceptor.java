@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
  * 权限拦截器
  * @author zengjintao
  * @create_at 2021年11月26日 0026 17:12
- * @since version 1.6.7
+ * @since version 1.0.4
  */
 public class PermissionInterceptor implements HandlerInterceptor {
 

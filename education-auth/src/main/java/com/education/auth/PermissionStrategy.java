@@ -10,7 +10,7 @@ import java.util.function.Consumer;
  * 权限策略
  * @author zengjintao
  * @create_at 2021年11月26日 0026 17:13
- * @since version 1.6.7
+ * @since version 1.0.4
  */
 public class PermissionStrategy {
 
