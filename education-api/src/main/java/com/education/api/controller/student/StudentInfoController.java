@@ -44,10 +44,9 @@ public class StudentInfoController extends BaseController {
     @PostMapping("logout")
     public Result logout() {
         StudentInfo studentInfo = studentInfoService.getStudentInfo();
-        if (ObjectUtils.isEmpty(studentInfo)) {
-            return Result.success(ResultCode.SUCCESS, "退出成功");
+        if (studentInfo != null) {
+            cacheBean.remove(CacheKey.STUDENT_USER_INFO_CACHE, studentInfo.getId()); // 删除用户缓存
         }
-        cacheBean.remove(CacheKey.STUDENT_USER_INFO_CACHE, studentInfo.getId()); // 删除用户缓存
         return Result.success(ResultCode.SUCCESS, "退出成功");
     }
 
