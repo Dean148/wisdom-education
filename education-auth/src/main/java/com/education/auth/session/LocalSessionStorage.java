@@ -14,11 +14,19 @@ public class LocalSessionStorage extends AbstractSessionStorage {
     private final Map<String, UserSession> sessionMap = new ConcurrentHashMap<>();
     private final Map<String, Long> expireSessionMap = new ConcurrentHashMap<>();
 
+    public LocalSessionStorage() {
+        initClearSessionTask();
+    }
+
+    private void initClearSessionTask() {
+
+    }
+
     @Override
-    public void saveSession(UserSession userSession) {
-        String sessionId = super.createSessionId(userSession.getToken());
+    public void saveSession(UserSession userSession, long sessionTimeOut) {
+        String sessionId = userSession.getToken();
         sessionMap.put(sessionId, userSession);
-        expireSessionMap.put(sessionId, super.getSessionTimeOut());
+        expireSessionMap.put(sessionId, sessionTimeOut);
     }
 
     @Override
@@ -40,6 +48,6 @@ public class LocalSessionStorage extends AbstractSessionStorage {
     public void refreshSessionTimeOut(UserSession userSession, long sessionTimeOut) {
         String sessionId = userSession.getToken();
         sessionMap.put(sessionId, userSession);
-        expireSessionMap.put(sessionId, super.getSessionTimeOut());
+        expireSessionMap.put(sessionId, sessionTimeOut);
     }
 }

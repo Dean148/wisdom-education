@@ -28,6 +28,8 @@ public abstract class UserSession {
 
     private String loginType;
 
+    private Date validTime;
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -51,6 +53,10 @@ public abstract class UserSession {
     public UserSession(String userId) {
         this.userId = userId;
         this.createDate = new Date();
+    }
+
+    public Date getValidTime() {
+        return validTime;
     }
 
     public List<String> getPermissionList() {

@@ -1,8 +1,9 @@
 package com.education.auth.session;
 
-import org.springframework.data.redis.core.RedisTemplate;
-
+import com.education.common.cache.CacheBean;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zengjintao
@@ -11,41 +12,48 @@ import java.util.List;
  */
 public class RedisSessionStorage extends AbstractSessionStorage {
 
-    private final RedisTemplate redisTemplate;
+    private final CacheBean cacheBean;
+    private static final String SESSION_KEY = "session:";
 
-    public RedisSessionStorage(RedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    public RedisSessionStorage(CacheBean cacheBean) {
+        this.cacheBean = cacheBean;
     }
-
-
-    @Override
-    public void saveSession(UserSession userSession) {
-        super.saveSession(userSession);
-    }
-
 
     @Override
     public void updateSession(UserSession userSession) {
-
+        cacheBean.putValue(SESSION_KEY, userSession.getToken(), userSession);
     }
 
     @Override
     public UserSession getSession(String sessionId) {
-        return null;
+        return cacheBean.get(SESSION_KEY, sessionId);
     }
 
     @Override
     public void deleteSession(String sessionId) {
-
+        cacheBean.remove(SESSION_KEY, sessionId);
     }
 
     @Override
     public void refreshSessionTimeOut(UserSession userSession, long sessionTimeOut) {
+        this.saveSession(userSession, sessionTimeOut);
+    }
 
+    @Override
+    public void saveSession(UserSession userSession, long sessionTimeOut) {
+        cacheBean.put(SESSION_KEY, userSession.getToken(), userSession, (int) sessionTimeOut);
     }
 
     @Override
     public List<UserSession> getActiveSessions() {
-        return super.getActiveSessions();
+        List<UserSession> userSessionList = new ArrayList<>();
+        Set<String> sessionIdList = (Set<String>) cacheBean.getKeys(SESSION_KEY);
+        for (String sessionId : sessionIdList) {
+            UserSession userSession = getSession(sessionId);
+            if (userSession != null) {
+                userSessionList.add(userSession);
+            }
+        }
+        return userSessionList;
     }
 }

@@ -1,6 +1,5 @@
 package com.education.auth;
 
-import com.education.auth.session.SessionStorage;
 import com.education.auth.session.UserSession;
 
 /**
@@ -9,6 +8,8 @@ import com.education.auth.session.UserSession;
  * @since version 1.0.4
  */
 public interface LoginAuthRealm<T extends UserSession> {
+
+    long DEFAULT_GLOBAL_SESSION_TIMEOUT = 60 * 60 * 1000;
 
     /**
      * 用户登陆
@@ -68,11 +69,10 @@ public interface LoginAuthRealm<T extends UserSession> {
     }
 
     /**
-     * 系统保存session之前回调事件
-     * @param userSession
+     * 登录之后可设置token 会话有效期
      * @param rememberMe
      */
-    default void beforeSaveSession(T userSession, boolean rememberMe, SessionStorage sessionStorage) {
-
+    default long getSessionTimeOut(boolean rememberMe) {
+        return DEFAULT_GLOBAL_SESSION_TIMEOUT;
     }
 }

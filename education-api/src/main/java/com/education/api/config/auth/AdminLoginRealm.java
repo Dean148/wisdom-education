@@ -74,7 +74,7 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
     }
 
     @Override
-    public void beforeSaveSession(AdminUserSession userSession, boolean rememberMe, SessionStorage sessionStorage) {
+    public long getSessionTimeOut(boolean rememberMe) {
         long timeOut;
         if (rememberMe) {
             // 缓存一周
@@ -83,6 +83,6 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
             // 缓存一小时
             timeOut = CacheTime.ONE_HOUR_MILLIS;
         }
-        sessionStorage.setSessionTimeOut(timeOut);
+        return timeOut;
     }
 }

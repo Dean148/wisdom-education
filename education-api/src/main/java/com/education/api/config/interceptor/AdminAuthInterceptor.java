@@ -2,7 +2,7 @@
  * 
  */
 package com.education.api.config.interceptor;
-import com.education.common.interceptor.BaseInterceptor;
+import com.education.business.interceptor.BaseInterceptor;
 import com.education.common.utils.RequestUtils;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;

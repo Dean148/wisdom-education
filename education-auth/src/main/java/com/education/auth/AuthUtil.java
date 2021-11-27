@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.education.auth.session.SessionStorage;
 import com.education.auth.session.UserSession;
 import com.education.auth.token.TokenFactory;
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
@@ -37,14 +38,14 @@ public class AuthUtil {
             lock.lock();
             try {
                 checkUserIsOnline(userSession.getUserId(), loginAuthRealm);
-                loginAuthRealm.beforeSaveSession(userSession, loginToken.isRemember(), sessionStorage);
-                createUserSession(userSession, sessionStorage);
+                long sessionTimeOut = loginAuthRealm.getSessionTimeOut(loginToken.isRemember());
+                createUserSession(userSession, sessionStorage, sessionTimeOut);
             } finally {
                 lock.unlock();
             }
         } else {
-            loginAuthRealm.beforeSaveSession(userSession, loginToken.isRemember(), sessionStorage);
-            createUserSession(userSession, sessionStorage);
+            long sessionTimeOut = loginAuthRealm.getSessionTimeOut(loginToken.isRemember());
+            createUserSession(userSession, sessionStorage, sessionTimeOut);
         }
         loginAuthRealm.loadPermission(userSession);
         loginAuthRealm.onLoginSuccess(userSession);
@@ -93,11 +94,11 @@ public class AuthUtil {
         AuthUtil.authRealmManager = authRealmManager;
     }
 
-    private static void createUserSession(UserSession userSession, SessionStorage sessionStorage) {
+    private static void createUserSession(UserSession userSession, SessionStorage sessionStorage, long sessionTimeOut) {
         TokenFactory tokenFactory = authRealmManager.getTokenFactory();
-        String token = tokenFactory.createToken(userSession.getUserId(), sessionStorage.getSessionTimeOut());
+        String token = tokenFactory.createToken(userSession.getUserId(), sessionTimeOut);
         userSession.setToken(token);
-        sessionStorage.saveSession(userSession);
+        sessionStorage.saveSession(userSession, sessionTimeOut);
     }
 
     /**
@@ -107,6 +108,10 @@ public class AuthUtil {
      */
     public static void refreshSession(UserSession userSession, long sessionTimeOut) {
         getSessionStorage().refreshSessionTimeOut(userSession, sessionTimeOut);
+    }
+
+    public static void updateSession(UserSession userSession) {
+        getSessionStorage().updateSession(userSession);
     }
 
     public static UserSession getSession() {

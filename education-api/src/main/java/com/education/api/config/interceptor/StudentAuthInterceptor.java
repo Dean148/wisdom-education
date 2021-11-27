@@ -1,10 +1,9 @@
 package com.education.api.config.interceptor;
 
+import com.education.business.interceptor.BaseInterceptor;
 import com.education.business.service.education.StudentInfoService;
 import com.education.common.exception.BusinessException;
-import com.education.common.interceptor.BaseInterceptor;
 import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.entity.StudentInfo;
 import org.springframework.beans.factory.annotation.Autowired;

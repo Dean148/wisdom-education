@@ -23,7 +23,7 @@ public interface SessionStorage {
      * 保存session
      * @param userSession
      */
-    void saveSession(UserSession userSession);
+    void saveSession(UserSession userSession, long sessionTimeOut);
 
     /**
      * 获取会话列表
@@ -46,11 +46,6 @@ public interface SessionStorage {
      */
     UserSession getSession(String sessionId);
 
-    /**
-     * 设置会话有效期
-     * @param sessionTimeOut
-     */
-    void setSessionTimeOut(long sessionTimeOut);
 
     /**
      * 获取session 有效期
