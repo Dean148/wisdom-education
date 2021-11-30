@@ -3,15 +3,13 @@ package com.education.api.config.auth;
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.education.auth.LoginAuthRealm;
+import com.education.auth.realm.LoginAuthRealm;
 import com.education.auth.LoginToken;
-import com.education.auth.session.SessionStorage;
 import com.education.business.service.system.SystemAdminService;
 import com.education.business.session.AdminUserSession;
 import com.education.business.task.TaskManager;
 import com.education.business.task.TaskParam;
 import com.education.business.task.WebSocketMessageListener;
-import com.education.common.constants.CacheTime;
 import com.education.common.constants.EnumConstants;
 import com.education.common.enums.LoginEnum;
 import com.education.common.exception.BusinessException;
@@ -49,7 +47,7 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
         if (password.equals(systemAdmin.getPassword())) {
             throw new BusinessException("用户名或密码错误");
         }
-        AdminUserSession adminUserSession = new AdminUserSession(String.valueOf(systemAdmin.getId()));
+        AdminUserSession adminUserSession = new AdminUserSession(systemAdmin.getId());
         adminUserSession.setSystemAdmin(systemAdmin);
         return adminUserSession;
     }
@@ -71,18 +69,5 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
     @Override
     public String getLoginType() {
         return LoginEnum.ADMIN.getValue();
-    }
-
-    @Override
-    public long getSessionTimeOut(boolean rememberMe) {
-        long timeOut;
-        if (rememberMe) {
-            // 缓存一周
-            timeOut = CacheTime.ONE_WEEK_MILLIS;
-        } else {
-            // 缓存一小时
-            timeOut = CacheTime.ONE_HOUR_MILLIS;
-        }
-        return timeOut;
     }
 }

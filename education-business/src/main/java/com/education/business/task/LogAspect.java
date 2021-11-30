@@ -72,7 +72,7 @@ public final class LogAspect {
             }
             String methodName = request.getMethod();
             String contentType = request.getHeader("Content-Type");
-            Object params = null;
+            Object params;
             if (ObjectUtils.isEmpty(contentType) || !contentType.contains("application/json")) {
                 params = request.getParameterMap();
             } else {

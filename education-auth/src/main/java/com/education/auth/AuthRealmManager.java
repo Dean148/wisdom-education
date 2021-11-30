@@ -1,6 +1,7 @@
 package com.education.auth;
 
 import cn.hutool.core.util.StrUtil;
+import com.education.auth.realm.LoginAuthRealm;
 import com.education.auth.session.LocalSessionStorage;
 import com.education.auth.session.SessionStorage;
 import com.education.auth.token.DefaultTokenFactory;

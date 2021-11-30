@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.education.auth.AuthUtil;
+import com.education.auth.LoginToken;
 import com.education.business.mapper.education.StudentInfoMapper;
 import com.education.business.service.BaseService;
 import com.education.business.service.system.WebsiteConfigService;
 import com.education.common.constants.AuthConstants;
 import com.education.common.constants.CacheKey;
 import com.education.common.constants.CacheTime;
+import com.education.common.exception.BusinessException;
 import com.education.common.model.JwtToken;
 import com.education.common.model.PageInfo;
 import com.education.common.model.StudentInfoImport;
@@ -105,26 +108,25 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         return studentInfoList.size();
     }
 
-    public Result doLogin(UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        LambdaQueryWrapper queryWrapper = Wrappers.<StudentInfo>lambdaQuery()
-                .eq(StudentInfo::getLoginName, userLoginRequest.getUserName());
+    public void checkLogin(String username, String password) {
+       LambdaQueryWrapper queryWrapper = Wrappers.<StudentInfo>lambdaQuery()
+                .eq(StudentInfo::getLoginName, username);
         StudentInfo studentInfo = baseMapper.selectOne(queryWrapper);
         if (ObjectUtils.isEmpty(studentInfo)) {
-            return Result.fail(ResultCode.FAIL, "用户不存在");
+            throw new BusinessException("用户不存在");
         }
 
         String dataBasePassword = studentInfo.getPassword();
         String encrypt = studentInfo.getEncrypt();
-        String password = userLoginRequest.getPassword();
         if (!dataBasePassword.equals(Md5Utils.getMd5(password, encrypt))) {
-            return Result.fail(ResultCode.FAIL, "用户名或密码错误");
+            throw new BusinessException("用户名或密码错误");
         }
 
         if (studentInfo.isDisabledFlag()) {
-            return Result.fail(ResultCode.FAIL, "账号已被禁用");
+            throw new BusinessException("账号已被禁用");
         }
 
-        boolean rememberMe = userLoginRequest.isChecked(); // 是否记住密码
+     /*   boolean rememberMe = userLoginRequest.isChecked(); // 是否记住密码
         long sessionTime = CacheTime.ONE_HOUR_MILLIS; // 默认session 会话为2小时 (单位秒)
         if (rememberMe) {
             sessionTime = CacheTime.ONE_WEEK_MILLIS;
@@ -147,7 +149,8 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         if (websiteConfig != null) {
             kv.set("webSiteConfig", websiteConfigService.getWebSiteConfig());
         }
-        return Result.success(ResultCode.SUCCESS, "登录成功", kv);
+        return Result.success(ResultCode.SUCCESS, "登录成功", kv);*/
+
     }
 
     /**

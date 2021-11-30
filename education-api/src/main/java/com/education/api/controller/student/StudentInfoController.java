@@ -1,11 +1,13 @@
 package com.education.api.controller.student;
 
+import com.education.auth.AuthUtil;
+import com.education.auth.LoginToken;
 import com.education.business.service.education.StudentInfoService;
+import com.education.business.session.StudentSession;
 import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
-import com.education.common.constants.CacheKey;
 import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.entity.StudentInfo;
@@ -37,16 +39,15 @@ public class StudentInfoController extends BaseController {
      * @return
      */
     @PostMapping("login")
-    public Result login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        return studentInfoService.doLogin(userLoginRequest, response);
+    public Result login(@RequestBody UserLoginRequest userLoginRequest) {
+        LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(), userLoginRequest.isChecked());
+        StudentSession session = AuthUtil.login(loginToken);
+        return Result.success(session);
     }
 
     @PostMapping("logout")
     public Result logout() {
-        StudentInfo studentInfo = studentInfoService.getStudentInfo();
-        if (studentInfo != null) {
-            cacheBean.remove(CacheKey.STUDENT_USER_INFO_CACHE, studentInfo.getId()); // 删除用户缓存
-        }
+        AuthUtil.logout();
         return Result.success(ResultCode.SUCCESS, "退出成功");
     }
 

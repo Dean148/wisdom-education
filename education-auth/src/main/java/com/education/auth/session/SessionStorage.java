@@ -12,14 +12,6 @@ import java.util.List;
 public interface SessionStorage {
 
     /**
-     * 创建会话id
-     * @return
-     */
-    default String createSessionId(String token) {
-        return token;
-    }
-
-    /**
      * 保存session
      * @param userSession
      */
@@ -30,6 +22,14 @@ public interface SessionStorage {
      * @return
      */
     default List<UserSession> getActiveSessions() {
+        return getActiveSessions(null);
+    }
+
+    /**
+     * 根据登录类型获取会话列表
+     * @return
+     */
+    default List<UserSession> getActiveSessions(String loginType) {
         return Collections.emptyList();
     }
 
@@ -46,14 +46,13 @@ public interface SessionStorage {
      */
     UserSession getSession(String sessionId);
 
-
     /**
-     * 获取session 有效期
+     * 根据登陆类型获取会话
+     * @param sessionId
+     * @param loginType
      * @return
      */
-    default long getSessionTimeOut() {
-        return 0;
-    }
+    UserSession getSession(String sessionId, String loginType);
 
     /**
      * 删除session 会话
@@ -62,9 +61,9 @@ public interface SessionStorage {
     void deleteSession(String sessionId);
 
     /**
-     * 刷新 session会话有效期
-     * @param userSession
-     * @param sessionTimeOut
+     * 根据登陆类型删除session 会话
+     * @param sessionId
+     * @param loginType
      */
-    void refreshSessionTimeOut(UserSession userSession, long sessionTimeOut);
+    void deleteSession(String sessionId, String loginType);
 }

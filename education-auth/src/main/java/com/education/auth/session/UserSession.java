@@ -18,17 +18,16 @@ public abstract class UserSession {
      */
     private final List<String> permissionList = new ArrayList<>();
 
-    private String sessionId;
-
-    private String userId;
+    /**
+     * 用户id
+     */
+    private Number id;
 
     private String token;
 
     private Date createDate;
 
     private String loginType;
-
-    private Date validTime;
 
     public Date getCreateDate() {
         return createDate;
@@ -38,25 +37,22 @@ public abstract class UserSession {
         return loginType;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+
+    public Number getId() {
+        return id;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setId(Number id) {
+        this.id = id;
     }
 
     public void setLoginType(String loginType) {
         this.loginType = loginType;
     }
 
-    public UserSession(String userId) {
-        this.userId = userId;
+    public UserSession(Number userId) {
+        this.id = userId;
         this.createDate = new Date();
-    }
-
-    public Date getValidTime() {
-        return validTime;
     }
 
     public List<String> getPermissionList() {
@@ -69,14 +65,6 @@ public abstract class UserSession {
 
     public void addPermission(Collection<String> permissionList) {
         permissionList.addAll(permissionList);
-    }
-
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
     }
 
     public String getToken() {

@@ -7,6 +7,7 @@ import com.education.model.dto.MenuTree;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.entity.SystemMenu;
 import com.education.model.entity.SystemRole;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 
@@ -39,12 +40,13 @@ public class AdminUserSession extends UserSession {
         return systemAdmin;
     }
 
-    public AdminUserSession(String userId) {
+    public AdminUserSession(Number userId) {
         super(userId);
     }
 
+    @Override
     public Integer getId() {
-        return Integer.valueOf(super.getUserId());
+        return Integer.valueOf(String.valueOf(super.getId()));
     }
 
     public List<SystemRole> getRoleList() {

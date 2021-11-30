@@ -2,7 +2,7 @@ package com.education.api.config.auth;
 
 import com.education.auth.AuthHandler;
 import com.education.auth.AuthRealmManager;
-import com.education.auth.LoginAuthRealm;
+import com.education.auth.realm.LoginAuthRealm;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

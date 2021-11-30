@@ -40,14 +40,17 @@ public class LocalSessionStorage extends AbstractSessionStorage {
     }
 
     @Override
+    public UserSession getSession(String sessionId, String loginType) {
+        return null;
+    }
+
+    @Override
     public void deleteSession(String sessionId) {
         sessionMap.remove(sessionId);
     }
 
     @Override
-    public void refreshSessionTimeOut(UserSession userSession, long sessionTimeOut) {
-        String sessionId = userSession.getToken();
-        sessionMap.put(sessionId, userSession);
-        expireSessionMap.put(sessionId, sessionTimeOut);
+    public void deleteSession(String sessionId, String loginType) {
+
     }
 }

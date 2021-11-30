@@ -2,6 +2,7 @@ package com.education.api.config.interceptor;
 
 import com.education.business.interceptor.BaseInterceptor;
 import com.education.business.service.education.StudentInfoService;
+import com.education.common.enums.LoginEnum;
 import com.education.common.exception.BusinessException;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
@@ -30,6 +31,6 @@ public class StudentAuthInterceptor extends BaseInterceptor {
         if (ObjectUtils.isEmpty(studentInfo)) {
             throw new BusinessException(new ResultCode(ResultCode.UN_AUTH_ERROR_CODE, "会话已过期，请重新登录!"));
         }
-        return checkToken(request, response);
+        return checkToken(LoginEnum.STUDENT.getValue(), response);
     }
 }

@@ -1,6 +1,8 @@
-package com.education.auth;
+package com.education.auth.realm;
 
+import com.education.auth.LoginToken;
 import com.education.auth.session.UserSession;
+import com.education.common.constants.CacheTime;
 
 /**
  * @author zengjintao
@@ -9,7 +11,6 @@ import com.education.auth.session.UserSession;
  */
 public interface LoginAuthRealm<T extends UserSession> {
 
-    long DEFAULT_GLOBAL_SESSION_TIMEOUT = 60 * 60 * 1000;
 
     /**
      * 用户登陆
@@ -31,7 +32,7 @@ public interface LoginAuthRealm<T extends UserSession> {
      * @param userSession
      */
     default void onLoginSuccess(T userSession) {
-        System.out.println("账号:【" + userSession.getUserId() + "】登录成功");
+        System.out.println("账号:【" + userSession.getId() + "】登录成功");
     }
 
     /**
@@ -39,7 +40,7 @@ public interface LoginAuthRealm<T extends UserSession> {
      * @param userSession
      */
     default void onLogoutSuccess(T userSession) {
-        System.out.println("账号:【" + userSession.getUserId() + "】注销成功");
+        System.out.println("账号:【" + userSession.getId() + "】注销成功");
     }
 
     /**
@@ -73,6 +74,14 @@ public interface LoginAuthRealm<T extends UserSession> {
      * @param rememberMe
      */
     default long getSessionTimeOut(boolean rememberMe) {
-        return DEFAULT_GLOBAL_SESSION_TIMEOUT;
+        long timeOut;
+        if (rememberMe) {
+            // 缓存一周
+            timeOut = CacheTime.ONE_WEEK_MILLIS;
+        } else {
+            // 缓存一小时
+            timeOut = CacheTime.ONE_HOUR_MILLIS;
+        }
+        return timeOut;
     }
 }

@@ -1,6 +1,5 @@
 package com.education.auth.token;
 
-import cn.hutool.core.util.IdUtil;
 
 /**
  * token 创建接口
@@ -10,13 +9,33 @@ import cn.hutool.core.util.IdUtil;
  */
 public interface ITokenFactory {
 
-    long DEFAULT_EXPIRATION_TIME = 60 * 60 * 1000;
-
+    /**
+     * 创建token 并设置有效期
+     * @param value
+     * @param expirationTime 单位： 毫秒
+     * @return
+     */
     String createToken(Object value, long expirationTime);
 
-    default String createToken() {
-        return IdUtil.simpleUUID();
-    }
+    /**
+     * 解析token
+     * @param token
+     * @param <T>
+     * @return
+     */
+    <T> T parseToken(String token);
 
-    Object parseToken(String token);
+    /**
+     * 校验token 是否失效
+     * @param token
+     * @return
+     */
+    boolean isExpiration(String token);
+
+    /**
+     * 获取token 到期时间
+     * @param token
+     * @return
+     */
+    long getExpirationTime(String token);
 }

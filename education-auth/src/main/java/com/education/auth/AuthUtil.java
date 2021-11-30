@@ -2,10 +2,10 @@ package com.education.auth;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.education.auth.realm.LoginAuthRealm;
 import com.education.auth.session.SessionStorage;
 import com.education.auth.session.UserSession;
 import com.education.auth.token.TokenFactory;
-import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
@@ -26,18 +26,18 @@ public class AuthUtil {
 
     private static final Map<String, ReentrantLock> lockMap = new ConcurrentHashMap<>();
 
-    public static <T> T login(LoginToken loginToken) {
+    public static <T extends UserSession> T login(LoginToken loginToken) {
         String loginType = loginToken.getLoginType();
         LoginAuthRealm loginAuthRealm = authRealmManager.getByLoginType(loginType);
         UserSession userSession = loginAuthRealm.doLogin(loginToken);
         AuthConfig authConfig = getAuthConfig();
         boolean flag = authConfig.isAllowMoreOnline();
-        SessionStorage sessionStorage = authRealmManager.getSessionStorage();
+        SessionStorage sessionStorage = getSessionStorage();
         if (!flag) {
-            ReentrantLock lock = getLock(userSession.getUserId());
+            ReentrantLock lock = getLock(String.valueOf(userSession.getId()));
             lock.lock();
             try {
-                checkUserIsOnline(userSession.getUserId(), loginAuthRealm);
+                checkUserIsOnline(userSession.getId(), loginAuthRealm);
                 long sessionTimeOut = loginAuthRealm.getSessionTimeOut(loginToken.isRemember());
                 createUserSession(userSession, sessionStorage, sessionTimeOut);
             } finally {
@@ -52,6 +52,10 @@ public class AuthUtil {
         return (T) userSession;
     }
 
+    public static TokenFactory getTokenFactory() {
+        return authRealmManager.getTokenFactory();
+    }
+
     public static ReentrantLock getLock(String userId) {
         ReentrantLock lock = lockMap.get(userId);
         if (lock == null) {
@@ -63,19 +67,16 @@ public class AuthUtil {
         return lock;
     }
 
-    public static UserSession getSessionByToken(String token) {
-        return getSessionStorage().getSession(token);
-    }
 
     /**
      * 校验当前用户是否已登录
      * @param userId
      */
-    private static void checkUserIsOnline(String userId, LoginAuthRealm loginAuthRealm) {
+    private static void checkUserIsOnline(Number userId, LoginAuthRealm loginAuthRealm) {
         List<UserSession> list = getSessionStorage().getActiveSessions();
         if (CollUtil.isNotEmpty(list)) {
             UserSession userSession = list.stream()
-                    .filter(session -> session.getUserId().equals(userId))
+                    .filter(session -> session.getId().equals(userId))
                     .findAny().orElseGet(() -> null);
             if (userSession != null) {
                 // 删除上一个用户会话信息
@@ -96,18 +97,20 @@ public class AuthUtil {
 
     private static void createUserSession(UserSession userSession, SessionStorage sessionStorage, long sessionTimeOut) {
         TokenFactory tokenFactory = authRealmManager.getTokenFactory();
-        String token = tokenFactory.createToken(userSession.getUserId(), sessionTimeOut);
+        String token = tokenFactory.createToken(userSession.getId(), sessionTimeOut);
         userSession.setToken(token);
         sessionStorage.saveSession(userSession, sessionTimeOut);
     }
 
     /**
-     * 刷新session 会话
+     * 创建新的session 会话
      * @param userSession
      * @param sessionTimeOut
      */
-    public static void refreshSession(UserSession userSession, long sessionTimeOut) {
-        getSessionStorage().refreshSessionTimeOut(userSession, sessionTimeOut);
+    public static void createNewSession(UserSession userSession, String oldToken, long sessionTimeOut) {
+        SessionStorage sessionStorage = getSessionStorage();
+        sessionStorage.saveSession(userSession, sessionTimeOut);
+        sessionStorage.deleteSession(oldToken);
     }
 
     public static void updateSession(UserSession userSession) {
@@ -115,9 +118,20 @@ public class AuthUtil {
     }
 
     public static UserSession getSession() {
+        return getSession(null);
+    }
+
+    public static UserSession getSession(String loginType) {
         String token = getTokenValue();
-        SessionStorage sessionStorage = authRealmManager.getSessionStorage();
-        return sessionStorage.getSession(token);
+        if (StrUtil.isBlank(token)) {
+            return null;
+        }
+        boolean flag = getTokenFactory().isExpiration(token);
+        if (flag) {
+            return null;
+        }
+        SessionStorage sessionStorage = getSessionStorage();
+        return sessionStorage.getSession(token, loginType);
     }
 
     public static boolean hasPermission(String permission) {
