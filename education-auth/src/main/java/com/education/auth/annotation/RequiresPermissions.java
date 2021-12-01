@@ -19,4 +19,6 @@ public @interface RequiresPermissions {
     String[] value();
 
     Logical logical() default Logical.AND;
+
+    String loginType() default "admin";
 }

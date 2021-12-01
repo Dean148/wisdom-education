@@ -29,12 +29,12 @@ public class EhcacheBean implements CacheBean {
     }
 
     @Override
-    public void put(Object key, Object value, int liveSeconds) {
+    public void put(Object key, Object value, long liveSeconds) {
 
     }
 
     @Override
-    public void put(String cacheName, Object key, Object value, int liveSeconds) {
+    public void put(String cacheName, Object key, Object value, long liveSeconds) {
 
     }
 
@@ -44,7 +44,7 @@ public class EhcacheBean implements CacheBean {
     }
 
     @Override
-    public void expire(String cacheName, Object key, int liveSeconds) {
+    public void expire(String cacheName, Object key, long liveSeconds) {
 
     }
 

@@ -23,7 +23,7 @@ public class JwtTokenFactory extends TokenFactory {
 
     @Override
     public <T> T parseToken(String token) {
-        return (T) jwtToken.parseToken(token);
+        return (T) jwtToken.parseTokenToString(token);
     }
 
     @Override

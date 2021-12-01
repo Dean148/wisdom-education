@@ -9,6 +9,7 @@ import com.education.business.task.UserLoginSuccessListener;
 import com.education.common.annotation.*;
 import com.education.common.base.BaseController;
 import com.education.common.constants.*;
+import com.education.common.enums.LoginEnum;
 import com.education.common.utils.RequestUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
@@ -48,11 +49,12 @@ public class LoginController extends BaseController {
     public Result<Map> login(@RequestBody @Validated UserLoginRequest userLoginRequest, HttpServletResponse response) {
         String codeKey = userLoginRequest.getKey();
         String imageCode = userLoginRequest.getCode();
-        String cacheCode = cacheBean.get(codeKey);
+      /*  String cacheCode = cacheBean.get(codeKey);
         if (!imageCode.equalsIgnoreCase(cacheCode)) {
             return Result.fail(ResultCode.CODE_ERROR, "验证码输入错误");
-        }
-        LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(), true);
+        }*/
+        LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(),
+                LoginEnum.ADMIN.getValue(), false);
         AdminUserSession userSession = AuthUtil.login(loginToken);
         response.addHeader(AuthConstants.AUTHORIZATION, userSession.getToken());
         Kv userInfo = Kv.create().set("id", userSession.getId())

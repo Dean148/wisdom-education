@@ -39,6 +39,7 @@ public class AuthUtil {
             try {
                 checkUserIsOnline(userSession.getId(), loginAuthRealm);
                 long sessionTimeOut = loginAuthRealm.getSessionTimeOut(loginToken.isRemember());
+                userSession.setLoginType(loginType);
                 createUserSession(userSession, sessionStorage, sessionTimeOut);
             } finally {
                 lock.unlock();
@@ -49,6 +50,7 @@ public class AuthUtil {
         }
         loginAuthRealm.loadPermission(userSession);
         loginAuthRealm.onLoginSuccess(userSession);
+        updateSession(userSession);
         return (T) userSession;
     }
 
@@ -73,14 +75,15 @@ public class AuthUtil {
      * @param userId
      */
     private static void checkUserIsOnline(Number userId, LoginAuthRealm loginAuthRealm) {
-        List<UserSession> list = getSessionStorage().getActiveSessions();
+        String loginType = loginAuthRealm.getLoginType();
+        List<UserSession> list = getSessionStorage().getActiveSessions(loginType);
         if (CollUtil.isNotEmpty(list)) {
             UserSession userSession = list.stream()
                     .filter(session -> session.getId().equals(userId))
                     .findAny().orElseGet(() -> null);
             if (userSession != null) {
                 // 删除上一个用户会话信息
-                getSessionStorage().deleteSession(userSession.getToken());
+                getSessionStorage().deleteSession(userSession.getToken(), loginType);
                 loginAuthRealm.onRejectSession(userSession);
             }
         }
@@ -134,8 +137,9 @@ public class AuthUtil {
         return sessionStorage.getSession(token, loginType);
     }
 
-    public static boolean hasPermission(String permission) {
-        UserSession userSession = getSession();
+
+    public static boolean hasPermission(String loginType, String permission) {
+        UserSession userSession = getSession(loginType);
         List<String> permissionList = userSession.getPermissionList();
         return permissionList.contains(permission);
     }

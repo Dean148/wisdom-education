@@ -30,20 +30,20 @@ public class PermissionStrategy {
         boolean hasPermission = true;
         switch (mode) {
             case AND:
-                hasPermission = checkPermissionAnd(values);
+                hasPermission = checkPermissionAnd(values, permission.loginType());
                 break;
             case OR:
-                hasPermission = checkPermissionOr(values);
+                hasPermission = checkPermissionOr(values, permission.loginType());
         }
         if (!hasPermission) {
             throw new PermissionException();
         }
     }
 
-    private static boolean checkPermissionOr(String[] values) {
+    private static boolean checkPermissionOr(String[] values, String loginType) {
         boolean hasPermission = false;
         for (String value : values) {
-            hasPermission = AuthUtil.hasPermission(value);
+            hasPermission = AuthUtil.hasPermission(loginType, value);
             if (hasPermission) {
                 break;
             }
@@ -51,10 +51,10 @@ public class PermissionStrategy {
         return hasPermission;
     }
 
-    private static boolean checkPermissionAnd(String[] values) {
+    private static boolean checkPermissionAnd(String[] values, String loginType) {
         boolean hasPermission = false;
         for (String value : values) {
-            hasPermission = AuthUtil.hasPermission(value);
+            hasPermission = AuthUtil.hasPermission(loginType, value);
             if (!hasPermission) {
                 break;
             }

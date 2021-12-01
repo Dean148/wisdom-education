@@ -36,8 +36,10 @@ public class AuthRealmManager {
         return this;
     }
 
-    public AuthRealmManager(SessionStorage sessionStorage) {
+    public AuthRealmManager(SessionStorage sessionStorage, TokenFactory tokenFactory, AuthConfig authConfig) {
         this.sessionStorage = sessionStorage;
+        this.tokenFactory = tokenFactory;
+        this.authConfig = authConfig;
     }
 
     public TokenFactory getTokenFactory() {

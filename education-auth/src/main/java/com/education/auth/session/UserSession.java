@@ -1,5 +1,6 @@
 package com.education.auth.session;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -11,7 +12,7 @@ import java.util.List;
  * @create_at 2021年11月25日 0025 16:26
  * @since version 1.0.4
  */
-public abstract class UserSession {
+public abstract class UserSession implements Serializable {
 
     /**
      * 权限列表
@@ -63,8 +64,8 @@ public abstract class UserSession {
         permissionList.add(permission);
     }
 
-    public void addPermission(Collection<String> permissionList) {
-        permissionList.addAll(permissionList);
+    public void addPermission(Collection<String> permission) {
+        permissionList.addAll(permission);
     }
 
     public String getToken() {

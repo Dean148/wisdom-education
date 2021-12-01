@@ -2,6 +2,9 @@ package com.education.auth.session;
 
 import cn.hutool.core.util.StrUtil;
 import com.education.common.cache.CacheBean;
+import com.education.common.model.JwtToken;
+import com.jfinal.kit.HashKit;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -14,7 +17,7 @@ import java.util.Set;
 public class RedisSessionStorage extends AbstractSessionStorage {
 
     private final CacheBean cacheBean;
-    private static final String SESSION_KEY = "session:";
+    private static final String SESSION_KEY = "session";
 
     public RedisSessionStorage(CacheBean cacheBean) {
         this.cacheBean = cacheBean;
@@ -23,33 +26,39 @@ public class RedisSessionStorage extends AbstractSessionStorage {
     @Override
     public void updateSession(UserSession userSession) {
         String cacheName = getCacheName(userSession.getLoginType());
-        cacheBean.putValue(cacheName, userSession.getToken(), userSession);
+        String key = hashToken(userSession.getToken());
+        long expire = cacheBean.getExpire(cacheName, key);
+        cacheBean.put(key, userSession, expire);
     }
 
     @Override
-    public UserSession getSession(String sessionId) {
-        return getSession(sessionId, null);
+    public UserSession getSession(String token) {
+        return getSession(token, null);
     }
 
     @Override
-    public UserSession getSession(String sessionId, String loginType) {
-        return cacheBean.get(getCacheName(loginType), sessionId);
+    public UserSession getSession(String token, String loginType) {
+        return cacheBean.get(getCacheName(loginType), hashToken(token));
     }
 
     @Override
-    public void deleteSession(String sessionId) {
-        deleteSession(sessionId, null);
+    public void deleteSession(String token) {
+        deleteSession(token, null);
+    }
+
+    private String hashToken(String token) {
+        return HashKit.md5(token);
     }
 
     @Override
-    public void deleteSession(String sessionId, String loginType) {
-        cacheBean.remove(getCacheName(loginType), sessionId);
+    public void deleteSession(String token, String loginType) {
+        cacheBean.remove(getCacheName(loginType), hashToken(token));
     }
 
     private String getCacheName(String loginType) {
         String cacheName = SESSION_KEY;
         if (StrUtil.isNotBlank(loginType)) {
-            cacheName += loginType;
+            cacheName += StrUtil.COLON + loginType;
         }
         return cacheName;
     }
@@ -58,7 +67,7 @@ public class RedisSessionStorage extends AbstractSessionStorage {
     @Override
     public void saveSession(UserSession userSession, long sessionTimeOut) {
         String cacheName = getCacheName(userSession.getLoginType());
-        cacheBean.put(cacheName, userSession.getToken(), userSession, (int) sessionTimeOut);
+        cacheBean.put(cacheName, hashToken(userSession.getToken()), userSession, (int) sessionTimeOut);
     }
 
     @Override
@@ -69,13 +78,17 @@ public class RedisSessionStorage extends AbstractSessionStorage {
     @Override
     public List<UserSession> getActiveSessions(String loginType) {
         List<UserSession> userSessionList = new ArrayList<>();
-        Set<String> sessionIdList = (Set<String>) cacheBean.getKeys(getCacheName(loginType));
-        for (String sessionId : sessionIdList) {
-            UserSession userSession = getSession(sessionId);
+        Set<String> tokenList = (Set<String>) cacheBean.getKeys(getCacheName(loginType));
+        for (String token : tokenList) {
+            UserSession userSession = cacheBean.get(token);
             if (userSession != null) {
                 userSessionList.add(userSession);
             }
         }
         return userSessionList;
+    }
+
+    private UserSession getSessionByMd5(String md5Key, String loginType) {
+        return cacheBean.get(md5Key);
     }
 }

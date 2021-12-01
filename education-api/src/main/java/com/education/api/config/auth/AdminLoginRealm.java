@@ -44,7 +44,7 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
         SystemAdmin systemAdmin = systemAdminService.getOne(queryWrapper);
         Assert.notNull(systemAdmin, () -> new BusinessException("用户名不存在"));
         password = Md5Utils.getMd5(password, systemAdmin.getEncrypt());
-        if (password.equals(systemAdmin.getPassword())) {
+        if (!password.equals(systemAdmin.getPassword())) {
             throw new BusinessException("用户名或密码错误");
         }
         AdminUserSession adminUserSession = new AdminUserSession(systemAdmin.getId());

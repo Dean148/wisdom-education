@@ -41,29 +41,29 @@ public interface SessionStorage {
 
     /**
      * 获取用户会话
-     * @param sessionId
+     * @param token
      * @return
      */
-    UserSession getSession(String sessionId);
+    UserSession getSession(String token);
 
     /**
      * 根据登陆类型获取会话
-     * @param sessionId
+     * @param token
      * @param loginType
      * @return
      */
-    UserSession getSession(String sessionId, String loginType);
+    UserSession getSession(String token, String loginType);
 
     /**
      * 删除session 会话
-     * @param sessionId
+     * @param token
      */
-    void deleteSession(String sessionId);
+    void deleteSession(String token);
 
     /**
      * 根据登陆类型删除session 会话
-     * @param sessionId
+     * @param token
      * @param loginType
      */
-    void deleteSession(String sessionId, String loginType);
+    void deleteSession(String token, String loginType);
 }
