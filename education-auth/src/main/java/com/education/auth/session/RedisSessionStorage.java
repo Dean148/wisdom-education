@@ -28,7 +28,7 @@ public class RedisSessionStorage extends AbstractSessionStorage {
         String cacheName = getCacheName(userSession.getLoginType());
         String key = hashToken(userSession.getToken());
         long expire = cacheBean.getExpire(cacheName, key);
-        cacheBean.put(key, userSession, expire);
+        cacheBean.put(cacheName, key, userSession, expire);
     }
 
     @Override

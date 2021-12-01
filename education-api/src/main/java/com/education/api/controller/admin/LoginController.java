@@ -47,12 +47,12 @@ public class LoginController extends BaseController {
     @SystemLog(describe = "登录管理系统")
     @FormLimit
     public Result<Map> login(@RequestBody @Validated UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        String codeKey = userLoginRequest.getKey();
+       /* String codeKey = userLoginRequest.getKey();
         String imageCode = userLoginRequest.getCode();
         String cacheCode = cacheBean.get(codeKey);
         if (!imageCode.equalsIgnoreCase(cacheCode)) {
             return Result.fail(ResultCode.CODE_ERROR, "验证码输入错误");
-        }
+        }*/
         LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(),
                 LoginEnum.ADMIN.getValue(), false);
         AdminUserSession userSession = AuthUtil.login(loginToken);
