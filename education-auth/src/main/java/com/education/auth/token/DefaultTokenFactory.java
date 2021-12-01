@@ -2,9 +2,14 @@ package com.education.auth.token;
 
 
 import cn.hutool.core.util.IdUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * 默认token 实现
@@ -12,9 +17,28 @@ import java.util.Map;
  * @create_at 2021年11月26日 0026 10:51
  * @since version 1.0.4
  */
+@Slf4j
 public class DefaultTokenFactory extends TokenFactory {
 
     private final Map<String, TokenInfo> tokenMap = new HashMap<>();
+    private Timer timer = new Timer();
+
+    public DefaultTokenFactory() {
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Iterator<Map.Entry<String, TokenInfo>> iterator = tokenMap.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, TokenInfo> entry = iterator.next();
+                    long expirationTime = entry.getValue().getExpirationTime();
+                    if (expirationTime <= System.currentTimeMillis()) {
+                        iterator.remove();
+                        log.warn("remove token:{}", entry.getKey());
+                    }
+                }
+            }
+        }, 5000);
+    }
 
     @Override
     public String createToken(Object value, long expirationTime) {
