@@ -1,5 +1,6 @@
 package com.education.business.task;
 
+import cn.hutool.core.collection.CollUtil;
 import com.education.common.annotation.EventQueue;
 import com.education.common.component.SpringBeanManager;
 import com.education.common.utils.ObjectUtils;
@@ -63,11 +64,12 @@ public class TaskManager {
         Assert.notNull(taskParam.getQueueName(), "queue name can not be null");
         String queueName = taskParam.getQueueName();
         List<TaskListener> queueList = queueTaskListenerMap.get(queueName);
-        Optional.ofNullable(queueList).ifPresent(list -> {
-            list.forEach(taskListener -> {
-                threadPoolTaskExecutor.execute(() -> {
-                    taskListener.onMessage(taskParam);
-                });
+        if (CollUtil.isEmpty(queueList)) {
+            return;
+        }
+        queueList.forEach(taskListener -> {
+            threadPoolTaskExecutor.execute(() -> {
+                taskListener.onMessage(taskParam);
             });
         });
     }

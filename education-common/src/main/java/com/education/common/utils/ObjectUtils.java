@@ -113,7 +113,7 @@ public class ObjectUtils {
 	 * @return
 	 */
 	public static String generateFileBySecond() {
-		DateFormat format = new SimpleDateFormat("hh-mm-ss");
+		DateFormat format = new SimpleDateFormat("HH-mm-ss");
 		return format.format(new Date()).replaceAll("-", "");
 	}
 

@@ -7,6 +7,7 @@ package com.education.common.constants;
  */
 public interface LocalQueueConstants {
 
-    String WEB_SOCKET_MESSAGE_TASK_QUEUE = "webSocketMessageTaskQueue";
     String USER_LOGIN_SUCCESS_QUEUE = "userLoginSuccessQueue";
+
+    String SYSTEM_MESSAGE = "systemMessageQueue";
 }

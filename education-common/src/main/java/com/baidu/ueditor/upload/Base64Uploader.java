@@ -1,12 +1,16 @@
 package com.baidu.ueditor.upload;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.baidu.ueditor.PathFormat;
 import com.baidu.ueditor.define.AppInfo;
 import com.baidu.ueditor.define.BaseState;
 import com.baidu.ueditor.define.FileType;
 import com.baidu.ueditor.define.State;
+import com.education.common.upload.FileUpload;
+import com.education.common.utils.FileUtils;
 import org.apache.commons.codec.binary.Base64;
 
+import java.io.ByteArrayInputStream;
 import java.util.Map;
 
 public final class Base64Uploader {
@@ -23,13 +27,19 @@ public final class Base64Uploader {
 
 		String suffix = FileType.getSuffix("JPG");
 
-		String savePath = PathFormat.parse((String) conf.get("savePath"),
-				(String) conf.get("filename"));
-		
-		savePath = savePath + suffix;
-		String physicalPath = (String) conf.get("rootPath") + savePath;
+		String savePath = PathFormat.parse((String) conf.get("savePath"), (String) conf.get("filename"));
 
-		State storageState = StorageManager.saveBinaryFile(data, physicalPath);
+		savePath = savePath + suffix;
+
+		State storageState;
+		if (FileUtils.isOpenOssUpload()) {
+			FileUpload fileUpload = SpringUtil.getBean(FileUpload.class);
+			fileUpload.putObject(savePath, new ByteArrayInputStream(data));
+			storageState = new BaseState();
+		} else {
+			String physicalPath = conf.get("rootPath") + savePath;
+			storageState = StorageManager.saveBinaryFile(data, physicalPath);
+		}
 
 		if (storageState.isSuccess()) {
 			storageState.putInfo("url", PathFormat.format(savePath));

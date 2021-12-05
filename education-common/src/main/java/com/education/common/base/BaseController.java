@@ -1,7 +1,6 @@
 package com.education.common.base;
 
 import com.education.common.cache.CacheBean;
-import org.springframework.beans.factory.annotation.Value;
 import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,8 +15,7 @@ public abstract class BaseController {
 
     @Resource(name = "redisCacheBean")
     protected CacheBean cacheBean;
-    @Value("file.uploadPath")
-    protected String baseUploadPath;
+
 
     protected static final Set<String> excelTypes = new HashSet<String>() {
         {
@@ -33,7 +31,4 @@ public abstract class BaseController {
             add("text/plain");
         }
     };
-
-
-
 }
