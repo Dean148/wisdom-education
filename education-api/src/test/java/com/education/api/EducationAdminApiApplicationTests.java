@@ -10,7 +10,10 @@ import com.education.business.task.TaskParam;
 import com.education.common.cache.CacheBean;
 import com.education.common.cache.EhcacheBean;
 import com.education.common.utils.ObjectUtils;
+import com.education.model.entity.CourseInfo;
 import com.education.model.entity.StudentInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jfinal.json.JacksonFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,11 +25,12 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
+/*@SpringBootTest
+@RunWith(SpringRunner.class)*/
 @Slf4j
 public class EducationAdminApiApplicationTests {
 
@@ -45,8 +49,21 @@ public class EducationAdminApiApplicationTests {
 
     static final String SCORE_RANK = "score_rank";
 
+    @Resource
+    ObjectMapper objectMapper;
+
+    public static void main(String[] args) {
+        CourseInfo courseInfo = new CourseInfo();
+        courseInfo.setPushTime(new Date());
+        System.out.println(JacksonFactory.me().getJson().toJson(courseInfo));
+    }
+
     @Test
     public void testRedis() {
+
+        CourseInfo courseInfo = new CourseInfo();
+        courseInfo.setPushTime(new Date());
+        JacksonFactory.me().getJson().toJson(courseInfo);
        // redisTemplate.opsForList().rightPop("test_token");
 
         redisTemplate.boundHashOps("token_teste").increment("id:1", 1);

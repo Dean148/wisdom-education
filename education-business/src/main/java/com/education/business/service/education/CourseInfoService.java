@@ -28,6 +28,7 @@ import java.util.Date;
 @Service
 public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo> {
 
+
     @Autowired
     private RedissonClient redissonClient;
 
@@ -44,11 +45,11 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
         Integer courseId = courseInfo.getId();
         if (courseId != null) {
             CourseInfo course = super.getById(courseId);
-            if (course.getStatus() != EnumConstants.CourseStatus.DRAUGHT.getValue()) {
+            if (!EnumConstants.CourseStatus.DRAUGHT.getValue().equals(course.getStatus())) {
                 throw new BusinessException(new ResultCode(ResultCode.FAIL, "非草稿状态课程无法修改"));
             }
         }
-        if (courseInfo.getStatus() == EnumConstants.CourseStatus.GROUNDING.getValue()) {
+        if (EnumConstants.CourseStatus.GROUNDING.getValue().equals(courseInfo.getStatus())) {
             courseInfo.setPushTime(new Date());
         }
         super.saveOrUpdate(courseInfo);
@@ -60,7 +61,7 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
      */
     public void deleteById(Integer courseId) {
         CourseInfo course = super.getById(courseId);
-        if (course.getStatus() != EnumConstants.CourseStatus.DRAUGHT.getValue()) {
+        if (EnumConstants.CourseStatus.DRAUGHT.getValue().equals(course.getStatus())) {
             throw new BusinessException(new ResultCode(ResultCode.FAIL, "非草稿状态课程无法删除"));
         }
         super.removeById(courseId);
@@ -93,7 +94,7 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
     @Transactional
     public void updateCommentNumberAndValuateMark(Integer courseId, BigDecimal valuateMarkParam) {
         this.increaseCommentNumber(courseId);
-        RLock lock = redissonClient.getLock(LockKey.COURSE_INFO + courseId);
+        RLock lock = redissonClient.getLock(LockKey.COURSE_INFO_VALUATE + courseId);
         try {
             lock.lock();
             // 重新计算课程分数
@@ -110,4 +111,5 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
             lock.unlock();
         }
     }
+
 }

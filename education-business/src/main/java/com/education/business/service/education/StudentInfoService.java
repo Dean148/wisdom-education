@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.StudentInfoMapper;
 import com.education.business.service.BaseService;
+import com.education.business.service.system.WebsiteConfigService;
 import com.education.common.constants.AuthConstants;
 import com.education.common.constants.CacheKey;
 import com.education.common.constants.CacheTime;
@@ -16,12 +17,14 @@ import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.entity.GradeInfo;
 import com.education.model.entity.StudentInfo;
+import com.education.model.entity.WebsiteConfig;
 import com.education.model.request.PageParam;
 import com.education.model.request.UserLoginRequest;
 import com.jfinal.kit.Kv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -38,6 +41,8 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
     private GradeInfoService gradeInfoService;
     @Autowired
     private JwtToken jwtToken;
+    @Resource
+    private WebsiteConfigService websiteConfigService;
 
     public PageInfo<StudentInfoDto> selectPageList(PageParam pageParam, StudentInfo studentInfo) {
         Page<StudentInfoDto> page = new Page<>(pageParam.getPageNumber(), pageParam.getPageSize());
@@ -128,6 +133,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         response.addHeader(AuthConstants.AUTHORIZATION, token);
         GradeInfo gradeInfo = gradeInfoService.getById(studentInfo.getGradeInfoId());
         this.cacheStudentInfoSession(studentInfo, sessionTime);
+
         Kv kv = Kv.create().set("name", studentInfo.getName())
                 .set("gradeInfoId", gradeInfo.getId())
                 .set("headImg", studentInfo.getHeadImg())
@@ -137,6 +143,10 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
                 .set("mobile", studentInfo.getMobile())
                 .set("gradeInfoName", gradeInfo.getName())
                 .set("id", studentInfo.getId());
+        WebsiteConfig websiteConfig = websiteConfigService.getWebSiteConfig();
+        if (websiteConfig != null) {
+            kv.set("webSiteConfig", websiteConfigService.getWebSiteConfig());
+        }
         return Result.success(ResultCode.SUCCESS, "登录成功", kv);
     }
 

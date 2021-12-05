@@ -124,7 +124,7 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
         // 更新试卷总分
         Integer testPaperInfoMark = null;
         if (ObjectUtils.isNotEmpty(testPaperQuestionDto.getUpdateType()) &&
-                testPaperQuestionDto.getUpdateType().intValue() == ResultCode.SUCCESS) {
+                ResultCode.SUCCESS.equals(testPaperQuestionDto.getUpdateType())) {
             TestPaperInfo testPaperInfo = this.getById(testPaperQuestionDto.getTestPaperInfoId());
             testPaperInfoMark = testPaperInfo.getMark();
             TestPaperQuestionInfo testPaperQuestionInfo = testPaperQuestionInfoService.getById(testPaperQuestionDto.getId());
