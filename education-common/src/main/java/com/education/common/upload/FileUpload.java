@@ -15,7 +15,9 @@ public interface FileUpload {
      * @param name
      * @return
      */
-    UploadResult createBucket(String name) throws Exception;
+    UploadResult createBucket(String name);
+
+    UploadResult putObject(String filePath, InputStream inputStream);
 
     UploadResult putObject(String filePath, String fileName, File file);
 
