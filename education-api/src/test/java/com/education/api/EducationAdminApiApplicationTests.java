@@ -29,8 +29,8 @@ import javax.annotation.Resource;
 import java.util.*;
 
 
-/*@SpringBootTest
-@RunWith(SpringRunner.class)*/
+@SpringBootTest
+@RunWith(SpringRunner.class)
 @Slf4j
 public class EducationAdminApiApplicationTests {
 
@@ -52,10 +52,15 @@ public class EducationAdminApiApplicationTests {
     @Resource
     ObjectMapper objectMapper;
 
-    public static void main(String[] args) {
+  /*  public static void main(String[] args) {
         CourseInfo courseInfo = new CourseInfo();
         courseInfo.setPushTime(new Date());
         System.out.println(JacksonFactory.me().getJson().toJson(courseInfo));
+    }*/
+
+    @Test
+    public void createOss() {
+
     }
 
     @Test

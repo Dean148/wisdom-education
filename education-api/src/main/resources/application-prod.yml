@@ -1,4 +1,11 @@
 host: 120.79.144.34
+oss:
+  upload:
+    secretId: AKIDSjlW1GEvLUs3xax4tRijX4LL5XioiNmw
+    secretKey: wc3D8oEPKzPZVBblfKjtnTt3xc1A3oJY
+    appId: 1253719016
+    platform: tencent
+    region: ap-nanjing
 server:
   port: 8001
 canal:
@@ -9,7 +16,7 @@ spring:
   flyway:
     sql-migration-separator: _ #分隔符
     clean-disabled: true #禁用clean操作
-    enabled: true #使flyway生效
+    enabled: false #使flyway生效
     baseline-on-migrate: true #初始化时如果不存在迁移记录表，默认新建一个
     out-of-order: true #防止开发环境下漏掉没来得及apply的文件，产品环境最好设为false
     ignore-ignored-migrations: true
@@ -47,6 +54,15 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
+  mail:
+    host: smtp.163.com
+    port: 25
+    username: 18296640717@163.com
+    password: KIZMPBYPLMWTIZGP
+    properties:
+      mail:
+        #表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+        debug: true
 lbs:
   key: MYOBZ-OOEW3-KYC3G-YWDXA-DMQJ6-SPBMH
 

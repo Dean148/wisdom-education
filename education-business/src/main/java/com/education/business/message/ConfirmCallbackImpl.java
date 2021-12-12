@@ -2,6 +2,8 @@ package com.education.business.message;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.education.business.service.system.SystemMessageLogService;
+import com.education.common.constants.SystemConstants;
+import com.education.model.entity.MessageLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -28,20 +30,20 @@ public class ConfirmCallbackImpl implements RabbitTemplate.ConfirmCallback {
         log.info("确认状态: {}", ack);
 
         String messageId = correlationData.getId();
-        LambdaUpdateWrapper updateWrapper = null;
+        LambdaUpdateWrapper updateWrapper;
         if (ack) {
-          /*  updateWrapper = new LambdaUpdateWrapper<MessageLog>()
-                    .set(MessageLog::getStatus,  Constants.SEND_SUCCESS)
-                    .eq(MessageLog::getCorrelationDataId, messageId);*/
+            updateWrapper = new LambdaUpdateWrapper<MessageLog>()
+                    .set(MessageLog::getStatus,  SystemConstants.SEND_SUCCESS)
+                    .eq(MessageLog::getCorrelationDataId, messageId);
         } else {
 
             // 消息发送失败
             log.error("造成原因: {}", cause);
-          /*  updateWrapper = new LambdaUpdateWrapper<MessageLog>()
-                    .set(MessageLog::getStatus, Constants.SEND_FAIL)
+            updateWrapper = new LambdaUpdateWrapper<MessageLog>()
+                    .set(MessageLog::getStatus, SystemConstants.SEND_FAIL)
                     .set(MessageLog::getFailCause, cause)
-                    .eq(MessageLog::getCorrelationDataId, messageId);*/
+                    .eq(MessageLog::getCorrelationDataId, messageId);
         }
-      //  systemMessageLogService.update(null, updateWrapper);
+        systemMessageLogService.update(null, updateWrapper);
     }
 }

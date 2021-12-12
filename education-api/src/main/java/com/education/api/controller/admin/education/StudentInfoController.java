@@ -3,6 +3,7 @@ package com.education.api.controller.admin.education;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.education.business.service.education.StudentInfoService;
 import com.education.common.base.BaseController;
+import com.education.common.config.OssProperties;
 import com.education.common.model.ExcelResult;
 import com.education.common.model.StudentInfoImport;
 import com.education.common.utils.*;
@@ -14,6 +15,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
 import java.io.InputStream;
 import java.util.List;
 
@@ -29,6 +32,8 @@ public class StudentInfoController extends BaseController {
 
     @Autowired
     private StudentInfoService studentInfoService;
+    @Resource
+    private OssProperties ossProperties;
 
     /**
      * 学员分页列表
@@ -106,7 +111,7 @@ public class StudentInfoController extends BaseController {
         InputStream inputStream = file.getInputStream();
         ImportParams importParams = new ImportParams();
         importParams.setNeedVerfiy(true);
-        importParams.setSaveUrl(baseUploadPath + "/image"); // 设置头像上传路径
+        importParams.setSaveUrl(ossProperties.getBucketName() + "image"); // 设置头像上传路径
 
         ExcelResult excelResult = ExcelUtils.importExcel(inputStream,
                 StudentInfoImport.class, importParams, "/student/importExcelError/");
