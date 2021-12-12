@@ -1,6 +1,5 @@
 package com.education.business.message;
 
-import com.education.business.rabbitmq.FanoutExchangeProduce;
 import com.education.business.service.system.SystemMessageLogService;
 import com.education.business.task.TaskManager;
 import com.education.common.constants.SystemConstants;
@@ -13,8 +12,6 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 import java.util.Date;
 
 /**
