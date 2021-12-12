@@ -99,7 +99,7 @@ public class SystemQuestionCorrect extends QuestionCorrect {
         examMessage.setStudentWrongBookList(getStudentWrongBookList());
         examMessage.setExamInfo(this.getExamInfo());
         examMessage.setRoutingKey(RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY);
-        examMessage.setExchange(RabbitMqConfig.FANOUT_EXCHANGE);
+        examMessage.setExchange(RabbitMqConfig.EXAM_DIRECT_EXCHANGE);
         queueManager.sendQueueMessage(examMessage);
     }
 
