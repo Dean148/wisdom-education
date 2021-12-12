@@ -1,5 +1,6 @@
 package com.education.business.message;
 
+import com.education.business.rabbitmq.FanoutExchangeProduce;
 import com.education.business.service.system.SystemMessageLogService;
 import com.education.business.task.TaskManager;
 import com.education.common.constants.SystemConstants;
@@ -12,6 +13,8 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.util.Date;
 
 /**
@@ -33,6 +36,8 @@ public class QueueManager {
 
     private final Jackson jackson = new Jackson();
 
+
+
     /**
      * 发送考试提交消息通知
      */
@@ -48,11 +53,12 @@ public class QueueManager {
                 queueMessage.setMessageId(id); // 消息唯一标识
                 messageLog.setCorrelationDataId(id);
                 messageLog.setCreateDate(new Date());
-                messageLog.setExchange(RabbitMqConfig.FANOUT_EXCHANGE);
-                messageLog.setRoutingKey(RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY);
+                messageLog.setExchange(queueMessage.getExchange());
+                messageLog.setRoutingKey(queueMessage.getRoutingKey());
                 String content = jackson.toJson(queueMessage);
                 messageLog.setContent(content);
                 systemMessageLogService.save(messageLog);
+
                 rabbitTemplate.convertAndSend(queueMessage.getExchange(),//RabbitMqConfig.FANOUT_EXCHANGE,
                         queueMessage.getRoutingKey(),
                         content, correlationData);

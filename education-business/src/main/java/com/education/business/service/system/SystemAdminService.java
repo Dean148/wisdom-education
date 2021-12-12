@@ -67,7 +67,7 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
      * @param userSession
      */
     public void loadUserMenuAndPermission(AdminUserSession userSession) {
-        List<SystemMenu> menuList = null;
+        List<SystemMenu> menuList;
         if (userSession.isSuperAdmin()) {
             menuList = systemMenuService.list(Wrappers.lambdaQuery(SystemMenu.class)
                     .orderByAsc(SystemMenu::getSort));
