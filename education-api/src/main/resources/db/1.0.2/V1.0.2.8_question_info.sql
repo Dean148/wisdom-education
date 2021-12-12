@@ -13,6 +13,5 @@ CREATE TABLE `question_info`  (
   `options` json NULL COMMENT '试题选项（多个以逗号隔开）',
   `analysis` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '试题解析内容',
   `summarize` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '总结升华',
-  `language_points_id` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '试题信息表' ROW_FORMAT = Dynamic;

@@ -21,7 +21,7 @@
             wrong_book.correct_status
         FROM
            student_wrong_book wrong_book
-        LEFT JOIN (
+        INNER JOIN (
             SELECT
               a.*,
               b.NAME subject_name

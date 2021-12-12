@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.education.MessageInfoService;
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.business.webSocket.SystemWebSocketHandler;
+import com.education.common.annotation.EventQueue;
 import com.education.common.constants.EnumConstants;
+import com.education.common.constants.LocalQueueConstants;
 import com.education.common.utils.IpUtils;
 import com.education.common.utils.ResultCode;
 import com.education.model.entity.MessageInfo;
@@ -25,6 +27,7 @@ import java.util.Date;
  * @create_at 2020/4/24 21:28
  */
 @Component
+@EventQueue(name = LocalQueueConstants.SYSTEM_MESSAGE)
 @Slf4j
 public class WebSocketMessageListener implements TaskListener {
 
@@ -34,6 +37,7 @@ public class WebSocketMessageListener implements TaskListener {
     private TestPaperInfoService testPaperInfoService;
     @Autowired
     private MessageInfoService messageInfoService;
+
 
     @Override
     public void onMessage(TaskParam taskParam) {
