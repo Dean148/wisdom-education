@@ -7,15 +7,11 @@ package com.education.api.config.interceptor;
 import com.education.auth.PermissionInterceptor;
 import com.education.common.config.OssProperties;
 import com.education.common.enums.OssPlatformEnum;
-import com.education.common.interceptor.FormLimitInterceptor;
-import com.education.common.interceptor.LogInterceptor;
-import com.education.common.interceptor.ParamsValidateInterceptor;
 
 import com.education.business.interceptor.FormLimitInterceptor;
 import com.education.business.interceptor.LogInterceptor;
 import com.education.business.interceptor.ParamsValidateInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
