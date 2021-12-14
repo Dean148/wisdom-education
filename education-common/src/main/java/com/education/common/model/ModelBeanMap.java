@@ -100,6 +100,7 @@ public class ModelBeanMap extends LinkedHashMap {
         return object == null ? null : (List<T>) get(key);
     }
 
+    @Deprecated
     public List<ModelBeanMap> getModelBeanMapList(Object key) {
         Object object = get(key);
         if (!(object instanceof List)) {

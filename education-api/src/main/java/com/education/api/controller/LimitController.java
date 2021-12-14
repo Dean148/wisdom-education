@@ -118,27 +118,4 @@ public class LimitController {
             jdbcTemplate.update("update exam_info set mark = mark + 1 where id = 1");
         });
     }
-
-    /**
-     * 使用mq消息队列更新文章阅读量或者点赞量测试接口
-     */
-    @GetMapping("mq")
-    public void mq() {
-        rabbitTemplate.convertAndSend(RabbitMqConfig.TEST_FANOUT_EXCHANGE, RabbitMqConfig.TEST_QUEUE_ROUTING_KEY, "test", new CorrelationData());
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        int number = 0;
-        while (true && number < 3) {
-            for (int i = 0; i < 1000; i++) {
-                new Thread(() -> {
-                    String content = HttpKit.get("http://127.0.0.1:8001/limit/threadPool");
-                    System.out.println(content);
-                }).start();
-            }
-            Thread.sleep(3000);
-            number++;
-        }
-
-    }
 }

@@ -5,6 +5,7 @@ import com.education.auth.annotation.Logical;
 import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.service.education.StudentInfoService;
 import com.education.common.base.BaseController;
+import com.education.common.config.OssProperties;
 import com.education.common.model.ExcelResult;
 import com.education.common.model.StudentInfoImport;
 import com.education.common.utils.*;
@@ -14,6 +15,8 @@ import com.education.model.request.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
 import java.io.InputStream;
 import java.util.List;
 
@@ -29,6 +32,8 @@ public class StudentInfoController extends BaseController {
 
     @Autowired
     private StudentInfoService studentInfoService;
+    @Resource
+    private OssProperties ossProperties;
 
     /**
      * 学员分页列表
@@ -106,7 +111,7 @@ public class StudentInfoController extends BaseController {
         InputStream inputStream = file.getInputStream();
         ImportParams importParams = new ImportParams();
         importParams.setNeedVerfiy(true);
-        importParams.setSaveUrl(baseUploadPath + "/image"); // 设置头像上传路径
+        importParams.setSaveUrl(ossProperties.getBucketName() + "image"); // 设置头像上传路径
 
         ExcelResult excelResult = ExcelUtils.importExcel(inputStream,
                 StudentInfoImport.class, importParams, "/student/importExcelError/");
@@ -122,7 +127,7 @@ public class StudentInfoController extends BaseController {
         String msg = successCount + "名学员数据导入成功";
         if (failCount > 0) {
             msg += failCount + "名学员数据导入失败(分别为)" + excelResult.getErrorMsg();
-            return Result.success(ResultCode.EXCEL_VERFIY_FAIL, msg, excelResult.getErrorExcelUrl());
+            return Result.success(ResultCode.EXCEL_VERIFICATION_FAIL, msg, excelResult.getErrorExcelUrl());
         }
         return Result.success(ResultCode.SUCCESS, msg);
     }

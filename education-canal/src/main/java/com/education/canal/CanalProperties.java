@@ -1,6 +1,5 @@
 package com.education.canal;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +11,9 @@ import org.springframework.stereotype.Component;
  */
 @ConfigurationProperties(prefix = "canal")
 @Component
-@Data
 public class CanalProperties {
 
-    private static final Integer DEFAULT_PORT = 1111;
+    private static final Integer DEFAULT_PORT = 11111;
     private static final boolean DEFAULT_OPEN_FLAG = false;
     private static final String DEFAULT_DESTINATION =  "example";
 
@@ -24,4 +22,53 @@ public class CanalProperties {
     private String destination = DEFAULT_DESTINATION;
     private String userName = "";
     private String password = "";
+    private String host;
+
+    public boolean isOpenFlag() {
+        return openFlag;
+    }
+
+    public void setOpenFlag(boolean openFlag) {
+        this.openFlag = openFlag;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
 }

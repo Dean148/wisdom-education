@@ -1,6 +1,12 @@
 host: 127.0.0.1
 server:
   port: 80
+# oss 文件上传配置
+oss:
+  upload:
+    host: ${host}/uploads
+    platform: local #配置使用本地文件存储
+    bucketName: D:\\home\\
 ## spring jdbc配置
 spring:
   # flyway 数据库管理工具
@@ -42,6 +48,15 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
+  mail:
+    host: smtp.163.com
+    port: 25
+    username: 18296640717@163.com
+    password: KIZMPBYPLMWTIZGP
+    properties:
+      mail:
+        #表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+        debug: true
 ueditor:
   configFileName: config-dev.json
 # 微信公众号配置
@@ -50,13 +65,10 @@ weChat:
   token: education
   appSecret: e03f5ab03906d4d943675c233d4c3cb3
 
-## 文件上传根路径
-file:
-  uploadPath: F:\\uploads\\
-
 # 是否开启  canal 数据同步
 canal:
   openFlag: false
+
 # sharding jdbc 读写分离配置
 sharding:
   jdbc:

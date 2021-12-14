@@ -69,7 +69,7 @@ public class SystemMenuController extends BaseController {
     @RequiresPermissions("system:menu:deleteById")
     public Result deleteById(@PathVariable Integer id) {
         SystemMenu systemMenu = systemMenuService.getById(id);
-        if (systemMenu.getCreateType() == ResultCode.SUCCESS) {
+        if (ResultCode.SUCCESS.equals(systemMenu.getCreateType())) {
             return Result.success(ResultCode.FAIL, "您不能删除系统内置菜单");
         }
         systemMenuService.deleteById(id);

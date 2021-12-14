@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.education.MessageInfoService;
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.business.webSocket.SystemWebSocketHandler;
+import com.education.common.annotation.EventQueue;
 import com.education.common.constants.EnumConstants;
+import com.education.common.constants.LocalQueueConstants;
 import com.education.common.utils.IpUtils;
 import com.education.common.utils.ResultCode;
 import com.education.model.entity.MessageInfo;
@@ -25,6 +27,7 @@ import java.util.Date;
  * @create_at 2020/4/24 21:28
  */
 @Component
+@EventQueue(name = LocalQueueConstants.SYSTEM_MESSAGE)
 @Slf4j
 public class WebSocketMessageListener implements TaskListener {
 
@@ -35,18 +38,19 @@ public class WebSocketMessageListener implements TaskListener {
     @Autowired
     private MessageInfoService messageInfoService;
 
+
     @Override
     public void onMessage(TaskParam taskParam) {
         try {
             Thread.sleep(5000); // 休眠5秒后在发送消息到前端
             Integer messageType = taskParam.getInt("message_type");
             String content = "";
-            if (messageType == EnumConstants.MessageType.STUDENT_LOGIN.getValue()) {
+            if (EnumConstants.MessageType.STUDENT_LOGIN.getValue().equals(messageType)) {
                 String ip = taskParam.getStr("ip");
                 String address = IpUtils.getIpAddress(ip);
                 content = "您的账号已在" + address + "登录，" +
                         "5秒后将自动下线，如非本人操作请重新登录并及时修改密码";
-            } else if (messageType == EnumConstants.MessageType.EXAM_CORRECT.getValue()) {
+            } else if (EnumConstants.MessageType.EXAM_CORRECT.getValue().equals(messageType)) {
                this.publishExamMessage(taskParam);
             }
 

@@ -5,6 +5,11 @@ package com.education.api.config.interceptor;
 
 
 import com.education.auth.PermissionInterceptor;
+import com.education.common.config.OssProperties;
+import com.education.common.enums.OssPlatformEnum;
+import com.education.common.interceptor.FormLimitInterceptor;
+import com.education.common.interceptor.LogInterceptor;
+import com.education.common.interceptor.ParamsValidateInterceptor;
 
 import com.education.business.interceptor.FormLimitInterceptor;
 import com.education.business.interceptor.LogInterceptor;
@@ -17,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +47,9 @@ public class WebAppConfig implements WebMvcConfigurer {
 	@Autowired
 	private StudentAuthInterceptor studentAuthInterceptor;
 
+	@Resource
+	private OssProperties ossProperties;
 
-	@Value("${file.uploadPath}")
-	private String uploadPath;
 
 	//不需要拦截的url
 	private static final List<String> noInterceptorUrl = new ArrayList<String>() {
@@ -82,7 +88,9 @@ public class WebAppConfig implements WebMvcConfigurer {
 		 //配置静态资源路径
 		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
 		registry.addResourceHandler("/swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-		//配置文件上传虚拟路径
-		registry.addResourceHandler("/uploads/**").addResourceLocations("file:" + uploadPath);
+		if (OssPlatformEnum.LOCAL.getValue().equals(ossProperties.getPlatform())) {
+			//配置文件上传虚拟路径
+			registry.addResourceHandler("/uploads/**").addResourceLocations("file:" + ossProperties.getBucketName());
+		}
 	}
 }

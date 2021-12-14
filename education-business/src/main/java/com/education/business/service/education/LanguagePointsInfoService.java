@@ -38,7 +38,8 @@ public class LanguagePointsInfoService extends BaseService<LanguagePointsInfoMap
                 .eq(ObjectUtils.isNotEmpty(languagePointsInfo.getSubjectId()),
                         LanguagePointsInfo::getSubjectId, languagePointsInfo.getSubjectId())
                 .like(ObjectUtils.isNotEmpty(languagePointsInfo.getName()),
-                        LanguagePointsInfo::getName, languagePointsInfo.getName());
+                        LanguagePointsInfo::getName, languagePointsInfo.getName())
+                .orderByDesc(LanguagePointsInfo::getSort);
         return baseMapper.selectList(queryWrapper);
     }
 

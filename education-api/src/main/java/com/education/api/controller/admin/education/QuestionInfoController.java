@@ -146,7 +146,7 @@ public class QuestionInfoController extends BaseController {
                 if (failCount > 0) {
                     msg += "," + failCount + "道试题导入失败(分别为)" + questionImportResult.getErrorMsg();
                 }
-                return Result.success(ResultCode.EXCEL_VERFIY_FAIL,
+                return Result.success(ResultCode.EXCEL_VERIFICATION_FAIL,
                        msg, questionImportResult.getErrorFileUrl());
             }
             return Result.success(ResultCode.SUCCESS, msg);
