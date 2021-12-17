@@ -33,7 +33,7 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
     private static final String AUTHORIZATION = AuthConstants.AUTHORIZATION;
 
     protected void checkHeader(HttpServletRequest request) {
-       /* if (platformSet.size() == 0) {
+        if (platformSet.size() == 0) {
             platformSet.add(PlatformEnum.SYSTEM_ADMIN.getHeaderValue());
             platformSet.add(PlatformEnum.SYSTEM_STUDENT.getHeaderValue());
         }
@@ -47,7 +47,7 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
         if (!platformSet.contains(platform)) {
             logger.warn("{}:错误请求头:{}", PLATFORM, platform);
             throw new BusinessException(new ResultCode(ResultCode.UN_AUTH_ERROR_CODE, PLATFORM + "请求头错误!"));
-        }*/
+        }
     }
 
     /**
