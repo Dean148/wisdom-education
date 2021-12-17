@@ -7,10 +7,6 @@ package com.education.auth.exception;
  */
 public class PermissionException extends RuntimeException {
 
-    public PermissionException(String userId, String... permission) {
-
-    }
-
     public PermissionException(String message) {
         super(message);
     }

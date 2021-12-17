@@ -36,7 +36,7 @@ public class PermissionStrategy {
                 hasPermission = checkPermissionOr(values, permission.loginType());
         }
         if (!hasPermission) {
-            throw new PermissionException();
+            throw new PermissionException("Current User Not Have Permission: " + values.toString());
         }
     }
 
