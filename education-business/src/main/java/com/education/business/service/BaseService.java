@@ -74,15 +74,9 @@ public abstract class BaseService<M extends BaseMapper<T>, T> extends CrudServic
         return (StudentSession) AuthUtil.getSession();
     }
 
-    public StudentInfo getStudentInfo() {
-        String token = request.getHeader(AuthConstants.AUTHORIZATION);
-        return cacheBean.get(CacheKey.STUDENT_USER_INFO_CACHE, jwtToken.parseTokenToString(token));
-    }
-
-
     public Integer getStudentId() {
-        if (this.getStudentInfo() != null) {
-            return this.getStudentInfo().getId();
+        if (this.getStudentUserSession() != null) {
+            return this.getStudentUserSession().getId();
         }
         return null;
     }

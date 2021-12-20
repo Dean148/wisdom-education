@@ -21,7 +21,7 @@ import java.util.Date;
 public class MessageInfoService extends BaseService<MessageInfoMapper, MessageInfo> {
 
     public PageInfo<MessageInfo> selectList(PageParam pageParam) {
-        Integer studentId = getStudentInfo().getId();
+        Integer studentId = getStudentId();
         // 将未读消息设置为已读状态
         LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageInfo.class)
                 .set(MessageInfo::getReadFlag, EnumConstants.Flag.YES.getValue())
@@ -33,6 +33,6 @@ public class MessageInfoService extends BaseService<MessageInfoMapper, MessageIn
     }
 
     public long getUnReadMessageCount() {
-        return baseMapper.countUnReadMessage(getStudentInfo().getId());
+        return baseMapper.countUnReadMessage(getStudentId());
     }
 }

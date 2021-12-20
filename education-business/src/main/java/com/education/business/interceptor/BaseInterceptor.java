@@ -5,6 +5,7 @@ import com.education.auth.session.UserSession;
 import com.education.auth.token.TokenFactory;
 import com.education.common.constants.AuthConstants;
 import com.education.common.constants.CacheTime;
+import com.education.common.constants.SystemConstants;
 import com.education.common.enums.PlatformEnum;
 import com.education.common.exception.BusinessException;
 import com.education.common.utils.ObjectUtils;
@@ -12,6 +13,7 @@ import com.education.common.utils.RequestUtils;
 import com.education.common.utils.ResultCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,8 +33,13 @@ public abstract class BaseInterceptor implements HandlerInterceptor {
     private final Set<String> platformSet = new HashSet();
     private static final String PLATFORM = AuthConstants.PLATFORM;
     private static final String AUTHORIZATION = AuthConstants.AUTHORIZATION;
+    @Value("${spring.profiles.active}")
+    private String env;
 
     protected void checkHeader(HttpServletRequest request) {
+        if (!SystemConstants.ENV_PROD.equals(env)) {
+            return;
+        }
         if (platformSet.size() == 0) {
             platformSet.add(PlatformEnum.SYSTEM_ADMIN.getHeaderValue());
             platformSet.add(PlatformEnum.SYSTEM_STUDENT.getHeaderValue());

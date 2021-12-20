@@ -26,24 +26,15 @@ public class AuthBeanConfig {
 
     @Resource
     private LoginAuthRealm adminLoginRealm;
+    @Resource
+    private LoginAuthRealm studentLoginRealm;
 
     @Bean
     public AuthRealmManager authRealmManager(JwtToken jwtToken, CacheBean redisCacheBean) {
         AuthRealmManager authRealmManager = new AuthRealmManager(new RedisSessionStorage(redisCacheBean), new JwtTokenFactory(jwtToken), new AuthConfig());
         authRealmManager.addLoginAuthRealm(adminLoginRealm);
+        authRealmManager.addLoginAuthRealm(studentLoginRealm);
         return authRealmManager;
-    }
-
-    public static void main(String[] args) {
-        JwtToken jwtToken = new JwtToken(AuthConstants.EDUCATION_SECRET_KEY);;
-
-        String token = jwtToken.createToken(1, 120000);
-
-        System.out.println(jwtToken.parseToken(token, String.class));
-
-      //  TokenFactory tokenFactory = new JwtTokenFactory(jwtToken);
-       // String token = tokenFactory.createToken("1", 3600000);
-       // System.out.println(tokenFactory.isExpiration(token));
     }
 
     @Bean

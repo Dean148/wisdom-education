@@ -122,7 +122,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             Integer systemMark = examInfo.getSystemMark();
             StudentInfo studentInfo = new StudentInfo();
             studentInfo.setId(getStudentId());
-            studentInfo.setName(getStudentInfo().getName());
+            studentInfo.setName(getStudentUserSession().getName());
             DefaultTypedTuple tuple = new DefaultTypedTuple(studentInfo, systemMark.doubleValue());
             tuples.add(tuple);
             String sortKey = CacheKey.EXAM_SORT_KEY + testPaperInfoId;

@@ -1,10 +1,12 @@
 package com.education.auth;
 
+import cn.hutool.core.util.StrUtil;
 import com.education.auth.annotation.Logical;
 import com.education.auth.annotation.RequiresPermissions;
 import com.education.auth.exception.PermissionException;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
@@ -36,7 +38,11 @@ public class PermissionStrategy {
                 hasPermission = checkPermissionOr(values, permission.loginType());
         }
         if (!hasPermission) {
-            throw new PermissionException("Current User Not Have Permission: " + values.toString());
+            StringBuilder permissionCode = new StringBuilder();
+            for (String code : values) {
+                permissionCode.append(code).append(StrUtil.COMMA);
+            }
+            throw new PermissionException("Current User Not Have Permission: " + permissionCode.substring(0, permissionCode.length() - 1));
         }
     }
 

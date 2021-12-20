@@ -49,8 +49,8 @@ public class AuthUtil {
             createUserSession(userSession, sessionStorage, sessionTimeOut);
         }
         loginAuthRealm.loadPermission(userSession);
-        loginAuthRealm.onLoginSuccess(userSession);
         updateSession(userSession);
+        loginAuthRealm.onLoginSuccess(userSession);
         return (T) userSession;
     }
 

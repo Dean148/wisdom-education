@@ -40,4 +40,6 @@ public final class SystemConstants {
     public static final String DEFAULT_GROUP_JOB = "default_job";
 
     public static final Integer COURSE_VALUATE_MARK = 10;
+
+    public static final String ENV_PROD = "prod";
 }

@@ -7,26 +7,35 @@ import com.education.auth.LoginToken;
 import com.education.business.service.education.GradeInfoService;
 import com.education.business.service.education.StudentInfoService;
 import com.education.business.session.StudentSession;
+import com.education.business.task.TaskManager;
+import com.education.common.constants.CacheKey;
 import com.education.common.enums.LoginEnum;
 import com.education.common.exception.BusinessException;
+import com.education.common.utils.IpUtils;
 import com.education.common.utils.Md5Utils;
 import com.education.common.utils.ObjectUtils;
+import com.education.common.utils.RequestUtils;
 import com.education.model.entity.GradeInfo;
 import com.education.model.entity.StudentInfo;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @author zengjintao
  * @create_at 2021年11月30日 0030 14:28
  * @since version 1.6.7
  */
+@Component
 public class StudentLoginRealm implements LoginAuthRealm<StudentSession> {
 
     @Resource
     private StudentInfoService studentInfoService;
     @Resource
     private GradeInfoService gradeInfoService;
+    @Resource
+    private TaskManager taskManager;
 
     @Override
     public StudentSession doLogin(LoginToken loginToken) {
@@ -66,7 +75,9 @@ public class StudentLoginRealm implements LoginAuthRealm<StudentSession> {
 
     @Override
     public void onLoginSuccess(StudentSession userSession) {
-
+        taskManager.pushTask(() -> {
+            studentInfoService.updateLoginInfo(userSession.getId());
+        });
     }
 
     @Override

@@ -46,7 +46,7 @@ public class ExamInfoController extends BaseController {
      */
     @GetMapping("selectExamQuestionAnswer/{id}")
     public Result selectExamQuestionAnswer(@PathVariable("id") Integer examInfoId) {
-        Integer studentId = examInfoService.getStudentInfo().getId();
+        Integer studentId = examInfoService.getStudentId();
         return Result.success(examInfoService.selectExamQuestionAnswer(studentId, examInfoId));
     }
 

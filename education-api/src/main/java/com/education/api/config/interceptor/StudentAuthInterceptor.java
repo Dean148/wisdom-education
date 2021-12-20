@@ -1,5 +1,7 @@
 package com.education.api.config.interceptor;
 
+import com.education.auth.AuthUtil;
+import com.education.auth.session.UserSession;
 import com.education.business.interceptor.BaseInterceptor;
 import com.education.business.service.education.StudentInfoService;
 import com.education.common.enums.LoginEnum;
@@ -27,8 +29,8 @@ public class StudentAuthInterceptor extends BaseInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         super.checkHeader(request);
-        StudentInfo studentInfo = studentInfoService.getStudentInfo();
-        if (ObjectUtils.isEmpty(studentInfo)) {
+        UserSession userSession = AuthUtil.getSession(LoginEnum.STUDENT.getValue());
+        if (ObjectUtils.isEmpty(userSession)) {
             throw new BusinessException(new ResultCode(ResultCode.UN_AUTH_ERROR_CODE, "会话已过期，请重新登录!"));
         }
         return checkToken(LoginEnum.STUDENT.getValue(), response);

@@ -8,6 +8,8 @@ import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
+import com.education.common.constants.AuthConstants;
+import com.education.common.enums.LoginEnum;
 import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.entity.StudentInfo;
@@ -39,9 +41,11 @@ public class StudentInfoController extends BaseController {
      * @return
      */
     @PostMapping("login")
-    public Result login(@RequestBody UserLoginRequest userLoginRequest) {
-        LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(), userLoginRequest.isChecked());
+    public Result login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
+        LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(), LoginEnum.STUDENT.getValue(),
+                userLoginRequest.isChecked());
         StudentSession session = AuthUtil.login(loginToken);
+        response.addHeader(AuthConstants.AUTHORIZATION, session.getToken());
         return Result.success(session);
     }
 
