@@ -17,7 +17,6 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <mysql.version>8.0.13</mysql.version>
-    <shiro.version>1.4.0</shiro.version>
     <easypoi.version>3.2.0</easypoi.version>
     <swagger2.version>2.9.2</swagger2.version>
     <project.version>1.0.3-RELEASE</project.version>
@@ -36,6 +35,7 @@
     <module>education-common-api</module>
     <module>education-business</module>
     <module>education-canal</module>
+    <module>education-auth</module>
   </modules>
 
   <dependencies>
@@ -136,24 +136,6 @@
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
       <version>1.4</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-core</artifactId>
-      <version>${shiro.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-spring</artifactId>
-      <version>${shiro.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-ehcache</artifactId>
-      <version>${shiro.version}</version>
     </dependency>
 
     <dependency>

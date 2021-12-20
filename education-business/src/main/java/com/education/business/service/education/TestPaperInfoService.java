@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.TestPaperInfoMapper;
 import com.education.business.service.BaseService;
+import com.education.business.session.StudentSession;
 import com.education.common.constants.CacheKey;
 import com.education.common.constants.SystemConstants;
 import com.education.common.constants.EnumConstants;
@@ -48,7 +49,7 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
      */
     public PageInfo<TestPaperInfoDto> selectPageList(PageParam pageParam, TestPaperInfo testPaperInfo) {
         Page<TestPaperInfoDto> page = new Page<>(pageParam.getPageNumber(), pageParam.getPageSize());
-        StudentInfo studentInfo = getStudentInfo();
+        StudentSession studentInfo = getStudentUserSession();
         if (studentInfo != null) {
             testPaperInfo.setGradeInfoId(studentInfo.getGradeInfoId());
         }

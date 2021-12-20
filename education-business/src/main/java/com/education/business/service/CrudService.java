@@ -1,6 +1,7 @@
 package com.education.business.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
@@ -39,6 +40,11 @@ public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceIm
     protected CacheBean cacheBean;
 
     public T selectFirst(QueryWrapper<T> queryWrapper) {
+        queryWrapper.last(" limit 1");
+        return super.getOne(queryWrapper);
+    }
+
+    public T selectFirst(LambdaQueryWrapper<T> queryWrapper) {
         queryWrapper.last(" limit 1");
         return super.getOne(queryWrapper);
     }

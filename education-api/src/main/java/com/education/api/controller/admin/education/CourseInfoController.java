@@ -1,5 +1,7 @@
 package com.education.api.controller.admin.education;
 
+import com.education.auth.annotation.Logical;
+import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.service.education.CourseInfoService;
 import com.education.business.service.education.CourseSectionNodeService;
 import com.education.business.service.education.CourseSectionService;
@@ -13,12 +15,8 @@ import com.education.model.entity.CourseInfo;
 import com.education.model.entity.CourseSection;
 import com.education.model.entity.CourseSectionNode;
 import com.education.model.request.PageParam;
-import io.swagger.models.auth.In;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
