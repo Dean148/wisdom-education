@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.system.SystemAdminMapper;
 import com.education.common.component.SpringBeanManager;
 import com.education.common.exception.BusinessException;
+import com.education.common.utils.Md5Utils;
 import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.PasswordUtil;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.AdminUserSession;
 import com.education.model.entity.SystemAdmin;
@@ -67,7 +67,7 @@ public class SystemRealm extends AuthorizingRealm {
 		} else if (systemAdmin.isDisabled()) {
 			throw new BusinessException(new ResultCode(ResultCode.FAIL, "账号已被禁用"));
 		}
-		String password = PasswordUtil.createPassword(systemAdmin.getEncrypt(), new String(usernamePasswordToken.getPassword()));
+		String password = Md5Utils.getMd5(new String(usernamePasswordToken.getPassword()), systemAdmin.getEncrypt());
 		usernamePasswordToken.setPassword(password.toCharArray());
 		//以下数据属于数据库中的用户名密
 		return new SimpleAuthenticationInfo(new AdminUserSession(systemAdmin), systemAdmin.getPassword(), getName());

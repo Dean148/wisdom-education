@@ -1,7 +1,7 @@
 package com.education.common.config;
 
+import com.education.common.utils.Md5Utils;
 import com.jfinal.json.Jackson;
-import com.jfinal.kit.HashKit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class EntityParamGenerator implements KeyGenerator {
             String methodName = method.getName();
             params[params.length - 1] = methodName;
             String key = jackJson.toJson(params);
-            return HashKit.md5(key);
+            return Md5Utils.getMd5(key);
         }
         return keyGenerator.generate(target, method, params);
     }
