@@ -1,7 +1,7 @@
 package com.education.business.service.system;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.system.SystemAdminMapper;
@@ -9,8 +9,8 @@ import com.education.business.service.BaseService;
 import com.education.business.session.AdminUserSession;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
-import com.education.common.utils.Md5Utils;
 import com.education.common.utils.ObjectUtils;
+import com.education.common.utils.PasswordUtil;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.AdminRoleDto;
@@ -20,6 +20,7 @@ import com.education.model.entity.SystemAdminRole;
 import com.education.model.entity.SystemMenu;
 import com.education.model.entity.SystemRole;
 import com.education.model.request.PageParam;
+import com.jfinal.kit.HashKit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,9 +102,9 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
             if (!password.equals(confirmPassword)) {
                 throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码与确认密码不一致"));
             }
-            String encrypt = Md5Utils.encodeSalt(Md5Utils.generatorKey());
+            String encrypt = PasswordUtil.createEncrypt();
             adminRoleDto.setEncrypt(encrypt);
-            password = Md5Utils.getMd5(password, encrypt);
+            password = PasswordUtil.createPassword(encrypt, password);
             adminRoleDto.setPassword(password);
         }
 
@@ -153,18 +154,19 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         // 原始密码不为空校验密码是否正确
         if (ObjectUtils.isNotEmpty(passWord)) {
             // 密码输入正确才能修改新密码
-            passWord = Md5Utils.getMd5(passWord, encrypt);
+            passWord = PasswordUtil.createPassword(encrypt, passWord);
             String userPassword = systemAdmin.getPassword();
             if (!passWord.equals(userPassword)) {
                 throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码输入错误"));
             }
         }
 
-        passWord = Md5Utils.getMd5(newPassword, encrypt); // 对新密码进行加密
-        UpdateWrapper updateWrapper = new UpdateWrapper();
-        updateWrapper.set("password", passWord);
-        updateWrapper.eq("id", adminRoleDto.getId());
-        super.update(updateWrapper);
+        passWord = PasswordUtil.createPassword(encrypt, newPassword);// 对新密码进行加密
+        LambdaUpdateWrapper lambdaUpdateWrapper = Wrappers.<AdminRoleDto>lambdaUpdate()
+                .eq(AdminRoleDto::getId, adminRoleDto.getId())
+                .eq(AdminRoleDto::getPassword, passWord);
+        super.update(lambdaUpdateWrapper);
+
     }
 
     /**

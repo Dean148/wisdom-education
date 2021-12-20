@@ -26,7 +26,6 @@ import com.education.model.entity.WebsiteConfig;
 import com.education.model.request.PageParam;
 import com.education.model.request.UserLoginRequest;
 import com.jfinal.kit.Kv;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,8 +57,8 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
     @Override
     public boolean saveOrUpdate(StudentInfo studentInfo) {
         if (studentInfo.getId() == null) {
-            String encrypt = Md5Utils.encodeSalt(Md5Utils.generatorKey());
-            String password = Md5Utils.getMd5(studentInfo.getPassword(), encrypt); //生成默认密码
+            String encrypt = PasswordUtil.createEncrypt();
+            String password = PasswordUtil.createPassword(encrypt, studentInfo.getPassword()); //生成默认密码
             studentInfo.setPassword(password);
             studentInfo.setEncrypt(encrypt);
         }
@@ -69,7 +68,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
     public void updatePassword(StudentInfoDto studentInfoDto) {
         String password = studentInfoDto.getPassword();
         String encrypt = studentInfoDto.getEncrypt();
-        password = Md5Utils.getMd5(password,  encrypt);
+        password = PasswordUtil.createPassword(encrypt, password);
         studentInfoDto.setPassword(password);
         super.updateById(studentInfoDto);
     }
@@ -96,8 +95,8 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
             studentInfo.setAge(studentInfoImport.getAge());
             studentInfo.setAddress(studentInfoImport.getAddress());
             String loginName = SpellUtils.getSpellHeadChar(name); // 获取登录名
-            String encrypt = Md5Utils.encodeSalt(Md5Utils.generatorKey());
-            String password = Md5Utils.getMd5(loginName, encrypt); //生成默认密码
+            String encrypt = PasswordUtil.createEncrypt();
+            String password = PasswordUtil.createPassword(encrypt, loginName); //生成默认密码
             studentInfo.setPassword(password);
             studentInfo.setEncrypt(encrypt);
             studentInfo.setLoginName(loginName);
@@ -141,13 +140,12 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
                 .select(StudentInfo::getEncrypt)
                 .eq(StudentInfo::getId, getStudentId()));
         String encrypt = studentInfo.getEncrypt();
-        String dataBasePassword = Md5Utils.getMd5(password, encrypt);
+        String dataBasePassword = PasswordUtil.createPassword(encrypt, password);
         if (dataBasePassword.equals(password)) {
             return new ResultCode(ResultCode.FAIL, "原始密码错误");
         }
 
-        password = Md5Utils.getMd5(newPassword, encrypt);
-
+        password = PasswordUtil.createPassword(encrypt, password);
         LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(StudentInfo.class)
                 .set(StudentInfo::getPassword, password)
                 .eq(StudentInfo::getId, studentInfo.getId());
