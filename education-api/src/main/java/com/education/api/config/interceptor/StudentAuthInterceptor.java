@@ -1,5 +1,6 @@
 package com.education.api.config.interceptor;
 
+import cn.hutool.core.util.StrUtil;
 import com.education.business.service.education.StudentInfoService;
 import com.education.common.exception.BusinessException;
 import com.education.common.interceptor.BaseInterceptor;
@@ -26,6 +27,10 @@ public class StudentAuthInterceptor extends BaseInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String method = request.getMethod();
+        if (StrUtil.isNotBlank(method) && "OPTIONS".equalsIgnoreCase(method)) {
+            return true;
+        }
         super.checkHeader(request);
         StudentInfo studentInfo = studentInfoService.getStudentInfo();
         if (ObjectUtils.isEmpty(studentInfo)) {
