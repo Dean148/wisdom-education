@@ -8,19 +8,14 @@ import com.education.business.service.education.GradeInfoService;
 import com.education.business.service.education.StudentInfoService;
 import com.education.business.session.StudentSession;
 import com.education.business.task.TaskManager;
-import com.education.common.constants.CacheKey;
 import com.education.common.enums.LoginEnum;
 import com.education.common.exception.BusinessException;
-import com.education.common.utils.IpUtils;
-import com.education.common.utils.Md5Utils;
 import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.RequestUtils;
+import com.education.common.utils.PasswordUtil;
 import com.education.model.entity.GradeInfo;
 import com.education.model.entity.StudentInfo;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * @author zengjintao
@@ -48,7 +43,7 @@ public class StudentLoginRealm implements LoginAuthRealm<StudentSession> {
 
         String dataBasePassword = studentInfo.getPassword();
         String encrypt = studentInfo.getEncrypt();
-        if (!dataBasePassword.equals(Md5Utils.getMd5(loginToken.getPassword(), encrypt))) {
+        if (!dataBasePassword.equals(PasswordUtil.createPassword(encrypt, loginToken.getPassword()))) {
             throw new BusinessException("用户名或密码错误");
         }
 

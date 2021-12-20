@@ -8,7 +8,6 @@ import com.education.common.enums.LoginEnum;
 import com.education.common.exception.BusinessException;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
-import com.education.model.entity.StudentInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class StudentAuthInterceptor extends BaseInterceptor {
 
-    @Autowired
-    private StudentInfoService studentInfoService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

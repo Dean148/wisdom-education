@@ -5,7 +5,6 @@ package com.education.api.config.interceptor;
 import com.education.auth.AuthUtil;
 import com.education.auth.session.UserSession;
 import com.education.business.interceptor.BaseInterceptor;
-import com.education.business.session.AdminUserSession;
 import com.education.common.enums.LoginEnum;
 import com.education.common.exception.BusinessException;
 import com.education.common.utils.RequestUtils;

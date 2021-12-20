@@ -14,7 +14,7 @@ import com.education.common.constants.EnumConstants;
 import com.education.common.enums.LoginEnum;
 import com.education.common.exception.BusinessException;
 import com.education.common.utils.IpUtils;
-import com.education.common.utils.Md5Utils;
+import com.education.common.utils.PasswordUtil;
 import com.education.common.utils.RequestUtils;
 import com.education.model.entity.SystemAdmin;
 import org.springframework.stereotype.Component;
@@ -43,7 +43,7 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
                 .eq(SystemAdmin::getLoginName, loginToken.getUsername());
         SystemAdmin systemAdmin = systemAdminService.getOne(queryWrapper);
         Assert.notNull(systemAdmin, () -> new BusinessException("用户名不存在"));
-        password = Md5Utils.getMd5(password, systemAdmin.getEncrypt());
+        password = PasswordUtil.createPassword(systemAdmin.getEncrypt(), password);
         if (!password.equals(systemAdmin.getPassword())) {
             throw new BusinessException("用户名或密码错误");
         }
@@ -64,6 +64,13 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
         taskParam.put("message_type", EnumConstants.MessageType.STUDENT_LOGIN.getValue());
         taskParam.put("ip", IpUtils.getAddressIp(RequestUtils.getRequest()));
         taskManager.pushTask(taskParam);
+    }
+
+    public static void main(String[] args) {
+       String encry = PasswordUtil.createEncrypt();
+        System.out.println(encry);
+       String password = PasswordUtil.createPassword(encry, "123456");
+        System.out.println(password);
     }
 
     @Override
