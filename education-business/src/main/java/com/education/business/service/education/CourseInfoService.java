@@ -28,7 +28,6 @@ import java.util.Date;
 @Service
 public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo> {
 
-
     @Autowired
     private RedissonClient redissonClient;
 
@@ -46,7 +45,17 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
         if (courseId != null) {
             CourseInfo course = super.getById(courseId);
             if (!EnumConstants.CourseStatus.DRAUGHT.getValue().equals(course.getStatus())) {
-                throw new BusinessException(new ResultCode(ResultCode.FAIL, "非草稿状态课程无法修改"));
+                if (!courseInfo.getSchoolType().equals(courseInfo.getSchoolType())) {
+                    throw new BusinessException("已上架课程禁止修改所属阶段");
+                }
+
+                if (!courseInfo.getGradeInfoId().equals(courseInfo.getGradeInfoId())) {
+                    throw new BusinessException("已上架课程禁止修改所属年级");
+                }
+
+                if (!courseInfo.getSubjectId().equals(courseInfo.getSubjectId())) {
+                    throw new BusinessException("已上架课程禁止修改所属科目");
+                }
             }
         }
         if (EnumConstants.CourseStatus.GROUNDING.getValue().equals(courseInfo.getStatus())) {
