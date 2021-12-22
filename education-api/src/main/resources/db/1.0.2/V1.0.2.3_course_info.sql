@@ -15,9 +15,6 @@ CREATE TABLE `course_info`  (
     `recommend_index_flag` tinyint(2) NOT NULL DEFAULT 0 COMMENT '是否推荐到系统首页',
     `study_number` int(11) NOT NULL DEFAULT 0,
     `status` tinyint(2) NULL DEFAULT 1 COMMENT '状态 （0 下架 1 草稿 2. 已上架）',
-    `section_node_number` int(4) NULL DEFAULT NULL COMMENT '课时',
-    `section_number` int(4) NULL DEFAULT NULL COMMENT '课程章节数量',
-    `push_time` datetime(0) NULL DEFAULT NULL COMMENT '发布时间',
     `valuate_mark` decimal(4, 2) NOT NULL DEFAULT 10.00 COMMENT '评价分数',
     `comment_number` int(4) NOT NULL DEFAULT 0 COMMENT '评论数量',
     PRIMARY KEY (`id`) USING BTREE

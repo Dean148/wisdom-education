@@ -48,6 +48,7 @@ public class LogInterceptor extends BaseInterceptor {
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Methods", "*");
         response.addHeader("Access-Control-Allow-Headers", "*");
+        response.addHeader("Access-Control-Expose-Headers", "*");
         response.addHeader("Access-Control-Max-Age", "3600");//30 分钟
         return true;
     }
