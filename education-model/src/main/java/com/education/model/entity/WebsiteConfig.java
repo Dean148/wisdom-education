@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 /**
  * @author zengjintao
  * @create_at 2021年11月2日 0002 17:53
- * @since version 1.6.5
+ * @since version 1.0.3
  */
 @TableName("website_config")
 public class WebsiteConfig extends BaseEntity<WebsiteConfig> {

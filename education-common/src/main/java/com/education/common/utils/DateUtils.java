@@ -1,5 +1,6 @@
 package com.education.common.utils;
 
+import cn.hutool.core.util.StrUtil;
 import org.omg.CORBA.PUBLIC_MEMBER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,21 +78,37 @@ public class DateUtils {
         return FORMAT.format(date);
     }
 
-    public static String getDate(long date ) {
-        long h = date / 3600;
-        long m = (date % 3600) / 60;
-        long s = (date % 3600) % 60;
+    public static String secondToHourMinute(long second) {
+        return secondToHourMinute(second, null);
+    }
+
+    public static String secondToHourMinute(long second, String separator) {
+        long h = second / 3600;
+        long m = (second % 3600) / 60;
+        long s = (second % 3600) % 60;
         StringBuilder time = new StringBuilder();
-        if (h > 0) {
-            time.append(h + "小时");
-        }
-        if (m > 0) {
-            time.append(m + "分");
-        }
-        if (s > 0 && s <= 9) {
-            time.append("0" + s + "秒");
+        if (StrUtil.isBlank(separator)) {
+            if (h > 0) {
+                time.append(h + "小时");
+            }
+            if (m > 0) {
+                time.append(m + "分");
+            }
+            if (s > 0 && s <= 9) {
+                time.append("0" + s + "秒");
+            } else {
+                time.append(s + "秒");
+            }
         } else {
-            time.append(s + "秒");
+            if (h > 0) {
+                time.append(h).append(separator);
+            }
+            time.append(m).append(separator);
+            if (s > 0 && s <= 9) {
+                time.append("0" + s);
+            } else {
+                time.append(s);
+            }
         }
         return time.toString();
     }
