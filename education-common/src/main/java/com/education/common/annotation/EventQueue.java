@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 /**
  * @author zengjintao
  * @create_at 2021年10月16日 0016 11:40
- * @since version 1.6.5
+ * @since version 1.0.3
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

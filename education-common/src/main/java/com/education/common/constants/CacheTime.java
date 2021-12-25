@@ -3,7 +3,7 @@ package com.education.common.constants;
 /**
  * @author zengjintao
  * @create_at 2021年10月8日 0008 15:17
- * @since version 1.6.5
+ * @since version 1.0.3
  */
 public interface CacheTime {
 

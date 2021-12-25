@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author zengjintao
  * @create_at 2021年10月16日 0016 14:13
- * @since version 1.6.5
+ * @since version 1.0.3
  */
 @Component
 @EventQueue(name = "TestListener")
