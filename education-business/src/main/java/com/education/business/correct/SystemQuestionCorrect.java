@@ -114,7 +114,7 @@ public class SystemQuestionCorrect extends QuestionCorrect {
         this.examInfo.setQuestionNumber(super.getQuestionNumber());
         long examTime = super.getExamTime();
         examInfo.setStudentId(getStudentId());
-        examInfo.setExamTime(DateUtils.getDate(examTime));
+        examInfo.setExamTime(DateUtils.secondToHourMinute(examTime));
         examInfo.setExamTimeLongValue(examTime);
         examInfo.setTestPaperInfoId(super.getTestPaperInfoId());
 

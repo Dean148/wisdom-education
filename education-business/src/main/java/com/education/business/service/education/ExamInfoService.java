@@ -359,7 +359,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         ExamInfoDetail examInfoDetail = baseMapper.selectExamInfoDetail(params);
         examInfoDetail.setPassExamMark(passMark);
         examInfoDetail.setNiceExamMark(niceMark);
-        examInfoDetail.setExamTime(DateUtils.getDate(testPaperInfo.getExamTime()));
+        examInfoDetail.setExamTime(DateUtils.secondToHourMinute(testPaperInfo.getExamTime()));
         examInfoDetail.setExamNumber(testPaperInfo.getExamNumber());
         return examInfoDetail;
     }
