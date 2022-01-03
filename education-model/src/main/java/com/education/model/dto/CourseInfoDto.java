@@ -12,6 +12,24 @@ public class CourseInfoDto extends CourseInfo {
     private String subjectName;
     private String gradeInfoName;
 
+    private Integer studentId;
+    private Integer collectFlag;
+
+    public void setCollectFlag(Integer collectFlag) {
+        this.collectFlag = collectFlag;
+    }
+
+    public Integer getCollectFlag() {
+        return collectFlag;
+    }
+
+    public Integer getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Integer studentId) {
+        this.studentId = studentId;
+    }
 
     public String getGradeInfoName() {
         return gradeInfoName;

@@ -1,5 +1,7 @@
 package com.education.api.controller.admin.education;
 
+import com.education.auth.annotation.Logical;
+import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.service.education.SubjectInfoService;
 import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
@@ -9,8 +11,6 @@ import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.entity.SubjectInfo;
 import com.education.model.request.PageParam;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +58,7 @@ public class SubjectInfoController extends BaseController {
     @DeleteMapping("{id}")
     @RequiresPermissions("system:subject:deleteById")
     public Result deleteById(@PathVariable Integer id) {
-        return Result.success(ResultCode.FAIL, "功能开发中");
+        subjectInfoService.deleteById(id);
+        return Result.success(ResultCode.SUCCESS, "删除成功");
     }
 }

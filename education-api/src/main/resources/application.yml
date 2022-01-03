@@ -1,9 +1,8 @@
 spring:
-
   main:
     allow-bean-definition-overriding: true
   profiles:
-    active: prod
+    active: dev
   cache:
     type: redis
   application:

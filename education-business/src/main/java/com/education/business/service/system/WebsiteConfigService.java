@@ -16,7 +16,7 @@ import java.util.List;
  * 网站设置
  * @author zengjintao
  * @create_at 2021年11月2日 0002 17:55
- * @since version 1.0.3
+ * @since version 1.6.5
  */
 @Service
 public class WebsiteConfigService extends BaseService<WebsiteConfigMapper, WebsiteConfig> {

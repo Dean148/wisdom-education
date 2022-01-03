@@ -48,7 +48,6 @@ public class ExamMessageListenerService {
     public void doExamCommitMessageBiz(ExamMessage examMessage, String messageId) throws Exception {
         // 保存考试记录
         ExamInfo examInfo = examMessage.getExamInfo();
-        examInfo.setCreateDate(new Date());
         examInfoService.save(examInfo);
         // 批量保存学员错题
         if (examMessage.getStudentWrongBookList() != null) {
