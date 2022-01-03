@@ -26,7 +26,10 @@ public class SystemMenuService extends BaseService<SystemMenuMapper, SystemMenu>
      * @return
      */
     public List<SystemMenu> getMenuListByRoles(List<Integer> roleIds) {
-        return baseMapper.getMenuListByRoles(roleIds);
+        if (ObjectUtils.isNotEmpty(roleIds)) {
+            return baseMapper.getMenuListByRoles(roleIds);
+        }
+        return null;
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.education.api.controller.admin.education;
 
+import com.education.auth.annotation.Logical;
+import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.business.service.education.TestPaperInfoSettingService;
 import com.education.common.base.BaseController;
@@ -12,8 +14,6 @@ import com.education.model.entity.TestPaperInfo;
 import com.education.model.entity.TestPaperQuestionInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.TestPaperQuestionRequest;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,7 @@
 package com.education.business.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
@@ -39,6 +40,11 @@ public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceIm
     protected CacheBean cacheBean;
 
     public T selectFirst(QueryWrapper<T> queryWrapper) {
+        queryWrapper.last(" limit 1");
+        return super.getOne(queryWrapper);
+    }
+
+    public T selectFirst(LambdaQueryWrapper<T> queryWrapper) {
         queryWrapper.last(" limit 1");
         return super.getOne(queryWrapper);
     }
@@ -160,6 +166,10 @@ public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceIm
 
     @Override
     public boolean saveOrUpdate(T entity) {
+        return this.saveOrUpdate(entity, false);
+    }
+
+    public boolean saveOrUpdate(T entity, boolean openCache) {
         if (entity instanceof BaseEntity) {
             Date now = new Date();
             BaseEntity baseEntity = (BaseEntity) entity;
@@ -191,7 +201,7 @@ public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceIm
             }
 
             boolean success = super.saveOrUpdate(entity);
-            if (success && id != null) {
+            if (success && openCache && id != null) {
                 TableInfo tableInfo = this.getTable();
                 String cacheName = tableInfo.getTableName();
                 cacheBean.putValue(cacheName, id, entity);

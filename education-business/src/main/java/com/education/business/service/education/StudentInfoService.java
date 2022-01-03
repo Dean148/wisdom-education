@@ -1,15 +1,21 @@
 package com.education.business.service.education;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.education.auth.AuthUtil;
+import com.education.auth.LoginToken;
 import com.education.business.mapper.education.StudentInfoMapper;
 import com.education.business.service.BaseService;
 import com.education.business.service.system.WebsiteConfigService;
+import com.education.business.session.StudentSession;
 import com.education.common.constants.AuthConstants;
 import com.education.common.constants.CacheKey;
 import com.education.common.constants.CacheTime;
+import com.education.common.exception.BusinessException;
 import com.education.common.model.JwtToken;
 import com.education.common.model.PageInfo;
 import com.education.common.model.StudentInfoImport;
@@ -52,8 +58,8 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
     @Override
     public boolean saveOrUpdate(StudentInfo studentInfo) {
         if (studentInfo.getId() == null) {
-            String encrypt = Md5Utils.encodeSalt(Md5Utils.generatorKey());
-            String password = Md5Utils.getMd5(studentInfo.getPassword(), encrypt); //生成默认密码
+            String encrypt = PasswordUtil.createEncrypt();
+            String password = PasswordUtil.createPassword(encrypt, studentInfo.getPassword()); //生成默认密码
             studentInfo.setPassword(password);
             studentInfo.setEncrypt(encrypt);
         }
@@ -63,7 +69,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
     public void updatePassword(StudentInfoDto studentInfoDto) {
         String password = studentInfoDto.getPassword();
         String encrypt = studentInfoDto.getEncrypt();
-        password = Md5Utils.getMd5(password,  encrypt);
+        password = PasswordUtil.createPassword(encrypt, password);
         studentInfoDto.setPassword(password);
         super.updateById(studentInfoDto);
     }
@@ -90,8 +96,8 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
             studentInfo.setAge(studentInfoImport.getAge());
             studentInfo.setAddress(studentInfoImport.getAddress());
             String loginName = SpellUtils.getSpellHeadChar(name); // 获取登录名
-            String encrypt = Md5Utils.encodeSalt(Md5Utils.generatorKey());
-            String password = Md5Utils.getMd5(loginName, encrypt); //生成默认密码
+            String encrypt = PasswordUtil.createEncrypt();
+            String password = PasswordUtil.createPassword(encrypt, loginName); //生成默认密码
             studentInfo.setPassword(password);
             studentInfo.setEncrypt(encrypt);
             studentInfo.setLoginName(loginName);
@@ -105,63 +111,20 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         return studentInfoList.size();
     }
 
-    public Result doLogin(UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        LambdaQueryWrapper queryWrapper = Wrappers.<StudentInfo>lambdaQuery()
-                .eq(StudentInfo::getLoginName, userLoginRequest.getUserName());
-        StudentInfo studentInfo = baseMapper.selectOne(queryWrapper);
-        if (ObjectUtils.isEmpty(studentInfo)) {
-            return Result.fail(ResultCode.FAIL, "用户不存在");
-        }
-
-        String dataBasePassword = studentInfo.getPassword();
-        String encrypt = studentInfo.getEncrypt();
-        String password = userLoginRequest.getPassword();
-        if (!dataBasePassword.equals(Md5Utils.getMd5(password, encrypt))) {
-            return Result.fail(ResultCode.FAIL, "用户名或密码错误");
-        }
-
-        if (studentInfo.isDisabledFlag()) {
-            return Result.fail(ResultCode.FAIL, "账号已被禁用");
-        }
-
-        boolean rememberMe = userLoginRequest.isChecked(); // 是否记住密码
-        long sessionTime = CacheTime.ONE_HOUR_MILLIS; // 默认session 会话为2小时 (单位秒)
-        if (rememberMe) {
-            sessionTime = CacheTime.ONE_WEEK_MILLIS;
-        }
-        String token = jwtToken.createToken(studentInfo.getId(), sessionTime);
-        response.addHeader(AuthConstants.AUTHORIZATION, token);
-        GradeInfo gradeInfo = gradeInfoService.getById(studentInfo.getGradeInfoId());
-        this.cacheStudentInfoSession(studentInfo, sessionTime);
-
-        Kv kv = Kv.create().set("name", studentInfo.getName())
-                .set("gradeInfoId", gradeInfo.getId())
-                .set("headImg", studentInfo.getHeadImg())
-                .set("sex", studentInfo.getSex())
-                .set("age", studentInfo.getAge())
-                .set("address", studentInfo.getAddress())
-                .set("mobile", studentInfo.getMobile())
-                .set("gradeInfoName", gradeInfo.getName())
-                .set("id", studentInfo.getId());
-        WebsiteConfig websiteConfig = websiteConfigService.getWebSiteConfig();
-        if (websiteConfig != null) {
-            kv.set("webSiteConfig", websiteConfigService.getWebSiteConfig());
-        }
-        return Result.success(ResultCode.SUCCESS, "登录成功", kv);
-    }
 
     /**
      * 缓存学员登录信息
-     * @param studentInfo
+     * @param studentId
      */
-    private void cacheStudentInfoSession(StudentInfo studentInfo, long sessionTime) {
+    public void updateLoginInfo(Integer studentId) {
+        StudentInfo studentInfo = new StudentInfo();
         Date now = new Date();
         studentInfo.setLastLoginTime(now);
+        studentInfo.setId(studentId);
         studentInfo.setLoginIp(IpUtils.getAddressIp(RequestUtils.getRequest()));
         int loginCount = studentInfo.getLoginCount();
         studentInfo.setLoginCount(++loginCount);
         studentInfo.setUpdateDate(now);
-        cacheBean.put(CacheKey.STUDENT_USER_INFO_CACHE, studentInfo.getId(), studentInfo, new Long(sessionTime).intValue());
         super.updateById(studentInfo);
     }
 
@@ -173,15 +136,17 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         }
 
         // 验证新密码是否正确
-        StudentInfo studentInfo = getStudentInfo();
+        StudentInfo studentInfo = super.selectFirst(Wrappers.<StudentInfo>lambdaQuery()
+                .select(StudentInfo::getPassword)
+                .select(StudentInfo::getEncrypt)
+                .eq(StudentInfo::getId, getStudentId()));
         String encrypt = studentInfo.getEncrypt();
-        String dataBasePassword = Md5Utils.getMd5(password, encrypt);
+        String dataBasePassword = PasswordUtil.createPassword(encrypt, password);
         if (dataBasePassword.equals(password)) {
             return new ResultCode(ResultCode.FAIL, "原始密码错误");
         }
 
-        password = Md5Utils.getMd5(newPassword, encrypt);
-
+        password = PasswordUtil.createPassword(encrypt, password);
         LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(StudentInfo.class)
                 .set(StudentInfo::getPassword, password)
                 .eq(StudentInfo::getId, studentInfo.getId());
@@ -190,7 +155,21 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
     }
 
     public boolean updateInfo(StudentInfo studentInfo) {
-        studentInfo.setId(getStudentInfo().getId());
+        studentInfo.setId(getStudentId());
         return super.updateById(studentInfo);
+    }
+
+    public void updateSocketSessionId(Integer studentId, String socketSessionId) {
+        LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(StudentInfo.class)
+                .set(StudentInfo::getSocketSessionId, socketSessionId)
+                .eq(StudentInfo::getId, studentId);
+        super.update(updateWrapper);
+    }
+
+    public String getStudentSocketSessionId(Integer studentId) {
+        StudentInfo studentInfo = this.getOne(Wrappers.<StudentInfo>lambdaQuery()
+                .select(StudentInfo::getSocketSessionId)
+                .eq(StudentInfo::getId, studentId));
+        return studentInfo.getSocketSessionId();
     }
 }

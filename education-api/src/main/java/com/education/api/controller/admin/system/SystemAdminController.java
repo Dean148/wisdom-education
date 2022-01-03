@@ -1,5 +1,7 @@
 package com.education.api.controller.admin.system;
 
+import com.education.auth.annotation.Logical;
+import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.service.system.SystemAdminService;
 import com.education.common.annotation.SystemLog;
 import com.education.common.base.BaseController;
@@ -10,10 +12,15 @@ import com.education.model.dto.AdminRoleDto;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.request.PageParam;
 import io.swagger.annotations.Api;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -27,7 +34,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/system/admin")
 public class SystemAdminController extends BaseController {
 
-    @Autowired
+    @Resource
     private SystemAdminService systemAdminService;
 
     /**
