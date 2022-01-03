@@ -2,7 +2,6 @@ package com.education.core.controller;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
-import com.education.business.service.education.CourseSectionNodeService;
 import com.education.common.enums.FileTypeEnum;
 import com.education.common.exception.BusinessException;
 import com.education.common.upload.FileUpload;
@@ -38,8 +37,6 @@ public class UploadController {
     private FileUpload fileUpload;
     @Resource
     private RedisTemplate redisTemplate;
-    @Resource
-    private CourseSectionNodeService courseSectionNodeService;
 
     private static final Set<String> videoTypes = new HashSet<String>() {
         {
@@ -87,28 +84,6 @@ public class UploadController {
             resultMap.put("message", fileType + "文件上传失败");
             logger.error(fileType + "上传失败", e);
         }
-        return resultMap;
-    }
-
-
-    /**
-     * 课时视频或者附件上传
-     * @param file
-     * @param courseSectionNodeId
-     * @return
-     */
-    @RequestMapping(value = "/{courseId}/{courseSectionNodeId}/courseSectionNode", method = {RequestMethod.GET, RequestMethod.POST})
-    public Map uploadCourseSectionFile(@RequestParam("file") MultipartFile file,
-                                       @PathVariable Integer courseId,
-                                       @PathVariable Integer courseSectionNodeId) throws IOException {
-        String contentType = file.getContentType();
-        if (!videoTypes.contains(contentType)) {
-            throw new BusinessException("非法视频文件，请重新上传");
-        }
-        Map resultMap = this.uploadFile(file, FileTypeEnum.VIDEO.getCode());
-        String filePath = (String) resultMap.get("url");
-        String fileName = file.getOriginalFilename();
-        courseSectionNodeService.updateVideoInfoAsync(courseId, courseSectionNodeId, file.getInputStream(), filePath, fileName);
         return resultMap;
     }
 }
