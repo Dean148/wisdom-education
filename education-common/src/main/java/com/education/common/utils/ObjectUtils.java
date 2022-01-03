@@ -1,6 +1,9 @@
 package com.education.common.utils;
 
 import com.education.common.model.PageInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jfinal.json.Jackson;
+
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -198,5 +201,15 @@ public class ObjectUtils {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	private static final Jackson jackJson = new Jackson();
+
+	public static Jackson getJackson() {
+		return jackJson;
+	}
+
+	public static ObjectMapper getObjectMapper() {
+		return jackJson.getObjectMapper();
 	}
 }

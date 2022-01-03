@@ -40,4 +40,21 @@ public final class SystemConstants {
     public static final String DEFAULT_GROUP_JOB = "default_job";
 
     public static final Integer COURSE_VALUATE_MARK = 10;
+
+    public static final String ENV_PROD = "prod";
+
+    public static final String HTML = ".html";
+
+    /**
+     * windows 默认文件上传临时路径
+     */
+    public static final String DEFAULT_LOCAL_TMP_FILE_UPLOAD_PATH = "D:\\uploads\\";
+
+    /**
+     * Linux 默认文件上传临时路径
+     */
+    public static final String DEFAULT_LINUX_TMP_FILE_UPLOAD_PATH = "/home/upload/";
+
+    public static final String FILE_SEPARATOR = "/";
+
 }

@@ -52,7 +52,7 @@ public class ExcelUtils {
             importResult.getFailWorkbook().write(fos);
 
            // excelResult.setSuccess(false);
-            excelResult.setErrorMsg(errorMsg.toString() + "行数据错误，" +
+            excelResult.setErrorMsg(errorMsg + "行数据错误，" +
                     "请根据表格错误提示进行修改后再导入");
             excelResult.setErrorExcelUrl(errorExcelUrl);
         }

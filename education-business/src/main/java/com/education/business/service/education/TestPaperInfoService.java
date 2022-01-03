@@ -1,10 +1,12 @@
 package com.education.business.service.education;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.TestPaperInfoMapper;
 import com.education.business.service.BaseService;
+import com.education.business.session.StudentSession;
 import com.education.common.constants.CacheKey;
 import com.education.common.constants.SystemConstants;
 import com.education.common.constants.EnumConstants;
@@ -15,17 +17,16 @@ import com.education.common.template.EnjoyTemplate;
 import com.education.common.utils.*;
 import com.education.model.dto.TestPaperInfoDto;
 import com.education.model.dto.TestPaperQuestionDto;
-import com.education.model.entity.StudentInfo;
 import com.education.model.entity.TestPaperInfo;
 import com.education.model.entity.TestPaperQuestionInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.TestPaperQuestionRequest;
 import com.jfinal.kit.Kv;
 import org.redisson.api.RLock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 @Service
 public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestPaperInfo> {
 
-    @Autowired
+    @Resource
     private TestPaperQuestionInfoService testPaperQuestionInfoService;
 
     /**
@@ -48,7 +49,7 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
      */
     public PageInfo<TestPaperInfoDto> selectPageList(PageParam pageParam, TestPaperInfo testPaperInfo) {
         Page<TestPaperInfoDto> page = new Page<>(pageParam.getPageNumber(), pageParam.getPageSize());
-        StudentInfo studentInfo = getStudentInfo();
+        StudentSession studentInfo = getStudentUserSession();
         if (studentInfo != null) {
             testPaperInfo.setGradeInfoId(studentInfo.getGradeInfoId());
         }
@@ -276,6 +277,10 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
      * @param testPaperInfoId
      */
     public String printPaperInfo(Integer testPaperInfoId) {
+        TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
+        if (StrUtil.isNotBlank(testPaperInfo.getHtmlDownloadUrl())) {
+            return testPaperInfo.getHtmlDownloadUrl();
+        }
         TestPaperQuestionRequest testPaperQuestionRequest = new TestPaperQuestionRequest();
         testPaperQuestionRequest.setTestPaperInfoId(testPaperInfoId);
         testPaperQuestionRequest.setAddExamMonitor(false);
@@ -284,16 +289,20 @@ public class TestPaperInfoService extends BaseService<TestPaperInfoMapper, TestP
 
         List<TestPaperQuestionDto> testPaperQuestionDtoList = pageInfo.getDataList();
 
-        TestPaperInfo testPaperInfo = super.getById(testPaperInfoId);
+
         Kv data = Kv.create().set("testPaperQuestionList", this.groupQuestion(testPaperQuestionDtoList))
                 .set("title", testPaperInfo.getName());
-        String htmlName = SpellUtils.getSpell(testPaperInfo.getName()) + ".html";
-        String outDirPath = "/paperPrint/"
-                + testPaperInfoId;
+        String htmlName = SpellUtils.getSpell(testPaperInfo.getName()) + SystemConstants.HTML;
+        String outDirPath = "/paperPrint" + SystemConstants.FILE_SEPARATOR
+                + testPaperInfoId + SystemConstants.FILE_SEPARATOR;
         String paperTemplateSavePath = FileUtils.getUploadPath() + outDirPath;
         BaseTemplate template = new EnjoyTemplate(SystemConstants.PAPER_INFO_TEMPLATE, paperTemplateSavePath);
-        template.generateTemplate(data, htmlName);
-        return outDirPath + "/" + htmlName;
+        template.generateTemplateToOss(data, outDirPath, htmlName, fileUpload);
+        String downloadUrl = outDirPath + htmlName;
+        testPaperInfo.setHtmlDownloadUrl(downloadUrl);
+        super.update(Wrappers.lambdaUpdate(TestPaperInfo.class).set(TestPaperInfo::getHtmlDownloadUrl, downloadUrl)
+                .eq(TestPaperInfo::getId, testPaperInfoId));
+        return downloadUrl;
     }
 
     /**

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 
@@ -80,6 +81,9 @@ public class TencentOssFileUpload extends BaseFileUpload {
             String fileUrl = getHost() + file;
             return new UploadResult(fileUrl);
         } finally {
+            if (inputStream != null) {
+                try { inputStream.close();} catch (IOException e) { e.printStackTrace();}
+            }
             closeClient(cosClient);
         }
     }
@@ -117,6 +121,9 @@ public class TencentOssFileUpload extends BaseFileUpload {
             String fileUrl = super.getHost() + fileKey;
             return new UploadResult(fileUrl);
         } finally {
+            if (inputStream != null) {
+                try { inputStream.close();} catch (IOException e) { e.printStackTrace();}
+            }
             closeClient(cosClient);
         }
     }

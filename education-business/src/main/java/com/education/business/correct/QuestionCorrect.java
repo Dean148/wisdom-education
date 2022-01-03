@@ -1,6 +1,15 @@
 package com.education.business.correct;
 
+import cn.hutool.core.collection.CollUtil;
+import com.education.business.service.education.StudentInfoService;
+import com.education.business.service.education.StudentQuestionAnswerService;
+import com.education.business.service.education.StudentWrongBookService;
+import com.education.business.task.TaskManager;
+import com.education.business.task.TaskParam;
+import com.education.business.task.WebSocketMessageListener;
+import com.education.common.component.SpringBeanManager;
 import com.education.common.constants.EnumConstants;
+import com.education.common.enums.SocketMessageTypeEnum;
 import com.education.model.entity.ExamInfo;
 import com.education.model.entity.StudentQuestionAnswer;
 import com.education.model.entity.StudentWrongBook;
@@ -111,8 +120,25 @@ public abstract class QuestionCorrect {
         StudentQuestionAnswer studentQuestionAnswer = new StudentQuestionAnswer();
         studentQuestionAnswer.setQuestionInfoId(questionAnswer.getQuestionInfoId());
         studentQuestionAnswer.setStudentId(this.studentId);
+        studentQuestionAnswer.setComment(questionAnswer.getComment());
         studentQuestionAnswer.setQuestionPoints(questionAnswer.getQuestionMark());
+        studentQuestionAnswer.setStudentAnswer(questionAnswer.getStudentAnswer());
+        studentQuestionAnswer.setMark(questionAnswer.getQuestionMark());
         return studentQuestionAnswer;
+    }
+
+    public void saveStudentQuestionAnswer(Integer examInfoId, List<StudentQuestionAnswer> studentQuestionAnswerList, List<StudentWrongBook> studentWrongBookList) {
+        if (CollUtil.isNotEmpty(studentQuestionAnswerList)) {
+            studentQuestionAnswerList.forEach(item -> {
+                item.setExamInfoId(examInfoId);
+            });
+            StudentQuestionAnswerService studentQuestionAnswerService = SpringBeanManager.getBean(StudentQuestionAnswerService.class);
+            studentQuestionAnswerService.saveBatch(studentQuestionAnswerList);
+        }
+        if (CollUtil.isNotEmpty(studentWrongBookList)) {
+            StudentWrongBookService studentWrongBookService = SpringBeanManager.getBean(StudentWrongBookService.class);
+            studentWrongBookService.saveBatch(studentWrongBookList);
+        }
     }
 
     public List<StudentQuestionAnswer> getStudentQuestionAnswerList() {
@@ -120,12 +146,12 @@ public abstract class QuestionCorrect {
     }
 
     protected void sendStudentMessage() {
-       /* TaskParam taskParam = new TaskParam(WebSocketMessageTask.class);
-        taskParam.put("message_type", EnumConstants.MessageType.EXAM_CORRECT.getValue());
-        taskParam.put("sessionId", RequestUtils.getCookieValue(Constants.DEFAULT_SESSION_ID));
+        TaskParam taskParam = new TaskParam(WebSocketMessageListener.class);
+        taskParam.put("message_type", SocketMessageTypeEnum.EXAM_CORRECT.getValue());
         taskParam.put("studentId", studentId);
+        TaskManager taskManager = SpringBeanManager.getBean(TaskManager.class);
         taskParam.put("testPaperInfoId", examInfo.getTestPaperInfoId());
-        taskManager.pushTask(taskParam);*/
+        taskManager.pushTask(taskParam);
     }
 
     public List<StudentQuestionAnswer> getObjectiveQuestionAnswerList() {
@@ -135,6 +161,7 @@ public abstract class QuestionCorrect {
     public void addObjectiveQuestionAnswerList(StudentQuestionAnswer studentQuestionAnswer) {
         this.objectiveQuestionAnswerList.add(studentQuestionAnswer);
     }
+
 
     protected long getExamTime() {
         return studentQuestionRequest.getExamTime();

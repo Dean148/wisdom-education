@@ -3,9 +3,16 @@
 <mapper namespace="com.education.business.mapper.education.CourseInfoMapper">
 
     <select id="selectPageList" resultType="com.education.model.dto.CourseInfoDto">
-       select course.*, subject.name subject_name, grade.name gradeInfoName from course_info course left join subject_info subject
-       on course.subject_id = subject.id
-       left join grade_info grade on course.grade_info_id = grade.id
+        SELECT
+            course.*,
+            subject.name subject_name,
+            grade.name gradeInfoName,
+            collect.student_id
+        FROM
+           course_info course
+        LEFT JOIN subject_info subject ON course.subject_id = subject.id
+        LEFT JOIN grade_info grade ON course.grade_info_id = grade.id
+        LEFT JOIN student_course_collect collect ON course.id = collect.course_id
        <where>
            <if test="courseInfo.name != null and courseInfo.name != ''">
                <bind name="name" value="'%' + courseInfo.name + '%'"/>
@@ -22,6 +29,10 @@
 
            <if test="courseInfo.subjectId != null">
                and course.subject_id = #{courseInfo.subjectId}
+           </if>
+
+           <if test="courseInfo.status != null">
+               and course.status = #{courseInfo.status}
            </if>
        </where>
        order by course.sort desc

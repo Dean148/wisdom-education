@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.HttpKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,8 +36,6 @@ public class IpUtils {
 	    }
 	    return ip;
     }
-
-    private static final String IP_SERVICE_URL = "http://ip.taobao.com/service/getIpInfo.php?ip=";
 
     private static final String TENCENT_URL = "https://apis.map.qq.com/ws/location/v1/ip";
 
@@ -76,6 +73,6 @@ public class IpUtils {
 		} catch (Exception e) {
 			logger.error("获取ip地址异常", e);
 		}
-		return "未知地址";
+		return "其它设备上";
 	}
 }

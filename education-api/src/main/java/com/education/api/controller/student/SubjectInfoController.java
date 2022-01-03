@@ -33,7 +33,7 @@ public class SubjectInfoController extends BaseController {
     @GetMapping("selectByGradeInfoId")
     public Result selectByGradeInfoId(Integer gradeInfoId) {
         if (ObjectUtils.isEmpty(gradeInfoId)) {
-            gradeInfoId = subjectInfoService.getStudentInfo().getGradeInfoId();
+            gradeInfoId = subjectInfoService.getStudentUserSession().getGradeInfoId();
         }
         LambdaQueryWrapper queryWrapper = Wrappers.<SubjectInfo>lambdaQuery()
                 .eq(SubjectInfo::getGradeInfoId, gradeInfoId);

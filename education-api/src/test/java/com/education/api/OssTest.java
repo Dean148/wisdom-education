@@ -19,7 +19,7 @@ import java.util.Date;
 /**
  * @author zengjintao
  * @create_at 2021年11月1日 0001 14:13
- * @since version 1.0.3
+ * @since version 1.6.5
  */
 public class OssTest {
 
@@ -39,6 +39,7 @@ public class OssTest {
         // 生成 cos 客户端。
         this.cosClient = new COSClient(cred, clientConfig);
     }
+
 
     @Test
     public void generateUrl() {
