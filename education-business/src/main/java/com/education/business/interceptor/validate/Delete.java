@@ -1,4 +1,4 @@
-package com.education.common.interceptor.validate;
+package com.education.business.interceptor.validate;
 
 /**
  * @author zengjintao
