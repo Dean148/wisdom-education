@@ -1,6 +1,7 @@
 package com.education.business.webSocket;
 
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.education.business.service.education.StudentInfoService;
 import com.education.business.service.system.SystemAdminService;
@@ -9,7 +10,6 @@ import com.education.common.utils.ObjectUtils;
 import com.education.model.dto.SocketMessageCommand;
 import com.jfinal.kit.HashKit;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import javax.annotation.Resource;
@@ -66,6 +66,11 @@ public class SystemWebSocketHandler implements WebSocketHandler {
         Integer userId = socketMessageCommand.getUserId();
         if (!SocketMessageTypeEnum.contains(messageType)) {
             log.info("错误消息类型:{}", socketMessageCommand.getMessageType());
+            return;
+        }
+
+        String token = socketMessageCommand.getToken();
+        if (StrUtil.isBlank(token)) {
             return;
         }
 

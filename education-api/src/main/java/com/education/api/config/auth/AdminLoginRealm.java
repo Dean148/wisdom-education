@@ -71,7 +71,7 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
                 authConfig.getSessionIdPrefix() + StrUtil.COLON + LoginEnum.ADMIN.getValue() +
                          StrUtil.COLON + hashToken);
         TaskParam taskParam = new TaskParam(WebSocketMessageListener.class);
-        taskParam.put("sessionId", HashKit.md5(userSession.getToken()));
+        taskParam.put("sessionId", hashToken);
         taskParam.put("message_type", SocketMessageTypeEnum.REJECT_SESSION.getValue());
         taskParam.put("ip", IpUtils.getAddressIp(RequestUtils.getRequest()));
         taskManager.pushTask(taskParam);
