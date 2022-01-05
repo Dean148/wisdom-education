@@ -79,7 +79,7 @@ public class LoginController extends BaseController {
     @SystemLog(describe = "退出管理系统")
     @FormLimit
     public Result logout() {
-        AuthUtil.logout();
+        AuthUtil.logout(LoginEnum.ADMIN.getValue());
         return Result.success(ResultCode.SUCCESS, "退出成功");
     }
 }
