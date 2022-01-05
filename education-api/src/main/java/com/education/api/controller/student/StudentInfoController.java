@@ -51,7 +51,7 @@ public class StudentInfoController extends BaseController {
 
     @PostMapping("logout")
     public Result logout() {
-        AuthUtil.logout();
+        AuthUtil.logout(LoginEnum.STUDENT.getValue());
         return Result.success(ResultCode.SUCCESS, "退出成功");
     }
 

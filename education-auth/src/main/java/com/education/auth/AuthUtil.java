@@ -154,9 +154,13 @@ public class AuthUtil {
     }
 
     public static void logout() {
+        logout(null);
+    }
+
+    public static void logout(String loginType) {
         String token = getTokenValue();
         if (StrUtil.isNotBlank(token)) {
-            getSessionStorage().deleteSession(token);
+            getSessionStorage().deleteSession(token, loginType);
         }
     }
 
