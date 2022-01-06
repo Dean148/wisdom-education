@@ -11,7 +11,7 @@ import com.education.business.service.system.SystemAdminService;
 import com.education.business.session.AdminUserSession;
 import com.education.business.task.TaskManager;
 import com.education.business.task.TaskParam;
-import com.education.business.task.WebSocketMessageListener;
+import com.education.business.task.WebSocketMessageListener;import com.education.common.enums.BooleanEnum;
 import com.education.common.enums.LoginEnum;
 import com.education.common.enums.SocketMessageTypeEnum;
 import com.education.common.exception.BusinessException;
@@ -53,6 +53,11 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
         password = PasswordUtil.createPassword(systemAdmin.getEncrypt(), password);
         if (!password.equals(systemAdmin.getPassword())) {
             throw new BusinessException("用户名或密码错误");
+        }
+
+        Integer flag = systemAdmin.getDisabledFlag();
+        if (BooleanEnum.YES.getCode().equals(flag)) {
+            throw new BusinessException("账号已被禁用");
         }
         AdminUserSession adminUserSession = new AdminUserSession(systemAdmin.getId());
         adminUserSession.setSystemAdmin(systemAdmin);
