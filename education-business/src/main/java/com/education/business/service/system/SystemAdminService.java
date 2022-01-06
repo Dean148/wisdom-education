@@ -1,5 +1,6 @@
 package com.education.business.service.system;
 
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -11,16 +12,15 @@ import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.PasswordUtil;
-import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.AdminRoleDto;
 import com.education.model.dto.MenuTree;
 import com.education.model.entity.*;
 import com.education.model.request.PageParam;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,11 +36,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdmin> {
 
-    @Autowired
+    @Resource
     private SystemMenuService systemMenuService;
-    @Autowired
+    @Resource
     private SystemRoleService systemRoleService;
-    @Autowired
+    @Resource
     private SystemAdminRoleService systemAdminRoleService;
 
     public PageInfo<SystemAdmin> listPage(PageParam pageParam, SystemAdmin systemAdmin) {
@@ -57,7 +57,6 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
 
     /**
      * 加载用户菜单及权限标识
-     *
      * @param userSession
      */
     public void loadUserMenuAndPermission(AdminUserSession userSession) {
@@ -121,14 +120,13 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
     }
 
     @Transactional
-    public Result deleteById(Integer id) {
+    public void deleteById(Integer id) {
         SystemAdmin systemAdmin = super.getById(id);
         if (systemAdmin.isSuper()) {
-            return Result.fail(ResultCode.FAIL, "不允许删除超级管理员");
+            throw new BusinessException("不允许删除超级管理员");
         }
         super.removeById(id);
         systemAdminRoleService.deleteByAdminId(id);
-        return Result.success(ResultCode.SUCCESS, "删除管理员" + systemAdmin.getLoginName() + "成功");
     }
 
     /**
@@ -136,6 +134,8 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
      * @param adminRoleDto
      */
     public void updatePassword(AdminRoleDto adminRoleDto) {
+        Assert.notNull(adminRoleDto.getNewPassword(), () -> new BusinessException("新密码不能为空"));
+        Assert.notNull(adminRoleDto.getConfirmPassword(), () -> new BusinessException("确认密码不能为空"));
         String newPassword = adminRoleDto.getNewPassword();
         String confirmPassword = adminRoleDto.getConfirmPassword();
         SystemAdmin systemAdmin = super.getById(adminRoleDto.getId());
@@ -158,6 +158,11 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         return new PageInfo();
     }
 
+    /**
+     * 更新 admin socket 会话id
+     * @param id
+     * @param md5Token
+     */
     public void updateSocketSessionId(Integer id, String md5Token) {
         LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(SystemAdmin.class)
                 .set(SystemAdmin::getSocketSessionId, md5Token)
@@ -182,22 +187,24 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
      * @param adminRoleDto
      */
     public void resettingPassword(AdminRoleDto adminRoleDto) {
+        Assert.notNull(adminRoleDto.getPassword(), () -> new BusinessException("原始密码不能为空"));
+        Assert.notNull(adminRoleDto.getNewPassword(), () -> new BusinessException("新密码不能为空"));
+        Assert.notNull(adminRoleDto.getConfirmPassword(), () -> new BusinessException("确认密码不能为空"));
         if (!adminRoleDto.getNewPassword().equals(adminRoleDto.getConfirmPassword())) {
             throw new BusinessException("密码与确认密码不一致");
         }
-        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemAdmin.class).select(SystemAdmin::getPassword)
-                .select(SystemAdmin::getId)
-                .select(SystemAdmin::getEncrypt)
-                .eq(SystemAdmin::getId, getSystemAdmin().getId());
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemAdmin.class)
+                .select(SystemAdmin::getPassword, SystemAdmin::getId, SystemAdmin::getEncrypt)
+                .eq(SystemAdmin::getId, super.getAdminUserId());
         SystemAdmin dbSystemAdmin = super.getOne(queryWrapper);
         String md5Password = PasswordUtil.createPassword(dbSystemAdmin.getEncrypt(), adminRoleDto.getPassword());
         if (!dbSystemAdmin.getPassword().equals(md5Password)) {
             throw new BusinessException("原始密码错误");
         }
-        String newPassword = PasswordUtil.createPassword(dbSystemAdmin.getEncrypt(), adminRoleDto.getNewPassword());
-        dbSystemAdmin.setPassword(newPassword);
+        String newMd5Password = PasswordUtil.createPassword(dbSystemAdmin.getEncrypt(), adminRoleDto.getNewPassword());
+        dbSystemAdmin.setPassword(newMd5Password);
         LambdaUpdateWrapper lambdaUpdateWrapper = Wrappers.lambdaUpdate(SystemAdmin.class)
-                .set(SystemAdmin::getPassword, newPassword)
+                .set(SystemAdmin::getPassword, newMd5Password)
                 .set(SystemAdmin::getUpdateDate, new Date())
                 .eq(SystemAdmin::getId, dbSystemAdmin.getId());
         super.update(lambdaUpdateWrapper);
