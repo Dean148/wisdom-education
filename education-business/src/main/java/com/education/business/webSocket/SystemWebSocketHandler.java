@@ -1,7 +1,4 @@
 package com.education.business.webSocket;
-
-
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.education.business.service.education.StudentInfoService;
 import com.education.business.service.system.SystemAdminService;
@@ -38,17 +35,17 @@ public class SystemWebSocketHandler implements WebSocketHandler {
     private static final Map<String, WebSocketSession> WEB_SOCKET_SESSION = new HashMap<>();
 
     // 缓存websocket 会话id 与用户会话的id 映射关系
-  //  private static final String WEBSOCKET_SESSION_TOKEN_MAPPING = "websocket:session:token:mapping";
+    //  private static final String WEBSOCKET_SESSION_TOKEN_MAPPING = "websocket:session:token:mapping";
 
     // websocket 通讯缓存
-   // private static final String WEB_SOCKET_SESSION = "websocket:session";
+    // private static final String WEB_SOCKET_SESSION = "websocket:session";
 
     /**
      * 连接 就绪时
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession webSocketSession) throws Exception {
-        log.info("-------------------------- WebSocket Connection Success ---------------------------");
+
     }
 
     /**
@@ -63,32 +60,35 @@ public class SystemWebSocketHandler implements WebSocketHandler {
         log.info("Socket Listener Message:{}", message);
         SocketMessageCommand socketMessageCommand = JSONUtil.toBean(message, SocketMessageCommand.class);
         Integer messageType = socketMessageCommand.getMessageType();
-        Integer userId = socketMessageCommand.getUserId();
+        String socketSessionId = webSocketSession.getId();
         if (!SocketMessageTypeEnum.contains(messageType)) {
-            log.info("错误消息类型:{}", socketMessageCommand.getMessageType());
+            log.error("错误消息类型:{}", socketMessageCommand.getMessageType());
             return;
         }
 
-        String token = socketMessageCommand.getToken();
-        if (StrUtil.isBlank(token)) {
-            return;
+        // 连接成功时消息推送
+        if (SocketMessageTypeEnum.isConnectionSuccess(messageType)) {
+            if (WEB_SOCKET_SESSION.containsKey(socketSessionId)) {
+                log.error("socket session:{}已存在", socketSessionId);
+                return;
+            }
+            Integer userId = socketMessageCommand.getUserId();
+            String md5Token = HashKit.md5(socketMessageCommand.getToken());
+            // socket 连接成功时接收消息
+            if (SocketMessageTypeEnum.STUDENT_CONNECTION_SUCCESS.getValue().equals(messageType)) {
+                studentInfoService.updateSocketSessionId(userId, md5Token);
+            } else if (SocketMessageTypeEnum.ADMIN_CONNECTION_SUCCESS.getValue().equals(messageType)) {
+                systemAdminService.updateSocketSessionId(userId, md5Token);
+            }
+            WEBSOCKET_SESSION_TOKEN_MAPPING.put(socketSessionId, md5Token);
+            WEB_SOCKET_SESSION.put(md5Token, webSocketSession);
+            log.info("-------------------------- WebSocket Connection Success ---------------------------");
         }
 
-        String md5Token = HashKit.md5(socketMessageCommand.getToken());
-        // socket 连接成功时接收消息
-        if (SocketMessageTypeEnum.STUDENT_CONNECTION_SUCCESS.getValue().equals(messageType)) {
-            studentInfoService.updateSocketSessionId(userId, md5Token);
-        } else if (SocketMessageTypeEnum.ADMIN_CONNECTION_SUCCESS.getValue().equals(messageType)) {
-            systemAdminService.updateSocketSessionId(userId, md5Token);
-        }
-
-        WEBSOCKET_SESSION_TOKEN_MAPPING.put(webSocketSession.getId(), md5Token);
-        WEB_SOCKET_SESSION.put(md5Token, webSocketSession);
-
-      //  redisTemplate.boundHashOps(WEBSOCKET_SESSION_TOKEN_MAPPING).put(webSocketSession.getId(), md5Token);
+        //  redisTemplate.boundHashOps(WEBSOCKET_SESSION_TOKEN_MAPPING).put(webSocketSession.getId(), md5Token);
         // 管理后台socket 连接成功
-       // BoundHashOperations boundHashOperations = redisTemplate.boundHashOps(WEB_SOCKET_SESSION);
-      //  boundHashOperations.put(md5Token, webSocketSession);
+        // BoundHashOperations boundHashOperations = redisTemplate.boundHashOps(WEB_SOCKET_SESSION);
+        //  boundHashOperations.put(md5Token, webSocketSession);
     }
 
     /**
@@ -97,13 +97,13 @@ public class SystemWebSocketHandler implements WebSocketHandler {
      * @param message
      */
     public void sendMessageToPage(String md5Token, String message) {
-     //   WebSocketSession webSocketSession = (WebSocketSession) redisTemplate.boundHashOps(WEB_SOCKET_SESSION)
-     //           .get(md5Token);
+        //   WebSocketSession webSocketSession = (WebSocketSession) redisTemplate.boundHashOps(WEB_SOCKET_SESSION)
+        //           .get(md5Token);
         WebSocketSession webSocketSession = WEB_SOCKET_SESSION.get(md5Token);
         if (ObjectUtils.isNotEmpty(webSocketSession)) {
             try {
-                log.info("Socket Server Push Message:{}", message);
                 webSocketSession.sendMessage(new TextMessage(message));
+                log.info("Socket Server Push SocketSessionId:{} Message:{} Success", webSocketSession.getId(), message);
             } catch (IOException e) {
                 log.error("webSocket 消息发送异常", e);
             }

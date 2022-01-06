@@ -37,4 +37,9 @@ public enum SocketMessageTypeEnum {
                 .findAny().orElseGet(() -> null);
         return socketMessageTypeEnum != null;
     }
+
+    public static boolean isConnectionSuccess(Integer value) {
+        return ADMIN_CONNECTION_SUCCESS.value.equals(value)
+                || STUDENT_CONNECTION_SUCCESS.value.equals(value);
+    }
 }
