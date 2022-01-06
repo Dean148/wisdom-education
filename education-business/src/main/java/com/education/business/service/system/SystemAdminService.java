@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -131,33 +132,20 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
     }
 
     /**
-     * 重置密码
+     * 修改密码
      * @param adminRoleDto
      */
     public void updatePassword(AdminRoleDto adminRoleDto) {
-        String passWord = adminRoleDto.getPassword();
         String newPassword = adminRoleDto.getNewPassword();
         String confirmPassword = adminRoleDto.getConfirmPassword();
         SystemAdmin systemAdmin = super.getById(adminRoleDto.getId());
         String encrypt = systemAdmin.getEncrypt();
-
-        if (!newPassword.equals(confirmPassword)) { // 管理员列表重置密码
+        if (!newPassword.equals(confirmPassword)) {
             throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码与确认密码不一致"));
         }
-
-        // 原始密码不为空校验密码是否正确
-        if (ObjectUtils.isNotEmpty(passWord)) {
-            // 密码输入正确才能修改新密码
-            passWord = PasswordUtil.createPassword(encrypt, passWord);
-            String userPassword = systemAdmin.getPassword();
-            if (!passWord.equals(userPassword)) {
-                throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码输入错误"));
-            }
-        }
-
-        passWord = PasswordUtil.createPassword(encrypt, passWord);// 对新密码进行加密
+        String md5PassWord = PasswordUtil.createPassword(encrypt, newPassword);// 对新密码进行加密
         super.update(Wrappers.lambdaUpdate(SystemAdmin.class)
-                .set(SystemAdmin::getPassword, passWord)
+                .set(SystemAdmin::getPassword, md5PassWord)
                 .eq(SystemAdmin::getId, adminRoleDto.getId()));
     }
 
@@ -177,11 +165,42 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         super.update(updateWrapper);
     }
 
+    /**
+     * 获取admin socket 会话id
+     * @param id
+     * @return
+     */
     public String getAdminSocketSessionId(Integer id) {
         SystemAdmin systemAdmin = this.getOne(Wrappers.<SystemAdmin>lambdaQuery()
                 .select(SystemAdmin::getSocketSessionId)
                 .eq(SystemAdmin::getId, id));
         return systemAdmin.getSocketSessionId();
+    }
+
+    /**
+     * 管理员重置密码
+     * @param adminRoleDto
+     */
+    public void resettingPassword(AdminRoleDto adminRoleDto) {
+        if (!adminRoleDto.getNewPassword().equals(adminRoleDto.getConfirmPassword())) {
+            throw new BusinessException("密码与确认密码不一致");
+        }
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemAdmin.class).select(SystemAdmin::getPassword)
+                .select(SystemAdmin::getId)
+                .select(SystemAdmin::getEncrypt)
+                .eq(SystemAdmin::getId, getSystemAdmin().getId());
+        SystemAdmin dbSystemAdmin = super.getOne(queryWrapper);
+        String md5Password = PasswordUtil.createPassword(dbSystemAdmin.getEncrypt(), adminRoleDto.getPassword());
+        if (!dbSystemAdmin.getPassword().equals(md5Password)) {
+            throw new BusinessException("原始密码错误");
+        }
+        String newPassword = PasswordUtil.createPassword(dbSystemAdmin.getEncrypt(), adminRoleDto.getNewPassword());
+        dbSystemAdmin.setPassword(newPassword);
+        LambdaUpdateWrapper lambdaUpdateWrapper = Wrappers.lambdaUpdate(SystemAdmin.class)
+                .set(SystemAdmin::getPassword, newPassword)
+                .set(SystemAdmin::getUpdateDate, new Date())
+                .eq(SystemAdmin::getId, dbSystemAdmin.getId());
+        super.update(lambdaUpdateWrapper);
     }
 }
 
