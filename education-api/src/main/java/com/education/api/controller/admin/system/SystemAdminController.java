@@ -1,6 +1,5 @@
 package com.education.api.controller.admin.system;
 
-import cn.hutool.core.lang.Assert;
 import com.education.auth.annotation.Logical;
 import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.service.system.SystemAdminService;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 
 
@@ -84,7 +82,8 @@ public class SystemAdminController extends BaseController {
     @SystemLog(describe = "删除管理员")
     @RequiresPermissions("system:admin:deleteById")
     public Result deleteById(@PathVariable Integer id) {
-        return systemAdminService.deleteById(id);
+        systemAdminService.deleteById(id);
+        return Result.success();
     }
 
 
@@ -97,8 +96,6 @@ public class SystemAdminController extends BaseController {
     @SystemLog(describe = "修改管理员密码")
     @RequiresPermissions("system:admin:updatePassword")
     public Result updatePassword(@RequestBody AdminRoleDto adminRoleDto) {
-        Assert.notNull(adminRoleDto.getNewPassword(), "新密码不能为空");
-        Assert.notNull(adminRoleDto.getConfirmPassword(), "确认密码不能为空");
         systemAdminService.updatePassword(adminRoleDto);
         return Result.success(ResultCode.SUCCESS, "修改密码成功");
     }
@@ -111,9 +108,6 @@ public class SystemAdminController extends BaseController {
     @PostMapping("resettingPassword")
     @SystemLog(describe = "管理员重置密码")
     public Result resettingPassword(@RequestBody AdminRoleDto adminRoleDto) {
-        Assert.notNull(adminRoleDto.getPassword(), "原始密码不能为空");
-        Assert.notNull(adminRoleDto.getNewPassword(), "新密码不能为空");
-        Assert.notNull(adminRoleDto.getConfirmPassword(), "确认密码不能为空");
         systemAdminService.resettingPassword(adminRoleDto);
         return Result.success(ResultCode.SUCCESS, "修改重置成功，退出后请使用新密码进行登录");
     }
