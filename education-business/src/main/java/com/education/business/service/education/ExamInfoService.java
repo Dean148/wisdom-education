@@ -230,7 +230,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         double passMark = NumberUtils.doubleToBigDecimal(mark * SystemConstants.PASS_MARK_RATE);
         double niceMark = NumberUtils.doubleToBigDecimal(mark * SystemConstants.NICE_MARK_RATE);
         Kv params = Kv.create().set("testPaperInfoId", testPaperInfoId).set("passMark", passMark)
-                .set("niceMark", niceMark);
+                .set("niceMark", niceMark)
+                .set("mark", mark);
         ExamInfoDetail examInfoDetail = baseMapper.selectExamInfoDetail(params);
         examInfoDetail.setPassExamMark(passMark);
         examInfoDetail.setNiceExamMark(niceMark);
