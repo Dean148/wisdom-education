@@ -1,11 +1,9 @@
-host: 120.79.144.34
+host: 127.0.0.1
 oss:
   upload:
-    secretId: AKIDSjlW1GEvLUs3xax4tRijX4LL5XioiNmw
-    secretKey: wc3D8oEPKzPZVBblfKjtnTt3xc1A3oJY
-    appId: 1253719016
-    platform: tencent
-    region: ap-nanjing
+    host: ${host}/uploads  // 文件访问域名
+    platform: local  #配置使用本地文件存储
+    bucketName: D:\\home\\ #配置文件上传目录
 server:
   port: 8001
 canal:
@@ -38,7 +36,7 @@ spring:
     host: ${host}
     port: 5672
     username: rabbitmq
-    password: china5232786
+    password: 123456
     virtual-host: /
     publisher-returns: true
     listener:
