@@ -1,18 +1,15 @@
 package com.education.api.controller.admin.education;
 
+import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.service.education.ExamInfoService;
 import com.education.common.base.BaseController;
-import com.education.common.constants.CacheKey;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.TestPaperInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -41,7 +38,6 @@ public class ExamInfoController extends BaseController {
      * @return
      */
     @GetMapping("getExamQuestionList/{studentId}/{examInfoId}")
-    @Cacheable(cacheNames = CacheKey.EXAM_CACHE, key = "#studentId + ':' + #examInfoId")
     public Result getExamQuestionList(@PathVariable Integer studentId, @PathVariable Integer examInfoId) {
         return Result.success(examInfoService.selectExamQuestionAnswer(studentId, examInfoId));
     }
@@ -53,7 +49,7 @@ public class ExamInfoController extends BaseController {
      */
     @PostMapping("correctExamQuestion")
     @RequiresPermissions("system:exam:correct")
-    @CacheEvict(cacheNames = CacheKey.EXAM_CACHE, key = "#studentQuestionRequest.examInfoId")
+   // 暂时注释 @CacheEvict(cacheNames = CacheKey.EXAM_CACHE, key = "#studentQuestionRequest.examInfoId")
     public Result correctExamQuestion(@RequestBody StudentQuestionRequest studentQuestionRequest) {
         examInfoService.correctStudentExam(studentQuestionRequest);
         return Result.success(ResultCode.SUCCESS, "批改成功");

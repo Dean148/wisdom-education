@@ -2,8 +2,13 @@
  * 
  */
 package com.education.api.config.interceptor;
-import com.education.common.interceptor.BaseInterceptor;
+import com.education.auth.AuthUtil;
+import com.education.auth.session.UserSession;
+import com.education.business.interceptor.BaseInterceptor;
+import com.education.common.enums.LoginEnum;
+import com.education.common.exception.BusinessException;
 import com.education.common.utils.RequestUtils;
+import com.education.common.utils.ResultCode;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +36,10 @@ public class AdminAuthInterceptor extends BaseInterceptor {
 		else if (targetUrl.startsWith("/uploads")) {
 			return true;
 		}
-		return checkToken(request, response);
+		UserSession userSession = AuthUtil.getSession(LoginEnum.ADMIN.getValue());
+		if (userSession == null) {
+			throw new BusinessException(new ResultCode(ResultCode.UN_AUTH_ERROR_CODE, "会话已过期,请重新登录"));
+		}
+		return checkToken(LoginEnum.ADMIN.getValue(), response);
 	}
 }

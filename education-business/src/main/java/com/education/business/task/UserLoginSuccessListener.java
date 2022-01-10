@@ -1,8 +1,8 @@
 package com.education.business.task;
 
 import com.education.business.service.system.SystemAdminService;
+import com.education.business.session.AdminUserSession;
 import com.education.common.utils.IpUtils;
-import com.education.model.dto.AdminUserSession;
 import com.education.model.entity.SystemAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

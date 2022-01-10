@@ -118,9 +118,11 @@
             avg(exam_time_long_value) avg_exam_time,
             min(mark) min_exam_mark,
             max(mark) max_exam_mark,
-            sum(case mark &lt;= #{passMark} when 1 then 0 end) as pass_exam_number,
-            sum(case mark &lt;= #{niceMark} when 1 then 0 end) as nice_exam_number
-        from exam_info where test_paper_info_id = #{testPaperInfoId}
+        <!-- 及格人数 -->
+        sum(case when mark &gt;= #{passMark} and mark &lt;= #{mark} then 1 else 0 end) as pass_exam_number,
+        <!-- 优秀人数 -->
+        sum(case when mark &gt;= #{niceMark} and mark &lt;= #{mark} then 1 else 0 end) as nice_exam_number
+        from exam_info where test_paper_info_id = #{testPaperInfoId} and correct_flag = 1
     </select>
 
     <!-- 近七天考试记录统计 -->

@@ -1,34 +1,28 @@
 package com.education.business.service.system;
 
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.system.SystemAdminMapper;
 import com.education.business.service.BaseService;
+import com.education.business.session.AdminUserSession;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
-import com.education.common.utils.Md5Utils;
 import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.Result;
+import com.education.common.utils.PasswordUtil;
 import com.education.common.utils.ResultCode;
-import com.education.model.dto.*;
-import com.education.model.entity.SystemAdmin;
-import com.education.model.entity.SystemAdminRole;
-import com.education.model.entity.SystemMenu;
-import com.education.model.entity.SystemRole;
+import com.education.model.dto.AdminRoleDto;
+import com.education.model.dto.MenuTree;
+import com.education.model.entity.*;
 import com.education.model.request.PageParam;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,11 +36,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdmin> {
 
-    @Autowired
+    @Resource
     private SystemMenuService systemMenuService;
-    @Autowired
+    @Resource
     private SystemRoleService systemRoleService;
-    @Autowired
+    @Resource
     private SystemAdminRoleService systemAdminRoleService;
 
     public PageInfo<SystemAdmin> listPage(PageParam pageParam, SystemAdmin systemAdmin) {
@@ -63,7 +57,6 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
 
     /**
      * 加载用户菜单及权限标识
-     *
      * @param userSession
      */
     public void loadUserMenuAndPermission(AdminUserSession userSession) {
@@ -72,7 +65,7 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
             menuList = systemMenuService.list(Wrappers.lambdaQuery(SystemMenu.class)
                     .orderByAsc(SystemMenu::getSort));
         } else {
-            Integer adminId = userSession.getAdminId();
+            Integer adminId = userSession.getId();
             List<SystemRole> systemRoleList = systemRoleService.findRoleListByAdminId(adminId);
             userSession.setRoleList(systemRoleList);
             List<Integer> roleIds = systemRoleList.stream()
@@ -86,23 +79,8 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
                     .map(SystemMenu::getPermission)
                     .collect(Collectors.toSet());
             List<MenuTree> menuTreeList = systemMenuService.getTreeMenuList(menuList);
-            userSession.setPermissionList(permissionList);
             userSession.setMenuTreeList(menuTreeList);
-        }
-    }
-
-    public void login(String loginName, String password) {
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(loginName, password);
-        try {
-            subject.login(token);
-        } catch (Exception e) {
-            log.error("登录失败", e);
-            if (e instanceof UnknownAccountException) {
-                throw new BusinessException("用户不存在");
-            } else {
-                throw new BusinessException("用户名或密码错误");
-            }
+            userSession.addPermission(permissionList);
         }
     }
 
@@ -118,9 +96,9 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
             if (!password.equals(confirmPassword)) {
                 throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码与确认密码不一致"));
             }
-            String encrypt = Md5Utils.encodeSalt(Md5Utils.generatorKey());
+            String encrypt = PasswordUtil.createEncrypt();
             adminRoleDto.setEncrypt(encrypt);
-            password = Md5Utils.getMd5(password, encrypt);
+            password = PasswordUtil.createPassword(encrypt, password);
             adminRoleDto.setPassword(password);
         }
 
@@ -142,46 +120,33 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
     }
 
     @Transactional
-    public Result deleteById(Integer id) {
+    public void deleteById(Integer id) {
         SystemAdmin systemAdmin = super.getById(id);
         if (systemAdmin.isSuper()) {
-            return Result.fail(ResultCode.FAIL, "不允许删除超级管理员");
+            throw new BusinessException("不允许删除超级管理员");
         }
         super.removeById(id);
         systemAdminRoleService.deleteByAdminId(id);
-        return Result.success(ResultCode.SUCCESS, "删除管理员" + systemAdmin.getLoginName() + "成功");
     }
 
     /**
-     * 重置密码
+     * 修改密码
      * @param adminRoleDto
      */
     public void updatePassword(AdminRoleDto adminRoleDto) {
-        String passWord = adminRoleDto.getPassword();
+        Assert.notNull(adminRoleDto.getNewPassword(), () -> new BusinessException("新密码不能为空"));
+        Assert.notNull(adminRoleDto.getConfirmPassword(), () -> new BusinessException("确认密码不能为空"));
         String newPassword = adminRoleDto.getNewPassword();
         String confirmPassword = adminRoleDto.getConfirmPassword();
         SystemAdmin systemAdmin = super.getById(adminRoleDto.getId());
         String encrypt = systemAdmin.getEncrypt();
-
-        if (!newPassword.equals(confirmPassword)) { // 管理员列表重置密码
+        if (!newPassword.equals(confirmPassword)) {
             throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码与确认密码不一致"));
         }
-
-        // 原始密码不为空校验密码是否正确
-        if (ObjectUtils.isNotEmpty(passWord)) {
-            // 密码输入正确才能修改新密码
-            passWord = Md5Utils.getMd5(passWord, encrypt);
-            String userPassword = systemAdmin.getPassword();
-            if (!passWord.equals(userPassword)) {
-                throw new BusinessException(new ResultCode(ResultCode.FAIL, "密码输入错误"));
-            }
-        }
-
-        passWord = Md5Utils.getMd5(newPassword, encrypt); // 对新密码进行加密
-        UpdateWrapper updateWrapper = new UpdateWrapper();
-        updateWrapper.set("password", passWord);
-        updateWrapper.eq("id", adminRoleDto.getId());
-        super.update(updateWrapper);
+        String md5PassWord = PasswordUtil.createPassword(encrypt, newPassword);// 对新密码进行加密
+        super.update(Wrappers.lambdaUpdate(SystemAdmin.class)
+                .set(SystemAdmin::getPassword, md5PassWord)
+                .eq(SystemAdmin::getId, adminRoleDto.getId()));
     }
 
     /**
@@ -190,22 +155,59 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
      * @return
      */
     public PageInfo<SystemAdmin> getOnlineUserList(PageParam pageParam) {
-        List<AdminUserSession> adminUserSessionList = new ArrayList<>();
-        Collection userIds = cacheBean.getKeys(OnlineUserManager.USER_ID_CACHE);
-        userIds.forEach(userId -> {
-            AdminUserSession onlineUser = cacheBean.get(userId);
-            if (onlineUser != null) {
-                adminUserSessionList.add(onlineUser);
-            }
-        });
-
-        if (ObjectUtils.isNotEmpty(adminUserSessionList)) {
-            List<SystemAdmin> systemAdminList = adminUserSessionList.stream()
-                    .map(AdminUserSession::getSystemAdmin)
-                    .collect(Collectors.toList());
-            return ObjectUtils.selectPageList(pageParam.getPageNumber(), pageParam.getPageSize(), systemAdminList);
-        }
         return new PageInfo();
+    }
+
+    /**
+     * 更新 admin socket 会话id
+     * @param id
+     * @param md5Token
+     */
+    public void updateSocketSessionId(Integer id, String md5Token) {
+        LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(SystemAdmin.class)
+                .set(SystemAdmin::getSocketSessionId, md5Token)
+                .eq(SystemAdmin::getId, id);
+        super.update(updateWrapper);
+    }
+
+    /**
+     * 获取admin socket 会话id
+     * @param id
+     * @return
+     */
+    public String getAdminSocketSessionId(Integer id) {
+        SystemAdmin systemAdmin = this.getOne(Wrappers.<SystemAdmin>lambdaQuery()
+                .select(SystemAdmin::getSocketSessionId)
+                .eq(SystemAdmin::getId, id));
+        return systemAdmin.getSocketSessionId();
+    }
+
+    /**
+     * 管理员重置密码
+     * @param adminRoleDto
+     */
+    public void resettingPassword(AdminRoleDto adminRoleDto) {
+        Assert.notNull(adminRoleDto.getPassword(), () -> new BusinessException("原始密码不能为空"));
+        Assert.notNull(adminRoleDto.getNewPassword(), () -> new BusinessException("新密码不能为空"));
+        Assert.notNull(adminRoleDto.getConfirmPassword(), () -> new BusinessException("确认密码不能为空"));
+        if (!adminRoleDto.getNewPassword().equals(adminRoleDto.getConfirmPassword())) {
+            throw new BusinessException("密码与确认密码不一致");
+        }
+        LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemAdmin.class)
+                .select(SystemAdmin::getPassword, SystemAdmin::getId, SystemAdmin::getEncrypt)
+                .eq(SystemAdmin::getId, super.getAdminUserId());
+        SystemAdmin dbSystemAdmin = super.getOne(queryWrapper);
+        String md5Password = PasswordUtil.createPassword(dbSystemAdmin.getEncrypt(), adminRoleDto.getPassword());
+        if (!dbSystemAdmin.getPassword().equals(md5Password)) {
+            throw new BusinessException("原始密码错误");
+        }
+        String newMd5Password = PasswordUtil.createPassword(dbSystemAdmin.getEncrypt(), adminRoleDto.getNewPassword());
+        dbSystemAdmin.setPassword(newMd5Password);
+        LambdaUpdateWrapper lambdaUpdateWrapper = Wrappers.lambdaUpdate(SystemAdmin.class)
+                .set(SystemAdmin::getPassword, newMd5Password)
+                .set(SystemAdmin::getUpdateDate, new Date())
+                .eq(SystemAdmin::getId, dbSystemAdmin.getId());
+        super.update(lambdaUpdateWrapper);
     }
 }
 

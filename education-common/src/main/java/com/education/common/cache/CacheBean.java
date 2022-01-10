@@ -17,13 +17,13 @@ public interface CacheBean {
 
     void put(Object key, Object value);
 
-    void put(Object key, Object value, int liveSeconds);
+    void put(Object key, Object value, long liveSeconds);
 
-    void put(String cacheName, Object key, Object value, int liveSeconds);
+    void put(String cacheName, Object key, Object value, long liveSeconds);
 
     void putValue(String cacheName, Object key, Object value);
 
-    void expire(String cacheName, Object key, int liveSeconds);
+    void expire(String cacheName, Object key, long liveSeconds);
 
     Long getExpire(String cacheName, Object key);
   //  void put(String cacheName, Object key, Object value);

@@ -65,16 +65,16 @@ public class CaffeineCacheBean implements CacheBean {
     }
 
     @Override
-    public void put(Object key, Object value, int liveSeconds) {
+    public void put(Object key, Object value, long liveSeconds) {
         this.put(MAIN_CACHE, key, value, liveSeconds);
     }
 
     @Override
-    public void put(String cacheName, Object key, Object value, int liveSeconds) {
+    public void put(String cacheName, Object key, Object value, long liveSeconds) {
         Cache cache = getCache(cacheName);
         CaffeineCacheElement caffeineCacheElement = new CaffeineCacheElement(value);
         if (liveSeconds > 0) {
-            caffeineCacheElement.setLiveSeconds(liveSeconds);
+            caffeineCacheElement.setLiveSeconds((int) liveSeconds);
         }
         caffeineCacheElement.setCreateTime(new Date());
         cache.put(key, caffeineCacheElement);
@@ -86,7 +86,7 @@ public class CaffeineCacheBean implements CacheBean {
     }
 
     @Override
-    public void expire(String cacheName, Object key, int liveSeconds) {
+    public void expire(String cacheName, Object key, long liveSeconds) {
 
     }
 

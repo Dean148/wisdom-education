@@ -2,6 +2,8 @@ package com.education.api.controller.admin.education;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.education.auth.annotation.Logical;
+import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.service.education.GradeInfoService;
 import com.education.common.base.BaseController;
 import com.education.common.model.PageInfo;
@@ -9,8 +11,6 @@ import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.model.entity.GradeInfo;
 import com.education.model.request.PageParam;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

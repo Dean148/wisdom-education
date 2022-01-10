@@ -1,6 +1,7 @@
 package com.education.business.correct;
 
 import com.education.common.constants.EnumConstants;
+import com.education.common.enums.BooleanEnum;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.ExamInfo;
 import com.education.model.entity.StudentQuestionAnswer;
@@ -19,6 +20,8 @@ public class TeacherQuestionCorrect extends QuestionCorrect {
 
     private int teacherMark = 0;
 
+    private volatile boolean initExamInfo = false;
+
     public TeacherQuestionCorrect(StudentQuestionRequest studentQuestionRequest, ExamInfo examInfo, Map<Integer, String> questionAnswerInfo) {
         super(studentQuestionRequest, examInfo, questionAnswerInfo);
     }
@@ -30,6 +33,7 @@ public class TeacherQuestionCorrect extends QuestionCorrect {
                     ObjectUtils.isNotEmpty(questionAnswerItem.getStudentAnswer())) {
                 StudentQuestionAnswer studentQuestionAnswer = createStudentQuestionAnswer(questionAnswerItem);
                 studentQuestionAnswer.setMark(questionAnswerItem.getStudentMark());
+                studentQuestionAnswer.setStudentAnswer(questionAnswerItem.getStudentAnswer());
                 teacherMark += questionAnswerItem.getStudentMark();
                 // 后台指定加入学员错题本
                 if (questionAnswerItem.isErrorQuestionFlag()) {
@@ -47,8 +51,12 @@ public class TeacherQuestionCorrect extends QuestionCorrect {
 
     @Override
     public ExamInfo getExamInfo() {
+        // 已经设置过ExamInfo 信息
+        if (this.initExamInfo) {
+            return this.examInfo;
+        }
         this.examInfo.setTeacherMark(teacherMark);
-        this.examInfo.setCorrectFlag(EnumConstants.Flag.YES.getValue()); // 设置为已批改
+        this.examInfo.setCorrectFlag(BooleanEnum.YES.getCode()); // 设置为已批改
         this.examInfo.setUpdateDate(new Date());
         this.examInfo.setErrorNumber(this.examInfo.getErrorNumber() + this.getErrorQuestionNumber());
         if (this.getQuestionNumber() == this.correctQuestionNumber) {
@@ -58,7 +66,8 @@ public class TeacherQuestionCorrect extends QuestionCorrect {
             this.examInfo.setMark(examInfo.getSystemMark() + teacherMark);
             this.examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM_AND_TEACHER.getValue());
         }
-     //   this.sendStudentMessage(); // 发送批改完成消息通知
+        this.sendStudentMessage(); // 发送批改完成消息通知
+        this.initExamInfo = true;
         return this.examInfo;
     }
 }

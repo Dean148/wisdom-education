@@ -92,7 +92,7 @@ public class ExamInfoDetail {
 
     public String getAvgExamTimeStr() {
         if (this.avgExamTime != null)
-           return DateUtils.getDate(this.avgExamTime);
+           return DateUtils.secondToHourMinute(this.avgExamTime);
         return this.avgExamTimeStr;
     }
 
@@ -191,7 +191,7 @@ public class ExamInfoDetail {
     }
 
     public String getPassRateStr() {
-        if (passExamNumber != null && examNumber != null && examNumber != 0) {
+        if (passExamNumber != null && examNumber != 0) {
             double rate = NumberUtils.division(passExamNumber, examNumber);
             return rate * 100 + "%";
         }

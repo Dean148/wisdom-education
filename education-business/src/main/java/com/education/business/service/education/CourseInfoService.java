@@ -14,11 +14,12 @@ import com.education.model.entity.CourseInfo;
 import com.education.model.request.PageParam;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author zengjintao
@@ -28,12 +29,22 @@ import java.util.Date;
 @Service
 public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo> {
 
-    @Autowired
+    @Resource
     private RedissonClient redissonClient;
 
     public PageInfo<CourseInfoDto> selectPageList(PageParam pageParam, CourseInfo courseInfo) {
         Page<CourseInfoDto> page = new Page<>(pageParam.getPageNumber(), pageParam.getPageSize());
-        return selectPage(baseMapper.selectPageList(page, courseInfo));
+        Page<CourseInfoDto> resultPage = baseMapper.selectPageList(page, courseInfo);
+        List<CourseInfoDto> list = resultPage.getRecords();
+        list.forEach(item -> {
+            Integer studentId = item.getStudentId();
+            if (studentId == null) {
+                item.setCollectFlag(ResultCode.FAIL);
+            } else {
+                item.setCollectFlag(ResultCode.SUCCESS);
+            }
+        });
+        return selectPage(resultPage);
     }
 
     /**
@@ -68,9 +79,10 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
      * 根据id 删除课程
      * @param courseId
      */
+    @Transactional
     public void deleteById(Integer courseId) {
         CourseInfo course = super.getById(courseId);
-        if (EnumConstants.CourseStatus.DRAUGHT.getValue().equals(course.getStatus())) {
+        if (!EnumConstants.CourseStatus.DRAUGHT.getValue().equals(course.getStatus())) {
             throw new BusinessException(new ResultCode(ResultCode.FAIL, "非草稿状态课程无法删除"));
         }
         super.removeById(courseId);
@@ -121,4 +133,13 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
         }
     }
 
+    public void checkCourse(Integer courseId) {
+        CourseInfo courseInfo = super.selectFirst(Wrappers.<CourseInfo>lambdaQuery().eq(CourseInfo::getId, courseId));
+        if (courseInfo == null) {
+            throw new BusinessException("课程不存在!");
+        }
+        if (EnumConstants.CourseStatus.GROUNDING.getValue().equals(courseInfo.getStatus())) {
+            throw new BusinessException("课程已上架，无法删除");
+        }
+    }
 }

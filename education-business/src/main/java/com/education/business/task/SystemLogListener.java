@@ -1,9 +1,9 @@
 package com.education.business.task;
 
 import com.education.business.service.system.SystemLogService;
+import com.education.business.session.AdminUserSession;
 import com.education.common.constants.EnumConstants;
 import com.education.common.utils.ObjectUtils;
-import com.education.model.dto.AdminUserSession;
 import com.education.model.entity.SystemLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ public class SystemLogListener implements TaskListener {
         SystemLog systemLog = new SystemLog();
         AdminUserSession adminUserSession = (AdminUserSession) taskParam.get("adminUserSession");
         if (ObjectUtils.isNotEmpty(adminUserSession)) {
-            systemLog.setUserId(adminUserSession.getAdminId());
+            systemLog.setUserId(adminUserSession.getId());
             systemLog.setOperationName(adminUserSession.getSystemAdmin().getLoginName());
             systemLog.setPlatformType(EnumConstants.PlatformType.WEB_ADMIN.getValue());
         } else {
