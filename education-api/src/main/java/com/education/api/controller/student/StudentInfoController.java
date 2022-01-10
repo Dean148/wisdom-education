@@ -1,11 +1,15 @@
 package com.education.api.controller.student;
 
+import com.education.auth.AuthUtil;
+import com.education.auth.LoginToken;
 import com.education.business.service.education.StudentInfoService;
+import com.education.business.session.StudentSession;
 import com.education.common.annotation.Param;
 import com.education.common.annotation.ParamsType;
 import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
-import com.education.common.constants.CacheKey;
+import com.education.common.constants.AuthConstants;
+import com.education.common.enums.LoginEnum;
 import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.entity.StudentInfo;
@@ -38,16 +42,16 @@ public class StudentInfoController extends BaseController {
      */
     @PostMapping("login")
     public Result login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        return studentInfoService.doLogin(userLoginRequest, response);
+        LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(), LoginEnum.STUDENT.getValue(),
+                userLoginRequest.isChecked());
+        StudentSession session = AuthUtil.login(loginToken);
+        response.addHeader(AuthConstants.AUTHORIZATION, session.getToken());
+        return Result.success(ResultCode.SUCCESS, "登录成功", session);
     }
 
     @PostMapping("logout")
     public Result logout() {
-        StudentInfo studentInfo = studentInfoService.getStudentInfo();
-        if (ObjectUtils.isEmpty(studentInfo)) {
-            return Result.success(ResultCode.SUCCESS, "退出成功");
-        }
-        cacheBean.remove(CacheKey.STUDENT_USER_INFO_CACHE, studentInfo.getId()); // 删除用户缓存
+        AuthUtil.logout(LoginEnum.STUDENT.getValue());
         return Result.success(ResultCode.SUCCESS, "退出成功");
     }
 

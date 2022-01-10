@@ -1,11 +1,9 @@
 package com.education.common.model;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.Date;
+
 
 /**
  * 学员信息实体类

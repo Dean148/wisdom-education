@@ -1,5 +1,7 @@
 package com.education.api.controller.admin.system;
 
+import com.education.auth.annotation.Logical;
+import com.education.auth.annotation.RequiresPermissions;
 import com.education.business.service.system.SystemAdminService;
 import com.education.common.annotation.SystemLog;
 import com.education.common.base.BaseController;
@@ -10,10 +12,14 @@ import com.education.model.dto.AdminRoleDto;
 import com.education.model.entity.SystemAdmin;
 import com.education.model.request.PageParam;
 import io.swagger.annotations.Api;
-import org.apache.shiro.authz.annotation.Logical;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.Resource;
 
 
 /**
@@ -27,7 +33,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/system/admin")
 public class SystemAdminController extends BaseController {
 
-    @Autowired
+    @Resource
     private SystemAdminService systemAdminService;
 
     /**
@@ -76,7 +82,8 @@ public class SystemAdminController extends BaseController {
     @SystemLog(describe = "删除管理员")
     @RequiresPermissions("system:admin:deleteById")
     public Result deleteById(@PathVariable Integer id) {
-        return systemAdminService.deleteById(id);
+        systemAdminService.deleteById(id);
+        return Result.success();
     }
 
 
@@ -91,6 +98,18 @@ public class SystemAdminController extends BaseController {
     public Result updatePassword(@RequestBody AdminRoleDto adminRoleDto) {
         systemAdminService.updatePassword(adminRoleDto);
         return Result.success(ResultCode.SUCCESS, "修改密码成功");
+    }
+
+    /**
+     * 修改密码
+     * @param adminRoleDto
+     * @return
+     */
+    @PostMapping("resettingPassword")
+    @SystemLog(describe = "管理员重置密码")
+    public Result resettingPassword(@RequestBody AdminRoleDto adminRoleDto) {
+        systemAdminService.resettingPassword(adminRoleDto);
+        return Result.success(ResultCode.SUCCESS, "修改重置成功，退出后请使用新密码进行登录");
     }
 
     /**

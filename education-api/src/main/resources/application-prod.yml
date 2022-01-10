@@ -1,27 +1,25 @@
-host: 120.79.144.34
+host: 127.0.0.1
 oss:
   upload:
-    secretId: AKIDSjlW1GEvLUs3xax4tRijX4LL5XioiNmw
-    secretKey: wc3D8oEPKzPZVBblfKjtnTt3xc1A3oJY
-    appId: 1253719016
-    platform: tencent
-    region: ap-nanjing
+    host: ${host}/uploads  // 文件访问域名
+    platform: local  #配置使用本地文件存储
+    bucketName: D:\\home\\ #配置文件上传目录
 server:
   port: 8001
 canal:
-  open: true
+  openFlag: false
   host: 110.40.147.26
 ## spring jdbc配置
 spring:
   flyway:
     sql-migration-separator: _ #分隔符
     clean-disabled: true #禁用clean操作
-    enabled: false #使flyway生效
+    enabled: true #使flyway生效
     baseline-on-migrate: true #初始化时如果不存在迁移记录表，默认新建一个
     out-of-order: true #防止开发环境下漏掉没来得及apply的文件，产品环境最好设为false
     ignore-ignored-migrations: true
     locations: classpath:/db
-    url: jdbc:mysql://${host}:3307/education?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://${host}:3306/education?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
     user: root
     password: 123456
   redis:
@@ -66,12 +64,9 @@ spring:
 lbs:
   key: MYOBZ-OOEW3-KYC3G-YWDXA-DMQJ6-SPBMH
 
-## 虚拟文件上传路径
-file:
-  uploadPath: /root/uploads/
 
 ueditor:
-  configFileName: config.json
+  configFileName: oss-config.json
 
 # 微信公众号配置
 weChat:
@@ -92,7 +87,7 @@ sharding:
       names: educationmaster,educationslave
       educationmaster:
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://${host}:3307/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://${host}:3306/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         idle-timeout: 60000
         #数据库连接超时时间
@@ -107,7 +102,7 @@ sharding:
         password: 123456
       educationslave:
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://${host}:3307/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://${host}:3306/education?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         idle-timeout: 60000
         #数据库连接超时时间

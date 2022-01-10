@@ -1,9 +1,11 @@
 package com.education.business.correct;
 
+import cn.hutool.core.util.StrUtil;
 import com.education.business.message.ExamMessage;
 import com.education.business.message.QueueManager;
 import com.education.business.message.RabbitMqConfig;
 import com.education.common.constants.EnumConstants;
+import com.education.common.enums.BooleanEnum;
 import com.education.common.utils.DateUtils;
 import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.ExamInfo;
@@ -25,13 +27,17 @@ public class SystemQuestionCorrect extends QuestionCorrect {
 
     private QueueManager queueManager;
 
+    private Integer commitAfterType;
 
     public SystemQuestionCorrect(StudentQuestionRequest studentQuestionRequest,
-                                 ExamInfo examInfo, QueueManager queueManager,
-                                 Map<Integer, String> questionAnswerInfo) {
-        super(studentQuestionRequest, examInfo, questionAnswerInfo);
+                                 QueueManager queueManager,
+                                 Map<Integer, String> questionAnswerInfo, Integer commitAfterType) {
+        super(studentQuestionRequest, null, questionAnswerInfo);
         this.queueManager = queueManager;
+        this.commitAfterType = commitAfterType;
     }
+
+
 
     /**
      * 批改客观题及答案为空的主观题
@@ -54,12 +60,12 @@ public class SystemQuestionCorrect extends QuestionCorrect {
                 String questionAnswer = questionAnswerInfo.get(questionAnswerItem.getQuestionInfoId());
                 // 客观题答案不为空
                 if (ObjectUtils.isNotEmpty(questionAnswerItem.getStudentAnswer())) {
-                    questionAnswer = questionAnswer.replaceAll(",", "");
+                    questionAnswer = questionAnswer.replaceAll(StrUtil.COMMA, "");
                     String studentAnswer = questionAnswerItem.getStudentAnswer();
                     String studentAnswerProxy = null;
                     String questionAnswerProxy = ObjectUtils.charSort(questionAnswer);
                     if (ObjectUtils.isNotEmpty(studentAnswer)) {
-                        studentAnswerProxy = ObjectUtils.charSort(studentAnswer.replaceAll(",", ""));
+                        studentAnswerProxy = ObjectUtils.charSort(studentAnswer.replaceAll(StrUtil.COMMA, ""));
                     }
 
                     if (questionAnswerProxy.equals(studentAnswerProxy)) {
@@ -94,19 +100,25 @@ public class SystemQuestionCorrect extends QuestionCorrect {
         }
 
         // rabbitmq 发送考试提交消息
-        ExamMessage examMessage = new ExamMessage();
-        examMessage.setStudentQuestionAnswerList(studentQuestionAnswerList);
-        examMessage.setStudentWrongBookList(getStudentWrongBookList());
-        examMessage.setExamInfo(this.getExamInfo());
-        examMessage.setRoutingKey(RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY);
-        examMessage.setExchange(RabbitMqConfig.EXAM_DIRECT_EXCHANGE);
-        queueManager.sendQueueMessage(examMessage);
+        if (EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue().equals(this.commitAfterType)) {
+            ExamMessage examMessage = new ExamMessage();
+            examMessage.setStudentQuestionAnswerList(studentQuestionAnswerList);
+            examMessage.setStudentWrongBookList(getStudentWrongBookList());
+            examMessage.setExamInfo(this.getExamInfo());
+            examMessage.setRoutingKey(RabbitMqConfig.EXAM_QUEUE_ROUTING_KEY);
+            examMessage.setExchange(RabbitMqConfig.EXAM_DIRECT_EXCHANGE);
+            queueManager.sendQueueMessage(examMessage);
+        }
     }
 
 
     @Override
     public ExamInfo getExamInfo() {
-       // this.examInfo.setCreateDate(new Date());
+        if (this.examInfo != null) {
+            return examInfo;
+        }
+        this.examInfo = new ExamInfo();
+        this.examInfo.setCreateDate(new Date());
         this.examInfo.setSystemMark(systemMark);
         this.examInfo.setRightNumber(super.getRightQuestionNumber());
         this.examInfo.setErrorNumber(super.getErrorQuestionNumber());
@@ -114,13 +126,13 @@ public class SystemQuestionCorrect extends QuestionCorrect {
         this.examInfo.setQuestionNumber(super.getQuestionNumber());
         long examTime = super.getExamTime();
         examInfo.setStudentId(getStudentId());
-        examInfo.setExamTime(DateUtils.getDate(examTime));
+        examInfo.setExamTime(DateUtils.secondToHourMinute(examTime));
         examInfo.setExamTimeLongValue(examTime);
         examInfo.setTestPaperInfoId(super.getTestPaperInfoId());
 
         // 系统批改试题数量等于试卷总题数
         if (this.correctQuestionNumber == this.getQuestionNumber()) {
-            this.examInfo.setCorrectFlag(EnumConstants.Flag.YES.getValue());
+            this.examInfo.setCorrectFlag(BooleanEnum.YES.getCode());
             this.examInfo.setCorrectType(EnumConstants.CorrectType.SYSTEM.getValue());
             this.examInfo.setMark(systemMark);
             this.sendStudentMessage();

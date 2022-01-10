@@ -40,6 +40,7 @@ public class OssTest {
         this.cosClient = new COSClient(cred, clientConfig);
     }
 
+
     @Test
     public void generateUrl() {
       //  cosClient.putObject("education-1253719016", "/images/test.png", new File("C:\\Users\\Administrator\\Desktop\\6406823e-4814-48b9-ba3c-eff85ce2374d_180x180.png"));

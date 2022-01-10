@@ -48,6 +48,16 @@ public class TestPaperInfo extends BaseEntity<TestPaperInfo> {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@TableField("publish_time")
 	private Date publishTime;
+	@TableField("html_download_url")
+	private String htmlDownloadUrl;
+
+	public String getHtmlDownloadUrl() {
+		return htmlDownloadUrl;
+	}
+
+	public void setHtmlDownloadUrl(String htmlDownloadUrl) {
+		this.htmlDownloadUrl = htmlDownloadUrl;
+	}
 
 	public String getName() {
 		return name;

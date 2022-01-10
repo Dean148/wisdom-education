@@ -3,13 +3,11 @@ package com.education.api.controller.student;
 import com.education.business.service.education.ExamInfoService;
 import com.education.business.service.education.ExamMonitorService;
 import com.education.common.base.BaseController;
-import com.education.common.constants.CacheKey;
 import com.education.common.utils.Result;
 import com.education.model.dto.ExamMonitor;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.request.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -46,7 +44,7 @@ public class ExamInfoController extends BaseController {
      */
     @GetMapping("selectExamQuestionAnswer/{id}")
     public Result selectExamQuestionAnswer(@PathVariable("id") Integer examInfoId) {
-        Integer studentId = examInfoService.getStudentInfo().getId();
+        Integer studentId = examInfoService.getStudentId();
         return Result.success(examInfoService.selectExamQuestionAnswer(studentId, examInfoId));
     }
 
@@ -56,7 +54,7 @@ public class ExamInfoController extends BaseController {
      * @return
      */
     @GetMapping("selectExamInfo/{id}")
-    @Cacheable(cacheNames = CacheKey.EXAM_CACHE, key = "#examInfoId")
+   // 暂时注释 @Cacheable(cacheNames = CacheKey.EXAM_CACHE, key = "#examInfoId")
     public Result<StudentExamInfoDto> selectExamInfo(@PathVariable("id") Integer examInfoId) {
         return Result.success(examInfoService.getExamInfoById(examInfoId));
     }
