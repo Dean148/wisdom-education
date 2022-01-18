@@ -30,7 +30,7 @@ public abstract class UserSession implements Serializable {
 
     private String loginType;
 
-    private String deviceType;
+    private final String deviceType;
 
     public Date getCreateDate() {
         return createDate;
@@ -57,12 +57,11 @@ public abstract class UserSession implements Serializable {
         return deviceType;
     }
 
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
-    }
 
-    public UserSession(Number userId) {
+
+    public UserSession(Number userId, String deviceType) {
         this.id = userId;
+        this.deviceType = deviceType;
         this.createDate = new Date();
     }
 
