@@ -30,6 +30,8 @@ public abstract class UserSession implements Serializable {
 
     private String loginType;
 
+    private String deviceType;
+
     public Date getCreateDate() {
         return createDate;
     }
@@ -49,6 +51,14 @@ public abstract class UserSession implements Serializable {
 
     public void setLoginType(String loginType) {
         this.loginType = loginType;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
     }
 
     public UserSession(Number userId) {
