@@ -36,13 +36,11 @@ public class AuthUtil {
         AuthConfig authConfig = getAuthConfig();
         boolean flag = authConfig.isAllowMoreOnline();
         SessionStorage sessionStorage = getSessionStorage();
-        String deviceType = loginToken.getDeviceType();
-        userSession.setDeviceType(deviceType);
         if (!flag) {
             ReentrantLock lock = getLock(String.valueOf(userSession.getId()));
             lock.lock();
             try {
-                checkUserIsOnline(userSession.getId(), deviceType, loginAuthRealm);
+                checkUserIsOnline(userSession.getId(), loginToken.getDeviceType(), loginAuthRealm);
                 long sessionTimeOut = loginAuthRealm.getSessionTimeOut(loginToken.isRemember());
                 userSession.setLoginType(loginType);
                 createUserSession(userSession, sessionStorage, sessionTimeOut);
