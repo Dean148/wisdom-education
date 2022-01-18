@@ -108,7 +108,7 @@ public class StudentSession extends UserSession {
         this.loginName = loginName;
     }
 
-    public StudentSession(Number userId) {
-        super(userId);
+    public StudentSession(Number userId, String deviceType) {
+        super(userId, deviceType);
     }
 }

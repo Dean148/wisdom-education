@@ -40,7 +40,7 @@ public class AuthUtil {
             ReentrantLock lock = getLock(String.valueOf(userSession.getId()));
             lock.lock();
             try {
-                checkUserIsOnline(userSession.getId(), loginAuthRealm);
+                checkUserIsOnline(userSession.getId(), loginToken.getDeviceType(), loginAuthRealm);
                 long sessionTimeOut = loginAuthRealm.getSessionTimeOut(loginToken.isRemember());
                 userSession.setLoginType(loginType);
                 createUserSession(userSession, sessionStorage, sessionTimeOut);
@@ -77,14 +77,14 @@ public class AuthUtil {
      * 校验当前用户是否已登录
      * @param userId
      */
-    private static void checkUserIsOnline(Number userId, LoginAuthRealm loginAuthRealm) {
+    private static void checkUserIsOnline(Number userId, String deviceType, LoginAuthRealm loginAuthRealm) {
         String loginType = loginAuthRealm.getLoginType();
         List<UserSession> list = getSessionStorage().getActiveSessions(loginType);
         if (CollUtil.isNotEmpty(list)) {
             UserSession userSession = list.stream()
                     .filter(session -> session.getId().equals(userId))
                     .findAny().orElseGet(() -> null);
-            if (userSession != null) {
+            if (userSession != null && deviceType.equals(userSession.getDeviceType())) {
                 // 删除上一个用户会话信息
                 getSessionStorage().deleteSession(userSession.getToken(), loginType);
                 loginAuthRealm.onRejectSession(userSession);

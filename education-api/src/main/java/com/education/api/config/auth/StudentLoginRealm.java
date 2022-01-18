@@ -66,7 +66,7 @@ public class StudentLoginRealm implements LoginAuthRealm<StudentSession> {
         }
 
         GradeInfo gradeInfo = gradeInfoService.getById(studentInfo.getGradeInfoId());
-        StudentSession studentSession = new StudentSession(studentInfo.getId());
+        StudentSession studentSession = new StudentSession(studentInfo.getId(), loginToken.getDeviceType());
         studentSession.setName(studentInfo.getName());
         studentSession.setHeadImg(studentInfo.getHeadImg());
         studentSession.setSex(studentInfo.getSex());

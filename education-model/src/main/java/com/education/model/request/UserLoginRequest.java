@@ -1,5 +1,7 @@
 package com.education.model.request;
 
+import com.education.common.enums.DeviceType;
+
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -17,6 +19,12 @@ public class UserLoginRequest {
     private String key;
     @NotBlank(message = "请输入验证码")
     private String code;
+
+    /**
+     * 设备类型
+     */
+    private String deviceType = DeviceType.PC.getValue();
+
     private boolean checked = false;
 
     public void setChecked(boolean checked) {
@@ -45,6 +53,14 @@ public class UserLoginRequest {
 
     public String getKey() {
         return key;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
     }
 
     public void setKey(String key) {
