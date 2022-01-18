@@ -59,7 +59,7 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
         if (BooleanEnum.YES.getCode().equals(flag)) {
             throw new BusinessException("账号已被禁用");
         }
-        AdminUserSession adminUserSession = new AdminUserSession(systemAdmin.getId());
+        AdminUserSession adminUserSession = new AdminUserSession(systemAdmin.getId(), loginToken.getDeviceType());
         adminUserSession.setSystemAdmin(systemAdmin);
         return adminUserSession;
     }

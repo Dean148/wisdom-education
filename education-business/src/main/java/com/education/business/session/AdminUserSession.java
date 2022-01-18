@@ -40,8 +40,8 @@ public class AdminUserSession extends UserSession {
         return systemAdmin;
     }
 
-    public AdminUserSession(Number userId) {
-        super(userId);
+    public AdminUserSession(Number userId, String deviceType) {
+        super(userId, deviceType);
     }
 
     @Override

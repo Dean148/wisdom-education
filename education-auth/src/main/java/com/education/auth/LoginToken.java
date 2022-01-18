@@ -10,6 +10,7 @@ public class LoginToken {
     private String username;
     public String password;
     private String loginType;
+    private String deviceType;
     private final boolean remember;
 
     public LoginToken(String username, String password) {
@@ -35,6 +36,13 @@ public class LoginToken {
         return username;
     }
 
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
 
     public boolean isRemember() {
         return remember;
