@@ -44,6 +44,7 @@ public class StudentInfoController extends BaseController {
     public Result login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
         LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(), LoginEnum.STUDENT.getValue(),
                 userLoginRequest.isChecked());
+        loginToken.setDeviceType(userLoginRequest.getDeviceType());
         StudentSession session = AuthUtil.login(loginToken);
         response.addHeader(AuthConstants.AUTHORIZATION, session.getToken());
         return Result.success(ResultCode.SUCCESS, "登录成功", session);
