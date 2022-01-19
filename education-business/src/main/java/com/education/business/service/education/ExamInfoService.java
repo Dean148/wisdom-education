@@ -254,7 +254,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         String endTime = DateUtils.getDayBefore(DateUtils.getSecondDate(now), 1);
         // 获取近七天的开始时间和结束时间
         startTime += " 00:00:00";
-         endTime += " 23:59:59";
+        endTime += " 23:59:59";
 
         List<ExamCount> dataList = baseMapper.countByDateTime(startTime, endTime);
         Map<String, Integer> dataTimeMap = new HashMap<>();
