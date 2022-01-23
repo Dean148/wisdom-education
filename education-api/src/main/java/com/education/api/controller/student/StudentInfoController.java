@@ -74,7 +74,6 @@ public class StudentInfoController extends BaseController {
     @PostMapping("updateStudentInfo")
     @ParamsValidate(params = {
         @Param(name = "name", message = "请输入姓名"),
-        @Param(name = "age", message = "请输入年龄"),
         @Param(name = "sex", message = "请选择性别"),
         @Param(name = "mobile", message = "请输入手机号", regexp = RegexUtils.MOBILE_REGEX, regexpMessage = "非法手机号")
     }, paramsType = ParamsType.JSON_DATA)
