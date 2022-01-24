@@ -29,7 +29,7 @@ public abstract class AbstractExcelQuestionParser implements QuestionImportParse
     }
 
    protected String[] parserToken(String text) {
-        if (text.startsWith(openToken) && endToken.endsWith(endToken)) {
+        if (text.startsWith(openToken) && text.endsWith(endToken)) {
             String[] answerArray = ObjectUtils.spilt(text);
             for (int i = 0; i < answerArray.length; i++) {
                 String item = answerArray[i].trim();
