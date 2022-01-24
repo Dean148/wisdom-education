@@ -3,12 +3,12 @@ package com.education.common.enums;
 /**
  * @author zjt
  * @create_at 2022年1月18日 0018 11:01
- * @since 1.6.9
+ * @since 1.0.5
  */
 public enum DeviceType {
 
     PC("PC"),
-    MOBILE("mobile");
+    H5("mobile");
 
     private String value;
 
