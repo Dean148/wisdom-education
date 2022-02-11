@@ -1,6 +1,9 @@
 package com.education.business.session;
 
 import com.education.auth.session.UserSession;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
 
 
 /**
@@ -21,7 +24,16 @@ public class StudentSession extends UserSession {
     private String loginName;
     private String gradeInfoName;
     private String socketSessionId;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date birthday;
 
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
 
     public void setSocketSessionId(String socketSessionId) {
         this.socketSessionId = socketSessionId;

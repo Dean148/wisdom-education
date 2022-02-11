@@ -4,8 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.auth.AuthConfig;
-import com.education.auth.realm.LoginAuthRealm;
 import com.education.auth.LoginToken;
+import com.education.auth.realm.LoginAuthRealm;
 import com.education.business.service.education.GradeInfoService;
 import com.education.business.service.education.StudentInfoService;
 import com.education.business.session.StudentSession;
@@ -26,6 +26,7 @@ import com.jfinal.kit.HashKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.Resource;
 
 /**
@@ -71,8 +72,11 @@ public class StudentLoginRealm implements LoginAuthRealm<StudentSession> {
         studentSession.setHeadImg(studentInfo.getHeadImg());
         studentSession.setSex(studentInfo.getSex());
         studentSession.setAge(studentInfo.getAge());
+        studentSession.setBirthday(studentInfo.getBirthday());
         studentSession.setAddress(studentInfo.getAddress());
+        studentSession.setSex(studentInfo.getSex());
         studentSession.setMobile(studentInfo.getMobile());
+        studentSession.setLoginCount(studentInfo.getLoginCount());
         studentSession.setGradeInfoId(gradeInfo.getId());
         studentSession.setGradeInfoName(gradeInfo.getName());
         return studentSession;
@@ -85,7 +89,7 @@ public class StudentLoginRealm implements LoginAuthRealm<StudentSession> {
 
     @Override
     public void onLoginSuccess(StudentSession userSession) {
-        taskManager.pushTask(() -> studentInfoService.updateLoginInfo(userSession.getId()));
+        studentInfoService.updateLoginInfo(userSession.getId(), userSession.getLoginCount());
     }
 
     @Override
