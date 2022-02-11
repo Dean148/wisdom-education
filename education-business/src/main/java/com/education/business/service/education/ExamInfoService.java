@@ -1,5 +1,7 @@
 package com.education.business.service.education;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.correct.QuestionCorrect;
 import com.education.business.correct.SystemQuestionCorrect;
@@ -83,27 +85,10 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     @Transactional
     public QuestionCorrectResponse commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
         QuestionCorrectResponse questionCorrectResponse = new QuestionCorrectResponse();
-        TestPaperInfoSetting testPaperInfoSetting;
         Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
-        // 从缓存读取试卷配置，提升并发性能
-        testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
-
-        RLock lock = redissonClient.getLock(CacheKey.PAPER_INFO_SETTING_LOCK);
-        if (testPaperInfoSetting == null) {
-            try {
-                lock.lock();
-                // 防止并发读取数据库，提升性能
-                testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
-                if (ObjectUtils.isEmpty(testPaperInfoSetting)) {
-                    testPaperInfoSetting = testPaperInfoSettingService.selectByTestPaperInfoId(testPaperInfoId);
-                    cacheBean.put(CacheKey.PAPER_INFO_SETTING, testPaperInfoId, testPaperInfoSetting, CacheTime.ONE_DAY_SECOND);
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
-
         studentQuestionRequest.setStudentId(getStudentId());
+        // 从缓存读取试卷配置，提升并发性能
+        TestPaperInfoSetting testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
         Integer commitAfterType = EnumConstants.CommitAfterType.SHOW_MARK_NOW.getValue();
         if (testPaperInfoSetting != null) {
             commitAfterType = testPaperInfoSetting.getCommitAfterType();
@@ -117,13 +102,17 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         if (EnumConstants.CommitAfterType.SHOW_MARK_AFTER_CORRECT.getValue().equals(commitAfterType)) {
             this.examMarkSort(examInfo, questionCorrectResponse);
         } else {
+            boolean flag = this.queryHasDoTestPaper(testPaperInfoId);
+            if (!flag) {
+                // 更新试卷参考人数
+                testPaperInfoService.updateExamNumber(testPaperInfoId);
+            }
+
             // 同步保存考试、错题、答题记录
             this.save(examInfo);
             List<StudentQuestionAnswer> studentQuestionAnswerList = questionCorrect.getStudentQuestionAnswerList();
             List<StudentWrongBook> studentWrongBookList = questionCorrect.getStudentWrongBookList();
             questionCorrect.saveStudentQuestionAnswer(examInfo.getId(), studentQuestionAnswerList, studentWrongBookList);
-            // 更新试卷参考人数
-            testPaperInfoService.updateExamNumber(testPaperInfoId);
         }
         examMonitorService.removeStudent(getStudentId(), testPaperInfoId); // 离开考试监控
         questionCorrectResponse.setExamTime(examInfo.getExamTime());
@@ -131,6 +120,16 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         return questionCorrectResponse;
     }
 
+    /**
+     * 查询学员是否已经作答过当前试卷
+     * @param testPaperId
+     * @return
+     */
+    public boolean queryHasDoTestPaper(Integer testPaperId) {
+        LambdaQueryWrapper lambdaQueryWrapper = Wrappers.<ExamInfo>lambdaQuery().eq(ExamInfo::getTestPaperInfoId, testPaperId)
+                .eq(ExamInfo::getStudentId, getStudentId());
+        return super.selectFirst(lambdaQueryWrapper) != null;
+    }
 
     /**
      * 系统评分成绩排序

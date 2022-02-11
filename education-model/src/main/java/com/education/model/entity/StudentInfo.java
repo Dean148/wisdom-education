@@ -46,6 +46,13 @@ public class StudentInfo extends BaseEntity<StudentInfo> {
 	@TableField("socket_session_id")
 	private String socketSessionId;
 
+
+	/**
+	 * 生日
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+	private Date birthday;
+
 	public String getSocketSessionId() {
 		return socketSessionId;
 	}
@@ -180,5 +187,13 @@ public class StudentInfo extends BaseEntity<StudentInfo> {
 
 	public void setLastLoginTime(Date lastLoginTime) {
 		this.lastLoginTime = lastLoginTime;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
 	}
 }
