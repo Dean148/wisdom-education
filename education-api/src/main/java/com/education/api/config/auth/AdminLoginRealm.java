@@ -5,13 +5,14 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.auth.AuthConfig;
-import com.education.auth.realm.LoginAuthRealm;
 import com.education.auth.LoginToken;
+import com.education.auth.realm.LoginAuthRealm;
 import com.education.business.service.system.SystemAdminService;
 import com.education.business.session.AdminUserSession;
 import com.education.business.task.TaskManager;
 import com.education.business.task.TaskParam;
-import com.education.business.task.WebSocketMessageListener;import com.education.common.enums.BooleanEnum;
+import com.education.business.task.WebSocketMessageListener;
+import com.education.common.enums.BooleanEnum;
 import com.education.common.enums.LoginEnum;
 import com.education.common.enums.SocketMessageTypeEnum;
 import com.education.common.exception.BusinessException;
@@ -23,6 +24,7 @@ import com.jfinal.kit.HashKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.Resource;
 
 
@@ -61,6 +63,7 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
         }
         AdminUserSession adminUserSession = new AdminUserSession(systemAdmin.getId(), loginToken.getDeviceType());
         adminUserSession.setSystemAdmin(systemAdmin);
+        adminUserSession.setLoginCount(systemAdmin.getLoginCount());
         return adminUserSession;
     }
 

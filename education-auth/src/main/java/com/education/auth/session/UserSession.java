@@ -24,13 +24,30 @@ public abstract class UserSession implements Serializable {
      */
     private Number id;
 
+    /**
+     * token 标识
+     */
     private String token;
 
+    /**
+     * 创建时间
+     */
     private Date createDate;
 
+    /**
+     * 登陆类型
+     */
     private String loginType;
 
-    private final String deviceType;
+    /**
+     * 登录客户端设备
+     */
+    private String deviceType;
+
+    /**
+     * 登陆次数
+     */
+    private Integer loginCount = 0;
 
     public Date getCreateDate() {
         return createDate;
@@ -53,16 +70,18 @@ public abstract class UserSession implements Serializable {
         this.loginType = loginType;
     }
 
-    public String getDeviceType() {
-        return deviceType;
-    }
-
-
-
     public UserSession(Number userId, String deviceType) {
         this.id = userId;
         this.deviceType = deviceType;
         this.createDate = new Date();
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
     }
 
     public List<String> getPermissionList() {
@@ -83,5 +102,13 @@ public abstract class UserSession implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Integer getLoginCount() {
+        return loginCount;
+    }
+
+    public void setLoginCount(Integer loginCount) {
+        this.loginCount = loginCount;
     }
 }

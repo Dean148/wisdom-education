@@ -111,23 +111,20 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         return studentInfoList.size();
     }
 
-
     /**
      * 缓存学员登录信息
      * @param studentId
      */
-    public void updateLoginInfo(Integer studentId) {
+    public void updateLoginInfo(Integer studentId, Integer loginCount) {
         StudentInfo studentInfo = new StudentInfo();
         Date now = new Date();
         studentInfo.setLastLoginTime(now);
         studentInfo.setId(studentId);
         studentInfo.setLoginIp(IpUtils.getAddressIp(RequestUtils.getRequest()));
-        int loginCount = studentInfo.getLoginCount();
         studentInfo.setLoginCount(++loginCount);
         studentInfo.setUpdateDate(now);
         super.updateById(studentInfo);
     }
-
 
     public ResultCode updatePassword(String password, String newPassword, String confirmPassword) {
 
