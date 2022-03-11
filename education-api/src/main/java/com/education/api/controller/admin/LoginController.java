@@ -6,9 +6,10 @@ import com.education.business.session.AdminUserSession;
 import com.education.business.task.TaskManager;
 import com.education.business.task.TaskParam;
 import com.education.business.task.UserLoginSuccessListener;
-import com.education.common.annotation.*;
+import com.education.common.annotation.FormLimit;
+import com.education.common.annotation.SystemLog;
 import com.education.common.base.BaseController;
-import com.education.common.constants.*;
+import com.education.common.constants.AuthConstants;
 import com.education.common.enums.LoginEnum;
 import com.education.common.utils.RequestUtils;
 import com.education.common.utils.Result;
@@ -17,7 +18,11 @@ import com.education.model.request.UserLoginRequest;
 import com.jfinal.kit.Kv;
 import io.swagger.annotations.Api;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
@@ -26,6 +31,7 @@ import java.util.Map;
 
 /**
  * 系统登录
+ *
  * @author zengjintao
  * @version 1.0
  * @create_at 2019/3/22 22:12
@@ -40,6 +46,7 @@ public class LoginController extends BaseController {
 
     /**
      * 管理员登录接口
+     *
      * @param userLoginRequest
      * @return
      */
@@ -54,7 +61,7 @@ public class LoginController extends BaseController {
             return Result.fail(ResultCode.CODE_ERROR, "验证码输入错误");
         }
         LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(),
-                LoginEnum.ADMIN.getValue(), false);
+                LoginEnum.ADMIN.getValue(), userLoginRequest.getDeviceType(), false);
         AdminUserSession userSession = AuthUtil.login(loginToken);
         response.addHeader(AuthConstants.AUTHORIZATION, userSession.getToken());
         Kv userInfo = Kv.create().set("id", userSession.getId())
@@ -73,6 +80,7 @@ public class LoginController extends BaseController {
 
     /**
      * 系统退出
+     *
      * @return
      */
     @PostMapping("logout")

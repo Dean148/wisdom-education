@@ -14,21 +14,22 @@ public class LoginToken {
     private final boolean remember;
 
     public LoginToken(String username, String password) {
-        this(username, password, null,false);
+        this(username, password, null, null, false);
     }
 
-    public LoginToken(String username, String password, String loginType) {
-        this(username, password, loginType, false);
+    public LoginToken(String username, String password, String loginType, String deviceType) {
+        this(username, password, loginType, deviceType, false);
     }
 
     public LoginToken(String username, String password, boolean remember) {
-        this(username, password, null, remember);
+        this(username, password, null, null, remember);
     }
 
-    public LoginToken(String username, String password, String loginType, boolean remember) {
+    public LoginToken(String username, String password, String loginType, String deviceType, boolean remember) {
         this.username = username;
         this.password = password;
         this.loginType = loginType;
+        this.deviceType = deviceType;
         this.remember = remember;
     }
 
