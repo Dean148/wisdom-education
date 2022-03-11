@@ -10,7 +10,9 @@ import com.education.common.annotation.ParamsValidate;
 import com.education.common.base.BaseController;
 import com.education.common.constants.AuthConstants;
 import com.education.common.enums.LoginEnum;
-import com.education.common.utils.*;
+import com.education.common.utils.RegexUtils;
+import com.education.common.utils.Result;
+import com.education.common.utils.ResultCode;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.entity.StudentInfo;
 import com.education.model.request.UserLoginRequest;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 学员登录接口
+ *
  * @author zengjintao
  * @version 1.0
  * @create_at 2020/11/21 20:58
@@ -37,12 +40,13 @@ public class StudentInfoController extends BaseController {
 
     /**
      * 学员登录接口
+     *
      * @param userLoginRequest
      * @return
      */
     @PostMapping("login")
     public Result login(@RequestBody UserLoginRequest userLoginRequest, HttpServletResponse response) {
-        LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(), LoginEnum.STUDENT.getValue(),
+        LoginToken loginToken = new LoginToken(userLoginRequest.getUserName(), userLoginRequest.getPassword(), LoginEnum.STUDENT.getValue(), userLoginRequest.getDeviceType(),
                 userLoginRequest.isChecked());
         loginToken.setDeviceType(userLoginRequest.getDeviceType());
         StudentSession session = AuthUtil.login(loginToken);
@@ -58,6 +62,7 @@ public class StudentInfoController extends BaseController {
 
     /**
      * 修改新密码
+     *
      * @param studentInfoDto
      * @return
      */
@@ -69,14 +74,15 @@ public class StudentInfoController extends BaseController {
 
     /**
      * 修改个人资料
+     *
      * @param studentInfo
      * @return
      */
     @PostMapping("updateStudentInfo")
     @ParamsValidate(params = {
-        @Param(name = "name", message = "请输入姓名"),
-        @Param(name = "sex", message = "请选择性别"),
-        @Param(name = "mobile", message = "请输入手机号", regexp = RegexUtils.MOBILE_REGEX, regexpMessage = "非法手机号")
+            @Param(name = "name", message = "请输入姓名"),
+            @Param(name = "sex", message = "请选择性别"),
+            @Param(name = "mobile", message = "请输入手机号", regexp = RegexUtils.MOBILE_REGEX, regexpMessage = "非法手机号")
     }, paramsType = ParamsType.JSON_DATA)
     public Result updateInfo(@RequestBody StudentInfo studentInfo) {
         return Result.success(studentInfoService.updateInfo(studentInfo));
