@@ -65,6 +65,8 @@ canal | 1.1.4
  1.开发环境支持：JDK1.8、mysql5.7、Rabbitmq、Redis
  2.配置两台mysql服务器用来做数据库读写分离(注意：该配置非系统必须，如不使用读写分离，在系统配置文件中将读库配置成写库地址即可)
  3.启动education-api模块下面的EducationApiApplication即可启动服务(本项目属于创业初期,所以将学生端接口与后台管理接口集成到一个服务器中，节省服务器成本)
+ 4.建好数据库名称，运行服务成功自动创建表结构
+ 5.建议node版本使用8或者12
 
 ### 智慧云智能教育系统管理平台
 - 项目源码地址：  https://gitee.com/zhuimengshaonian/wisdom-education-admin-front
