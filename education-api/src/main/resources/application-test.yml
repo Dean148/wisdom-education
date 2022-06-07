@@ -22,11 +22,11 @@ spring:
         max-wait: 30
         max-idle: 8
         min-idle: 0
-    host: 120.79.144.34
+    host: 127.0.0.1
     port: 6379
     password: taoge
   rabbitmq:
-    host: 120.79.144.34
+    host: 127.0.0.1
     port: 5672
     username: rabbitmq
     password: 123456
