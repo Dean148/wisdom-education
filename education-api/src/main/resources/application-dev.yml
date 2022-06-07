@@ -4,12 +4,9 @@ server:
 # oss 文件上传配置
 oss:
   upload:
-    secretId: AKIDSjlW1GEvLUs3xax4tRijX4LL5XioiNmw
-    secretKey: wc3D8oEPKzPZVBblfKjtnTt3xc1A3oJY
-    appId: 1253719016
-    platform: tencent
-    region: ap-nanjing
-    localTmpFileUploadPath: f:\\uploads\\
+    host: ${host}/uploads  // 文件访问域名
+    platform: local  #配置使用本地文件存储
+    bucketName: D:\\home\\ #配置文件上传目录
 ## spring jdbc配置
 spring:
   # flyway 数据库管理工具
