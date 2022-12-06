@@ -10,6 +10,7 @@ import java.util.Arrays;
  */
 public enum SocketMessageTypeEnum {
 
+    HEART(10001, "心跳检测"),
     ADMIN_CONNECTION_SUCCESS(10010, "管理后台socket连接成功"),
     STUDENT_CONNECTION_SUCCESS(10011, "学生端socket连接成功"),
     REJECT_SESSION(10012, "账号下线通知"),
