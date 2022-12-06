@@ -62,14 +62,19 @@ public class SystemWebSocketHandler implements WebSocketHandler {
         try {
             socketMessageCommand = JSONUtil.toBean(message, SocketMessageCommand.class);
         } catch (Exception e) {
-            String ip = IpUtils.getAddressIp(RequestUtils.getRequest());
-            log.warn("ip:{}错误消息格式", ip);
+            log.warn("socket 通讯消息格式:{}错误", message);
             return;
         }
         Integer messageType = socketMessageCommand.getMessageType();
         String socketSessionId = webSocketSession.getId();
         if (!SocketMessageTypeEnum.contains(messageType)) {
             log.error("错误消息类型:{}", socketMessageCommand.getMessageType());
+            return;
+        }
+
+        if (SocketMessageTypeEnum.HEART.getValue().equals(messageType)) {
+            log.info("ws心跳包:{}", message);
+            this.sendMessage(webSocketSession, message);
             return;
         }
 
@@ -116,12 +121,16 @@ public class SystemWebSocketHandler implements WebSocketHandler {
     public void sendMessageToPage(String md5Token, String message) {
         WebSocketSession webSocketSession = WEB_SOCKET_SESSION.get(md5Token);
         if (ObjectUtils.isNotEmpty(webSocketSession)) {
-            try {
-                webSocketSession.sendMessage(new TextMessage(message));
-                log.info("Socket Server Push SocketSessionId:{} Message:{} Success", webSocketSession.getId(), message);
-            } catch (IOException e) {
-                log.error("webSocket 消息发送异常", e);
-            }
+            this.sendMessage(webSocketSession, message);
+        }
+    }
+
+    private void sendMessage(WebSocketSession webSocketSession, String message) {
+        try {
+            webSocketSession.sendMessage(new TextMessage(message));
+            log.info("Socket Server Push SocketSessionId:{} Message:{} Success", webSocketSession.getId(), message);
+        } catch (IOException e) {
+            log.error("webSocket 消息发送异常", e);
         }
     }
 
