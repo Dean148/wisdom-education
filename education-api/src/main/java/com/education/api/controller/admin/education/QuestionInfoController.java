@@ -19,10 +19,10 @@ import com.education.model.request.PageParam;
 import com.education.model.request.QuestionInfoQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -36,7 +36,7 @@ import java.util.List;
 @RequestMapping("/system/question")
 public class QuestionInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private QuestionInfoService questionInfoService;
     private final Logger logger = LoggerFactory.getLogger(QuestionInfoController.class);
 

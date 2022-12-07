@@ -12,10 +12,8 @@ import com.education.common.utils.*;
 import com.education.model.dto.StudentInfoDto;
 import com.education.model.entity.StudentInfo;
 import com.education.model.request.PageParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
 import java.io.InputStream;
 import java.util.List;
@@ -30,7 +28,7 @@ import java.util.List;
 @RestController
 public class StudentInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private StudentInfoService studentInfoService;
     @Resource
     private OssProperties ossProperties;
