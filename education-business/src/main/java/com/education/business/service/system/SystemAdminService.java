@@ -17,7 +17,6 @@ import com.education.model.dto.AdminRoleDto;
 import com.education.model.dto.MenuTree;
 import com.education.model.entity.*;
 import com.education.model.request.PageParam;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
@@ -33,7 +32,6 @@ import java.util.stream.Collectors;
  * @create_at 2020/3/8 11:25
  */
 @Service
-@Slf4j
 public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdmin> {
 
     @Resource

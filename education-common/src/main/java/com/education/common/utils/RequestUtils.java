@@ -1,7 +1,9 @@
 package com.education.common.utils;
 
 
-import lombok.extern.slf4j.Slf4j;
+import com.baidu.ueditor.ConfigManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -21,8 +23,9 @@ import java.util.Set;
  * @version 1.0
  * @create_at 2019/3/22 22:32
  */
-@Slf4j
 public class RequestUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(RequestUtils.class);
 
     static final Set<Integer> PORT_SET = new HashSet<Integer>() {
         {
@@ -113,7 +116,7 @@ public class RequestUtils {
             URLConnection connection = resource.openConnection();
             return connection.getInputStream();
         } catch (Exception e) {
-            log.error("获取流异常,请检查url是否正确", e);
+            logger.error("获取流异常,请检查url是否正确", e);
         }
         return null;
     }

@@ -1,10 +1,10 @@
 package com.education.business.interceptor;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
@@ -21,9 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @create_at 2018/11/27 20:17
  */
 @Component
-@Slf4j
 public class LogInterceptor extends BaseInterceptor {
 
+
+    private final Logger logger = LoggerFactory.getLogger(LogInterceptor.class);
 
     private static final String title = "\nSpringMvc" + " action report -------- ";
     private static int maxOutputLengthOfParaValue = 512;
@@ -111,7 +112,7 @@ public class LogInterceptor extends BaseInterceptor {
         long endTime = System.currentTimeMillis();
         long startTime = threadLocal.get().get("startTime");
         sb.append("------------------------- 接口响应时间:" +  (endTime - startTime) + "ms------------------------------------");
-        log.info(sb.toString());
+        logger.info(sb.toString());
     }
 
     /**

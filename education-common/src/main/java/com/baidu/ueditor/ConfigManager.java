@@ -3,9 +3,10 @@ package com.baidu.ueditor;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.baidu.ueditor.define.ActionMap;
-import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.HashMap;
@@ -17,8 +18,9 @@ import java.util.Map;
  * @author hancong03@baidu.com
  *
  */
-@Slf4j
 public final class ConfigManager {
+
+	private static final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
 
 	private final String rootPath;
 	private final String originalPath;
@@ -68,7 +70,7 @@ public final class ConfigManager {
 		try {
 			return new ConfigManager(rootPath, contextPath, uri);
 		} catch ( Exception e ) {
-			log.error("can not init the bean " + ConfigManager.class, e);
+			logger.error("can not init the bean " + ConfigManager.class, e);
 		}
 		return null;
 	}
@@ -164,7 +166,7 @@ public final class ConfigManager {
 			JSONObject jsonConfig = new JSONObject( configContent );
 			this.jsonConfig = jsonConfig;
 		} catch ( Exception e ) {
-			log.error("", e);
+			logger.error("", e);
 			this.jsonConfig = null;
 		}
 	}

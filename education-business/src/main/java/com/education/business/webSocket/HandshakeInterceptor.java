@@ -1,6 +1,7 @@
 package com.education.business.webSocket;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -13,10 +14,10 @@ import java.util.Map;
  * @version 1.0
  * @create 2018-08-14 22:24
  **/
-@Slf4j
 @Component
 public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
 
+    private final Logger logger = LoggerFactory.getLogger(HandshakeInterceptor.class);
     /**
      * 握手前
      * @param serverHttpRequest
@@ -29,7 +30,7 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
                                    WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        log.info("beforeHandshake");
+        logger.info("beforeHandshake");
         return true;
     }
 
@@ -43,7 +44,7 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                WebSocketHandler wsHandler, Exception ex) {
-        log.info("afterHandshake");
+        logger.info("afterHandshake");
         super.afterHandshake(request, response, wsHandler, ex);
     }
 }

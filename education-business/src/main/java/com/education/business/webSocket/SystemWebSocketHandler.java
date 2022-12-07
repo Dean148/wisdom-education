@@ -5,12 +5,11 @@ import com.education.business.service.education.StudentInfoService;
 import com.education.business.service.system.SystemAdminService;
 import com.education.common.enums.SocketMessageTypeEnum;
 import com.education.common.model.JwtToken;
-import com.education.common.utils.IpUtils;
 import com.education.common.utils.ObjectUtils;
-import com.education.common.utils.RequestUtils;
 import com.education.model.dto.SocketMessageCommand;
 import com.jfinal.kit.HashKit;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import javax.annotation.Resource;
@@ -27,9 +26,9 @@ import java.util.Map;
  * @create_at 2018年11月18日下午5:24:06
  */
 @Component
-@Slf4j
 public class SystemWebSocketHandler implements WebSocketHandler {
 
+    private final Logger logger = LoggerFactory.getLogger(SystemWebSocketHandler.class);
     @Resource
     private StudentInfoService studentInfoService;
     @Resource
@@ -57,23 +56,23 @@ public class SystemWebSocketHandler implements WebSocketHandler {
     @Override
     public void handleMessage(WebSocketSession webSocketSession, WebSocketMessage<?> webSocketMessage) throws Exception {
         String message = String.valueOf(webSocketMessage.getPayload());
-        log.info("Socket Listener Message:{}", message);
+        logger.info("Socket Listener Message:{}", message);
         SocketMessageCommand socketMessageCommand;
         try {
             socketMessageCommand = JSONUtil.toBean(message, SocketMessageCommand.class);
         } catch (Exception e) {
-            log.warn("socket 通讯消息格式:{}错误", message);
+            logger.warn("socket 通讯消息格式:{}错误", message);
             return;
         }
         Integer messageType = socketMessageCommand.getMessageType();
         String socketSessionId = webSocketSession.getId();
         if (!SocketMessageTypeEnum.contains(messageType)) {
-            log.error("错误消息类型:{}", socketMessageCommand.getMessageType());
+            logger.error("错误消息类型:{}", socketMessageCommand.getMessageType());
             return;
         }
 
         if (SocketMessageTypeEnum.HEART.getCode().equals(messageType)) {
-            log.info("ws心跳包:{}", message);
+            logger.info("ws心跳包:{}", message);
             this.sendMessage(webSocketSession, message);
             return;
         }
@@ -96,7 +95,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
             }
 
             if (WEB_SOCKET_SESSION.containsKey(socketSessionId)) {
-                log.error("socket session:{}已存在", socketSessionId);
+                logger.error("socket session:{}已存在", socketSessionId);
                 return;
             }
             Integer userId = socketMessageCommand.getUserId();
@@ -109,7 +108,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
             }
             WEBSOCKET_SESSION_TOKEN_MAPPING.put(socketSessionId, md5Token);
             WEB_SOCKET_SESSION.put(md5Token, webSocketSession);
-            log.info("-------------------------- WebSocket Connection Success ---------------------------");
+            logger.info("-------------------------- WebSocket Connection Success ---------------------------");
         }
     }
 
@@ -128,9 +127,9 @@ public class SystemWebSocketHandler implements WebSocketHandler {
     private void sendMessage(WebSocketSession webSocketSession, String message) {
         try {
             webSocketSession.sendMessage(new TextMessage(message));
-            log.info("Socket Server Push SocketSessionId:{} Message:{} Success", webSocketSession.getId(), message);
+            logger.info("Socket Server Push SocketSessionId:{} Message:{} Success", webSocketSession.getId(), message);
         } catch (IOException e) {
-            log.error("webSocket 消息发送异常", e);
+            logger.error("webSocket 消息发送异常", e);
         }
     }
 
@@ -145,7 +144,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
         if (webSocketSession != null) {
             webSocketSession.close();
         }
-        log.warn("-------------------------- WebSocket Connection Error ---------------------------");
+        logger.warn("-------------------------- WebSocket Connection Error ---------------------------");
     }
 
     /**
@@ -161,7 +160,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
         WEBSOCKET_SESSION_TOKEN_MAPPING.remove(sessionId);
         WEB_SOCKET_SESSION.remove(mdkToken);
         webSocketSession.close();
-        log.info("-------------------------- WebSocket Close Success ---------------------------");
+        logger.info("-------------------------- WebSocket Close Success ---------------------------");
     }
 
     @Override
