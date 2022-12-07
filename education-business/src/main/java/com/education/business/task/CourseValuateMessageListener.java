@@ -1,8 +1,11 @@
 package com.education.business.task;
 
 import com.education.business.service.education.CourseInfoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.education.business.task.param.CourseValuateParam;
+import com.education.common.annotation.EventQueue;
+import com.education.common.constants.LocalQueueConstants;
 import org.springframework.stereotype.Component;
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 
 /**
@@ -12,15 +15,16 @@ import java.math.BigDecimal;
  * @since version 1.0.3
  */
 @Component
-public class CourseValuateMessageListener implements TaskListener {
+@EventQueue(name = LocalQueueConstants.COURSE_VALUATE)
+public class CourseValuateMessageListener implements TaskListener<CourseValuateParam> {
 
-    @Autowired
+    @Resource
     private CourseInfoService courseInfoService;
 
     @Override
-    public void onMessage(TaskParam taskParam) {
-        Integer courseId = taskParam.getInt("courseId");
-        BigDecimal valuateMark = taskParam.getBigDecimal("valuateMark");
+    public void onMessage(CourseValuateParam taskParam) {
+        Integer courseId = taskParam.getCourseId();
+        BigDecimal valuateMark = taskParam.getValuateMark();
         courseInfoService.updateCommentNumberAndValuateMark(courseId, valuateMark);
     }
 }

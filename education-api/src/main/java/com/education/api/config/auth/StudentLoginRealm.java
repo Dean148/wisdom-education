@@ -10,9 +10,9 @@ import com.education.business.service.education.GradeInfoService;
 import com.education.business.service.education.StudentInfoService;
 import com.education.business.session.StudentSession;
 import com.education.business.task.TaskManager;
-import com.education.business.task.TaskParam;
-import com.education.business.task.WebSocketMessageListener;
+import com.education.business.task.param.WebSocketMessageParam;
 import com.education.common.constants.CacheTime;
+import com.education.common.constants.LocalQueueConstants;
 import com.education.common.enums.LoginEnum;
 import com.education.common.enums.SocketMessageTypeEnum;
 import com.education.common.exception.BusinessException;
@@ -103,10 +103,10 @@ public class StudentLoginRealm implements LoginAuthRealm<StudentSession> {
         logger.warn("学员:{}会话token:{}被挤下线", userSession.getLoginName(),
                 authConfig.getSessionIdPrefix() + StrUtil.COLON + LoginEnum.STUDENT.getValue() +
                         StrUtil.COLON + hashToken);
-        TaskParam taskParam = new TaskParam(WebSocketMessageListener.class);
-        taskParam.put("sessionId", HashKit.md5(userSession.getToken()));
-        taskParam.put("message_type", SocketMessageTypeEnum.REJECT_SESSION.getValue());
-        taskParam.put("ip", IpUtils.getAddressIp(RequestUtils.getRequest()));
+        WebSocketMessageParam taskParam = new WebSocketMessageParam(LocalQueueConstants.SYSTEM_SOCKET_MESSAGE);
+        taskParam.setSessionId(HashKit.md5(userSession.getToken()));
+        taskParam.setSocketMessageTypeEnum(SocketMessageTypeEnum.REJECT_SESSION);
+        taskParam.setIp(IpUtils.getAddressIp(RequestUtils.getRequest()));
         taskManager.pushTask(taskParam);
     }
 

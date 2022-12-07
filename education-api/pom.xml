@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.education</groupId>
         <artifactId>education</artifactId>
-        <version>1.0.4-RELEASE</version>
+        <version>1.0.5-RELEASE</version>
     </parent>
 
     <groupId>com.education.api</groupId>
     <artifactId>education-api</artifactId>
-    <version>1.0.4-RELEASE</version>
+    <version>1.0.5-RELEASE</version>
     <name>education-admin-api</name>
     <description>基于Spring Boot构建的智能教育平台</description>
 

@@ -72,7 +72,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
             return;
         }
 
-        if (SocketMessageTypeEnum.HEART.getValue().equals(messageType)) {
+        if (SocketMessageTypeEnum.HEART.getCode().equals(messageType)) {
             log.info("ws心跳包:{}", message);
             this.sendMessage(webSocketSession, message);
             return;
@@ -102,9 +102,9 @@ public class SystemWebSocketHandler implements WebSocketHandler {
             Integer userId = socketMessageCommand.getUserId();
             String md5Token = HashKit.md5(token);
             // socket 连接成功时接收消息
-            if (SocketMessageTypeEnum.STUDENT_CONNECTION_SUCCESS.getValue().equals(messageType)) {
+            if (SocketMessageTypeEnum.STUDENT_CONNECTION_SUCCESS.getCode().equals(messageType)) {
                 studentInfoService.updateSocketSessionId(userId, md5Token);
-            } else if (SocketMessageTypeEnum.ADMIN_CONNECTION_SUCCESS.getValue().equals(messageType)) {
+            } else if (SocketMessageTypeEnum.ADMIN_CONNECTION_SUCCESS.getCode().equals(messageType)) {
                 systemAdminService.updateSocketSessionId(userId, md5Token);
             }
             WEBSOCKET_SESSION_TOKEN_MAPPING.put(socketSessionId, md5Token);

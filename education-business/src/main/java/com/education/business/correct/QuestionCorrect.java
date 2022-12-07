@@ -1,14 +1,13 @@
 package com.education.business.correct;
 
 import cn.hutool.core.collection.CollUtil;
-import com.education.business.service.education.StudentInfoService;
 import com.education.business.service.education.StudentQuestionAnswerService;
 import com.education.business.service.education.StudentWrongBookService;
 import com.education.business.task.TaskManager;
-import com.education.business.task.TaskParam;
-import com.education.business.task.WebSocketMessageListener;
+import com.education.business.task.param.WebSocketMessageParam;
 import com.education.common.component.SpringBeanManager;
 import com.education.common.constants.EnumConstants;
+import com.education.common.constants.LocalQueueConstants;
 import com.education.common.enums.SocketMessageTypeEnum;
 import com.education.model.entity.ExamInfo;
 import com.education.model.entity.StudentQuestionAnswer;
@@ -146,11 +145,11 @@ public abstract class QuestionCorrect {
     }
 
     protected void sendStudentMessage() {
-        TaskParam taskParam = new TaskParam(WebSocketMessageListener.class);
-        taskParam.put("message_type", SocketMessageTypeEnum.EXAM_CORRECT.getValue());
-        taskParam.put("studentId", studentId);
+        WebSocketMessageParam taskParam = new WebSocketMessageParam(LocalQueueConstants.SYSTEM_SOCKET_MESSAGE);
+        taskParam.setSocketMessageTypeEnum(SocketMessageTypeEnum.EXAM_CORRECT);
+        taskParam.setStudentId(studentId);
         TaskManager taskManager = SpringBeanManager.getBean(TaskManager.class);
-        taskParam.put("testPaperInfoId", examInfo.getTestPaperInfoId());
+        taskParam.setTestPaperId(examInfo.getTestPaperInfoId());
         taskManager.pushTask(taskParam);
     }
 

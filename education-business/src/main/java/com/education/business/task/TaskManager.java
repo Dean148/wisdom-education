@@ -1,18 +1,19 @@
 package com.education.business.task;
 
 import cn.hutool.core.collection.CollUtil;
+import com.education.business.task.param.TaskParam;
 import com.education.common.annotation.EventQueue;
-import com.education.common.component.SpringBeanManager;
 import com.education.common.utils.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -24,9 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TaskManager {
 
+    private final Logger logger = LoggerFactory.getLogger(TaskManager.class);
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
-    @Autowired
+    @Resource
     private List<TaskListener> taskListenerList;
 
     private final Map<String, List<TaskListener>> queueTaskListenerMap = new ConcurrentHashMap();
@@ -52,12 +54,9 @@ public class TaskManager {
     }
 
     public void pushTask(TaskParam taskParam) {
-        TaskListener taskListener = SpringBeanManager.getBean(taskParam.getTaskListenerClass());
-        if (taskListener != null) {
-            threadPoolTaskExecutor.execute(() -> {
-                taskListener.onMessage(taskParam);
-            });
-        }
+        threadPoolTaskExecutor.execute(() -> {
+            pushTask(taskParam);
+        });
     }
 
     public void pushSyncQueueTask(TaskParam taskParam) {
@@ -65,31 +64,12 @@ public class TaskManager {
         String queueName = taskParam.getQueueName();
         List<TaskListener> queueList = queueTaskListenerMap.get(queueName);
         if (CollUtil.isEmpty(queueList)) {
+            logger.warn("The Queue:{} Listener is Empty", queueName);
             return;
         }
         queueList.forEach(taskListener -> {
-            threadPoolTaskExecutor.execute(() -> {
-                taskListener.onMessage(taskParam);
-            });
+            taskListener.onMessage(taskParam);
         });
-    }
-
-    /**
-     * 扩展非spring项目支持
-     * @param taskParam
-     */
-    public void pushTaskByNewInstance(TaskParam taskParam) {
-        Class<? extends TaskListener> taskListenerClass = taskParam.getTaskListenerClass();
-        if (taskListenerClass != null) {
-            try {
-                TaskListener taskListener = taskListenerClass.newInstance();
-                threadPoolTaskExecutor.execute(() -> {
-                    taskListener.onMessage(taskParam);
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void pushTask(Runnable runnable) {
