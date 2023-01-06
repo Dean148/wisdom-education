@@ -7,11 +7,11 @@ import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.model.dto.ExamMonitor;
 import com.education.model.request.PageParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping("/system/examMonitor")
 public class ExamMonitorController extends BaseController {
 
-    @Autowired
+    @Resource
     private ExamMonitorService examMonitorService;
 
     /**

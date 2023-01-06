@@ -13,8 +13,9 @@ import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
 import com.education.model.request.TestPaperQuestionRequest;
 import com.education.model.response.StudentExamRate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * 学生端试卷管理
@@ -26,11 +27,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/student/testPaperInfo")
 public class TestPaperInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private TestPaperInfoService testPaperInfoService;
-    @Autowired
+    @Resource
     private ExamInfoService examInfoService;
-    @Autowired
+    @Resource
     private ExamMonitorService examMonitorService;
 
     /**

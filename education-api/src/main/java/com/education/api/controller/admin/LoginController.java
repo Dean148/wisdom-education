@@ -4,14 +4,14 @@ import com.education.auth.AuthUtil;
 import com.education.auth.LoginToken;
 import com.education.business.session.AdminUserSession;
 import com.education.business.task.TaskManager;
-import com.education.business.task.TaskParam;
-import com.education.business.task.UserLoginSuccessListener;
+import com.education.business.task.param.AdminLoginTaskParam;
 import com.education.common.annotation.FormLimit;
 import com.education.common.annotation.SystemLog;
 import com.education.common.base.BaseController;
 import com.education.common.constants.AuthConstants;
+import com.education.common.constants.LocalQueueConstants;
 import com.education.common.enums.LoginEnum;
-import com.education.common.utils.RequestUtils;
+import com.education.common.utils.IpUtils;
 import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.request.UserLoginRequest;
@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +43,8 @@ public class LoginController extends BaseController {
 
     @Resource
     private TaskManager taskManager;
+    @Resource
+    private HttpServletRequest request;
 
     /**
      * 管理员登录接口
@@ -71,10 +73,11 @@ public class LoginController extends BaseController {
         Map resultMap = new HashMap<>();
         resultMap.put("userInfo", userInfo);
         // 异步更新用户相关信息
-        TaskParam taskParam = new TaskParam(UserLoginSuccessListener.class);
-        taskParam.put("userSession", userSession);
-        taskParam.put("request", RequestUtils.getRequest());
-        taskManager.pushTask(taskParam);
+        // 异步更新用户相关信息
+        AdminLoginTaskParam adminLoginTaskParam = new AdminLoginTaskParam(LocalQueueConstants.ADMIN_LOGIN_SUCCESS_QUEUE);
+        adminLoginTaskParam.setSystemAdmin(userSession.getSystemAdmin());
+        adminLoginTaskParam.setNewLoginIp(IpUtils.getAddressIp(request));
+        taskManager.pushTask(adminLoginTaskParam);
         return Result.success(ResultCode.SUCCESS, "登录成功", resultMap);
     }
 

@@ -7,10 +7,11 @@ import com.education.common.utils.Result;
 import com.education.model.dto.QuestionInfoAnswer;
 import com.education.model.request.PageParam;
 import com.education.model.request.WrongBookQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * 错题本管理接口
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/student/wrongBook")
 public class WrongBookController extends BaseController {
 
-    @Autowired
+    @Resource
     private StudentWrongBookService studentWrongBookService;
 
     /**

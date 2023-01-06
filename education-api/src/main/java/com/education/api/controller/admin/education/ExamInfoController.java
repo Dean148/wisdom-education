@@ -9,8 +9,9 @@ import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.entity.TestPaperInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.StudentQuestionRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * 考试管理
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/system/exam")
 public class ExamInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private ExamInfoService examInfoService;
 
     @GetMapping

@@ -18,8 +18,9 @@ import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.ResultCode;
 import com.education.model.entity.BaseEntity;
 import com.education.model.request.PageParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -35,7 +36,7 @@ import java.util.Map;
  */
 public abstract class CrudService <M extends BaseMapper<T>, T> extends ServiceImpl<M, T> {
 
-    @Autowired
+    @Resource
     @Qualifier("redisCacheBean")
     protected CacheBean cacheBean;
 

@@ -2,13 +2,11 @@ package com.education.api;
 
 
 import com.education.business.service.education.GradeInfoService;
-import com.education.business.service.system.SystemRoleService;
 import com.education.common.cache.CacheBean;
 import com.education.common.cache.CaffeineCacheBean;
 import com.education.common.cache.EhcacheBean;
 import com.education.model.entity.GradeInfo;
 import com.jfinal.kit.Kv;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,6 @@ import java.util.concurrent.TimeUnit;
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@Slf4j
 public class EducationTestApi {
 
     @Autowired

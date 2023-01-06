@@ -1,20 +1,16 @@
 package com.education.api.controller;
 
-import com.education.business.message.RabbitMqConfig;
 import com.education.common.cache.CacheBean;
 import com.education.common.disabled.RateLimitLock;
 import com.education.common.utils.Result;
-import com.jfinal.kit.HttpKit;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,13 +27,13 @@ import java.util.concurrent.locks.ReentrantLock;
 @RequestMapping("/limit")
 public class LimitController {
 
-    @Autowired
+    @Resource
     private JdbcTemplate jdbcTemplate;
-    @Autowired
+    @Resource
     private CacheBean redisCacheBean;
-    @Autowired
+    @Resource
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
-    @Autowired
+    @Resource
     private RabbitTemplate rabbitTemplate;
 
     private final Map cache = new HashMap();

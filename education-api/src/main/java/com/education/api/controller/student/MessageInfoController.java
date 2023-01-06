@@ -6,10 +6,10 @@ import com.education.common.model.PageInfo;
 import com.education.common.utils.Result;
 import com.education.model.entity.MessageInfo;
 import com.education.model.request.PageParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.Resource;
 
 /**
  * 消息通知接口
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/student/message")
 public class MessageInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private MessageInfoService messageInfoService;
 
     @GetMapping

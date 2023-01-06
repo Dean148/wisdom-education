@@ -12,7 +12,6 @@ import com.education.model.dto.RoleMenuDto;
 import com.education.model.entity.SystemRole;
 import com.education.model.entity.SystemRoleMenu;
 import com.education.model.request.PageParam;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,6 @@ import java.util.List;
  * @create_at 2020/3/8 11:25
  */
 @Service
-@Slf4j
 public class SystemRoleService extends BaseService<SystemRoleMapper, SystemRole> {
 
     @Autowired

@@ -14,8 +14,8 @@ import com.education.common.utils.ResultCode;
 import com.education.model.dto.RoleMenuDto;
 import com.education.model.entity.SystemRole;
 import com.education.model.request.PageParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import javax.annotation.Resource;
 
 
 /**
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/system/role")
 public class SystemRoleController extends BaseController {
 
-    @Autowired
+    @Resource
     private SystemRoleService systemRoleService;
 
     /**

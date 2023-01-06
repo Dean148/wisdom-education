@@ -1,5 +1,7 @@
 package com.education.business.task;
 
+import com.education.business.task.param.TaskParam;
+
 /**
  * 任务监听器
  * @author zengjintao
@@ -8,5 +10,19 @@ package com.education.business.task;
  */
 public interface TaskListener<T extends TaskParam> {
 
-    void onMessage(T taskParam);
+    /**
+     * 消息监听回调
+     * @param taskParam
+     */
+    default void onMessage(T taskParam) {
+
+    }
+
+    /**
+     * 发送email消息监听事件
+     * @param taskParam
+     */
+    default void onEmailMessage(T taskParam) {
+
+    }
 }

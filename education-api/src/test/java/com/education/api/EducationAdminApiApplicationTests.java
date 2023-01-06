@@ -5,16 +5,12 @@ package com.education.api;
 import com.alibaba.fastjson.JSON;
 import com.education.business.service.education.QuestionInfoService;
 import com.education.business.service.system.SystemAdminService;
-import com.education.business.task.TaskManager;
-import com.education.business.task.TaskParam;
 import com.education.common.cache.CacheBean;
 import com.education.common.cache.EhcacheBean;
-import com.education.common.utils.ObjectUtils;
 import com.education.model.entity.CourseInfo;
 import com.education.model.entity.StudentInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jfinal.json.JacksonFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +27,6 @@ import java.util.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@Slf4j
 public class EducationAdminApiApplicationTests {
 
     @Autowired

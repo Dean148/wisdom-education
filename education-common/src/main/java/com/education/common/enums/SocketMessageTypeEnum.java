@@ -16,16 +16,16 @@ public enum SocketMessageTypeEnum {
     REJECT_SESSION(10012, "账号下线通知"),
     EXAM_CORRECT(10013, "试卷批改通知");
 
-    private Integer value;
+    private Integer code;
     private String name;
 
-    SocketMessageTypeEnum(Integer value, String name) {
-        this.value = value;
+    SocketMessageTypeEnum(Integer code, String name) {
+        this.code = code;
         this.name = name;
     }
 
-    public Integer getValue() {
-        return value;
+    public Integer getCode() {
+        return code;
     }
 
     public String getName() {
@@ -34,13 +34,13 @@ public enum SocketMessageTypeEnum {
 
     public static boolean contains(Integer value) {
         SocketMessageTypeEnum socketMessageTypeEnum = Arrays.stream(values())
-                .filter(item -> item.value.equals(value))
+                .filter(item -> item.code.equals(value))
                 .findAny().orElseGet(() -> null);
         return socketMessageTypeEnum != null;
     }
 
     public static boolean isConnectionSuccess(Integer value) {
-        return ADMIN_CONNECTION_SUCCESS.value.equals(value)
-                || STUDENT_CONNECTION_SUCCESS.value.equals(value);
+        return ADMIN_CONNECTION_SUCCESS.code.equals(value)
+                || STUDENT_CONNECTION_SUCCESS.code.equals(value);
     }
 }

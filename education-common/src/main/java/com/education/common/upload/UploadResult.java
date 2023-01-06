@@ -1,6 +1,5 @@
 package com.education.common.upload;
 
-import lombok.Data;
 
 import java.util.Date;
 
@@ -9,7 +8,6 @@ import java.util.Date;
  * @create_at 2021/10/31 15:53
  * @since version 1.0.3
  */
-@Data
 public class UploadResult {
 
     private Date creationDate;
@@ -22,5 +20,21 @@ public class UploadResult {
 
     public UploadResult() {
 
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
+    }
+
+    public void setFileUrl(String fileUrl) {
+        this.fileUrl = fileUrl;
     }
 }

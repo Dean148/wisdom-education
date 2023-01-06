@@ -11,8 +11,9 @@ import com.education.common.utils.Result;
 import com.education.common.utils.ResultCode;
 import com.education.model.entity.SubjectInfo;
 import com.education.model.request.PageParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * 科目管理接口
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/system/subject")
 public class SubjectInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private SubjectInfoService subjectInfoService;
 
     /**

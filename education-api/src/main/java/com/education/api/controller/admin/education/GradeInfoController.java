@@ -11,8 +11,8 @@ import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.model.entity.GradeInfo;
 import com.education.model.request.PageParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import javax.annotation.Resource;
 
 /**
  * 年级管理接口
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/system/gradeInfo")
 public class GradeInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private GradeInfoService gradeInfoService;
 
     /**

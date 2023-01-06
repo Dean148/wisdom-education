@@ -7,10 +7,11 @@ import com.education.common.base.BaseController;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
 import com.education.model.entity.SubjectInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * 学生端 科目管理接口
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/student/subjectInfo")
 public class SubjectInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private SubjectInfoService subjectInfoService;
 
     /**

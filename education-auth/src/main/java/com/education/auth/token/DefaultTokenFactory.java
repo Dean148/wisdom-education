@@ -2,8 +2,8 @@ package com.education.auth.token;
 
 
 import cn.hutool.core.util.IdUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,9 +17,9 @@ import java.util.TimerTask;
  * @create_at 2021年11月26日 0026 10:51
  * @since version 1.0.4
  */
-@Slf4j
 public class DefaultTokenFactory extends TokenFactory {
 
+    private final Logger logger = LoggerFactory.getLogger(DefaultTokenFactory.class);
     private final Map<String, TokenInfo> tokenMap = new HashMap<>();
     private Timer timer = new Timer();
 
@@ -33,7 +33,7 @@ public class DefaultTokenFactory extends TokenFactory {
                     long expirationTime = entry.getValue().getExpirationTime();
                     if (expirationTime <= System.currentTimeMillis()) {
                         iterator.remove();
-                        log.warn("remove token:{}", entry.getKey());
+                        logger.warn("remove token:{}", entry.getKey());
                     }
                 }
             }

@@ -7,12 +7,12 @@
   <parent>
     <groupId>com.education</groupId>
     <artifactId>education</artifactId>
-    <version>1.0.4-RELEASE</version>
+    <version>1.0.5-RELEASE</version>
   </parent>
 
   <groupId>com.education.auth</groupId>
   <artifactId>education-auth</artifactId>
-  <version>1.0.4-RELEASE</version>
+  <version>1.0.5-RELEASE</version>
 
   <name>education-auth</name>
   <!-- FIXME change it to the project's website -->
@@ -22,7 +22,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version>1.0.4-RELEASE</version>
+    <version>1.0.5-RELEASE</version>
   </properties>
 
   <dependencies>

@@ -10,8 +10,9 @@ import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.model.entity.CourseInfo;
 import com.education.model.request.PageParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * 课程管理接口
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/system/course")
 public class CourseInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private CourseInfoService courseInfoService;
 
 

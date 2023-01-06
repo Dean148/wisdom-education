@@ -14,9 +14,10 @@ import com.education.model.entity.TestPaperInfo;
 import com.education.model.entity.TestPaperQuestionInfo;
 import com.education.model.request.PageParam;
 import com.education.model.request.TestPaperQuestionRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -29,9 +30,9 @@ import java.util.List;
 @RequestMapping("/system/testPaperInfo")
 public class TestPaperInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private TestPaperInfoService testPaperInfoService;
-    @Autowired
+    @Resource
     private TestPaperInfoSettingService testPaperInfoSettingService;
 
     /**

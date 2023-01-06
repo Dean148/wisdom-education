@@ -10,8 +10,8 @@ import com.education.auth.realm.LoginAuthRealm;
 import com.education.business.service.system.SystemAdminService;
 import com.education.business.session.AdminUserSession;
 import com.education.business.task.TaskManager;
-import com.education.business.task.TaskParam;
-import com.education.business.task.WebSocketMessageListener;
+import com.education.business.task.param.WebSocketMessageParam;
+import com.education.common.constants.LocalQueueConstants;
 import com.education.common.enums.BooleanEnum;
 import com.education.common.enums.LoginEnum;
 import com.education.common.enums.SocketMessageTypeEnum;
@@ -77,11 +77,11 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
         String hashToken = HashKit.md5(userSession.getToken());
         logger.warn("用户:{}会话token:{}被挤下线", userSession.getSystemAdmin().getLoginName(),
                 authConfig.getSessionIdPrefix() + StrUtil.COLON + LoginEnum.ADMIN.getValue() +
-                         StrUtil.COLON + hashToken);
-        TaskParam taskParam = new TaskParam(WebSocketMessageListener.class);
-        taskParam.put("sessionId", hashToken);
-        taskParam.put("message_type", SocketMessageTypeEnum.REJECT_SESSION.getValue());
-        taskParam.put("ip", IpUtils.getAddressIp(RequestUtils.getRequest()));
+                        StrUtil.COLON + hashToken);
+        WebSocketMessageParam taskParam = new WebSocketMessageParam(LocalQueueConstants.SYSTEM_SOCKET_MESSAGE);
+        taskParam.setHashToken(hashToken);
+        taskParam.setSocketMessageTypeEnum(SocketMessageTypeEnum.REJECT_SESSION);
+        taskParam.setIp(IpUtils.getAddressIp(RequestUtils.getRequest()));
         taskManager.pushTask(taskParam);
     }
 
