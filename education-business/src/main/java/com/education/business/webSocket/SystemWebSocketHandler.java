@@ -1,21 +1,21 @@
 package com.education.business.webSocket;
+
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.education.business.service.education.StudentInfoService;
-import com.education.business.service.system.SystemAdminService;
+import com.education.common.enums.PlatformTypeEnum;
 import com.education.common.enums.SocketMessageTypeEnum;
 import com.education.common.model.JwtToken;
-import com.education.common.utils.ObjectUtils;
 import com.education.model.dto.SocketMessageCommand;
 import com.jfinal.kit.HashKit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
+
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -23,21 +23,20 @@ import java.util.Map;
  * @author taoge
  * @version 1.0.2
  * @update  1.0.4
+ * @update  1.0.6
  * @create_at 2018年11月18日下午5:24:06
  */
 @Component
 public class SystemWebSocketHandler implements WebSocketHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(SystemWebSocketHandler.class);
-    @Resource
-    private StudentInfoService studentInfoService;
-    @Resource
-    private SystemAdminService systemAdminService;
+    private static final Logger logger = LoggerFactory.getLogger(SystemWebSocketHandler.class);
     @Resource
     private JwtToken jwtToken;
 
-    private static final Map<String, String> WEBSOCKET_SESSION_TOKEN_MAPPING = new HashMap<>();
-    private static final Map<String, WebSocketSession> WEB_SOCKET_SESSION = new HashMap<>();
+    /**
+     * 存储webSocket会话信息
+     */
+    private static final List<WebSocketSessionCache> webSocketSessionCacheList = new ArrayList<>();
 
     /**
      * 连接 就绪时
@@ -61,7 +60,7 @@ public class SystemWebSocketHandler implements WebSocketHandler {
         try {
             socketMessageCommand = JSONUtil.toBean(message, SocketMessageCommand.class);
         } catch (Exception e) {
-            logger.warn("socket 通讯消息格式:{}错误", message);
+            logger.warn("{}错误消息格式", message);
             return;
         }
         Integer messageType = socketMessageCommand.getMessageType();
@@ -82,52 +81,45 @@ public class SystemWebSocketHandler implements WebSocketHandler {
         if (SocketMessageTypeEnum.isConnectionSuccess(messageType)) {
             String token = socketMessageCommand.getToken();
             if (StrUtil.isBlank(token)) {
+                logger.error("{}：websocket通讯未传递token参数", socketSessionId);
                 return;
             }
 
-            String value = jwtToken.parseTokenToString(token);
+            String userId = jwtToken.parseTokenToString(token);
             // 非法token 移除会话session
-            if (StrUtil.isBlank(value)) {
-                String sessionKey = WEBSOCKET_SESSION_TOKEN_MAPPING.get(socketSessionId);
-                WEBSOCKET_SESSION_TOKEN_MAPPING.remove(socketSessionId);
-                WEB_SOCKET_SESSION.remove(sessionKey);
+            if (StrUtil.isBlank(userId)) {
+                logger.error("websocket socket通讯非法token：{}参数", token);
+                this.removeBySocketSessionId(socketSessionId);
                 return;
             }
 
-            if (WEB_SOCKET_SESSION.containsKey(socketSessionId)) {
-                logger.error("socket session:{}已存在", socketSessionId);
+            WebSocketSessionCache webSocketSessionCache = getBySocketSessionId(socketSessionId);
+            if (webSocketSessionCache != null) {
+                logger.error("websocket session:{}已存在", socketSessionId);
                 return;
             }
-            Integer userId = socketMessageCommand.getUserId();
-            String md5Token = HashKit.md5(token);
+
             // socket 连接成功时接收消息
+            webSocketSessionCache = new WebSocketSessionCache();
+            webSocketSessionCache.setWebSocketSession(webSocketSession);
+            webSocketSessionCache.setSocketSessionId(socketSessionId);
+            webSocketSessionCache.setUserId(Integer.valueOf(userId));
+            webSocketSessionCache.setHashToken(HashKit.md5(token));
             if (SocketMessageTypeEnum.STUDENT_CONNECTION_SUCCESS.getCode().equals(messageType)) {
-                studentInfoService.updateSocketSessionId(userId, md5Token);
+                webSocketSessionCache.setPlatformType(PlatformTypeEnum.WEB_FRONT.getCode());
             } else if (SocketMessageTypeEnum.ADMIN_CONNECTION_SUCCESS.getCode().equals(messageType)) {
-                systemAdminService.updateSocketSessionId(userId, md5Token);
+                webSocketSessionCache.setPlatformType(PlatformTypeEnum.WEB_ADMIN.getCode());
             }
-            WEBSOCKET_SESSION_TOKEN_MAPPING.put(socketSessionId, md5Token);
-            WEB_SOCKET_SESSION.put(md5Token, webSocketSession);
+            webSocketSessionCacheList.add(webSocketSessionCache);
             logger.info("-------------------------- WebSocket Connection Success ---------------------------");
         }
     }
 
-    /**
-     * 发送消息到页面
-     * @param md5Token
-     * @param message
-     */
-    public void sendMessageToPage(String md5Token, String message) {
-        WebSocketSession webSocketSession = WEB_SOCKET_SESSION.get(md5Token);
-        if (ObjectUtils.isNotEmpty(webSocketSession)) {
-            this.sendMessage(webSocketSession, message);
-        }
-    }
 
-    private void sendMessage(WebSocketSession webSocketSession, String message) {
+    public void sendMessage(WebSocketSession webSocketSession, String message) {
         try {
             webSocketSession.sendMessage(new TextMessage(message));
-            logger.info("Socket Server Push SocketSessionId:{} Message:{} Success", webSocketSession.getId(), message);
+            logger.info("webSocket Server Push SocketSessionId:{} Message:{} Success", webSocketSession.getId(), message);
         } catch (IOException e) {
             logger.error("webSocket 消息发送异常", e);
         }
@@ -156,11 +148,76 @@ public class SystemWebSocketHandler implements WebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
         String sessionId = webSocketSession.getId();
-        String mdkToken = WEBSOCKET_SESSION_TOKEN_MAPPING.get(sessionId);
-        WEBSOCKET_SESSION_TOKEN_MAPPING.remove(sessionId);
-        WEB_SOCKET_SESSION.remove(mdkToken);
+        removeBySocketSessionId(sessionId);
         webSocketSession.close();
         logger.info("-------------------------- WebSocket Close Success ---------------------------");
+    }
+
+
+    /**
+     * 移除websocket会话信息
+     * @param socketSessionId
+     * @since 1.0.6
+     */
+    private void removeBySocketSessionId(String socketSessionId) {
+        WebSocketSessionCache value = getBySocketSessionId(socketSessionId);
+        if (value != null) {
+            webSocketSessionCacheList.remove(value);
+        }
+    }
+
+    public WebSocketSessionCache getBySocketSessionId(String socketSessionId) {
+        return webSocketSessionCacheList.stream()
+                .filter(item -> item.getSocketSessionId().equals(socketSessionId))
+                .findAny()
+                .orElse(null);
+    }
+
+
+    public WebSocketSessionCache getByUserIdAndPlatformType(Integer userId, Integer platformType) {
+        return webSocketSessionCacheList.stream()
+                .filter(item -> item.getUserId().equals(userId) && item.getPlatformType().equals(platformType))
+                .findAny()
+                .orElse(null);
+    }
+
+
+    public WebSocketSessionCache getByHashToken(String hashToken) {
+        return webSocketSessionCacheList.stream()
+                .filter(item -> item.getHashToken().equals(hashToken))
+                .findAny()
+                .orElse(null);
+    }
+
+
+    /**
+     * 根据用户id 和平台发送websocket消息
+     * @param userId
+     * @param platformType
+     * @since 1.0.6
+     * @return
+     */
+    public void sendMessageByUserId(Integer userId, Integer platformType, String message) {
+        WebSocketSessionCache webSocketSessionCache = getByUserIdAndPlatformType(userId, platformType);
+        if (webSocketSessionCache == null) {
+            logger.warn("{}平台用户id:{}socket session会话信息不存在", userId, PlatformTypeEnum.getByCode(platformType));
+        }
+        this.sendMessage(webSocketSessionCache.getWebSocketSession(), message);
+    }
+
+
+    /**
+     * 根据websocket session会话id发送消息
+     * @param hashToken
+     * @param message
+     * @since 1.0.6
+     */
+    public void sendMessageByHashToken(String hashToken, String message) {
+        WebSocketSessionCache webSocketSessionCache = getByHashToken(hashToken);
+        if (webSocketSessionCache == null) {
+            logger.warn("hashToken：{} session会话信息不存在", hashToken);
+        }
+        this.sendMessage(webSocketSessionCache.getWebSocketSession(), message);
     }
 
     @Override

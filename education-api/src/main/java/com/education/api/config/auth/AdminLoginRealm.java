@@ -77,9 +77,9 @@ public class AdminLoginRealm implements LoginAuthRealm<AdminUserSession> {
         String hashToken = HashKit.md5(userSession.getToken());
         logger.warn("用户:{}会话token:{}被挤下线", userSession.getSystemAdmin().getLoginName(),
                 authConfig.getSessionIdPrefix() + StrUtil.COLON + LoginEnum.ADMIN.getValue() +
-                         StrUtil.COLON + hashToken);
+                        StrUtil.COLON + hashToken);
         WebSocketMessageParam taskParam = new WebSocketMessageParam(LocalQueueConstants.SYSTEM_SOCKET_MESSAGE);
-        taskParam.setSessionId(hashToken);
+        taskParam.setHashToken(hashToken);
         taskParam.setSocketMessageTypeEnum(SocketMessageTypeEnum.REJECT_SESSION);
         taskParam.setIp(IpUtils.getAddressIp(RequestUtils.getRequest()));
         taskManager.pushTask(taskParam);

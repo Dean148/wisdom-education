@@ -104,7 +104,7 @@ public class StudentLoginRealm implements LoginAuthRealm<StudentSession> {
                 authConfig.getSessionIdPrefix() + StrUtil.COLON + LoginEnum.STUDENT.getValue() +
                         StrUtil.COLON + hashToken);
         WebSocketMessageParam taskParam = new WebSocketMessageParam(LocalQueueConstants.SYSTEM_SOCKET_MESSAGE);
-        taskParam.setSessionId(HashKit.md5(userSession.getToken()));
+        taskParam.setHashToken(HashKit.md5(userSession.getToken()));
         taskParam.setSocketMessageTypeEnum(SocketMessageTypeEnum.REJECT_SESSION);
         taskParam.setIp(IpUtils.getAddressIp(RequestUtils.getRequest()));
         taskManager.pushTask(taskParam);

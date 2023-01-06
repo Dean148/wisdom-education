@@ -3,12 +3,12 @@ package com.education.business.task;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.education.MessageInfoService;
-import com.education.business.service.education.StudentInfoService;
 import com.education.business.service.education.TestPaperInfoService;
 import com.education.business.task.param.WebSocketMessageParam;
 import com.education.business.webSocket.SystemWebSocketHandler;
 import com.education.common.annotation.EventQueue;
 import com.education.common.constants.LocalQueueConstants;
+import com.education.common.enums.PlatformTypeEnum;
 import com.education.common.enums.SocketMessageTypeEnum;
 import com.education.common.utils.Ip2regionUtil;
 import com.education.model.dto.SocketMessageCommand;
@@ -39,32 +39,26 @@ public class WebSocketMessageListener implements TaskListener<WebSocketMessagePa
     private TestPaperInfoService testPaperInfoService;
     @Resource
     private MessageInfoService messageInfoService;
-    @Resource
-    private StudentInfoService studentInfoService;
 
 
     @Override
     public void onMessage(WebSocketMessageParam webSocketMessageParam) {
         try {
             Integer messageType = webSocketMessageParam.getSocketMessageTypeEnum().getCode();
-            String content = "";
+            SocketMessageCommand socketMessageCommand = new SocketMessageCommand();
+            socketMessageCommand.setMessageType(messageType);
             if (SocketMessageTypeEnum.REJECT_SESSION.getCode().equals(messageType)) {
                 String ip = webSocketMessageParam.getIp();
                 String address = Ip2regionUtil.getIpProvinceAndCity(ip);
-                content = "您的账号已在" + address + "登录，" +
+                String content = "您的账号已在" + address + "登录，" +
                         "5秒后将自动下线，如非本人操作请重新登录并及时修改密码";
+                socketMessageCommand.setMsgContent(content);
+                systemWebSocketHandler.sendMessageByHashToken(webSocketMessageParam.getHashToken(), JSONUtil.toJsonStr(socketMessageCommand));
             } else if (SocketMessageTypeEnum.EXAM_CORRECT.getCode().equals(messageType)) {
                 Integer studentId = webSocketMessageParam.getStudentId();
-                String socketSessionId = studentInfoService.getStudentSocketSessionId(studentId);
-                webSocketMessageParam.setSessionId(socketSessionId);
                 this.saveExamMessage(webSocketMessageParam);
+                systemWebSocketHandler.sendMessageByUserId(studentId, PlatformTypeEnum.WEB_FRONT.getCode(), JSONUtil.toJsonStr(socketMessageCommand));
             }
-
-            SocketMessageCommand socketMessageCommand = new SocketMessageCommand();
-            socketMessageCommand.setMessageType(messageType);
-            socketMessageCommand.setMsgContent(content);
-            String sessionId = webSocketMessageParam.getSessionId();
-            systemWebSocketHandler.sendMessageToPage(sessionId, JSONUtil.toJsonStr(socketMessageCommand));
         } catch (Exception e) {
             logger.error("websocket消息发送异常", e);
         }

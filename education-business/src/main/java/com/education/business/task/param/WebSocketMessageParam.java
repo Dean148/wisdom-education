@@ -17,7 +17,12 @@ public class WebSocketMessageParam extends TaskParam {
     /**
      * socket session会话id
      */
-    private String sessionId;
+    private String socketSessionId;
+
+    /**
+     * 用户hashToken
+     */
+    private String hashToken;
 
     /**
      * ip地址
@@ -46,12 +51,20 @@ public class WebSocketMessageParam extends TaskParam {
         this.studentId = studentId;
     }
 
-    public String getSessionId() {
-        return sessionId;
+    public String getSocketSessionId() {
+        return socketSessionId;
     }
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
+    public void setSocketSessionId(String socketSessionId) {
+        this.socketSessionId = socketSessionId;
+    }
+
+    public String getHashToken() {
+        return hashToken;
+    }
+
+    public void setHashToken(String hashToken) {
+        this.hashToken = hashToken;
     }
 
     public String getIp() {
