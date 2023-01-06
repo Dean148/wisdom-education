@@ -9,8 +9,8 @@ import com.education.business.task.TaskManager;
 import com.jfinal.core.converter.TypeConverter;
 import com.jfinal.json.Jackson;
 import com.jfinal.json.JacksonFactory;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import com.alibaba.otter.canal.client.CanalConnectors;
 import com.alibaba.otter.canal.client.CanalConnector;
-import com.alibaba.otter.canal.common.utils.AddressUtils;
 import com.alibaba.otter.canal.protocol.Message;
 import com.alibaba.otter.canal.protocol.CanalEntry.Column;
 import com.alibaba.otter.canal.protocol.CanalEntry.Entry;
@@ -33,6 +32,8 @@ import com.alibaba.otter.canal.protocol.CanalEntry.EventType;
 import com.alibaba.otter.canal.protocol.CanalEntry.RowChange;
 import com.alibaba.otter.canal.protocol.CanalEntry.RowData;
 
+import javax.annotation.Resource;
+
 /**
  * canal 异步数据监听管理器
  * @author zengjintao
@@ -40,10 +41,10 @@ import com.alibaba.otter.canal.protocol.CanalEntry.RowData;
  * @create_at 2021/8/21 20:12
  */
 @Component
-@Slf4j
 public class CanalTask implements ApplicationContextAware, DisposableBean {
 
-    @Autowired
+    private final Logger logger = LoggerFactory.getLogger(CanalTask.class);
+    @Resource
     private TaskManager taskManager;
     private final Map<String, CanalTableListener> canalTableListenerMap = new HashMap();
     private final Map<String, TableInfo> entityMap = new HashMap();
@@ -62,7 +63,6 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
         }
     }
 
-    @Data
     private static class ColumnField {
         private String column;
 
@@ -72,6 +72,26 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
 
         public Class<?> getClazz() {
             return field.getDeclaringClass();
+        }
+
+        public String getColumn() {
+            return column;
+        }
+
+        public void setColumn(String column) {
+            this.column = column;
+        }
+
+        public Field getField() {
+            return field;
+        }
+
+        public void setField(Field field) {
+            this.field = field;
+        }
+
+        public void setClazz(Class<?> clazz) {
+            this.clazz = clazz;
         }
     }
 
@@ -111,7 +131,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
 
         for (Entry entry : entryList) {
 
-            log.info("canal监听到数据: " + JSONUtil.toJsonStr(entry));
+            logger.info("canal监听到数据: " + JSONUtil.toJsonStr(entry));
             if (entry.getEntryType() == EntryType.TRANSACTIONBEGIN || entry.getEntryType() == EntryType.TRANSACTIONEND) {
                 continue;
             }
@@ -140,7 +160,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
                 });
 
                 for (RowData rowData : rowChange.getRowDatasList()) {
-                    log.info(String.format("================&gt; binlog[%s:%s] , name[%s,%s] , eventType : %s",
+                    logger.info(String.format("================&gt; binlog[%s:%s] , name[%s,%s] , eventType : %s",
                             entry.getHeader().getLogfileName(), entry.getHeader().getLogfileOffset(),
                             entry.getHeader().getSchemaName(), entry.getHeader().getTableName(),
                             eventType));
@@ -184,12 +204,12 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
     private void retryConnectionCanal() {
         long sleep = 10000; // 休眠10秒
         try {
-            log.info("Start Connection Canal Server....................");
+            logger.info("Start Connection Canal Server....................");
             connector = CanalConnectors.newSingleConnector(new InetSocketAddress(canalProperties.getHost(),
                     canalProperties.getPort()), canalProperties.getDestination(), canalProperties.getUserName(), canalProperties.getPassword());
             connector.connect();
         } catch (Exception e) {
-            log.error("Canal Client Connection Error", e);
+            logger.error("Canal Client Connection Error", e);
             try {
                 Thread.sleep(sleep);
                 this.retryConnectionCanal();
@@ -203,7 +223,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
     private void canalListener() {
         this.retryConnectionCanal();
         connector.subscribe(".*\\..*");
-        log.info("Canal Client 数据监听服务连接成功........................");
+        logger.info("Canal Client 数据监听服务连接成功........................");
         while (true) {
             try {
                 Message message = connector.getWithoutAck(batchSize); // 获取指定数量的数据
@@ -219,7 +239,7 @@ public class CanalTask implements ApplicationContextAware, DisposableBean {
                     this.retryConnectionCanal();
                 } else {
                     connector.rollback(); // 处理失败, 回滚数据
-                    log.error("Canal Client Listener Data Error", e);
+                    logger.error("Canal Client Listener Data Error", e);
                 }
             }
         }

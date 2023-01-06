@@ -3,8 +3,8 @@ package com.education.business.service.education;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.CourseValuateMapper;
 import com.education.business.service.BaseService;
-import com.education.business.task.CourseValuateMessageListener;
-import com.education.business.task.TaskParam;
+import com.education.business.task.param.CourseValuateParam;
+import com.education.common.constants.LocalQueueConstants;
 import com.education.common.constants.SystemConstants;
 import com.education.common.enums.ValuateTypeEnum;
 import com.education.common.exception.BusinessException;
@@ -13,6 +13,7 @@ import com.education.model.dto.CourseValuateDto;
 import com.education.model.entity.CourseValuate;
 import com.education.model.request.PageParam;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
 
 /**
  * @author zengjintao
@@ -41,9 +42,9 @@ public class CourseValuateService extends BaseService<CourseValuateMapper, Cours
         }
 
         if (courseValuate.getId() == null) {
-            TaskParam taskParam = new TaskParam(CourseValuateMessageListener.class);
-            taskParam.put("courseId", courseValuate.getCourseId());
-            taskParam.put("valuateMark", valuateMark);
+            CourseValuateParam taskParam = new CourseValuateParam(LocalQueueConstants.COURSE_VALUATE);
+            taskParam.setCourseId(courseValuate.getCourseId());
+            taskParam.setValuateMark(new BigDecimal(valuateMark));
             taskManager.pushTask(taskParam);
         }
         courseValuate.setStudentId(getStudentId());

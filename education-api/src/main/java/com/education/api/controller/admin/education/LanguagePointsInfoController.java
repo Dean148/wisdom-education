@@ -7,8 +7,9 @@ import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.model.dto.LanguagePointsInfoDto;
 import com.education.model.entity.LanguagePointsInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * 知识点管理接口
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/system/languagePointsInfo")
 public class LanguagePointsInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private LanguagePointsInfoService languagePointsInfoService;
 
     /**

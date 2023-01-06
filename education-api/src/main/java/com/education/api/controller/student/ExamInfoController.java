@@ -7,8 +7,9 @@ import com.education.common.utils.Result;
 import com.education.model.dto.ExamMonitor;
 import com.education.model.dto.StudentExamInfoDto;
 import com.education.model.request.PageParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * 学生端考试记录管理接口
@@ -20,9 +21,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController("student-exam")
 public class ExamInfoController extends BaseController {
 
-    @Autowired
+    @Resource
     private ExamInfoService examInfoService;
-    @Autowired
+    @Resource
     private ExamMonitorService examMonitorService;
 
     /**

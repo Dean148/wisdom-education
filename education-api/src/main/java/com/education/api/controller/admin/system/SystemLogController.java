@@ -11,8 +11,8 @@ import com.education.common.utils.Result;
 import com.education.model.entity.SystemLog;
 import com.education.model.request.PageParam;
 import com.education.model.request.SystemLogQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import javax.annotation.Resource;
 
 /**
  * 系统日志管理接口
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/system/log")
 public class SystemLogController extends BaseController {
 
-    @Autowired
+    @Resource
     private SystemLogService systemLogService;
 
     /**

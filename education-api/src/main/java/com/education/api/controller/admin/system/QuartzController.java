@@ -4,11 +4,12 @@ import com.education.business.service.system.SystemQuartzJobService;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.model.entity.SystemQuartzJob;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * 定时任务管理
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/system/quartz")
 public class QuartzController extends BaseController {
 
-    @Autowired
+    @Resource
     private SystemQuartzJobService systemQuartzJobService;
 
     /**

@@ -1,13 +1,12 @@
 package com.education.business.task;
 
 import com.education.business.service.system.SystemLogService;
-import com.education.business.session.AdminUserSession;
-import com.education.common.constants.EnumConstants;
-import com.education.common.utils.ObjectUtils;
+import com.education.business.task.param.LogTaskParam;
+import com.education.common.annotation.EventQueue;
+import com.education.common.constants.LocalQueueConstants;
 import com.education.model.entity.SystemLog;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import javax.annotation.Resource;
 import java.util.Date;
 
 /**
@@ -17,33 +16,25 @@ import java.util.Date;
  * @create_at 2020/4/24 20:54
  */
 @Component
-public class SystemLogListener implements TaskListener {
+@EventQueue(name = LocalQueueConstants.REQUEST_LOG)
+public class SystemLogListener implements TaskListener<LogTaskParam> {
 
-
-    @Autowired
+    @Resource
     private SystemLogService systemLogService;
 
     @Override
-    public void onMessage(TaskParam taskParam) {
+    public void onMessage(LogTaskParam taskParam) {
         SystemLog systemLog = new SystemLog();
-        AdminUserSession adminUserSession = (AdminUserSession) taskParam.get("adminUserSession");
-        if (ObjectUtils.isNotEmpty(adminUserSession)) {
-            systemLog.setUserId(adminUserSession.getId());
-            systemLog.setOperationName(adminUserSession.getSystemAdmin().getLoginName());
-            systemLog.setPlatformType(EnumConstants.PlatformType.WEB_ADMIN.getValue());
-        } else {
-            systemLog.setOperationName("匿名用户");
-        }
+        systemLog.setUserId(taskParam.getUserId());
+        systemLog.setPlatformType(taskParam.getPlatformTypeEnum().getCode());
+        systemLog.setOperationName(taskParam.getOperationName());
         systemLog.setCreateDate(new Date());
-        systemLog.setPlatformType(EnumConstants.PlatformType.WEB_ADMIN.getValue());
-        long startTime = taskParam.getLong("startTime");
-        systemLog.setRequestTime((System.currentTimeMillis() - startTime) + "ms");
-        systemLog.setRequestUrl(taskParam.getStr("request_url"));
-        systemLog.setException(taskParam.getStr("exception"));
-        systemLog.setIp(taskParam.getStr("ip"));
-        systemLog.setMethod(taskParam.getStr("method"));
-        systemLog.setParams(taskParam.getStr("params"));
-        systemLog.setOperationDesc(taskParam.getStr("operation_desc"));
+        systemLog.setRequestUrl(taskParam.getRequestUrl());
+        systemLog.setException(taskParam.getException());
+        systemLog.setIp(taskParam.getIp());
+        systemLog.setMethod(taskParam.getMethod());
+        systemLog.setParams(taskParam.getParams());
+        systemLog.setOperationDesc(taskParam.getOperationDesc());
         systemLogService.save(systemLog);
     }
 }
