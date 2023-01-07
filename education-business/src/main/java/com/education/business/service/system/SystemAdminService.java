@@ -156,29 +156,6 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         return new PageInfo();
     }
 
-    /**
-     * 更新 admin socket 会话id
-     * @param id
-     * @param md5Token
-     */
-    public void updateSocketSessionId(Integer id, String md5Token) {
-        LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(SystemAdmin.class)
-                .set(SystemAdmin::getSocketSessionId, md5Token)
-                .eq(SystemAdmin::getId, id);
-        super.update(updateWrapper);
-    }
-
-    /**
-     * 获取admin socket 会话id
-     * @param id
-     * @return
-     */
-    public String getAdminSocketSessionId(Integer id) {
-        SystemAdmin systemAdmin = this.getOne(Wrappers.<SystemAdmin>lambdaQuery()
-                .select(SystemAdmin::getSocketSessionId)
-                .eq(SystemAdmin::getId, id));
-        return systemAdmin.getSocketSessionId();
-    }
 
     /**
      * 管理员重置密码
