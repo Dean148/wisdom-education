@@ -155,18 +155,4 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         studentInfo.setId(getStudentId());
         return super.updateById(studentInfo);
     }
-
-    public void updateSocketSessionId(Integer studentId, String socketSessionId) {
-        LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(StudentInfo.class)
-                .set(StudentInfo::getSocketSessionId, socketSessionId)
-                .eq(StudentInfo::getId, studentId);
-        super.update(updateWrapper);
-    }
-
-    public String getStudentSocketSessionId(Integer studentId) {
-        StudentInfo studentInfo = this.getOne(Wrappers.<StudentInfo>lambdaQuery()
-                .select(StudentInfo::getSocketSessionId)
-                .eq(StudentInfo::getId, studentId));
-        return studentInfo.getSocketSessionId();
-    }
 }

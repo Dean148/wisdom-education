@@ -40,11 +40,6 @@ public class StudentInfo extends BaseEntity<StudentInfo> {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date lastLoginTime;
 
-	/**
-	 * websocket 会话id
-	 */
-	@TableField("socket_session_id")
-	private String socketSessionId;
 
 
 	/**
@@ -53,13 +48,6 @@ public class StudentInfo extends BaseEntity<StudentInfo> {
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
 	private Date birthday;
 
-	public String getSocketSessionId() {
-		return socketSessionId;
-	}
-
-	public void setSocketSessionId(String socketSessionId) {
-		this.socketSessionId = socketSessionId;
-	}
 
 	public String getName() {
 		return name;
