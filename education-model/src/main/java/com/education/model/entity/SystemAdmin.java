@@ -84,20 +84,6 @@ public class SystemAdmin extends BaseEntity<SystemAdmin> {
 	@TableField("ip_address")
 	private String ipAddress;
 
-	/**
-	 * websocket 会话id
-	 */
-	@TableField("socket_session_id")
-	private String socketSessionId;
-
-	public String getSocketSessionId() {
-		return socketSessionId;
-	}
-
-	public void setSocketSessionId(String socketSessionId) {
-		this.socketSessionId = socketSessionId;
-	}
-
 	public String getLoginName() {
 		return loginName;
 	}
