@@ -77,9 +77,13 @@ public class TencentOssFileUpload extends BaseFileUpload {
         COSClient cosClient = getCOSClient();
         try {
             ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(inputStream.available());
             cosClient.putObject(parentBucketName, file, inputStream, objectMetadata);
             String fileUrl = getHost() + file;
             return new UploadResult(fileUrl);
+        } catch (IOException e) {
+            logger.error("cos文件上传异常", e);
+            throw new RuntimeException(e);
         } finally {
             if (inputStream != null) {
                 try { inputStream.close();} catch (IOException e) { e.printStackTrace();}
