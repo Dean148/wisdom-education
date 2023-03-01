@@ -56,15 +56,15 @@ public class CourseInfoService extends BaseService<CourseInfoMapper, CourseInfo>
         if (courseId != null) {
             CourseInfo course = super.getById(courseId);
             if (!EnumConstants.CourseStatus.DRAUGHT.getValue().equals(course.getStatus())) {
-                if (!courseInfo.getSchoolType().equals(courseInfo.getSchoolType())) {
+                if (!course.getSchoolType().equals(courseInfo.getSchoolType())) {
                     throw new BusinessException("已上架课程禁止修改所属阶段");
                 }
 
-                if (!courseInfo.getGradeInfoId().equals(courseInfo.getGradeInfoId())) {
+                if (!course.getGradeInfoId().equals(courseInfo.getGradeInfoId())) {
                     throw new BusinessException("已上架课程禁止修改所属年级");
                 }
 
-                if (!courseInfo.getSubjectId().equals(courseInfo.getSubjectId())) {
+                if (!course.getSubjectId().equals(courseInfo.getSubjectId())) {
                     throw new BusinessException("已上架课程禁止修改所属科目");
                 }
             }
