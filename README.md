@@ -74,7 +74,8 @@ Shiro | 1.4.0
 Jfinal Weixin | 2.3
 sharding-jdbc | 3.1.0.M1
 canal | 1.1.4
-
+node | 建议安装V8.16.0或者V12.22.5
+`
 ### 系统特色
 - 集成开源框架sharding-jdbc，目前系统已支持mysql的读写分离
 - 集成阿里开源框架canal,支持mysql与其它主菲关系型数据库数据的异步同步
