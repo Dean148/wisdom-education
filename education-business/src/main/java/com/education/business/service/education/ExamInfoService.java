@@ -9,6 +9,7 @@ import com.education.business.correct.TeacherQuestionCorrect;
 import com.education.business.mapper.education.ExamInfoMapper;
 import com.education.business.message.QueueManager;
 import com.education.business.service.BaseService;
+import com.education.business.session.UserSessionContext;
 import com.education.common.constants.CacheKey;
 import com.education.common.constants.CacheTime;
 import com.education.common.constants.SystemConstants;
@@ -77,7 +78,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
      * @return
      */
     public PageInfo<StudentExamInfoDto> selectStudentExamInfoList(PageParam pageParam, StudentExamInfoDto studentExamInfoDto) {
-        studentExamInfoDto.setStudentId(getStudentId());
+        studentExamInfoDto.setStudentId(UserSessionContext.getStudentId());
         Page<StudentExamInfoDto> page = new Page(pageParam.getPageNumber(), pageParam.getPageSize());
         return selectPage(baseMapper.selectStudentExamList(page, studentExamInfoDto));
     }
@@ -86,7 +87,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
     public QuestionCorrectResponse commitTestPaperInfoQuestion(StudentQuestionRequest studentQuestionRequest) {
         QuestionCorrectResponse questionCorrectResponse = new QuestionCorrectResponse();
         Integer testPaperInfoId = studentQuestionRequest.getTestPaperInfoId();
-        studentQuestionRequest.setStudentId(getStudentId());
+        studentQuestionRequest.setStudentId(UserSessionContext.getStudentId());
         // 从缓存读取试卷配置，提升并发性能
         TestPaperInfoSetting testPaperInfoSetting = cacheBean.get(CacheKey.PAPER_INFO_SETTING, testPaperInfoId);
         Integer commitAfterType = EnumConstants.CommitAfterType.SHOW_MARK_NOW.getValue();
@@ -114,7 +115,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
             List<StudentWrongBook> studentWrongBookList = questionCorrect.getStudentWrongBookList();
             questionCorrect.saveStudentQuestionAnswer(examInfo.getId(), studentQuestionAnswerList, studentWrongBookList);
         }
-        examMonitorService.removeStudent(getStudentId(), testPaperInfoId); // 离开考试监控
+        examMonitorService.removeStudent(UserSessionContext.getStudentId(), testPaperInfoId); // 离开考试监控
         questionCorrectResponse.setExamTime(examInfo.getExamTime());
         questionCorrectResponse.setExamInfoId(examInfo.getId());
         return questionCorrectResponse;
@@ -127,7 +128,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
      */
     public boolean queryHasDoTestPaper(Integer testPaperId) {
         LambdaQueryWrapper lambdaQueryWrapper = Wrappers.<ExamInfo>lambdaQuery().eq(ExamInfo::getTestPaperInfoId, testPaperId)
-                .eq(ExamInfo::getStudentId, getStudentId());
+                .eq(ExamInfo::getStudentId, UserSessionContext.getStudentId());
         return super.selectFirst(lambdaQueryWrapper) != null;
     }
 
@@ -141,8 +142,8 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
         Set<ZSetOperations.TypedTuple<StudentInfo>> tuples = new HashSet<>();
         Integer systemMark = examInfo.getSystemMark();
         StudentInfo studentInfo = new StudentInfo();
-        studentInfo.setId(getStudentId());
-        studentInfo.setName(getStudentUserSession().getName());
+        studentInfo.setId(UserSessionContext.getStudentId());
+        studentInfo.setName(UserSessionContext.getStudentUserSession().getName());
         DefaultTypedTuple tuple = new DefaultTypedTuple(studentInfo, systemMark.doubleValue());
         tuples.add(tuple);
         String sortKey = CacheKey.EXAM_SORT_KEY + examInfo.getTestPaperInfoId();
@@ -206,7 +207,7 @@ public class ExamInfoService extends BaseService<ExamInfoMapper, ExamInfo> {
 
 
         examInfo = questionCorrect.getExamInfo();
-        examInfo.setAdminId(getAdminUserId());
+        examInfo.setAdminId(UserSessionContext.getAdminUserId());
         super.updateById(examInfo);
 
         List<StudentQuestionAnswer> studentQuestionAnswerList = questionCorrect.getObjectiveQuestionAnswerList();

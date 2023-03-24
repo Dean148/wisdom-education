@@ -3,6 +3,7 @@ package com.education.api.controller.student;
 import com.education.business.service.education.ExamInfoService;
 import com.education.business.service.education.ExamMonitorService;
 import com.education.business.service.education.TestPaperInfoService;
+import com.education.business.session.UserSessionContext;
 import com.education.common.annotation.FormLimit;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
@@ -80,7 +81,7 @@ public class TestPaperInfoController extends BaseController {
     @PostMapping("updateStudentExamRate")
     public Result updateStudentExamRate(@RequestBody StudentExamRate studentExamRate) {
         ExamMonitor examMonitor = examMonitorService.getExamMonitorStudent(studentExamRate.getTestPaperInfoId(),
-                examInfoService.getStudentId());
+                UserSessionContext.getStudentId());
         examMonitor.setAnswerQuestionCount(studentExamRate.getAnswerQuestionCount());
         examMonitor.setTestPaperInfoId(studentExamRate.getTestPaperInfoId());
         examMonitorService.addStudentToExamMonitor(examMonitor);

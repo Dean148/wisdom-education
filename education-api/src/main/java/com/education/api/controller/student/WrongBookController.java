@@ -1,6 +1,7 @@
 package com.education.api.controller.student;
 
 import com.education.business.service.education.StudentWrongBookService;
+import com.education.business.session.UserSessionContext;
 import com.education.common.base.BaseController;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.Result;
@@ -34,7 +35,7 @@ public class WrongBookController extends BaseController {
      */
     @GetMapping
     public Result<PageInfo<QuestionInfoAnswer>> list(PageParam pageParam, WrongBookQuery wrongBookQuery) {
-        wrongBookQuery.setStudentId(studentWrongBookService.getStudentId());
+        wrongBookQuery.setStudentId(UserSessionContext.getStudentId());
         return Result.success(studentWrongBookService.selectPageList(pageParam, wrongBookQuery));
     }
 }
