@@ -3,6 +3,7 @@ package com.education.api.controller.student;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.service.education.SubjectInfoService;
+import com.education.business.session.UserSessionContext;
 import com.education.common.base.BaseController;
 import com.education.common.utils.ObjectUtils;
 import com.education.common.utils.Result;
@@ -34,7 +35,7 @@ public class SubjectInfoController extends BaseController {
     @GetMapping("selectByGradeInfoId")
     public Result selectByGradeInfoId(Integer gradeInfoId) {
         if (ObjectUtils.isEmpty(gradeInfoId)) {
-            gradeInfoId = subjectInfoService.getStudentUserSession().getGradeInfoId();
+            gradeInfoId = UserSessionContext.getStudentUserSession().getGradeInfoId();
         }
         LambdaQueryWrapper queryWrapper = Wrappers.<SubjectInfo>lambdaQuery()
                 .eq(SubjectInfo::getGradeInfoId, gradeInfoId);

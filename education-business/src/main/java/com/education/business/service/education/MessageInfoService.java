@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.education.MessageInfoMapper;
 import com.education.business.service.BaseService;
+import com.education.business.session.UserSessionContext;
 import com.education.common.enums.BooleanEnum;
 import com.education.common.model.PageInfo;
 import com.education.model.entity.MessageInfo;
@@ -21,7 +22,7 @@ import java.util.Date;
 public class MessageInfoService extends BaseService<MessageInfoMapper, MessageInfo> {
 
     public PageInfo<MessageInfo> selectList(PageParam pageParam) {
-        Integer studentId = getStudentId();
+        Integer studentId = UserSessionContext.getStudentId();
         // 将未读消息设置为已读状态
         LambdaUpdateWrapper updateWrapper = Wrappers.lambdaUpdate(MessageInfo.class)
                 .set(MessageInfo::getReadFlag, BooleanEnum.YES.getCode())
@@ -33,6 +34,6 @@ public class MessageInfoService extends BaseService<MessageInfoMapper, MessageIn
     }
 
     public long getUnReadMessageCount() {
-        return baseMapper.countUnReadMessage(getStudentId());
+        return baseMapper.countUnReadMessage(UserSessionContext.getStudentId());
     }
 }

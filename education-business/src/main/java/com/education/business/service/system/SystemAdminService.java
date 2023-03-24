@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.system.SystemAdminMapper;
 import com.education.business.service.BaseService;
 import com.education.business.session.AdminUserSession;
+import com.education.business.session.UserSessionContext;
 import com.education.common.exception.BusinessException;
 import com.education.common.model.PageInfo;
 import com.education.common.utils.ObjectUtils;
@@ -170,7 +171,7 @@ public class SystemAdminService extends BaseService<SystemAdminMapper, SystemAdm
         }
         LambdaQueryWrapper queryWrapper = Wrappers.lambdaQuery(SystemAdmin.class)
                 .select(SystemAdmin::getPassword, SystemAdmin::getId, SystemAdmin::getEncrypt)
-                .eq(SystemAdmin::getId, super.getAdminUserId());
+                .eq(SystemAdmin::getId, UserSessionContext.getAdminUserId());
         SystemAdmin dbSystemAdmin = super.getOne(queryWrapper);
         String md5Password = PasswordUtil.createPassword(dbSystemAdmin.getEncrypt(), adminRoleDto.getPassword());
         if (!dbSystemAdmin.getPassword().equals(md5Password)) {

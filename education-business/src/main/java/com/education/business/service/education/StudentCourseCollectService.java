@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.education.business.mapper.education.StudentCourseCollectMapper;
 import com.education.business.service.BaseService;
+import com.education.business.session.UserSessionContext;
 import com.education.common.enums.BooleanEnum;
 import com.education.model.dto.StudentCourseCollectDto;
 import com.education.model.entity.StudentCourseCollect;
@@ -19,7 +20,7 @@ import java.util.Date;
 public class StudentCourseCollectService extends BaseService<StudentCourseCollectMapper, StudentCourseCollect> {
 
     public void collect(StudentCourseCollectDto studentCourseCollectDto) {
-        Integer studentId = getStudentId();
+        Integer studentId = UserSessionContext.getStudentId();
         if (BooleanEnum.YES.getCode().equals(studentCourseCollectDto.getCollectFlag())) {
             studentCourseCollectDto.setStudentId(studentId);
             studentCourseCollectDto.setCreateDate(new Date());

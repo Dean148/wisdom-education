@@ -5,6 +5,7 @@ import com.education.business.service.education.StudentInfoService;
 import com.education.business.service.system.SystemLogService;
 import com.education.business.session.AdminUserSession;
 import com.education.business.session.StudentSession;
+import com.education.business.session.UserSessionContext;
 import com.education.business.task.TaskManager;
 import com.education.business.task.param.LogTaskParam;
 import com.education.common.annotation.SystemLog;
@@ -86,14 +87,14 @@ public final class LogAspect {
         }
         taskParam.setParams(jsonParams.toString());
         if (requestUrl.startsWith("/system")) {
-            AdminUserSession adminUserSession = systemLogService.getAdminUserSession();
+            AdminUserSession adminUserSession = UserSessionContext.getAdminUserSession();
             if (adminUserSession != null) {
                 taskParam.setOperationName(adminUserSession.getSystemAdmin().getLoginName());
                 taskParam.setUserId(adminUserSession.getSystemAdmin().getId());
             }
             taskParam.setPlatformTypeEnum(PlatformTypeEnum.WEB_ADMIN);
         } else if (requestUrl.startsWith("/student")) {
-            StudentSession studentUserSession = studentInfoService.getStudentUserSession();
+            StudentSession studentUserSession = UserSessionContext.getStudentUserSession();
             if (studentUserSession != null) {
                 taskParam.setOperationName(studentUserSession.getLoginName());
                 taskParam.setUserId(studentUserSession.getId());
