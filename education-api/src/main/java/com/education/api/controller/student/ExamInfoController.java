@@ -2,6 +2,7 @@ package com.education.api.controller.student;
 
 import com.education.business.service.education.ExamInfoService;
 import com.education.business.service.education.ExamMonitorService;
+import com.education.business.session.UserSessionContext;
 import com.education.common.base.BaseController;
 import com.education.common.utils.Result;
 import com.education.model.dto.ExamMonitor;
@@ -45,7 +46,7 @@ public class ExamInfoController extends BaseController {
      */
     @GetMapping("selectExamQuestionAnswer/{id}")
     public Result selectExamQuestionAnswer(@PathVariable("id") Integer examInfoId) {
-        Integer studentId = examInfoService.getStudentId();
+        Integer studentId = UserSessionContext.getStudentId();
         return Result.success(examInfoService.selectExamQuestionAnswer(studentId, examInfoId));
     }
 

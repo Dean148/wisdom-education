@@ -3,6 +3,7 @@ package com.education.business.service.education;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.education.business.mapper.education.CourseValuateMapper;
 import com.education.business.service.BaseService;
+import com.education.business.session.UserSessionContext;
 import com.education.business.task.param.CourseValuateParam;
 import com.education.common.constants.LocalQueueConstants;
 import com.education.common.constants.SystemConstants;
@@ -47,7 +48,7 @@ public class CourseValuateService extends BaseService<CourseValuateMapper, Cours
             taskParam.setValuateMark(new BigDecimal(valuateMark));
             taskManager.pushTask(taskParam);
         }
-        courseValuate.setStudentId(getStudentId());
+        courseValuate.setStudentId(UserSessionContext.getStudentId());
         return super.saveOrUpdate(courseValuate);
     }
 }

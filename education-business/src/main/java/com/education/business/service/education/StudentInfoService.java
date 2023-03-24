@@ -12,6 +12,7 @@ import com.education.business.mapper.education.StudentInfoMapper;
 import com.education.business.service.BaseService;
 import com.education.business.service.system.WebsiteConfigService;
 import com.education.business.session.StudentSession;
+import com.education.business.session.UserSessionContext;
 import com.education.common.constants.AuthConstants;
 import com.education.common.constants.CacheKey;
 import com.education.common.constants.CacheTime;
@@ -136,7 +137,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
         StudentInfo studentInfo = super.selectFirst(Wrappers.<StudentInfo>lambdaQuery()
                 .select(StudentInfo::getPassword)
                 .select(StudentInfo::getEncrypt)
-                .eq(StudentInfo::getId, getStudentId()));
+                .eq(StudentInfo::getId, UserSessionContext.getStudentId()));
         String encrypt = studentInfo.getEncrypt();
         String dataBasePassword = PasswordUtil.createPassword(encrypt, password);
         if (dataBasePassword.equals(password)) {
@@ -152,7 +153,7 @@ public class StudentInfoService extends BaseService<StudentInfoMapper, StudentIn
     }
 
     public boolean updateInfo(StudentInfo studentInfo) {
-        studentInfo.setId(getStudentId());
+        studentInfo.setId(UserSessionContext.getStudentId());
         return super.updateById(studentInfo);
     }
 }
