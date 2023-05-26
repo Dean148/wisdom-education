@@ -18,7 +18,7 @@ spring:
     out-of-order: true #防止开发环境下漏掉没来得及apply的文件，产品环境最好设为false
     ignore-ignored-migrations: true
     locations: classpath:/db
-    url: jdbc:mysql://${host}:3306/education_final?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://${host}:3306/education?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&useSSL=false&allowMultiQueries=true
     user: root
     password: 123456
 
@@ -79,13 +79,13 @@ sharding:
           #最小空闲连接数量
         minimum-idle: 10
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://${host}:3306/education_final?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://${host}:3306/education?createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
         password: 123456
       educationslave:
         type: com.zaxxer.hikari.HikariDataSource
-        jdbc-url: jdbc:mysql://${host}:3307/education_final?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        jdbc-url: jdbc:mysql://${host}:3306/education?createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
         password: 123456
