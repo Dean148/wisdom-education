@@ -140,6 +140,8 @@ node | 建议安装V8.16.0或者V12.22.5
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/1221/154831_32f292e7_1526010.jpeg "QQ图片20201221154716.jpg")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/1221/154841_0159e6bd_1526010.jpeg "QQ图片20201221154724.jpg")
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/1221/154850_46395ade_1526010.jpeg "QQ图片20201221154729.jpg")
+### 智慧云智能教育系统微信交流群（加群获取项目正式部署教程和免费视频教程）
+![输入图片说明](%25XUASABBY8AJMIIJBZ@TDLS_tmb.jpg)
 ### 智慧云智能教育系统交流群（加群获取项目正式部署教程和免费视频教程）
 
  -  **QQ交流群1 1072042422（已满勿加）** (加群请备注码云，否则拒绝入群）
